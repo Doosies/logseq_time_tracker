@@ -1,0 +1,8 @@
+# Prettier ignore
+node_modules/
+dist/
+build/
+coverage/
+.history/
+pnpm-lock.yaml
+*.log

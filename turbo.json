@@ -1,0 +1,41 @@
+{
+    "$schema": "https://turbo.build/schema.json",
+    "globalDependencies": ["**/.env.*local"],
+    "tasks": {
+        "build": {
+            "dependsOn": ["^build"],
+            "outputs": ["dist/**", ".next/**", "!.next/cache/**", ".vitepress/dist/**"]
+        },
+        "dev": {
+            "cache": false,
+            "persistent": true
+        },
+        "start": {
+            "cache": false,
+            "persistent": true
+        },
+        "test": {
+            "dependsOn": ["^build"],
+            "outputs": ["coverage/**"],
+            "inputs": ["src/**/*.tsx", "src/**/*.ts", "tests/**/*.tsx", "tests/**/*.ts"]
+        },
+        "lint": {
+            "dependsOn": ["^build"],
+            "outputs": []
+        },
+        "type-check": {
+            "dependsOn": ["^build"],
+            "outputs": []
+        },
+        "format": {
+            "cache": false,
+            "outputs": []
+        },
+        "format:check": {
+            "outputs": []
+        },
+        "clean": {
+            "cache": false
+        }
+    }
+}

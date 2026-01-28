@@ -1,0 +1,40 @@
+{
+    "name": "@personal/mcp-server",
+    "version": "0.1.0",
+    "description": "Personal MCP Server for Cursor",
+    "type": "module",
+    "main": "dist/index.js",
+    "bin": {
+        "personal-mcp-server": "dist/index.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "build:chmod": "tsc && chmod +x dist/index.js",
+        "dev": "tsc --watch",
+        "start": "node dist/index.js",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,json,md}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,json,md}\""
+    },
+    "keywords": [
+        "mcp",
+        "model-context-protocol",
+        "cursor",
+        "typescript"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.25.3",
+        "zod": "^4.3.6"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.39.2",
+        "@types/node": "^25.0.10",
+        "eslint": "^9.39.2",
+        "globals": "^17.2.0",
+        "prettier": "^3.8.1",
+        "typescript": "^5.9.3",
+        "typescript-eslint": "^8.54.0"
+    }
+}

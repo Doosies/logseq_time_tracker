@@ -1,0 +1,82 @@
+# Node modules
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+build/
+out/
+.output/
+**/.vitepress/dist/
+
+# Cache directories
+.cache/
+.parcel-cache/
+.turbo/
+**/.turbo/
+.vite/
+**/.vite/
+**/.vitepress/cache/
+.next/
+.nuxt/
+.vinxi/
+.vercel/
+.netlify/
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+.idea/
+.history/
+*.swp
+*.swo
+*~
+.eslintcache
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+
+# Environment variables
+.env
+.env*.local
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+
+# TypeScript
+*.tsbuildinfo
+
+# Cursor Agent System
+.cursor/metrics/cycles/*.json
+.cursor/metrics/improvements/*.json
+.cursor/mcp-servers/*/node_modules/
+.cursor/mcp-servers/*/dist/
+.cursor/mcp-servers/*/build/
+.cursor/mcp-servers/*/.turbo/
+
+# Keep structure files
+!.cursor/metrics/cycle-template.json
+!.cursor/mcp-servers/template/
+
+# Debug and profiling
+*.cpuprofile
+*.heapprofile
+*.heapsnapshot

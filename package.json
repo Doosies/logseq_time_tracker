@@ -1,0 +1,31 @@
+{
+    "name": "personal-monorepo",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Personal Logseq Plugin and Documentation Monorepo",
+    "type": "module",
+    "packageManager": "pnpm@9.15.4",
+    "scripts": {
+        "dev": "turbo dev",
+        "build": "turbo build",
+        "test": "turbo test",
+        "lint": "turbo lint",
+        "format": "turbo format",
+        "type-check": "turbo type-check",
+        "clean": "turbo clean && rm -rf node_modules"
+    },
+    "keywords": [
+        "logseq-plugin",
+        "documentation",
+        "monorepo",
+        "turborepo"
+    ],
+    "license": "MIT",
+    "devDependencies": {
+        "turbo": "^2.7.6"
+    },
+    "engines": {
+        "node": ">=20.0.0",
+        "pnpm": ">=9.0.0"
+    }
+}

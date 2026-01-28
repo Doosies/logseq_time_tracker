@@ -1,0 +1,22 @@
+{
+    "name": "@personal/docs",
+    "version": "0.1.0",
+    "description": "Documentation site for Personal Logseq Plugin",
+    "type": "module",
+    "scripts": {
+        "dev": "vitepress dev",
+        "build": "vitepress build",
+        "preview": "vitepress preview",
+        "format": "prettier --write \"**/*.{md,json}\"",
+        "format:check": "prettier --check \"**/*.{md,json}\""
+    },
+    "keywords": [
+        "documentation",
+        "vitepress"
+    ],
+    "license": "MIT",
+    "devDependencies": {
+        "prettier": "^3.8.1",
+        "vitepress": "^1.6.4"
+    }
+}
