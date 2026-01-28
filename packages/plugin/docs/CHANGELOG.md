@@ -64,6 +64,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   );
   ```
 
+- **테스트 코드 작성 완료** ✅
+  - `tests/main.test.tsx` - main.tsx에 대한 포괄적인 테스트 스위트
+  - 25개 테스트 케이스, 100% 통과
+  - main.tsx 커버리지: **100%** (Statements, Functions, Lines)
+  - 전체 커버리지: **86.11%**
+  
+  **테스트 범위**:
+  - LogSeq API 초기화 및 설정
+  - 툴바 버튼, 명령어, 이벤트 핸들러 등록
+  - React 렌더링 로직
+  - 통합 테스트 (API 호출 순서, 다중 실행 등)
+  - 콘솔 로깅 검증
+
+- Vite 설정 개선
+  - 테스트 모드에서 `logseqDevPlugin` 비활성화하여 테스트 안정성 향상
+
 ## 관련 문서
 
 - [LogSeq Plugin API 공식 문서](https://logseq.github.io/plugins/interfaces/IAppProxy.html)

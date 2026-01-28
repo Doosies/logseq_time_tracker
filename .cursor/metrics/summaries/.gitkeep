@@ -1,0 +1,2 @@
+# 이 디렉토리는 일별/주별 요약 메트릭을 저장합니다.
+# 파일 형식: YYYY-MM-DD.json (일별), YYYY-MM-week-WW.json (주별)

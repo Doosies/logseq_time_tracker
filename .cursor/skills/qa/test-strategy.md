@@ -257,25 +257,37 @@ if (!threshold_result.pass) {
 
 ## 테스트 네이밍 컨벤션
 
-### 패턴: "should [expected behavior] when [condition]"
+### 언어 규칙: 한글 사용 (필수!)
 
-**✅ 좋은 예:**
+**중요**: 테스트 설명(`it`의 첫 번째 인자)은 **한글로 작성**합니다.
+
+### 패턴: "[기대 동작]을 해야 함 [조건]"
+
+**✅ 좋은 예 (한글):**
 ```typescript
 describe('calculateTotal', () => {
-  it('should return sum of all items', () => {});
-  it('should throw error when items is empty', () => {});
-  it('should handle negative prices correctly', () => {});
+  it('모든 아이템의 합계를 반환해야 함', () => {});
+  it('아이템 배열이 비어있을 때 에러를 던져야 함', () => {});
+  it('음수 가격을 올바르게 처리해야 함', () => {});
+  it('올바른 스타일로 logseq.setMainUIInlineStyle을 호출해야 함', () => {});
 });
 ```
 
 **❌ 나쁜 예:**
 ```typescript
 describe('calculateTotal', () => {
-  it('test1', () => {});
-  it('works', () => {});
-  it('edge case', () => {});
+  it('test1', () => {}); // 의미 없음
+  it('works', () => {}); // 모호함
+  it('edge case', () => {}); // 영어 사용
+  it('should return sum of all items', () => {}); // 영어 사용 지양
 });
 ```
+
+### 네이밍 가이드
+
+- **동사형 사용**: "해야 함", "되어야 함", "호출해야 함"
+- **명확한 조건**: "배열이 비어있을 때", "null인 경우", "에러 발생 시"
+- **구체적 동작**: "합계를 반환", "에러를 던짐", "UI를 표시"
 
 ---
 

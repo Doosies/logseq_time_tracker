@@ -71,6 +71,7 @@ logs/
 .cursor/mcp-servers/*/dist/
 .cursor/mcp-servers/*/build/
 .cursor/mcp-servers/*/.turbo/
+.cursor/git-workflow/
 
 # Keep structure files
 !.cursor/metrics/cycle-template.json

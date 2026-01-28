@@ -1,48 +1,92 @@
 {
-  "cycle_id": "YYYY-MM-DD-NNN",
-  "timestamp": "2026-01-28T00:00:00Z",
-  "task_type": "feature|bugfix|refactor|docs|hotfix",
-  "task_description": "사용자 요청 설명",
-  "workflow": ["main", "planner", "developer", "qa", "docs", "main"],
-  "agents": {
-    "planner": {
-      "duration_ms": 0,
-      "retries": 0,
-      "tokens_used": 0,
-      "files_read": 0,
-      "quality_score": 0.0
+    "cycle_id": "YYYY-MM-DD-NNN",
+    "timestamp": "2026-01-28T00:00:00Z",
+    "started_at": "2026-01-28T00:00:00Z",
+    "completed_at": null,
+    "task_type": "feature|bugfix|refactor|docs|hotfix",
+    "task_description": "사용자 요청 설명",
+    "workflow": ["main", "planner", "developer", "qa", "docs", "main"],
+    "git_baseline": {
+        "commit_hash": "abc123def456...",
+        "branch": "main",
+        "timestamp": "2026-01-28T00:00:00Z"
     },
-    "developer": {
-      "duration_ms": 0,
-      "retries": 0,
-      "tokens_used": 0,
-      "files_modified": 0,
-      "linter_errors_introduced": 0,
-      "linter_errors_fixed": 0,
-      "quality_score": 0.0
+    "agents": {
+        "planner": {
+            "started_at": null,
+            "completed_at": null,
+            "duration_ms": 0,
+            "retries": 0,
+            "tokens_used": 0,
+            "files_read": 0,
+            "files_created": 0,
+            "quality_score": 0.0
+        },
+        "developer": {
+            "started_at": null,
+            "completed_at": null,
+            "duration_ms": 0,
+            "retries": 0,
+            "tokens_used": 0,
+            "files_read": 0,
+            "files_modified": 0,
+            "files_created": 0,
+            "files_deleted": 0,
+            "linter_errors_introduced": 0,
+            "linter_errors_fixed": 0,
+            "linter_errors_remaining": 0,
+            "linter_errors_before": [],
+            "linter_errors_detail": {
+                "introduced": [],
+                "fixed": [],
+                "remaining": [],
+                "by_type": {}
+            },
+            "code_changes": {
+                "lines_added": 0,
+                "lines_deleted": 0,
+                "net_change": 0,
+                "by_file_type": {}
+            },
+            "file_details": [],
+            "quality_score": 0.0
+        },
+        "qa": {
+            "started_at": null,
+            "completed_at": null,
+            "duration_ms": 0,
+            "retries": 0,
+            "tokens_used": 0,
+            "tests_written": 0,
+            "tests_passed": 0,
+            "tests_failed": 0,
+            "coverage_before": 0.0,
+            "coverage_after": 0.0,
+            "quality_score": 0.0
+        },
+        "docs": {
+            "started_at": null,
+            "completed_at": null,
+            "duration_ms": 0,
+            "retries": 0,
+            "tokens_used": 0,
+            "files_read": 0,
+            "files_modified": 0,
+            "files_created": 0,
+            "quality_score": 0.0
+        }
     },
-    "qa": {
-      "duration_ms": 0,
-      "retries": 0,
-      "tokens_used": 0,
-      "tests_written": 0,
-      "tests_passed": 0,
-      "coverage_after": 0.0,
-      "quality_score": 0.0
+    "totals": {
+        "duration_ms": 0,
+        "total_tokens": 0,
+        "total_retries": 0,
+        "success": true,
+        "efficiency": {
+            "tokens_per_minute": 0,
+            "files_per_hour": 0,
+            "tests_per_hour": 0
+        }
     },
-    "docs": {
-      "duration_ms": 0,
-      "retries": 0,
-      "tokens_used": 0,
-      "files_modified": 0,
-      "quality_score": 0.0
-    }
-  },
-  "totals": {
-    "duration_ms": 0,
-    "total_tokens": 0,
-    "total_retries": 0,
-    "success": true
-  },
-  "user_feedback": null
+    "errors": [],
+    "user_feedback": null
 }
