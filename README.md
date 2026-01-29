@@ -4,7 +4,7 @@ React와 TypeScript로 작성된 Logseq 플러그인 및 문서화 모노레포�
 
 ## 📦 패키지
 
-- **[@personal/plugin](./packages/plugin)** - Logseq 플러그인
+- **[@personal/time-tracker](./packages/time-tracker)** - Logseq 플러그인
 - **[@personal/docs](./packages/docs)** - VitePress 문서화 사이트
 - **[@personal/mcp-server](./packages/mcp-server)** - Cursor용 MCP 서버
 
@@ -36,7 +36,7 @@ pnpm dev
 특정 패키지만 실행:
 
 ```bash
-cd packages/plugin
+cd packages/time-tracker
 pnpm dev
 ```
 
@@ -99,7 +99,7 @@ pnpm dev
 ```
 personal/
 ├── packages/
-│   ├── plugin/              # Logseq 플러그인
+│   ├── time-tracker/        # Logseq 플러그인
 │   │   ├── src/            # 소스 코드
 │   │   ├── tests/          # 테스트
 │   │   └── package.json
@@ -129,14 +129,14 @@ Turborepo가 다음 작업을 최적화합니다:
 
 1. 플러그인 빌드:
    ```bash
-   cd packages/plugin
+   cd packages/time-tracker
    pnpm build
    ```
 
 2. Logseq 설정:
    - `Settings` → `Advanced` → `Developer mode` 활성화
    - `Plugins` → `Load unpacked plugin`
-   - `packages/plugin` 디렉토리 선택
+   - `packages/time-tracker` 디렉토리 선택
 
 ## 🚀 배포
 

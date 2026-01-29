@@ -111,7 +111,7 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_logseq.App.registerUIItem).toHaveBeenCalledWith(
                     'toolbar',
                     expect.objectContaining({
-                        key: 'personal-plugin-toolbar',
+                        key: 'time-tracker-toolbar',
                         template: expect.stringContaining('togglePluginUI'),
                     }),
                 );
@@ -126,7 +126,7 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                     'show-plugin-ui',
                     expect.objectContaining({
                         key: 'show-plugin-ui',
-                        label: 'Show Personal Plugin UI',
+                        label: 'Show Time Tracker UI',
                         keybinding: {
                             binding: 'mod+shift+p',
                         },
@@ -161,7 +161,7 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_logseq.App.registerCommandPalette).toHaveBeenCalledWith(
                     expect.objectContaining({
                         key: 'toggle-plugin-ui-palette',
-                        label: 'Toggle Personal Plugin UI',
+                        label: 'Toggle Time Tracker UI',
                         keybinding: {
                             binding: 'ctrl+shift+e',
                         },
@@ -439,7 +439,7 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
             await import('../src/main');
 
             await waitFor(() => {
-                expect(console_spy).toHaveBeenCalledWith('logseq-plugin-personal loaded');
+                expect(console_spy).toHaveBeenCalledWith('logseq-time-tracker loaded');
             });
 
             console_spy.mockRestore();

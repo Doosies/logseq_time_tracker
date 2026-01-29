@@ -5,7 +5,7 @@
 ```
 personal/
 ├── packages/
-│   ├── plugin/              # Logseq 플러그인
+│   ├── time-tracker/        # Logseq 플러그인
 │   └── docs/                # 문서화 사이트
 ├── turbo.json              # Turborepo 설정
 ├── pnpm-workspace.yaml     # pnpm 워크스페이스
@@ -15,7 +15,7 @@ personal/
 ## Plugin 패키지
 
 ```
-packages/plugin/
+packages/time-tracker/
 ├── src/
 │   ├── main.tsx           # 플러그인 진입점
 │   └── App.tsx            # React 컴포넌트

@@ -35,7 +35,7 @@ pnpm 워크스페이스가 자동으로 모든 패키지의 의존성을 설치�
 ### 플러그인만 실행
 
 ```bash
-cd packages/plugin
+cd packages/time-tracker
 pnpm dev
 ```
 
@@ -63,7 +63,7 @@ pnpm build
 ### 특정 패키지만 빌드
 
 ```bash
-cd packages/plugin
+cd packages/time-tracker
 pnpm build
 ```
 

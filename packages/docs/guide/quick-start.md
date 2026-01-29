@@ -18,7 +18,7 @@ pnpm dev
 1. `...` 메뉴 클릭
 2. `Plugins` 선택
 3. `Load unpacked plugin` 클릭
-4. `packages/plugin` 디렉토리 선택
+4. `packages/time-tracker` 디렉토리 선택
 
 ## 4. 플러그인 확인
 
@@ -26,7 +26,7 @@ pnpm dev
 
 ## 5. 코드 수정해보기
 
-`packages/plugin/src/App.tsx` 파일을 열고 텍스트를 수정해보세요. HMR이 작동하여 자동으로 업데이트됩니다.
+`packages/time-tracker/src/App.tsx` 파일을 열고 텍스트를 수정해보세요. HMR이 작동하여 자동으로 업데이트됩니다.
 
 ```tsx
 <h1 style={styles.title}>나만의 Logseq 플러그인</h1>
@@ -35,7 +35,7 @@ pnpm dev
 ## 6. 테스트 실행
 
 ```bash
-cd packages/plugin
+cd packages/time-tracker
 pnpm test
 ```
 

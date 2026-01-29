@@ -1,7 +1,7 @@
 {
-    "name": "@personal/plugin",
+    "name": "@personal/time-tracker",
     "version": "0.1.0",
-    "description": "Personal Logseq Plugin with React",
+    "description": "Time Tracker Logseq Plugin with React",
     "main": "dist/index.html",
     "type": "module",
     "scripts": {
@@ -53,8 +53,8 @@
         "vitest": "^4.0.18"
     },
     "logseq": {
-        "id": "logseq-plugin-personal",
-        "title": "Personal Plugin",
+        "id": "logseq-time-tracker",
+        "title": "Time Tracker",
         "icon": "./logo.svg",
         "main": "dist/index.html"
     }

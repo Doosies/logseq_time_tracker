@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import App from './App';
 
 const main = () => {
-    console.log('logseq-plugin-personal loaded');
+    console.log('logseq-time-tracker loaded');
 
     // Main UI 스타일 설정
     logseq.setMainUIInlineStyle({
@@ -21,9 +21,9 @@ const main = () => {
 
         // 툴바 버튼 등록
         logseq.App.registerUIItem('toolbar', {
-            key: 'personal-plugin-toolbar',
+            key: 'time-tracker-toolbar',
             template: `
-                <a data-on-click="togglePluginUI" class="button" title="Personal Plugin">
+                <a data-on-click="togglePluginUI" class="button" title="Time Tracker">
                     <i class="ti ti-box"></i>
                 </a>
             `,
@@ -34,7 +34,7 @@ const main = () => {
             'show-plugin-ui',
             {
                 key: 'show-plugin-ui',
-                label: 'Show Personal Plugin UI',
+                label: 'Show Time Tracker UI',
                 keybinding: {
                     binding: 'mod+shift+p',
                 },
@@ -50,7 +50,7 @@ const main = () => {
         logseq.App.registerCommandPalette(
             {
                 key: 'toggle-plugin-ui-palette',
-                label: 'Toggle Personal Plugin UI',
+                label: 'Toggle Time Tracker UI',
                 keybinding: {
                     binding: 'ctrl+shift+e',
                 },

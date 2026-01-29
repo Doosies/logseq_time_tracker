@@ -20,7 +20,7 @@ const App = () => {
 
     return (
         <div className={`${styles.container} ${light_theme}`}>
-            <h1 className={styles.title}>Logseq Personal Plugin</h1>
+            <h1 className={styles.title}>Logseq Time Tracker</h1>
             <div className={styles.counter_section}>
                 <p className={styles.count_text}>Count: {count}</p>
                 <div className={styles.button_group}>

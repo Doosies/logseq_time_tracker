@@ -5,7 +5,7 @@ import App from '../src/App';
 describe('App Component', () => {
     it('should render the title', () => {
         render(<App />);
-        expect(screen.getByText('Logseq Personal Plugin')).toBeInTheDocument();
+        expect(screen.getByText('Logseq Time Tracker')).toBeInTheDocument();
     });
 
     it('should initialize count at 0', () => {
