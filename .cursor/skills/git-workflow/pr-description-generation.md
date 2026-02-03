@@ -765,6 +765,46 @@ PR 설명 생성 완료 후:
 
 ---
 
+## 파일 생성 프로세스
+
+### 1. 디렉토리 확인 및 생성
+
+파일 생성 전 `.cursor/temp/` 디렉토리가 존재하는지 확인합니다. Write tool을 사용하면 중간 디렉토리가 자동 생성되지만, 명시적으로 확인하는 것이 좋습니다.
+
+```typescript
+// 의사코드
+const temp_dir = '.cursor/temp/';
+// Write tool 사용 시 자동 생성되므로 별도 확인 불필요
+```
+
+### 2. PR 설명 파일 생성
+
+생성된 PR 설명을 `.cursor/temp/PR_DESCRIPTION.md` 파일로 저장합니다.
+
+**파일 경로**: `.cursor/temp/PR_DESCRIPTION.md`
+
+**Write tool 사용 예시**:
+```markdown
+Write tool 사용:
+- path: "d:/personal/.cursor/temp/PR_DESCRIPTION.md"
+- contents: [생성된 PR 설명 내용]
+```
+
+**주의사항**:
+- 절대 경로 사용 권장 (Windows: `d:/personal/.cursor/temp/PR_DESCRIPTION.md`)
+- Write tool은 중간 디렉토리를 자동 생성하므로 별도 mkdir 불필요
+- 파일 생성 후 사용자에게 경로 안내
+
+### 3. 사용자 안내 메시지
+
+파일 생성 완료 후 사용자에게 다음 형식으로 안내:
+
+```markdown
+PR 설명이 .cursor/temp/PR_DESCRIPTION.md에 저장되었습니다.
+
+GitHub/GitLab에서 PR을 생성할 때 이 파일의 내용을 복사하여 사용하세요.
+```
+
 ## 완료 기준
 
 다음 모든 항목 만족 시 PR 설명 생성 완료:
@@ -776,3 +816,5 @@ PR 설명 생성 완료 후:
 - [ ] 리뷰 포인트가 추출됨
 - [ ] 이슈 번호가 연결됨
 - [ ] 체크리스트가 포함됨
+- [ ] `.cursor/temp/PR_DESCRIPTION.md` 파일 생성 완료
+- [ ] 사용자에게 파일 경로 및 사용법 안내 완료

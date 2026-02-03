@@ -72,6 +72,12 @@ logs/
 .cursor/mcp-servers/*/build/
 .cursor/mcp-servers/*/.turbo/
 .cursor/git-workflow/
+.cursor/temp/
+
+# Git workflow temporary files
+COMMIT_MESSAGE.md
+PR_DESCRIPTION.md
+GIT_COMMANDS.md
 
 # Keep structure files
 !.cursor/metrics/cycle-template.json

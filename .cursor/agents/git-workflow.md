@@ -113,15 +113,27 @@ Git 커밋 메시지 작성과 Pull Request 생성을 자동화하는 워크플�
 - 기술적 결정 사항 (Developer 에이전트)
 
 ## 출력
-- **COMMIT_MESSAGE.md**: Conventional Commits 형식의 커밋 메시지
-- **GIT_COMMANDS.md**: 실행할 PowerShell 명령어
-- **PR_DESCRIPTION.md**: 구조화된 PR 설명 (PR 생성 시)
+- **.cursor/temp/COMMIT_MESSAGE.md**: Conventional Commits 형식의 커밋 메시지
+- **.cursor/temp/GIT_COMMANDS.md**: 실행할 PowerShell 명령어
+- **.cursor/temp/PR_DESCRIPTION.md**: 구조화된 PR 설명 (PR 생성 시)
 - **.cursor/git-workflow/staged-files.txt**: 스테이징된 파일 목록
 - **.cursor/git-workflow/staged-diff.txt**: 스테이징된 diff 내용
 - **.cursor/git-workflow/staged-stats.txt**: 스테이징된 통계
 - **변경 사항 요약 리포트**: 메인 에이전트에게 보고
 - **추천 리뷰어 목록** (PR 생성 시)
 - **관련 이슈 링크** (해당 시)
+
+## 임시 파일 관리
+
+임시 파일은 `.cursor/temp/` 디렉토리에 생성됩니다:
+- `.cursor/temp/COMMIT_MESSAGE.md` - 커밋 메시지
+- `.cursor/temp/PR_DESCRIPTION.md` - PR 설명
+- `.cursor/temp/GIT_COMMANDS.md` - Git 명령어 가이드
+
+**주의사항**:
+- `.cursor/temp/` 디렉토리가 없으면 자동 생성 (Write tool이 자동 처리)
+- 이 파일들은 `.gitignore`에 포함되어 Git 추적 대상이 아님
+- 사용 후 자동으로 정리되지 않으므로 수동 삭제 필요 (선택사항)
 
 ## 사용 가능한 Skill
 - `git-workflow/commit-message-generation.md` - 커밋 메시지 생성 가이드
@@ -280,7 +292,7 @@ Git 커밋 메시지 작성과 Pull Request 생성을 자동화하는 워크플�
 - [ ] **스테이징 영역 검증** (스테이징된 파일 1개 이상)
 - [ ] **변경 정보 파일 생성** (`.cursor/git-workflow/*.txt`)
 - [ ] **Conventional Commits 형식 준수** (필수!)
-- [ ] **PowerShell 명령어 생성** (`GIT_COMMANDS.md`)
+- [ ] **PowerShell 명령어 생성** (`.cursor/temp/GIT_COMMANDS.md`)
 - [ ] 스테이징된 변경 사항과 커밋 메시지 일치
 - [ ] PR 설명에 모든 필수 섹션 포함 (PR 생성 시)
 - [ ] 관련 이슈 자동 연결 확인 (해당 시)
@@ -309,7 +321,7 @@ git diff --cached --numstat | Out-File -FilePath .cursor/git-workflow/staged-sta
 
 ### 예시 1: 커밋 메시지
 
-**COMMIT_MESSAGE.md**:
+**.cursor/temp/COMMIT_MESSAGE.md**:
 ```markdown
 feat(plugin): add dark mode toggle
 
@@ -325,7 +337,7 @@ Closes #42
 
 ### 예시 2: 실행 명령어
 
-**GIT_COMMANDS.md**:
+**.cursor/temp/GIT_COMMANDS.md**:
 ```markdown
 # Git 커밋 실행 명령어
 
@@ -333,7 +345,7 @@ Closes #42
 
 ```powershell
 # 커밋 메시지 파일 사용
-git commit -F COMMIT_MESSAGE.md
+git commit -F .cursor/temp/COMMIT_MESSAGE.md
 
 # 커밋 확인
 git log -1 --oneline
@@ -359,9 +371,8 @@ git push -u origin feat/dark-mode-toggle
 ```
 
 ### 예시 3: PR 설명
-### 예시 3: PR 설명
 
-**PR_DESCRIPTION.md**:
+**.cursor/temp/PR_DESCRIPTION.md**:
 ```markdown
 ## 변경 사항 요약
 
@@ -448,7 +459,7 @@ Closes #42
 
 ### GIT_COMMANDS.md 검증
 - [ ] PowerShell 명령어 형식 준수
-- [ ] 커밋 명령어 포함 (`git commit -F COMMIT_MESSAGE.md`)
+- [ ] 커밋 명령어 포함 (`git commit -F .cursor/temp/COMMIT_MESSAGE.md`)
 - [ ] 선택적 푸시 명령어 포함
 - [ ] 파일 정리 명령어 포함 (선택사항)
 
@@ -500,8 +511,8 @@ Closes #42
 ## 작업 완료 조건
 - [ ] **스테이징 영역 검증 완료**
 - [ ] **변경 정보 파일 생성 완료** (`.cursor/git-workflow/*.txt`)
-- [ ] **커밋 메시지 생성 완료** (`COMMIT_MESSAGE.md`)
-- [ ] **실행 명령어 생성 완료** (`GIT_COMMANDS.md`)
+- [ ] **커밋 메시지 생성 완료** (`.cursor/temp/COMMIT_MESSAGE.md`)
+- [ ] **실행 명령어 생성 완료** (`.cursor/temp/GIT_COMMANDS.md`)
 - [ ] Conventional Commits 형식 준수
 - [ ] 스테이징된 변경 사항과 커밋 메시지 일치
 - [ ] PR 설명에 모든 필수 섹션 포함 (PR 생성 시)

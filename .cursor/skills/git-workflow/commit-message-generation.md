@@ -687,6 +687,49 @@ function generateFooter(
 
 ---
 
+## 파일 생성 프로세스
+
+### 1. 디렉토리 확인 및 생성
+
+파일 생성 전 `.cursor/temp/` 디렉토리가 존재하는지 확인합니다. Write tool을 사용하면 중간 디렉토리가 자동 생성되지만, 명시적으로 확인하는 것이 좋습니다.
+
+```typescript
+// 의사코드
+const temp_dir = '.cursor/temp/';
+// Write tool 사용 시 자동 생성되므로 별도 확인 불필요
+```
+
+### 2. 커밋 메시지 파일 생성
+
+생성된 커밋 메시지를 `.cursor/temp/COMMIT_MESSAGE.md` 파일로 저장합니다.
+
+**파일 경로**: `.cursor/temp/COMMIT_MESSAGE.md`
+
+**Write tool 사용 예시**:
+```markdown
+Write tool 사용:
+- path: "d:/personal/.cursor/temp/COMMIT_MESSAGE.md"
+- contents: [생성된 커밋 메시지 내용]
+```
+
+**주의사항**:
+- 절대 경로 사용 권장 (Windows: `d:/personal/.cursor/temp/COMMIT_MESSAGE.md`)
+- Write tool은 중간 디렉토리를 자동 생성하므로 별도 mkdir 불필요
+- 파일 생성 후 사용자에게 경로 안내
+
+### 3. 사용자 안내 메시지
+
+파일 생성 완료 후 사용자에게 다음 형식으로 안내:
+
+```markdown
+커밋 메시지가 .cursor/temp/COMMIT_MESSAGE.md에 저장되었습니다.
+
+다음 명령어로 커밋을 실행할 수 있습니다:
+```powershell
+git commit -F .cursor/temp/COMMIT_MESSAGE.md
+```
+```
+
 ## 완료 기준
 
 다음 모든 항목 만족 시 커밋 메시지 생성 완료:
@@ -697,3 +740,5 @@ function generateFooter(
 - [ ] Body 필요 시 적절히 작성
 - [ ] Footer에 이슈 번호 포함 (해당 시)
 - [ ] Breaking Changes 명시 (해당 시)
+- [ ] `.cursor/temp/COMMIT_MESSAGE.md` 파일 생성 완료
+- [ ] 사용자에게 파일 경로 및 사용법 안내 완료
