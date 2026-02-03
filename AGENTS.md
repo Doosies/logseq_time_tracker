@@ -315,6 +315,50 @@ function deleteUser(id: string) {
 
 ---
 
+### 보안 (Security) 에이전트
+
+**역할:**
+- 프롬프트 인젝션 공격 탐지 및 방어
+- 민감 정보 (API 키, 비밀번호, 토큰) 탐지 및 보호
+- 코드 보안 취약점 스캔 (SQL Injection, XSS, CSRF 등)
+- 외부 API 호출 및 사용자 입력 검증
+- 파일 접근 권한 검증
+- 의존성 보안 취약점 체크
+
+**입력:**
+- 설계 문서 (API 설계, 데이터 모델)
+- 구현된 코드
+- 외부 API 응답
+- 사용자 입력 데이터
+- 파일 경로 및 접근 요청
+
+**출력:**
+- 보안 검증 결과 (통과/차단)
+- 발견된 취약점 목록 (Critical/High/Medium)
+- 보안 권장 사항
+- 샌드박싱 처리 결과
+- 민감 정보 탐지 리포트
+
+**품질 게이트:**
+- 보안 취약점: 0개 (Critical/High 필수)
+- 민감 정보 노출: 0건
+- 프롬프트 인젝션 차단율: 100%
+- 안전하지 않은 코드 패턴: 0개
+
+**특징:**
+- 예방 우선, 다층 방어
+- 자율 에이전트 시스템에 필수적
+- 외부 자원 접근 시 게이트키퍼 역할
+- 설계/구현/배포 전 각 단계에서 검증
+
+**호출 시점:**
+- **설계 단계 후**: API 설계, 데이터 모델 보안 검토
+- **구현 단계 후**: 코드 보안 취약점 스캔
+- **외부 접근 시**: API 호출, 파일 읽기, 사용자 입력 처리 전
+- **배포 전**: 최종 종합 보안 검증
+
+---
+
 ## 서브에이전트 호출 규칙
 
 ### 메인 에이전트가 서브에이전트 호출 시
@@ -377,12 +421,19 @@ function deleteUser(id: string) {
 
 ### 패턴 1: 새 기능 개발 (Feature)
 ```
-메인 → 기획 → 메인 검증 → 구현 → 메인 검증 → QA → 메인 검증 → 문서화 → 메인 최종 승인
+메인 → 기획 → Security(설계 검증) → 메인 검증 → 구현 → Security(코드 검증) → 메인 검증 → QA → Security(최종 검증) → 메인 검증 → 문서화 → 메인 최종 승인
+         ↑                              ↑                           ↑
+      설계 단계                      구현 단계                    배포 전
 ```
 
 **키워드**: "추가", "새로운", "구현", "만들어"
 
 **예상 시간**: 30분 - 2시간
+
+**Security 호출 지점:**
+- 설계 후: API 보안, 데이터 모델 검증
+- 구현 후: 코드 취약점 스캔, 민감 정보 탐지
+- 배포 전: 종합 보안 검증
 
 ### 패턴 2: 버그 수정 (Bugfix)
 ```
@@ -495,15 +546,46 @@ try {
 
 ## 참고사항
 
-### Skill 파일 활용
+### 파일 구조
 
+#### 에이전트 정의 파일
+각 서브에이전트는 `.cursor/agents/` 디렉토리의 정의 파일을 참조합니다:
+
+- **기획**: `.cursor/agents/planner.md`
+- **구현**: `.cursor/agents/developer.md`
+- **QA**: `.cursor/agents/qa.md`
+- **보안**: `.cursor/agents/security.md`
+- **Git 워크플로우**: `.cursor/agents/git-workflow.md`
+- **문서화**: `.cursor/agents/docs.md`
+- **MCP 개발**: `.cursor/agents/mcp-development.md`
+- **시스템 개선**: `.cursor/agents/system-improvement.md`
+
+**특징**:
+- Task tool로 호출되는 서브에이전트는 User Rules를 받지 못함
+- 따라서 **agents 파일이 필수이며 모든 정보를 포함**
+- Rule 파일 없이 agents 파일만으로 동작
+
+#### 메인 에이전트 Rule
+메인 조율 에이전트만 Rule 파일을 사용합니다:
+
+- **메인 조율**: `.cursor/rules/main-orchestrator.mdc` (항상 적용)
+
+**특징**:
+- `alwaysApply: true`로 모든 요청에 적용
+- 서브에이전트 호출 및 조율 로직 포함
+- 메트릭 수집 및 품질 게이트 관리
+
+#### Skill 파일
 각 에이전트는 전문 영역의 Skill 파일을 참조합니다:
 
 - **기획**: `.cursor/skills/planner/`
 - **구현**: `.cursor/skills/developer/`
 - **QA**: `.cursor/skills/qa/`
+- **보안**: `.cursor/skills/security/`
+- **Git 워크플로우**: `.cursor/skills/git-workflow/`
 - **문서화**: `.cursor/skills/docs/`
-- **메인**: `.cursor/skills/main/`
+- **메타 에이전트**: `.cursor/skills/meta/`
+- **공유**: `.cursor/skills/shared/`
 
 ### 추가 문서
 
@@ -513,5 +595,29 @@ try {
 
 ---
 
-**마지막 업데이트**: 2026-01-28
-**버전**: 1.0.0
+**마지막 업데이트**: 2026-02-02
+**버전**: 1.2.0
+
+## 변경 이력
+
+### v1.2.0 (2026-02-02)
+- **파일 구조 개선**: agents와 rules 통합
+  - 서브에이전트 Rule 파일 (`.cursor/rules/*.mdc`) 삭제
+  - 모든 내용을 agents 정의 파일 (`.cursor/agents/*.md`)로 통합
+  - 메인 에이전트만 Rule 파일 유지 (`.cursor/rules/main-orchestrator.mdc`)
+- **이유**: 
+  - 서브에이전트는 User Rules를 받지 못하므로 agents 파일이 필수
+  - 중복 제거 및 유지보수성 향상
+  - 단일 진실 공급원 (Single Source of Truth)
+
+### v1.1.0 (2026-02-02)
+- Security 에이전트 추가
+  - 프롬프트 인젝션 방어
+  - 민감 정보 탐지
+  - 코드 보안 취약점 스캔
+  - 외부 리소스 접근 검증
+- 워크플로우 패턴에 Security 검증 단계 추가
+- 자율 에이전트 시스템 보안 강화
+
+### v1.0.0 (2026-01-28)
+- 초기 버전
