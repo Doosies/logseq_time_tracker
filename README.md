@@ -7,6 +7,7 @@ React와 TypeScript로 작성된 Logseq 플러그인 및 문서화 모노레포�
 - **[@personal/time-tracker](./packages/time-tracker)** - Logseq 플러그인
 - **[@personal/docs](./packages/docs)** - VitePress 문서화 사이트
 - **[@personal/mcp-server](./packages/mcp-server)** - Cursor용 MCP 서버
+- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** - 이카운트 개발 환경 관리 Chrome 확장프로그램
 
 ## 🚀 빠른 시작
 
@@ -107,9 +108,13 @@ personal/
 │   │   ├── guide/          # 가이드
 │   │   ├── api/            # API 문서
 │   │   └── package.json
-│   └── mcp-server/         # MCP 서버
-│       ├── src/            # 서버 코드
-│       └── package.json
+│   ├── mcp-server/         # MCP 서버
+│   │   ├── src/            # 서버 코드
+│   │   └── package.json
+│   └── ecount-dev-tool/    # Chrome 확장프로그램
+│       ├── manifest.json   # 확장프로그램 설정
+│       ├── popup.html      # 팝업 UI
+│       └── *.js            # 기능 스크립트
 ├── turbo.json              # Turborepo 설정
 ├── pnpm-workspace.yaml     # pnpm 워크스페이스
 └── package.json            # 루트 패키지

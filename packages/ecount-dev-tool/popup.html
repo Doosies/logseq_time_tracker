@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<meta charset="utf-8">
+<head>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="background-field">
+        <section class="quick-login-field">
+          <p><b>Quick Login Setting</b></p>
+          <div id="button-container" class="button-container"></div>
+        </section>
+
+
+        <div id="server-manager-field">
+            <p><b>EC Server Manager</b></p>
+            
+            <!-- V5 Server Section -->
+            <div class="server-section">
+                <div class="server-row">
+                    <label for="v5-server" style="font-weight: bold;">V5 Server:</label>
+                    <div class="select-type" id="v5-select-type">
+                        <p class="current-server"></p>
+                        <select id="v5-select">
+                            <option value="lxba1">lxba1</option>
+                            <option value="lxba2">lxba2</option>
+                            <option value="lxba3">lxba3</option>
+                            <option value="lxba4">lxba4</option>
+                            <option value="lxba5">lxba5</option>
+                            <option value="lxba6">lxba6</option>
+                            <option value="lxba7">lxba7</option>
+                            <option value="lxba8">lxba8</option>
+                            <option value="lxba9">lxba9</option>
+                            <option value="lxba10">lxba10</option>
+                        </select>
+                        <i class="fas fa-exchange-alt toggle-icon" data-version="v5"></i>
+                    </div>
+                    <div class="input-type" id="v5-input-type" style="display: none;">
+                        <input type="text" id="v5-server" placeholder="ex) zeus02lxba4">
+                        <i class="fas fa-exchange-alt toggle-icon" data-version="v5"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- V3 Server Section -->
+            <div class="server-section">
+                <div class="server-row">
+                    <label for="v3-server" style="font-weight: bold;">V3 Server:</label>
+                    <div class="select-type" id="v3-select-type">
+                        <p class="current-server"></p>
+                        <select id="v3-select">
+                            <option value="ba1">ba1</option>
+                            <option value="ba2">ba2</option>
+                            <option value="ba3">ba3</option>
+                        </select>
+                        <i class="fas fa-exchange-alt toggle-icon" data-version="v3"></i>
+                    </div>
+                    <div class="input-type" id="v3-input-type" style="display: none;">
+                        <input type="text" id="v3-server" placeholder="ex) zeus02ba4">
+                        <i class="fas fa-exchange-alt toggle-icon" data-version="v3"></i>
+                    </div>
+                </div>
+            </div>
+
+            <button id="change-server">Click</button>
+        </div>
+
+        <!-- Local Server Buttons -->
+        <div class="local-buttons">
+            <button id="v5-local">5.0 로컬</button>
+            <button id="v3-local">3.0 로컬</button>
+            <button id="dev-local">disableMin 활성화
+            </br>
+            (devMode)
+            </button>
+        </div>
+
+        <div id="stage-server-manager-field" style="display:none;">
+            <p><b>Stage Server Manager</b></p>
+            <button id="stage-button"></button>
+        </div>
+    </div>
+    <script src="serverChange.js"></script>
+    <script src="toggleInputType.js"></script>
+    <script src="toggleFields.js"></script>    
+    <script src="quickLogin.js"></script>
+</body>
+</html>
