@@ -179,8 +179,10 @@ Git 커밋 메시지 작성과 Pull Request 생성을 자동화하는 워크플�
 - `.cursor/rules/` → `rules`
 
 ### 작성 규칙
-- **Subject**: 명령형, 소문자 시작, 50자 이내, 마침표 생략
-- **Body**: 변경 이유, Before/After 비교, Breaking Changes 명시
+- **Subject**: 한글 또는 영어로 작성, 50자 이내, 마침표 생략
+  - 한글: 명확하고 간결하게 (예: "다크 모드 토글 추가")
+  - 영어: 명령형, 소문자 시작 (예: "add dark mode toggle")
+- **Body**: 한글로 작성, 변경 이유, Before/After 비교, Breaking Changes 명시
 - **Footer**: 이슈 번호 (`Closes #123`), Co-authored-by, Breaking Changes
 
 ## PR 설명 구조
@@ -319,11 +321,11 @@ git diff --cached | Out-File -FilePath .cursor/git-workflow/staged-diff.txt -Enc
 git diff --cached --numstat | Out-File -FilePath .cursor/git-workflow/staged-stats.txt -Encoding utf8
 ```
 
-### 예시 1: 커밋 메시지
+### 예시 1: 커밋 메시지 (한글)
 
 **.cursor/temp/COMMIT_MESSAGE.md**:
 ```markdown
-feat(plugin): add dark mode toggle
+feat(plugin): 다크 모드 토글 추가
 
 사용자가 다크 모드를 켜고 끌 수 있는 토글 버튼을 추가했습니다.
 
@@ -331,6 +333,22 @@ feat(plugin): add dark mode toggle
 - ThemeToggle 컴포넌트 추가
 - 로컬 스토리지에 테마 설정 저장
 - 시스템 테마 감지 기능 추가
+
+Closes #42
+```
+
+### 예시 1-2: 커밋 메시지 (영어)
+
+**.cursor/temp/COMMIT_MESSAGE.md**:
+```markdown
+feat(plugin): add dark mode toggle
+
+Added a toggle button that allows users to turn dark mode on and off.
+
+Changes:
+- Add ThemeToggle component
+- Store theme settings in local storage
+- Add system theme detection
 
 Closes #42
 ```
@@ -431,10 +449,11 @@ Closes #42
 
 ### Subject 작성 규칙
 
-1. **명령형 사용**: "add" (O), "added" (X)
-2. **소문자 시작**: 첫 글자 대문자 금지
-3. **50자 이내**: 간결하고 명확하게
-4. **마침표 생략**: 끝에 마침표 없음
+1. **언어 선택**: 한글 또는 영어 사용
+   - 한글: 명확하고 간결하게 (예: "다크 모드 토글 추가")
+   - 영어: 명령형 사용 ("add" (O), "added" (X)), 소문자 시작
+2. **50자 이내**: 간결하고 명확하게
+3. **마침표 생략**: 끝에 마침표 없음
 
 ## 품질 게이트
 
