@@ -119,21 +119,21 @@ type userRole = 'admin';
 
 ## 파일명 컨벤션
 
-### TypeScript/JavaScript
+### 일반 TypeScript/JavaScript 파일
 
 ```
-kebab-case.ts
+snake_case.ts
 
 ✅ 올바른 예:
-- user-service.ts
-- api-client.ts
-- auth-middleware.ts
-- calculate-total.ts
+- url_service.ts
+- api_client.ts
+- auth_middleware.ts
+- format_date.ts
 
 ❌ 잘못된 예:
-- UserService.ts
-- user_service.ts
-- apiClient.ts
+- UserService.ts    // PascalCase는 컴포넌트만
+- user-service.ts   // kebab-case 사용하지 않음
+- apiClient.ts      // camelCase는 hook만
 ```
 
 ### React 컴포넌트
@@ -149,6 +149,36 @@ PascalCase.tsx
 ❌ 잘못된 예:
 - button.tsx
 - user-profile.tsx
+```
+
+### Svelte 컴포넌트
+
+```
+PascalCase.svelte
+
+✅ 올바른 예:
+- Button.svelte
+- ActionBar.svelte
+- ServerPanel.svelte
+
+❌ 잘못된 예:
+- button.svelte
+- action-bar.svelte
+```
+
+### Hook 파일
+
+```
+camelCase.ts
+
+✅ 올바른 예:
+- useAuth.ts
+- useTheme.ts
+- useLocalStorage.ts
+
+❌ 잘못된 예:
+- use_auth.ts
+- UseAuth.ts
 ```
 
 ---
@@ -291,15 +321,15 @@ try {
 ### 테스트 파일명
 
 ```
-source-file.test.ts
+source_file.test.ts
 
 ✅ 올바른 예:
-- user-service.test.ts
-- calculate-total.test.ts
+- url_service.test.ts
+- format_date.test.ts
 
 ❌ 잘못된 예:
-- user-service.spec.ts
-- test-user-service.ts
+- url-service.spec.ts
+- test_url_service.ts
 ```
 
 ### 테스트 구조
@@ -409,13 +439,74 @@ const API_KEY = process.env.API_KEY;
 
 ---
 
+---
+
+## 프레임워크별 컨벤션
+
+### Svelte 프로젝트
+
+```typescript
+// Svelte 5 Runes 모드 사용
+let count = $state(0);
+let doubled = $derived(count * 2);
+
+$effect(() => {
+  console.log(`count: ${count}`);
+});
+```
+
+**TypeScript 설정 주의사항**:
+- `verbatimModuleSyntax: false` (Svelte 컴파일러와 호환 안됨)
+- `jsx: "preserve"` (Svelte가 처리)
+- ESLint: `eslint-plugin-svelte` 사용
+
+**디렉토리 구조**:
+```
+src/
+  components/
+    ActionBar/
+      ActionBar.svelte    # PascalCase.svelte
+      index.ts            # barrel export
+  stores/
+    current_tab.ts        # snake_case.ts
+  services/
+    url_service.ts        # snake_case.ts
+```
+
+### React 프로젝트
+
+**TypeScript 설정**:
+- `verbatimModuleSyntax: true` 사용 가능
+- `jsx: "react-jsx"`
+
+**디렉토리 구조**:
+```
+src/
+  components/
+    Button.tsx            # PascalCase.tsx
+  hooks/
+    useAuth.ts            # camelCase.ts
+  utils/
+    format_date.ts        # snake_case.ts
+```
+
+### Node.js 프로젝트
+
+**TypeScript 설정**:
+- `esModuleInterop: true` (CommonJS 호환)
+- `verbatimModuleSyntax: false` (CJS/ESM 혼용 시)
+- `noEmit: false` (빌드 출력 필요)
+
+---
+
 ## 완료 기준
 
 이 컨벤션을 모든 코드에 일관되게 적용:
 
 - [ ] 네이밍: snake_case, camelCase, PascalCase
-- [ ] 파일명: kebab-case
+- [ ] 파일명: snake_case.ts (일반), PascalCase.tsx/.svelte (컴포넌트)
 - [ ] Import 순서 준수
 - [ ] 에러 처리 명확
 - [ ] 테스트 네이밍 일관
 - [ ] Git 커밋 형식 준수
+- [ ] 프레임워크별 TypeScript 설정 준수

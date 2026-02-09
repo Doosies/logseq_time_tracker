@@ -153,10 +153,8 @@ export function parseEcountUrl(url_string: string): ParsedUrl | null {
  */
 export function buildEc5Url(base_url: string, server_config: ServerConfig): string {
     try {
-        const url = new URL(base_url);
-
         // v5 도메인으로 호스트 변경
-        const new_url = base_url.replace(/https:\/\/[^\/]+/, `https://${server_config.v5_domain}.ecount.com`);
+        const new_url = base_url.replace(/https:\/\/[^/]+/, `https://${server_config.v5_domain}.ecount.com`);
 
         // 해시 분리
         const hash_index = new_url.indexOf('#');
@@ -191,7 +189,7 @@ export function buildEc5Url(base_url: string, server_config: ServerConfig): stri
  */
 export function buildEc3Url(base_url: string, v3_domain: string): string {
     try {
-        const new_url = base_url.replace(/https:\/\/[^\/]+/, `https://${v3_domain}.ecount.com`);
+        const new_url = base_url.replace(/https:\/\/[^/]+/, `https://${v3_domain}.ecount.com`);
         return new_url;
     } catch (error) {
         console.error('Failed to build URL:', error);

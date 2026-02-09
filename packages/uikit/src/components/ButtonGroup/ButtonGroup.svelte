@@ -1,8 +1,9 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     import * as styles from '../../design/styles/button_group.css';
 
     interface ButtonGroupProps {
-        children: any;
+        children: Snippet;
     }
 
     let { children }: ButtonGroupProps = $props();

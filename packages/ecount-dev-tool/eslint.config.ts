@@ -1,20 +1,18 @@
-import rootConfig from '../../eslint.config.js';
+import { createSvelteConfig } from '../../eslint.config.js';
 import svelte from 'eslint-plugin-svelte';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-    ...rootConfig,
-    
+export default [
+    ...createSvelteConfig({
+        ...globals.webextensions,
+    }),
+
     // Svelte 파일 설정
     ...svelte.configs['flat/recommended'],
     {
         files: ['**/*.svelte'],
         languageOptions: {
-            ecmaVersion: 2022,
-            globals: {
-                ...globals.browser,
-            },
             parserOptions: {
                 parser: tseslint.parser,
             },
@@ -25,4 +23,4 @@ export default tseslint.config(
             'svelte/valid-compile': 'error',
         },
     },
-);
+];

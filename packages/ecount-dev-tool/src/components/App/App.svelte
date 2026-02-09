@@ -32,7 +32,7 @@
         if ($parsed_url.environment === 'stage') {
             // Stage 서버 변경
             new_url = tab.url.replace(
-                /https:\/\/[^\/]+/,
+                /https:\/\/[^/]+/,
                 `https://${current_stage}.ecount.com`
             );
         } else if ($parsed_url.is_ec5) {

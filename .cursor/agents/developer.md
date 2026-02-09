@@ -19,6 +19,9 @@ skills:
   - developer/refactoring-patterns.md
   - developer/testable-code.md
   - developer/auto-formatting.md
+  - developer/dependency-management.md
+  - developer/config-optimization.md
+  - developer/monorepo-patterns.md
   - shared/project-conventions.md
   - shared/error-handling.md
 ---
@@ -73,6 +76,9 @@ skills:
 - `developer/refactoring-patterns.md` - 리팩토링 패턴 카탈로그
 - `developer/testable-code.md` - 테스트 가능한 코드 작성법
 - `developer/auto-formatting.md` - 자동 포매팅 및 Linter 검증 프로세스
+- `developer/dependency-management.md` - 의존성 감사 및 관리
+- `developer/config-optimization.md` - 설정 파일 최적화 체크리스트
+- `developer/monorepo-patterns.md` - 모노레포 관리 패턴
 - `shared/project-conventions.md` - 프로젝트 공통 컨벤션
 - `shared/error-handling.md` - 에러 처리 패턴
 
@@ -88,8 +94,10 @@ skills:
 - **함수명**: `camelCase` (예: `getUserById`, `calculateTotal`)
 - **클래스명**: `PascalCase` (예: `UserService`, `AuthController`)
 - **상수**: `UPPER_SNAKE_CASE` (예: `MAX_ATTEMPTS`, `API_URL`)
-- **파일명**: `kebab-case.ts` (예: `user-service.ts`)
-- **컴포넌트**: `PascalCase.tsx` (예: `UserProfile.tsx`)
+- **일반 TS 파일**: `snake_case.ts` (예: `url_service.ts`, `format_date.ts`)
+- **React 컴포넌트**: `PascalCase.tsx` (예: `UserProfile.tsx`)
+- **Svelte 컴포넌트**: `PascalCase.svelte` (예: `ActionBar.svelte`)
+- **Hook 파일**: `camelCase.ts` (예: `useAuth.ts`)
 
 ## 품질 기준
 - [ ] **Linter 오류 0개** (필수!)
@@ -155,19 +163,51 @@ class auth_controller { }  // 클래스는 PascalCase
 
 ### 파일명
 ```
-// ✅ 올바른 예
-user-service.ts
-auth-controller.ts
-calculate-total.ts
+// ✅ 올바른 예 (일반 TS 파일: snake_case)
+url_service.ts
+auth_controller.ts
+format_date.ts
 
-// React 컴포넌트
+// React 컴포넌트: PascalCase.tsx
 UserProfile.tsx
 LoginForm.tsx
 
+// Svelte 컴포넌트: PascalCase.svelte
+ActionBar.svelte
+ServerPanel.svelte
+
+// Hook 파일: camelCase.ts
+useAuth.ts
+useTheme.ts
+
 // ❌ 잘못된 예
-UserService.ts  // kebab-case 사용
-auth_controller.ts  // kebab-case 사용
+UserService.ts    // 일반 파일은 snake_case
+user-service.ts   // kebab-case 사용하지 않음
+apiClient.ts      // camelCase는 hook만
 ```
+
+## 프레임워크별 주의사항
+
+### Svelte 프로젝트 (uikit, ecount-dev-tool)
+- **Svelte 5 Runes 모드** 사용 (`$state`, `$derived`, `$effect`)
+- `verbatimModuleSyntax: false` 필수 (Svelte와 호환 안됨)
+- `jsx: "preserve"` 설정 (Svelte 컴파일러가 처리)
+- 컴포넌트 파일: `PascalCase.svelte`
+- 스토어/서비스 파일: `snake_case.ts`
+- ESLint: `eslint-plugin-svelte` 사용
+
+### React 프로젝트 (time-tracker)
+- `verbatimModuleSyntax: true` 사용 가능
+- `jsx: "react-jsx"` 설정
+- 컴포넌트 파일: `PascalCase.tsx`
+- Hook 파일: `camelCase.ts`
+
+### Node.js 프로젝트 (mcp-server)
+- `esModuleInterop: true` 필수 (CommonJS 호환)
+- `verbatimModuleSyntax: false` (CJS/ESM 혼용 시)
+- `noEmit: false` (빌드 출력 필요)
+
+---
 
 ## 작업 프로세스
 
@@ -187,9 +227,10 @@ auth_controller.ts  // kebab-case 사용
 - [ ] 주석 최소화 (코드로 설명)
 
 ### 구현 후 체크
+- [ ] **TypeScript 타입 검증** (필수! `pnpm type-check` 실행)
 - [ ] **ReadLints 도구로 Linter 오류 확인** (필수! 파일 수정 후 즉시 실행)
-- [ ] **Linter 오류 0개** (필수! 오류 발견 시 `npm run lint:fix` 실행 후 재확인)
-- [ ] **Prettier 포매팅 확인** (필수! `npm run format` 실행)
+- [ ] **Linter 오류 0개** (필수! 오류 발견 시 `pnpm lint:fix` 실행 후 재확인)
+- [ ] **Prettier 포매팅 확인** (필수! `pnpm format` 실행)
 - [ ] 불필요한 코드 제거
 - [ ] 설계와 일치 확인
 - [ ] import 정리
@@ -198,12 +239,12 @@ auth_controller.ts  // kebab-case 사용
 
 코드 작성 완료 전 **반드시** 확인:
 
-- [ ] **Linter 오류 0개** (가장 중요!)
+- [ ] **TypeScript 타입 검증 통과** (필수! `pnpm type-check` 실행)
+- [ ] **Linter 오류 0개** (필수! `pnpm lint` 실행)
 - [ ] 설계 문서와 100% 일치
 - [ ] 모든 함수에 에러 처리
 - [ ] 의존성 분리 (테스트 가능)
 - [ ] 불필요한 코드 변경 없음
-- [ ] 타입 안정성 (TypeScript)
 
 ## 에러 처리 패턴
 
@@ -247,6 +288,9 @@ function getUserById(id) {
 - 리팩토링 → `refactoring-patterns.md`
 - 테스트 가능한 코드 → `testable-code.md`
 - Linter 오류 해결 및 포매팅 → `auto-formatting.md`
+- 의존성 관리 → `dependency-management.md`
+- 설정 파일 최적화 → `config-optimization.md`
+- 모노레포 관리 → `monorepo-patterns.md`
 - 에러 처리 → `shared/error-handling.md`
 - 항상 참조 → `shared/project-conventions.md`
 
@@ -301,19 +345,22 @@ QA 에이전트를 위한 테스트 포인트:
 ### 자동화 프로세스
 ```
 1. 파일 작성/수정
-2. ReadLints 실행 (편집한 파일 경로 지정)
-3. 오류 발견 시:
-   a. 즉시 `npm run lint:fix` 자동 실행 (우선)
+2. pnpm type-check 실행 (타입 오류 우선 확인)
+3. 타입 오류 발견 시 즉시 수정
+4. ReadLints 실행 (편집한 파일 경로 지정)
+5. 오류 발견 시:
+   a. 즉시 `pnpm lint:fix` 자동 실행 (우선)
    b. 자동 수정 불가능한 오류만 수동 수정
-4. ReadLints 재실행하여 오류 0개 확인
-5. Prettier 포매팅: `npm run format` 실행 (또는 저장 시 자동)
-6. 최종 ReadLints 확인
+6. ReadLints 재실행하여 오류 0개 확인
+7. Prettier 포매팅: `pnpm format` 실행 (또는 저장 시 자동)
+8. 최종 ReadLints 확인
 ```
 
-**Linter 오류 해결 우선순위**:
-1. **자동 수정 우선**: `npm run lint:fix` 즉시 실행
-2. **수동 수정**: 자동 수정 불가능한 경우만
-3. **검증**: ReadLints로 오류 0개 확인
+**오류 해결 우선순위**:
+1. **타입 검증 우선**: `pnpm type-check` 즉시 실행
+2. **자동 수정**: `pnpm lint:fix` 즉시 실행
+3. **수동 수정**: 자동 수정 불가능한 경우만
+4. **검증**: ReadLints로 오류 0개 확인
 
 ### 예시
 ```typescript

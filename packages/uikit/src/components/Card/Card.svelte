@@ -1,8 +1,9 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     import * as styles from '../../design/styles/card.css';
 
     interface CardProps {
-        children: any;
+        children: Snippet;
     }
 
     let { children }: CardProps = $props();

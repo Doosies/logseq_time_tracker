@@ -479,6 +479,29 @@ function deleteUser(id: string) {
 
 **특징**: 속도 우선, 문서화는 사후 처리
 
+### 패턴 6: 설정/유지보수 (Chore)
+```
+메인 → 구현 → 검증 (type-check + test) → 메인 최종 승인
+```
+
+**키워드**: "설정", "의존성", "업데이트", "config", "package.json", "tsconfig", "eslint"
+
+**예상 시간**: 10분 - 40분
+
+**특징**: 
+- 코드 로직 변경 없이 인프라/설정만 변경
+- 기획/설계 단계 생략 (설정 변경은 설계가 불필요)
+- QA 대신 type-check + test로 회귀 검증
+- 문서화는 변경 범위에 따라 선택적
+
+**대상 작업**:
+- package.json 정리 (의존성 추가/제거/업데이트)
+- pnpm catalog 관리
+- TypeScript 설정 (tsconfig) 최적화
+- ESLint/Prettier 설정 통합/개선
+- Vite/빌드 도구 설정 변경
+- CI/CD 파이프라인 수정
+
 ---
 
 ## 에러 처리 원칙
@@ -595,10 +618,22 @@ try {
 
 ---
 
-**마지막 업데이트**: 2026-02-02
-**버전**: 1.2.0
+**마지막 업데이트**: 2026-02-09
+**버전**: 1.3.0
 
 ## 변경 이력
+
+### v1.3.0 (2026-02-09)
+- **파일명 컨벤션 수정**: `kebab-case.ts` → `snake_case.ts` (프로젝트 실제 패턴과 일치)
+- **Svelte 프로젝트 지원 추가**: Svelte 5 Runes, 컴포넌트 컨벤션, TypeScript 주의사항
+- **Chore 태스크 유형 추가**: 설정/의존성/빌드 관련 작업용 워크플로우
+- **품질 게이트 강화**: type-check 검증 필수화 (Linter보다 우선)
+- **새 스킬 추가**:
+  - `developer/dependency-management.md`: 의존성 감사/카탈로그/업데이트
+  - `developer/config-optimization.md`: tsconfig/eslint/vite/prettier 최적화
+  - `developer/monorepo-patterns.md`: pnpm workspace + turbo 관리 패턴
+- **메트릭 수집 선택적 적용**: 태스크 복잡도에 따라 수집 수준 차등 적용
+- **프레임워크별 주의사항**: Svelte/React/Node.js 설정 차이점 문서화
 
 ### v1.2.0 (2026-02-02)
 - **파일 구조 개선**: agents와 rules 통합

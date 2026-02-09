@@ -44,7 +44,7 @@
 
 <Section title="Quick Login">
     <div style="display: flex; flex-wrap: wrap; gap: 4px;">
-        {#each login_accounts as account}
+        {#each login_accounts as account (account.company + account.id)}
             <Button
                 variant="accent"
                 size="sm"

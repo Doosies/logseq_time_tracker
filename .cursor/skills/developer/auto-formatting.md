@@ -9,13 +9,39 @@ description: 자동 포매팅 및 Linter 검증 프로세스
 
 ## 핵심 원칙
 
-1. **자동화 우선**: 수동 확인보다 자동 검증
-2. **즉시 피드백**: 파일 수정 직후 검증
-3. **오류 0개**: Linter 오류는 절대 남기지 않음
+1. **타입 안전성 우선**: type-check로 타입 에러 먼저 해결
+2. **자동화 우선**: 수동 확인보다 자동 검증
+3. **즉시 피드백**: 파일 수정 직후 검증
+4. **오류 0개**: 타입 에러 + Linter 오류 절대 남기지 않음
 
 ---
 
 ## 프로세스
+
+### 0단계: TypeScript 타입 검증 (필수)
+
+파일을 작성하거나 수정한 직후, Linter보다 먼저 타입 검증을 실행합니다:
+
+```bash
+# 전체 프로젝트 타입 검증
+pnpm type-check
+
+# 특정 패키지만 검증
+pnpm --filter <package-name> type-check
+```
+
+**타입 에러가 발견되면 즉시 수정**:
+- `TS2532` (possibly undefined): null/undefined 체크 추가
+- `TS4111` (index signature): bracket notation `obj['prop']` 사용
+- `TS2375` (exactOptionalPropertyTypes): 조건부 spread `...(val ? { key: val } : {})` 사용
+- `TS2307` (cannot find module): 필요한 `@types/*` 패키지 설치
+
+**프레임워크별 주의사항**:
+- Svelte: `verbatimModuleSyntax: false` 필요
+- Node.js: `esModuleInterop: true` 필요
+- React: base 설정 그대로 사용 가능
+
+---
 
 ### 1단계: 파일 수정 후 즉시 ReadLints 실행
 
@@ -159,16 +185,21 @@ import { helper } from './helper';
 
 ```markdown
 1. 파일 수정: src/main.tsx
-2. ReadLints(['src/main.tsx'])
-   → 오류 3개 발견
-3. npm run lint:fix 실행
-4. ReadLints(['src/main.tsx'])
+2. pnpm type-check 실행
+   → 타입 에러 2개 발견
+3. 타입 에러 수정 (undefined 체크 추가)
+4. pnpm type-check 실행
+   → 타입 에러 0개 ✅
+5. ReadLints(['src/main.tsx'])
+   → Linter 오류 3개 발견
+6. pnpm lint:fix 실행
+7. ReadLints(['src/main.tsx'])
    → 오류 1개 남음 (수동 수정 필요)
-5. 코드 수정 (사용하지 않는 변수 제거)
-6. ReadLints(['src/main.tsx'])
+8. 코드 수정 (사용하지 않는 변수 제거)
+9. ReadLints(['src/main.tsx'])
    → 오류 0개 ✅
-7. npm run format 실행
-8. ReadLints(['src/main.tsx'])
+10. pnpm format 실행
+11. ReadLints(['src/main.tsx'])
    → 최종 확인: 오류 0개 ✅
 ```
 
@@ -209,12 +240,13 @@ ReadLints(['tests/main.test.tsx'])
 
 다음 모든 조건을 만족해야 합니다:
 
+- [ ] TypeScript 타입 검증 통과 (`pnpm type-check`)
 - [ ] ReadLints 실행 완료
 - [ ] Linter 오류 0개
 - [ ] Prettier 포매팅 적용 완료
 - [ ] 최종 ReadLints 재확인 완료
 
-**중요**: Linter 오류가 0개가 아니면 다음 단계로 진행하지 않습니다!
+**중요**: 타입 에러 또는 Linter 오류가 0개가 아니면 다음 단계로 진행하지 않습니다!
 
 ---
 
@@ -223,14 +255,18 @@ ReadLints(['tests/main.test.tsx'])
 ### 프로젝트별 명령어 확인
 
 ```bash
-# package.json에서 확인
-cat package.json | grep -A 5 "scripts"
+# 이 프로젝트는 pnpm 모노레포 (turbo 사용)
 
-# 일반적인 명령어
-npm run lint        # Linter 검증만
-npm run lint:fix    # Linter 자동 수정
-npm run format      # Prettier 포매팅
-npm run type-check  # TypeScript 타입 검증
+# 전체 검증 (모든 패키지)
+pnpm type-check     # TypeScript 타입 검증 (필수, 가장 먼저!)
+pnpm lint           # Linter 검증
+pnpm lint:fix       # Linter 자동 수정
+pnpm format         # Prettier 포매팅
+pnpm test           # 테스트 실행
+
+# 특정 패키지만
+pnpm --filter <package-name> type-check
+pnpm --filter <package-name> lint
 ```
 
 ---
@@ -259,10 +295,11 @@ Prettier 설정과 Linter 규칙이 충돌할 수 있습니다.
 
 파일 수정 후:
 
+- [ ] `pnpm type-check` 실행 (타입 에러 0개 확인)
 - [ ] ReadLints 실행
-- [ ] 오류 발견 시 `npm run lint:fix`
+- [ ] 오류 발견 시 `pnpm lint:fix`
 - [ ] ReadLints 재확인
 - [ ] 남은 오류 수동 수정
-- [ ] `npm run format` 실행
+- [ ] `pnpm format` 실행
 - [ ] 최종 ReadLints 확인
 - [ ] 오류 0개 확인 ✅

@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     import type { ButtonVariant, ButtonSize } from '../../design/types';
     import * as styles from '../../design/styles/button.css';
 
@@ -8,7 +9,7 @@
         disabled?: boolean;
         fullWidth?: boolean;
         onclick?: () => void;
-        children: any;
+        children: Snippet;
     }
 
     let {

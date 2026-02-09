@@ -34,7 +34,12 @@
         <Select bind:value {options} onchange={onchange} />
     {/if}
     
-    <span class={styles.toggle_icon} onclick={onToggle}>
+    <button
+        type="button"
+        class={styles.toggle_icon}
+        onclick={onToggle}
+        aria-label="Toggle input mode"
+    >
         {isTextMode ? '🔽' : '✏️'}
-    </span>
+    </button>
 </div>

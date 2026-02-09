@@ -99,12 +99,39 @@ API: GET /createUser
 
 ### 체크리스트
 
-#### 1. Linter 검증 (필수)
+#### 1. TypeScript 타입 검증 (필수)
+- [ ] **타입 에러 0개** (절대 조건)
+
+**검증 방법**:
+```bash
+pnpm type-check
+```
+
+**결과 분석**:
+```markdown
+✅ 통과:
+모든 패키지 type-check 성공
+
+❌ 실패:
+error TS2532: Object is possibly 'undefined'.
+error TS4111: Property comes from an index signature, use ['prop'] instead.
+error TS2375: Type has no properties in common with type when exactOptionalPropertyTypes enabled.
+
+→ 즉시 수정 요청
+```
+
+**주요 타입 에러 유형**:
+- `noUncheckedIndexedAccess`: 배열/객체 인덱스 접근 시 `undefined` 체크 필요
+- `noPropertyAccessFromIndexSignature`: 인덱스 시그니처는 bracket notation 사용
+- `exactOptionalPropertyTypes`: 선택적 프로퍼티에 `undefined` 직접 할당 금지
+- `verbatimModuleSyntax`: Svelte 프로젝트에서는 `false`로 설정 필요
+
+#### 2. Linter 검증 (필수)
 - [ ] **Linter 오류 0개** (절대 조건)
 
 **검증 방법**:
 ```bash
-npm run lint
+pnpm lint
 ```
 
 **결과 분석**:
@@ -172,6 +199,7 @@ function createUser() {}
 ### 승인/거부 결정
 
 **승인 조건**:
+- TypeScript 타입 에러 0개 (필수)
 - Linter 오류 0개 (필수)
 - 코딩 컨벤션 준수
 - 설계와 일치
@@ -181,6 +209,10 @@ function createUser() {}
 피드백 예시:
 "❌ 구현 단계 실패
 
+TypeScript 타입 에러:
+1. src/services/url_service.ts:25 - TS2532: Object is possibly 'undefined'
+   → undefined 체크 추가 또는 non-null assertion 사용
+
 Linter 오류:
 1. src/auth.ts:32 - 함수명 'create_user'는 camelCase여야 함
 2. src/api.ts:45 - 세미콜론 누락
@@ -189,7 +221,7 @@ Linter 오류:
 1. src/user.ts:15 - 변수 'userCount'는 snake_case여야 함
    → 수정: user_count
 
-즉시 수정 후 재제출해주세요."
+`pnpm type-check` 및 `pnpm lint:fix` 실행 후 재제출해주세요."
 ```
 
 ---

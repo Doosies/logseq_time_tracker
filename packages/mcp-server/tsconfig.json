@@ -1,23 +1,23 @@
 {
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    // Node.js 환경 설정
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "types": ["node"],
-    
-    // 빌드 출력 설정 (MCP 서버는 실제 빌드 필요)
-    "noEmit": false,
-    "outDir": "./dist",
-    "rootDir": "./src",
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    
-    // Node.js는 esModuleInterop 필요
-    "esModuleInterop": true,
-    "verbatimModuleSyntax": false
-  },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        // Node.js 환경 설정
+        "target": "ES2022",
+        "lib": ["ES2022"],
+        "types": ["node"],
+
+        // 빌드 출력 설정 (MCP 서버는 실제 빌드 필요)
+        "noEmit": false,
+        "outDir": "./dist",
+        "rootDir": "./src",
+        "declaration": true,
+        "declarationMap": true,
+        "sourceMap": true,
+
+        // Node.js는 esModuleInterop 필요
+        "esModuleInterop": true,
+        "verbatimModuleSyntax": false
+    },
+    "include": ["src/**/*", "eslint.config.ts"],
+    "exclude": ["node_modules", "dist"]
 }

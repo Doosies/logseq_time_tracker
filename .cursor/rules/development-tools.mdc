@@ -1,0 +1,51 @@
+---
+description: 개발 도구 사용 규칙 (pnpm, 빌드 도구 등)
+alwaysApply: true
+---
+
+# 개발 도구 사용 규칙
+
+## Package Manager: pnpm
+
+### 필수 옵션
+
+**의존성 설치 시 항상 `--offline` 옵션 사용**
+
+```bash
+# ✅ 올바른 사용
+pnpm install --offline
+pnpm add <package> --offline
+pnpm update --offline
+
+# ❌ 잘못된 사용
+pnpm install
+pnpm add <package>
+pnpm update
+```
+
+### 이유
+
+- 오프라인 모드는 이미 캐시된 패키지만 사용
+- 네트워크 요청을 최소화하여 빠른 설치
+- 예상치 못한 버전 변경 방지
+- 일관된 빌드 환경 보장
+
+### 예외 상황
+
+새로운 패키지를 처음 설치하거나 캐시를 갱신해야 하는 경우에만 `--offline` 옵션 제거:
+
+```bash
+# 새 패키지 추가 시 (최초 1회)
+pnpm add new-package
+
+# 이후 다시 offline 모드로 전환
+pnpm install --offline
+```
+
+---
+
+## 원칙
+
+- 모든 pnpm 명령어는 기본적으로 `--offline` 옵션 사용
+- 사용자가 명시적으로 온라인 설치를 요청하지 않는 한 오프라인 모드 유지
+- Shell 도구 사용 시 자동으로 `--offline` 옵션 추가

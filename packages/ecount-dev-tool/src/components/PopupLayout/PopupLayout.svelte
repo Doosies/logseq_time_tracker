@@ -1,8 +1,9 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     import { Card } from '@personal/uikit';
 
     interface PopupLayoutProps {
-        children: any;
+        children: Snippet;
     }
 
     let { children }: PopupLayoutProps = $props();

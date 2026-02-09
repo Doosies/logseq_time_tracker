@@ -1,9 +1,10 @@
 <script lang="ts">
+    import type { Snippet } from 'svelte';
     import * as styles from '../../design/styles/section.css';
 
     interface SectionProps {
         title?: string;
-        children: any;
+        children: Snippet;
     }
 
     let { title, children }: SectionProps = $props();

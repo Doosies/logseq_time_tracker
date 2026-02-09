@@ -15,9 +15,9 @@
         onStageChange,
     }: EnvironmentPanelProps = $props();
 
-    let v3_domain = $state(parsed_url.v3_domain);
-    let v5_domain = $state(parsed_url.v5_domain);
-    let current_stage = $state(parsed_url.current_server);
+    let v3_domain = $state('');
+    let v5_domain = $state('');
+    let current_stage = $state('');
 
     $effect(() => {
         v3_domain = parsed_url.v3_domain;
