@@ -1,9 +1,0 @@
-export {
-    V3_SERVER_OPTIONS,
-    V5_SERVER_OPTIONS,
-    STAGE_SERVER_OPTIONS,
-    DEFAULT_V3_DOMAIN,
-    DEFAULT_V5_DOMAIN,
-    EC5_PATTERN,
-    EC3_PATTERN,
-} from './servers';

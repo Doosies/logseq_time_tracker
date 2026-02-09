@@ -4,7 +4,7 @@ import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import webExtension from 'vite-plugin-web-extension';
 import { resolve } from 'path';
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
     plugins: [
         svelte(),
         vanillaExtractPlugin(),
@@ -22,9 +22,9 @@ export default defineConfig({
         outDir: 'dist',
         emptyOutDir: true,
         target: 'esnext',
-        minify: 'esbuild',
+        minify: mode === 'production' ? 'esbuild' : false,
         sourcemap: true,
-        cssMinify: true,
+        cssMinify: mode === 'production',
         rollupOptions: {
             output: {
                 // Chrome Extension 최적화
@@ -35,4 +35,4 @@ export default defineConfig({
     optimizeDeps: {
         exclude: ['svelte'],
     },
-});
+}));
