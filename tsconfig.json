@@ -1,19 +1,13 @@
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "allowJs": false,
-        "skipLibCheck": true,
-        "esModuleInterop": false,
-        "allowSyntheticDefaultImports": true,
-        "strict": true,
-        "forceConsistentCasingInFileNames": true,
-        "module": "ESNext",
-        "moduleResolution": "Bundler",
-        "resolveJsonModule": true,
-        "isolatedModules": true,
-        "noEmit": true,
-        "jsx": "react-jsx"
-    },
-    "exclude": ["node_modules", "dist", "**/node_modules", "**/dist"]
+    "extends": "./tsconfig.base.json",
+    "exclude": [
+        "node_modules",
+        "dist",
+        "build",
+        "coverage",
+        "**/node_modules",
+        "**/dist",
+        "**/build",
+        "**/coverage"
+    ]
 }

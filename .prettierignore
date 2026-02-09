@@ -4,5 +4,16 @@ dist/
 build/
 coverage/
 .history/
+.turbo/
+.vite/
+.cache/
 pnpm-lock.yaml
 *.log
+
+# Generated files
+*.tsbuildinfo
+*.css.ts.vanilla.css
+
+# Cursor Agent System
+.cursor/metrics/cycles/*.json
+.cursor/metrics/improvements/*.json

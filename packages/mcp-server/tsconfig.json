@@ -1,20 +1,22 @@
 {
+  "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    // Node.js 환경 설정
     "target": "ES2022",
-    "module": "ESNext",
     "lib": ["ES2022"],
-    "moduleResolution": "Bundler",
+    "types": ["node"],
+    
+    // 빌드 출력 설정 (MCP 서버는 실제 빌드 필요)
+    "noEmit": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "resolveJsonModule": true,
     "declaration": true,
     "declarationMap": true,
     "sourceMap": true,
-    "types": ["node"]
+    
+    // Node.js는 esModuleInterop 필요
+    "esModuleInterop": true,
+    "verbatimModuleSyntax": false
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]

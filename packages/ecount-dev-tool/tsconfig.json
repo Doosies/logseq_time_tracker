@@ -1,0 +1,20 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        // Chrome Extension + Svelte 환경
+        "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
+        "types": ["chrome", "svelte"],
+        "jsx": "preserve",
+        
+        // Svelte는 verbatimModuleSyntax 비활성화 필요
+        "verbatimModuleSyntax": false,
+        
+        // Path alias 설정
+        "baseUrl": ".",
+        "paths": {
+            "@/*": ["src/*"]
+        }
+    },
+    "include": ["src/**/*", "src/vite-env.d.ts"],
+    "exclude": ["node_modules", "dist"]
+}

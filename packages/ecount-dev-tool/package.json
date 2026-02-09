@@ -1,0 +1,32 @@
+{
+    "name": "@personal/ecount-dev-tool",
+    "version": "1.0.0",
+    "description": "ecount.com Development Environment Manager Chrome Extension",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\""
+    },
+    "dependencies": {
+        "@personal/uikit": "workspace:*"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@types/chrome": "catalog:",
+        "@vanilla-extract/vite-plugin": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-svelte": "catalog:",
+        "globals": "catalog:",
+        "prettier": "catalog:",
+        "svelte": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vite-plugin-web-extension": "catalog:"
+    }
+}

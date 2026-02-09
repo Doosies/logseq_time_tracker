@@ -280,10 +280,11 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_render).toHaveBeenCalled();
 
                 const render_call = mock_render.mock.calls[0];
-                expect(render_call[0]).toBeTruthy();
+                expect(render_call).toBeDefined();
+                expect(render_call![0]).toBeTruthy();
 
                 // StrictMode로 감싸져 있는지 확인
-                const rendered_element = render_call[0];
+                const rendered_element = render_call![0];
                 expect(rendered_element.type).toBe(StrictMode);
             });
         });
@@ -297,7 +298,8 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_render).toHaveBeenCalled();
 
                 const render_call = mock_render.mock.calls[0];
-                const rendered_element = render_call[0];
+                expect(render_call).toBeDefined();
+                const rendered_element = render_call![0];
 
                 // StrictMode의 children 확인
                 const wrapper_div = rendered_element.props.children;
@@ -334,7 +336,8 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_render).toHaveBeenCalled();
 
                 const render_call = mock_render.mock.calls[0];
-                const rendered_element = render_call[0];
+                expect(render_call).toBeDefined();
+                const rendered_element = render_call![0];
                 const wrapper_div = rendered_element.props.children;
 
                 // App 컴포넌트가 렌더링되는지 확인 (type.name으로 비교)
@@ -351,7 +354,8 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 expect(mock_render).toHaveBeenCalled();
 
                 const render_call = mock_render.mock.calls[0];
-                const rendered_element = render_call[0];
+                expect(render_call).toBeDefined();
+                const rendered_element = render_call![0];
                 const wrapper_div = rendered_element.props.children;
 
                 expect(wrapper_div.props.style).toEqual({
@@ -375,7 +379,9 @@ describe('main.tsx - LogSeq 플러그인 초기화', () => {
                 const set_style_call_index = mock_logseq.setMainUIInlineStyle.mock.invocationCallOrder[0];
                 const ready_call_index = mock_logseq.ready.mock.invocationCallOrder[0];
 
-                expect(set_style_call_index).toBeLessThan(ready_call_index);
+                expect(set_style_call_index).toBeDefined();
+                expect(ready_call_index).toBeDefined();
+                expect(set_style_call_index!).toBeLessThan(ready_call_index!);
 
                 // ready 콜백 내부에서 다른 API들이 호출되어야 함
                 expect(mock_logseq.App.registerUIItem).toHaveBeenCalled();

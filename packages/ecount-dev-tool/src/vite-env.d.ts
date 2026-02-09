@@ -1,0 +1,10 @@
+/// <reference types="vite/client" />
+/// <reference types="svelte" />
+
+interface ImportMetaEnv {
+    readonly VITE_LOGIN_ACCOUNTS: string;
+}
+
+interface ImportMeta {
+    readonly env: ImportMetaEnv;
+}

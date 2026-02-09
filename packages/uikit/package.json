@@ -1,0 +1,44 @@
+{
+    "name": "@personal/uikit",
+    "version": "0.1.0",
+    "description": "Shared UI component library with Svelte 5 + vanilla-extract",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts",
+        "./design": "./src/design/index.ts"
+    },
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\""
+    },
+    "keywords": [
+        "uikit",
+        "svelte",
+        "vanilla-extract",
+        "design-system"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "@vanilla-extract/css": "catalog:"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@vanilla-extract/vite-plugin": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-svelte": "catalog:",
+        "globals": "catalog:",
+        "prettier": "catalog:",
+        "svelte": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:"
+    },
+    "peerDependencies": {
+        "svelte": "catalog:"
+    }
+}

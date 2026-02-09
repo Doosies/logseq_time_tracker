@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -8,6 +6,7 @@ import {
     ListResourcesRequestSchema,
     ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
+import { evaluate } from 'mathjs';
 import { registerTools } from './tools/index.js';
 import { registerResources } from './resources/index.js';
 
@@ -72,7 +71,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
     switch (name) {
         case 'get_current_time': {
-            const format = (args?.format as string) || 'iso';
+            const format = (args?.['format'] as string) || 'iso';
             const now = new Date();
 
             let time_string: string;
@@ -99,20 +98,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         }
 
         case 'calculate': {
-            const expression = args?.expression as string;
+            const expression = args?.['expression'] as string;
 
             if (!expression) {
                 throw new Error('expression 파라미터가 필요합니다');
             }
 
-            // 안전한 수식만 허용 (숫자와 기본 연산자만)
-            const safe_expression = /^[\d\s+\-*/().]+$/;
-            if (!safe_expression.test(expression)) {
-                throw new Error('유효하지 않은 수식입니다');
-            }
-
             try {
-                const result = eval(expression);
+                // mathjs의 evaluate() 사용 (안전한 수식 파서)
+                const result = evaluate(expression);
                 return {
                     content: [
                         {

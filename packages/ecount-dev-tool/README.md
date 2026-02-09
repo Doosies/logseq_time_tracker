@@ -1,243 +1,287 @@
 # EC Server Manager
 
-이카운트(ecount.com) 사내 개발 환경 관리를 위한 Chrome 확장프로그램입니다.
+ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 
-## 📋 목차
+## 기술 스택
 
-- [기능 소개](#기능-소개)
-- [설치 방법](#설치-방법)
-- [사용 방법](#사용-방법)
-- [Quick Login 설정](#quick-login-설정)
-- [지원 환경](#지원-환경)
-- [개발 가이드](#개발-가이드)
+- **Framework**: Svelte 5 (Runes API)
+- **Build Tool**: Vite 7 + vite-plugin-web-extension
+- **Language**: TypeScript
+- **Styling**: vanilla-extract (via @personal/uikit)
+- **UI Components**: @personal/uikit (Monorepo 공유 패키지)
 
-## 🚀 기능 소개
+## 주요 기능
 
-### 1. Quick Login
-등록된 회사코드/아이디/비밀번호로 빠른 로그인을 수행합니다.
+### 1. 빠른 로그인 (Quick Login)
+- 사전 설정된 계정으로 빠른 로그인
+- 회사코드, 아이디, 비밀번호 자동 입력
 
-### 2. EC Server Manager
-이카운트 서버 환경을 쉽게 전환할 수 있습니다.
+### 2. 서버 환경 전환
+- **EC5 (v5 + v3)**: 개발 서버 간 전환 (test, zeus01-99, ba1-3, lxba1-3 등)
+- **EC3**: zeus 서버 전환
+- **Stage**: stage1-4 서버 전환
+- Select/Text Input 전환 지원 (커스텀 서버 입력 가능)
 
-- **V5 Server**: lxba1~lxba10 선택 또는 직접 입력 (예: zeus02lxba4)
-- **V3 Server**: ba1~ba3 선택 또는 직접 입력 (예: zeus02ba4)
-- **Zeus 서버**: zeus01~ 지원
-- **Test 서버**: test 서버 지원
-- **입력 방식 전환**: 셀렉트 박스와 텍스트 입력 간 전환 가능
+### 3. URL 파싱 및 빌드
+- ecount.com URL 자동 분석
+- 서버 전환 시 올바른 URL 생성
 
-### 3. Local Server Buttons
-로컬 개발 환경으로 빠르게 전환합니다.
+## 개발
 
-- **5.0 로컬**: `test.ecount.com:5001`로 전환
-- **3.0 로컬**: `__v3domains=test` 파라미터 추가
-- **devMode**: `__disableMin=Y` 파라미터 추가 또는 `-dev` 서버로 전환
-
-### 4. Stage Server Manager
-Stage 서버 간 전환을 지원합니다.
-
-- **stageba ↔ stagelxba2**: Stage 서버 간 원클릭 전환
-
-## 📦 설치 방법
-
-### 1. 프로젝트 다운로드
+### 의존성 설치
 ```bash
-# 프로젝트 클론 또는 다운로드
+pnpm install
+```
+
+### 개발 모드 (HMR)
+```bash
 cd packages/ecount-dev-tool
+pnpm dev
 ```
 
-### 2. Chrome 확장프로그램 로드
-
-1. Chrome 브라우저를 엽니다
-2. 주소창에 `chrome://extensions/` 입력
-3. 우측 상단의 **개발자 모드** 토글을 활성화합니다
-4. **압축해제된 확장 프로그램을 로드합니다** 버튼 클릭
-5. `packages/ecount-dev-tool` 폴더 선택
-6. 확장프로그램이 로드되면 Chrome 툴바에 아이콘이 표시됩니다
-
-### 3. 확인
-확장프로그램 아이콘을 클릭하여 팝업이 정상적으로 표시되는지 확인합니다.
-
-## 📖 사용 방법
-
-### Quick Login 사용
-
-1. 이카운트 로그인 페이지(`*.ecount.com`)에서 확장프로그램 아이콘 클릭
-2. **Quick Login Setting** 섹션에서 원하는 회사코드/아이디 버튼 클릭
-3. 자동으로 로그인 정보가 입력됩니다
-
-> **참고**: Quick Login 설정은 `quickLogin.js` 파일의 `loginDict` 객체를 수정해야 합니다. 자세한 내용은 [Quick Login 설정](#quick-login-설정) 섹션을 참고하세요.
-
-### EC Server Manager 사용
-
-#### V5/V3 서버 전환
-
-1. 이카운트 ERP 페이지(`ec5/view/erp` 또는 `ECERP/ECP/ECP050M`)에서 확장프로그램 아이콘 클릭
-2. **EC Server Manager** 섹션에서:
-   - **V5 Server**: 드롭다운에서 서버 선택 (lxba1~lxba10) 또는 텍스트 입력
-   - **V3 Server**: 드롭다운에서 서버 선택 (ba1~ba3) 또는 텍스트 입력
-3. **Click** 버튼 클릭하여 서버 전환
-
-#### 입력 방식 전환
-
-- 셀렉트 박스 옆의 **↔ 아이콘**을 클릭하면 텍스트 입력 모드로 전환됩니다
-- 텍스트 입력 모드에서 **↔ 아이콘**을 클릭하면 셀렉트 박스 모드로 전환됩니다
-- 텍스트 입력 모드에서는 직접 서버명을 입력할 수 있습니다 (예: `zeus02lxba4`, `zeus02ba4`)
-
-### Local Server Buttons 사용
-
-1. 이카운트 페이지에서 확장프로그램 아이콘 클릭
-2. 하단의 로컬 버튼 중 하나 클릭:
-   - **5.0 로컬**: V5 로컬 서버(`test.ecount.com:5001`)로 전환
-   - **3.0 로컬**: V3 로컬 서버(`__v3domains=test`)로 전환
-   - **disableMin 활성화 (devMode)**: 개발 모드 활성화 (`__disableMin=Y` 또는 `-dev` 서버)
-
-### Stage Server Manager 사용
-
-1. Stage 서버 페이지에서 확장프로그램 아이콘 클릭
-2. **Stage Server Manager** 섹션이 자동으로 표시됩니다
-3. 버튼을 클릭하여 `stageba` ↔ `stagelxba2` 간 전환
-
-## ⚙️ Quick Login 설정
-
-`quickLogin.js` 파일의 `loginDict` 객체를 수정하여 Quick Login 정보를 등록합니다.
-
-### 설정 형식
-
-```javascript
-const loginDict = {
-  "회사코드§아이디": "비밀번호",
-  "313786§뚜뚜": "1q2w3e4r",
-  "600317§루리": "1q2w3e4r5t",
-  // ... 추가 항목
-};
+### 빌드
+```bash
+pnpm build
 ```
 
-### 설정 규칙
+빌드 결과물: `dist/` 디렉토리
 
-- **키 형식**: `"회사코드§아이디"` (회사코드와 아이디는 `§`로 구분)
-- **값**: 비밀번호 문자열
-- **중복 제한**: 회사코드+아이디 조합별로 하나만 등록 가능
+### Chrome에 로드
+1. Chrome 주소창에 `chrome://extensions/` 입력
+2. "개발자 모드" 활성화
+3. "압축해제된 확장 프로그램을 로드합니다" 클릭
+4. `dist/` 폴더 선택
 
-### 설정 예시
-
-```javascript
-const loginDict = {
-  "313786§뚜뚜": "1q2w3e4r",
-  "600317§루리": "1q2w3e4r5t",
-  "305000§은경": "1q2w3e4r",
-  // 새 항목 추가
-  "300000§개발자": "your_password",
-};
-```
-
-### 주의사항
-
-⚠️ **보안 주의**: `loginDict`에 실제 비밀번호가 포함되므로 다음 사항을 주의하세요.
-
-- Git에 커밋하지 않도록 `.gitignore`에 추가하거나 환경 변수로 관리
-- 공유 저장소에 업로드하지 않기
-- 개인 정보 보호를 위해 예시 데이터만 포함
-
-## 🌐 지원 환경
-
-이 확장프로그램은 다음 환경에서만 동작합니다:
-
-- **도메인**: `*.ecount.com` (manifest.json의 `host_permissions` 설정)
-- **페이지**:
-  - 로그인 페이지: Quick Login 기능 사용
-  - ERP 페이지: `ec5/view/erp` 또는 `ECERP/ECP/ECP050M`
-  - Stage 서버: `stage*.ecount.com`
-  - Zeus 서버: `zeus*.ecount.com`
-  - Test 서버: `test.ecount.com`
-
-지원되지 않는 환경에서는 "지원되지 않는 환경입니다" 알림이 표시됩니다.
-
-## 🛠️ 개발 가이드
-
-### 파일 구조
+## 프로젝트 구조
 
 ```
-packages/ecount-dev-tool/
-├── manifest.json          # Chrome Extension 설정 (Manifest V3)
-├── popup.html             # 확장프로그램 팝업 UI
-├── style.css              # 스타일시트
-├── quickLogin.js          # Quick Login 기능
-├── serverChange.js        # 서버 전환 로직
-├── toggleInputType.js     # 입력 방식 전환 (셀렉트 ↔ 텍스트)
-└── toggleFields.js        # URL에 따른 UI 동적 변경
+src/
+├── components/          # Svelte 컴포넌트
+│   ├── App/            # 루트 컴포넌트
+│   ├── PopupLayout/    # 레이아웃
+│   ├── QuickLoginSection/
+│   ├── EnvironmentPanel/
+│   ├── ServerManager/
+│   ├── StageManager/
+│   └── ActionBar/
+├── services/           # 비즈니스 로직
+│   ├── url_service.ts  # URL 파싱/빌드
+│   ├── tab_service.ts  # Chrome Tab API
+│   └── page_actions.ts # Content Script 함수
+├── stores/             # Svelte Store
+│   └── current_tab.ts
+├── types/              # TypeScript 타입
+│   └── server.ts
+├── constants/          # 상수
+│   └── servers.ts
+├── manifest.json       # Chrome Extension Manifest
+├── popup.html          # Popup HTML
+└── popup.ts            # Entry Point
 ```
 
-### 주요 파일 설명
+## 아키텍처 특징
 
-#### `manifest.json`
-Chrome 확장프로그램의 설정 파일입니다.
+### Monorepo 구조
+- `@personal/uikit`: 공유 UI 컴포넌트 라이브러리
+  - Svelte 5 컴포넌트
+  - vanilla-extract 기반 스타일링
+  - 프레임워크 분리 가능한 디자인 레이어 (`/design` export)
 
-- **Manifest V3** 형식 사용
-- **권한**: `activeTab`, `scripting`, `storage`, `tabs`
-- **호스트 권한**: `*://*.ecount.com/*`
-- **팝업**: `popup.html`
+### 타입 안정성
+- 모든 비즈니스 로직 TypeScript로 작성
+- Chrome Extension API 타입 지원 (`@types/chrome`)
+- 엄격한 타입 체크로 런타임 오류 방지
 
-#### `popup.html`
-확장프로그램 팝업의 HTML 구조입니다.
+### 도메인 기반 모듈 분리
+- 기존 `serverChange.js` (488줄)의 중복 로직을 도메인별로 분리
+- URL 파싱/빌드 로직 중앙화 (`services/url_service.ts`)
+- Content Script 함수 독립적 관리 (`services/page_actions.ts`)
+- Chrome Tab API 래퍼 (`services/tab_service.ts`)
 
-- Quick Login 버튼 컨테이너
-- EC Server Manager UI (V5/V3 서버 선택)
-- Local Server Buttons
-- Stage Server Manager (조건부 표시)
+### 컴포넌트 기반 아키텍처
+- Svelte 5 Runes API 사용
+- 재사용 가능한 컴포넌트 구조
+- 상태 관리: Svelte Store (`stores/current_tab.ts`)
 
-#### `quickLogin.js`
-Quick Login 기능을 구현합니다.
+## API 문서
 
-- `loginDict` 객체에서 로그인 정보 읽기
-- 버튼 동적 생성
-- 페이지에 로그인 정보 자동 입력
+### Services
 
-#### `serverChange.js`
-서버 전환 로직을 처리합니다.
+#### `url_service.ts`
 
-- 현재 URL 분석 (test, zeus, stage 등)
-- V5/V3 서버 도메인 추출 및 변경
-- Local Server 전환 (`switchV5TestServer`, `switchV3TestServer`)
-- devMode 전환 (`debugAndGetPageInfo`, `switchToDevServerForLegacy`)
+URL 파싱 및 빌드 유틸리티 함수입니다.
 
-#### `toggleInputType.js`
-서버 입력 방식 전환 기능입니다.
+**함수:**
 
-- 셀렉트 박스 ↔ 텍스트 입력 모드 전환
-- 현재 서버 정보를 기반으로 초기값 설정
+##### `parseEcountUrl(url_string: string): ParsedUrl | null`
 
-#### `toggleFields.js`
-URL에 따른 UI 동적 변경을 처리합니다.
+ecount.com URL을 파싱하여 환경 정보를 추출합니다.
 
-- Stage 서버 감지 시 Stage Server Manager만 표시
-- 일반 서버에서는 EC Server Manager 표시
-- 탭 변경 시 자동 업데이트
+**파라미터:**
+- `url_string: string` - 파싱할 URL 문자열
 
-### 개발 시 주의사항
+**반환값:**
+- `ParsedUrl | null` - 파싱된 URL 정보 또는 null (ecount.com 도메인이 아닌 경우)
 
-1. **Manifest V3**: Chrome 확장프로그램은 Manifest V3를 사용합니다
-2. **Content Scripts**: `chrome.scripting.executeScript`를 사용하여 페이지에 스크립트 주입
-3. **권한**: 필요한 권한만 `manifest.json`에 명시
-4. **도메인 제한**: `*.ecount.com` 도메인에서만 동작하도록 제한
+**예제:**
+```typescript
+import { parseEcountUrl } from '@/services/url_service';
 
-### 빌드 및 배포
+const parsed = parseEcountUrl('https://test.ecount.com/ec5/...');
+// {
+//   environment: 'test',
+//   is_ec5: true,
+//   is_ec3: false,
+//   current_server: 'test',
+//   v5_domain: 'test',
+//   v3_domain: 'zeus01'
+// }
+```
 
-현재는 소스 코드를 직접 로드하는 방식이므로 별도의 빌드 과정이 없습니다.
+##### `buildEc5Url(base_url: string, server_config: ServerConfig): string`
 
-향후 배포 시:
-1. Chrome Web Store에 업로드
-2. 내부 배포 시스템 구축
-3. 자동 업데이트 메커니즘 추가
+EC5 URL을 빌드합니다.
 
-## 📝 라이센스
+**파라미터:**
+- `base_url: string` - 기본 URL
+- `server_config: ServerConfig` - 서버 설정 객체
 
-사내 개발자용 도구입니다.
+**반환값:**
+- `string` - 빌드된 URL
 
-## 🤝 기여
+**예제:**
+```typescript
+import { buildEc5Url } from '@/services/url_service';
 
-버그 리포트나 기능 제안은 이슈로 등록해주세요.
+const newUrl = buildEc5Url('https://test.ecount.com/ec5/...', {
+  v5_domain: 'zeus01',
+  v3_domain: 'zeus01'
+});
+```
 
----
+##### `buildEc3Url(base_url: string, v3_domain: string): string`
 
-**버전**: 2.2.0  
-**최종 업데이트**: 2026-02-06
+EC3 URL을 빌드합니다.
+
+**파라미터:**
+- `base_url: string` - 기본 URL
+- `v3_domain: string` - V3 도메인
+
+**반환값:**
+- `string` - 빌드된 URL
+
+#### `tab_service.ts`
+
+Chrome Tab API 래퍼 함수입니다.
+
+**함수:**
+
+##### `getCurrentTab(): Promise<chrome.tabs.Tab | null>`
+
+현재 활성화된 탭을 가져옵니다.
+
+**반환값:**
+- `Promise<chrome.tabs.Tab | null>` - 현재 탭 또는 null
+
+##### `updateTabUrl(tab_id: number, url: string): Promise<void>`
+
+탭의 URL을 업데이트합니다.
+
+**파라미터:**
+- `tab_id: number` - 탭 ID
+- `url: string` - 새로운 URL
+
+##### `executeScript(tab_id: number, func: () => void): Promise<void>`
+
+탭에 스크립트를 실행합니다.
+
+**파라미터:**
+- `tab_id: number` - 탭 ID
+- `func: () => void` - 실행할 함수
+
+##### `getCurrentTabUrl(): Promise<string | null>`
+
+현재 탭의 URL을 가져옵니다.
+
+**반환값:**
+- `Promise<string | null>` - 현재 탭의 URL 또는 null
+
+#### `page_actions.ts`
+
+Content Script에서 사용할 페이지 액션 함수입니다.
+
+**함수:**
+
+##### `fillInput(selector: string, value: string): void`
+
+입력 필드에 값을 채웁니다.
+
+**파라미터:**
+- `selector: string` - CSS 선택자
+- `value: string` - 입력할 값
+
+##### `clickButton(selector: string): void`
+
+버튼을 클릭합니다.
+
+**파라미터:**
+- `selector: string` - CSS 선택자
+
+##### `selectOption(selector: string, value: string): void`
+
+Select 요소의 옵션을 선택합니다.
+
+**파라미터:**
+- `selector: string` - CSS 선택자
+- `value: string` - 선택할 값
+
+### Stores
+
+#### `current_tab.ts`
+
+현재 탭 정보를 관리하는 Svelte Store입니다.
+
+**사용법:**
+```typescript
+import { current_tab } from '@/stores/current_tab';
+
+// Store 값 읽기
+$current_tab.url;
+
+// Store 업데이트
+current_tab.set({ url: 'https://...', id: 123 });
+```
+
+### Types
+
+#### `server.ts`
+
+서버 관련 타입 정의입니다.
+
+**타입:**
+
+```typescript
+interface ParsedUrl {
+  environment: 'test' | 'zeus' | 'stage';
+  is_ec5: boolean;
+  is_ec3: boolean;
+  current_server: string;
+  v5_domain: string;
+  v3_domain: string;
+  zeus_number?: string;
+}
+
+interface ServerConfig {
+  v5_domain: string;
+  v3_domain: string;
+}
+```
+
+## 버전 히스토리
+
+- **v2.2.0**: TypeScript + Svelte 5 전환
+- **v2.1.0**: 기존 JavaScript 버전
+
+## 라이선스
+
+MIT
