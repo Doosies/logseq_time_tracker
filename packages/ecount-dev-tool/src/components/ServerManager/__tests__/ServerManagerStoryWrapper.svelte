@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { initializeTabState } from '#stores/current_tab.svelte';
-    import ServerManager from './ServerManager.svelte';
+    import ServerManager from '../ServerManager.svelte';
 
     interface Props {
         url?: string;

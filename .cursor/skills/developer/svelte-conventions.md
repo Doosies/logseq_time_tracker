@@ -23,7 +23,7 @@ description: Svelte 프로젝트 네이밍 컨벤션 및 코딩 가이드 (uikit
 | 컴포넌트 폴더 | `PascalCase/` (컴포넌트명과 동일) | `Button/`, `Select/` |
 | 폴더 구조 | `ComponentName/ComponentName.svelte` + `index.ts` | `Button/Button.svelte`, `Button/index.ts` |
 | 스타일 파일 | `snake_case.css.ts` | `toggle_input.css.ts`, `button.css.ts` |
-| 스토어 파일 | `snake_case.ts` | `current_tab.ts` |
+| 스토어 파일 (Runes) | `snake_case.svelte.ts` | `current_tab.svelte.ts` |
 | 서비스 파일 | `snake_case.ts` | `url_service.ts` |
 | 타입 파일 | `snake_case.ts` | `design/types.ts` |
 

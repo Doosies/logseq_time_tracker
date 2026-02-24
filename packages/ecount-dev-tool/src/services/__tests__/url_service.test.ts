@@ -6,7 +6,7 @@ import {
     buildStageUrl,
     getStageButtonLabel,
     buildDevUrl,
-} from './url_service';
+} from '../url_service';
 import type { PageInfo } from '#types/server';
 
 describe('parseEcountUrl', () => {

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/svelte';
 import { userEvent } from '@testing-library/user-event';
-import StageManager from './StageManager.svelte';
+import StageManager from '../StageManager.svelte';
 import { initializeTabState } from '#stores/current_tab.svelte';
 import { asMock } from '#test/mock_helpers';
 

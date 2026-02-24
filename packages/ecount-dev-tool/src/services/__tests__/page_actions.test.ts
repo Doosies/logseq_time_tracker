@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { inputLogin, switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from './page_actions';
+import { inputLogin, switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from '../page_actions';
 
 describe('inputLogin', () => {
     let mock_com_code: HTMLInputElement;

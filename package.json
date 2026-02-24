@@ -24,18 +24,24 @@
     ],
     "license": "MIT",
     "devDependencies": {
+        "@eslint/js": "catalog:",
         "@storybook/svelte-vite": "^10.2.11",
         "@sveltejs/vite-plugin-svelte": "catalog:",
         "@vanilla-extract/vite-plugin": "catalog:",
         "@testing-library/svelte": "^5.3.1",
         "@testing-library/user-event": "^14.6.1",
+        "eslint": "catalog:",
+        "eslint-plugin-svelte": "catalog:",
+        "globals": "catalog:",
         "jiti": "catalog:",
         "prettier-plugin-svelte": "^3.5.0",
         "storybook": "^10.2.11",
         "svelte": "catalog:",
         "turbo": "^2.7.6",
         "typescript": "catalog:",
-        "vite": "catalog:"
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
     },
     "engines": {
         "node": ">=20.0.0",

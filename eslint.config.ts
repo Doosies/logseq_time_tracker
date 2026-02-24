@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import globals from 'globals';
+import svelte from 'eslint-plugin-svelte';
 import tseslint from 'typescript-eslint';
 import type { Linter } from 'eslint';
 
@@ -61,6 +62,7 @@ export function createNodeConfig(tsconfigRootDir: string): Linter.FlatConfig[] {
         ...baseConfig,
         {
             files: ['**/*.ts'],
+            ignores: ['*.config.ts'],
             languageOptions: {
                 globals: {
                     ...globals.node,
@@ -93,7 +95,7 @@ export function createBrowserConfig(): Linter.FlatConfig[] {
 }
 
 /**
- * Svelte 패키지용 preset
+ * Svelte 패키지용 preset (플러그인 + 파서 + 규칙 포함)
  */
 export function createSvelteConfig(
     additionalGlobals?: Record<string, boolean | 'readonly' | 'writable'>,
@@ -101,6 +103,7 @@ export function createSvelteConfig(
     return [
         ignores,
         ...baseConfig,
+        ...svelte.configs['flat/recommended'],
         {
             files: ['**/*.svelte', '**/*.ts'],
             languageOptions: {
@@ -108,6 +111,22 @@ export function createSvelteConfig(
                     ...globals.browser,
                     ...additionalGlobals,
                 },
+            },
+        },
+        {
+            files: ['**/*.svelte'],
+            languageOptions: {
+                parserOptions: { parser: tseslint.parser },
+            },
+            rules: {
+                'svelte/no-at-html-tags': 'off',
+                'svelte/valid-compile': 'error',
+            },
+        },
+        {
+            files: ['**/*.svelte.ts', '**/*.svelte.js'],
+            languageOptions: {
+                parserOptions: { parser: tseslint.parser },
             },
         },
     ];

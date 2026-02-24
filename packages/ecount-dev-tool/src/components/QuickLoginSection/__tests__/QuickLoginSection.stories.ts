@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, within } from 'storybook/test';
-import QuickLoginSection from './QuickLoginSection.svelte';
+import QuickLoginSection from '../QuickLoginSection.svelte';
 
 const meta = {
   component: QuickLoginSection,

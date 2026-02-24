@@ -1,15 +1,8 @@
 {
-    "extends": "../../tsconfig.base.json",
+    "extends": "../../config/tsconfig.svelte.json",
     "compilerOptions": {
-        // Chrome Extension + Svelte 환경
         "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
         "types": ["chrome", "svelte"],
-        "jsx": "preserve",
-
-        // Svelte는 verbatimModuleSyntax 비활성화 필요
-        "verbatimModuleSyntax": false,
-
-        // package.json imports 필드와 동기화 (TypeScript 해석용)
         "baseUrl": ".",
         "paths": {
             "#services/*": ["src/services/*"],

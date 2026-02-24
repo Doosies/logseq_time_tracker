@@ -88,3 +88,4 @@ GIT_COMMANDS.md
 *.heapprofile
 *.heapsnapshot
 
+storybook-static/

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from './tab_service';
+import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from '../tab_service';
 import { asMock } from '#test/mock_helpers';
 
 describe('getCurrentTab', () => {

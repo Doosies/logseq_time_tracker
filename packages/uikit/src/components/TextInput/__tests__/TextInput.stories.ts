@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, fn, within, userEvent } from 'storybook/test';
-import TextInput from './TextInput.svelte';
+import TextInput from '../TextInput.svelte';
 
 const meta = {
     component: TextInput,

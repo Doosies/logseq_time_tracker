@@ -11,17 +11,22 @@ description: CLI/터미널 명령어 실행 가이드. 에이전트가 Shell 도
 
 ### 필수 옵션
 
-**의존성 설치/추가 시 항상 `--no-offline` 옵션 사용**
+**레지스트리 접근 명령(`install/add/update`)에만 `--no-offline` 옵션 사용**
 
 ```bash
-# ✅ 올바른 사용
+# ✅ --no-offline 필요 (레지스트리 접근)
 pnpm install --no-offline
 pnpm add <package> --no-offline
 pnpm update --no-offline
 
+# ✅ --no-offline 불필요 (스크립트 실행)
+pnpm run build
+pnpm test
+pnpm build-storybook
+
 # ❌ 잘못된 사용
-pnpm install
-pnpm add <package>
+pnpm install                # --no-offline 누락
+pnpm build --no-offline     # run 계열에 불필요한 옵션
 ```
 
 ### 자주 사용하는 pnpm 명령어
@@ -178,6 +183,6 @@ pnpm build
 
 ## 완료 기준
 
-- [ ] pnpm 명령어에 `--no-offline` 옵션 포함
+- [ ] pnpm install/add/update에 `--no-offline` 옵션 포함 (run/exec/build 등에는 불필요)
 - [ ] 에러 발생 시 즉시 해결
 - [ ] 검증 명령어 순서 준수

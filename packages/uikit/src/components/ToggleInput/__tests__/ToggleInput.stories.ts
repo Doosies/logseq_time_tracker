@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, fn, within, userEvent } from 'storybook/test';
-import ToggleInput from './ToggleInput.svelte';
+import ToggleInput from '../ToggleInput.svelte';
 
 const options = [
     { value: 'a', label: 'Option A' },

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, fn, within, userEvent } from 'storybook/test';
-import Select from './Select.svelte';
+import Select from '../Select.svelte';
 
 const default_options = [
     { value: 'a', label: 'Option A' },

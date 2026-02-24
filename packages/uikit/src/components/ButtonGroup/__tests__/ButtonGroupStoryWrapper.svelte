@@ -1,6 +1,6 @@
 <script lang="ts">
-    import ButtonGroup from './ButtonGroup.svelte';
-    import Button from '../Button/Button.svelte';
+    import ButtonGroup from '../ButtonGroup.svelte';
+    import Button from '../../Button/Button.svelte';
 
     interface Props {
         scenario?: 'default' | 'mixed' | 'withDisabled';

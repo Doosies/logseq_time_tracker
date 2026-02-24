@@ -9,34 +9,47 @@ alwaysApply: true
 
 ### 필수 옵션
 
-**의존성 설치 시 항상 `--no-offline` 옵션 사용**
+**패키지 레지스트리 접근이 필요한 명령에만 `--no-offline` 옵션 사용**
 
 ```bash
-# ✅ 올바른 사용
+# ✅ --no-offline 필요 (레지스트리 접근)
 pnpm install --no-offline
 pnpm add <package> --no-offline
 pnpm update --no-offline
 
+# ✅ --no-offline 불필요 (레지스트리 접근 없음)
+pnpm run <script>
+pnpm build
+pnpm test
+pnpm exec <command>
+pnpm storybook
+pnpm build-storybook
+
 # ❌ 잘못된 사용
-pnpm install
-pnpm add <package>
-pnpm update
+pnpm install              # --no-offline 누락
+pnpm build --no-offline   # run 명령에 불필요한 옵션
 ```
+
+### 적용 대상
+
+| 명령 | `--no-offline` | 이유 |
+|------|:-:|------|
+| `pnpm install` | O | 레지스트리에서 패키지 다운로드 |
+| `pnpm add` | O | 새 패키지 설치 |
+| `pnpm update` | O | 패키지 버전 업데이트 |
+| `pnpm run <script>` | X | 로컬 스크립트 실행 |
+| `pnpm exec` | X | 로컬 바이너리 실행 |
+| `pnpm build` / `pnpm test` 등 | X | package.json scripts 실행 |
 
 ### 이유
 
-- `.npmrc`에 `offline=true` 설정이 있을 수 있으므로 명시적으로 해제
-- 네트워크 접근이 필요한 경우 확실하게 보장
-- 캐시에 없는 패키지도 정상 설치 가능
-
-### 예외 상황
-
-없음. 모든 pnpm install/add/update 명령에 `--no-offline`을 반드시 추가합니다.
+- `.npmrc`에 `offline=true` 설정이 있어 레지스트리 접근 시 명시적 해제 필요
+- `pnpm run` 계열은 레지스트리에 접근하지 않으므로 옵션 불필요
 
 ---
 
 ## 원칙
 
-- 모든 pnpm install/add/update 명령어는 `--no-offline` 옵션 필수
-- Shell 도구 사용 시 자동으로 `--no-offline` 옵션 추가
+- `pnpm install/add/update`에만 `--no-offline` 옵션 필수
+- `pnpm run/exec/build/test` 등 스크립트 실행 명령에는 추가하지 않음
 - CLI 사용 상세 가이드: `.cursor/skills/shared/cli-usage.md` 참조

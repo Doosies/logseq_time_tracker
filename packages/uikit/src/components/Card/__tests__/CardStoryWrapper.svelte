@@ -1,6 +1,6 @@
 <script lang="ts">
-    import Card from './Card.svelte';
-    import Button from '../Button/Button.svelte';
+    import Card from '../Card.svelte';
+    import Button from '../../Button/Button.svelte';
 
     interface Props {
         scenario?: 'default' | 'withComponents';

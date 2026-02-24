@@ -7,6 +7,7 @@ responsibilities:
   - CHANGELOG 작성
   - 사용자 가이드 작성
   - 아키텍처 문서 업데이트
+  - 문서 노후화 감지 및 수정
 documentation_standards:
   code_comments: JSDoc/TSDoc
   changelog: Keep a Changelog 형식
@@ -16,6 +17,7 @@ skills:
   - docs/code-documentation.md
   - docs/changelog-generation.md
   - docs/readme-maintenance.md
+  - docs/staleness-detection.md
   - docs/technology-documentation.md
   - shared/project-conventions.md
 name: docs

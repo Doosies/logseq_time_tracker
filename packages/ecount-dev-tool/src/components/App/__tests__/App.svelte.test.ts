@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
-import App from './App.svelte';
+import App from '../App.svelte';
 import { asMock } from '#test/mock_helpers';
 
 describe('App', () => {

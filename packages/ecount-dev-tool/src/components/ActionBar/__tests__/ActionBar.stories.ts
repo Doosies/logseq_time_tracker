@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, within } from 'storybook/test';
-import ActionBar from './ActionBar.svelte';
+import ActionBar from '../ActionBar.svelte';
 
 const meta = {
   component: ActionBar,

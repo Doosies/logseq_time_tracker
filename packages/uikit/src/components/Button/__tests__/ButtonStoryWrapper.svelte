@@ -1,6 +1,6 @@
 <script lang="ts">
-    import type { ButtonVariant, ButtonSize } from '../../design/types';
-    import Button from './Button.svelte';
+    import type { ButtonVariant, ButtonSize } from '../../../design/types';
+    import Button from '../Button.svelte';
 
     interface Props {
         label?: string;
