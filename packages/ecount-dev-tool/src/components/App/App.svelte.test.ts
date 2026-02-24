@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
 import App from './App.svelte';
+import { asMock } from '@/test/mock_helpers';
 
 describe('App', () => {
     beforeEach(() => {
@@ -12,7 +13,7 @@ describe('App', () => {
         const tab_promise = new Promise<chrome.tabs.Tab[]>((resolve) => {
             resolve_tab = resolve;
         });
-        vi.mocked(chrome.tabs.query).mockReturnValue(tab_promise as ReturnType<typeof chrome.tabs.query>);
+        asMock(chrome.tabs.query).mockReturnValue(tab_promise);
 
         render(App);
 
@@ -27,7 +28,7 @@ describe('App', () => {
     });
 
     it('is_stage일 때 StageManager가 렌더링되어야 함', async () => {
-        vi.mocked(chrome.tabs.query).mockResolvedValue([
+        asMock(chrome.tabs.query).mockResolvedValue([
             {
                 id: 1,
                 url: 'https://stageba.ecount.com/ec5/view/erp',
@@ -47,7 +48,7 @@ describe('App', () => {
     });
 
     it('supported일 때 ServerManager와 ActionBar가 렌더링되어야 함', async () => {
-        vi.mocked(chrome.tabs.query).mockResolvedValue([
+        asMock(chrome.tabs.query).mockResolvedValue([
             {
                 id: 1,
                 url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
@@ -69,7 +70,7 @@ describe('App', () => {
     });
 
     it('QuickLoginSection이 항상 렌더링되어야 함', async () => {
-        vi.mocked(chrome.tabs.query).mockResolvedValue([
+        asMock(chrome.tabs.query).mockResolvedValue([
             {
                 id: 1,
                 url: 'https://zeus01ba1.ecount.com/ec5/view/erp',
