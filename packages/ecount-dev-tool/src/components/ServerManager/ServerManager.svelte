@@ -104,3 +104,18 @@
 
     <Button fullWidth onclick={handleChangeServer}>Click</Button>
 </Section>
+
+<style>
+    .server-row {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        margin-bottom: 4px;
+    }
+
+    .server-row label {
+        white-space: nowrap;
+        font-size: 12px;
+        min-width: 68px;
+    }
+</style>

@@ -38,25 +38,35 @@
 
 ---
 
-## [Unreleased]
-
-### Added
-- (향후 추가될 기능)
+## [2.3.0] - 2026-02-24
 
 ### Changed
-- (향후 변경될 기능)
+- **UI 전면 리디자인**
+  - 라이트 테마 색상을 차분한 다크 블루 계열로 변경 (WCAG AAA 대비비 충족)
+  - Card 배경을 흰색으로 변경, 그림자 제거
+  - 버튼 font-weight를 bold로 강화하여 가독성 개선
+- **Quick Login Section 개선**
+  - 3열 그리드 레이아웃으로 변경 (코드/계정명 2줄 표시)
+  - 5행까지 표시, 초과 시 스크롤
+  - 버튼 크기 균등화 및 폰트 크기 증가
+- **EC Server Manager 개선**
+  - V5/V3 selector 크기 통일 (동일 높이, flex 기반 레이아웃)
+  - server-row 레이아웃 정리 (flex 정렬)
+- **ActionBar 개선**
+  - 버튼 균등 너비 적용
+  - 텍스트 간소화: "5.0로컬", "3.0로컬", "disableMin"
+- **App 레이아웃 개선**
+  - 섹션 간 구분선(divider) 추가
+  - 모든 섹션 너비 균등화
 
-### Deprecated
-- (곧 제거될 기능)
+### Changed (uikit)
+- Select/TextInput: `inline-block` → `flex` 기반으로 변경, 높이 28px 통일
+- ToggleInput: prefix 컨테이너 높이 통일, gap 축소
+- ButtonGroup: `flex-wrap` 추가, `justify-content: space-between` 제거
 
-### Removed
-- (제거된 기능)
+---
 
-### Fixed
-- (수정된 버그)
-
-### Security
-- (보안 관련 수정)
+## [Unreleased]
 
 ---
 

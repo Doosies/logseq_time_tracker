@@ -4,9 +4,10 @@ import { theme_vars } from '../theme/contract.css';
 export const toggle_input_container = style({
     display: 'flex',
     alignItems: 'center',
-    gap: theme_vars.space.sm,
-    height: '32px',
+    gap: theme_vars.space.xs,
+    height: '28px',
     flex: 1,
+    minWidth: 0,
 });
 
 export const toggle_icon = style({
@@ -21,12 +22,17 @@ export const toggle_icon = style({
 });
 
 export const prefix_container = style({
-    display: 'inline-block',
-    padding: '4px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: '0 6px',
     border: `1px solid ${theme_vars.color.border}`,
     borderRadius: theme_vars.radius.sm,
     boxSizing: 'border-box',
     minWidth: '50px',
+    height: '28px',
     textAlign: 'center',
     fontSize: theme_vars.font.size.sm,
+    backgroundColor: theme_vars.color.background,
+    whiteSpace: 'nowrap',
 });

@@ -16,17 +16,41 @@
 </script>
 
 <Card>
-    <QuickLoginSection />
+    <div class="app-content">
+        <QuickLoginSection />
 
-    {#if tab.is_loading}
-        <p>로딩 중...</p>
-    {:else if tab.is_stage}
-        <StageManager />
-    {:else if supported}
-        <ServerManager />
-        <ActionBar />
-    {:else}
-        <ServerManager />
-        <ActionBar />
-    {/if}
+        <hr class="divider" />
+
+        {#if tab.is_loading}
+            <p>로딩 중...</p>
+        {:else if tab.is_stage}
+            <StageManager />
+        {:else if supported}
+            <ServerManager />
+            <hr class="divider" />
+            <ActionBar />
+        {:else}
+            <ServerManager />
+            <hr class="divider" />
+            <ActionBar />
+        {/if}
+    </div>
 </Card>
+
+<style>
+    .app-content {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .app-content > :global(*) {
+        width: 100%;
+    }
+
+    .divider {
+        border: none;
+        border-top: 1px solid #d1d9e0;
+        margin: 8px 0;
+    }
+</style>

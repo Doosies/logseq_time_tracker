@@ -8,7 +8,7 @@ const base_button = style({
     border: 'none',
     borderRadius: theme_vars.radius.sm,
     cursor: 'pointer',
-    fontWeight: theme_vars.font.weight.normal,
+    fontWeight: theme_vars.font.weight.bold,
     transition: 'background-color 0.2s ease',
     textAlign: 'center',
     ':disabled': {
@@ -60,7 +60,7 @@ export const button_variant = styleVariants({
 export const button_size = styleVariants({
     sm: {
         padding: '6px 4px',
-        fontSize: theme_vars.font.size.xs,
+        fontSize: theme_vars.font.size.sm,
     },
     md: {
         padding: '7px 10px',
