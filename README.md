@@ -56,6 +56,14 @@ pnpm build
 pnpm test
 ```
 
+### Storybook
+
+UI 컴포넌트 개발 및 시각적 테스트:
+
+```bash
+pnpm storybook
+```
+
 ### 린트 & 포맷
 
 ```bash
@@ -92,6 +100,11 @@ pnpm format
 ### Ecount Dev Tool
 - **Svelte 5** - UI 프레임워크
 - **vite-plugin-web-extension** - Chrome Extension 빌드
+
+### 테스트/문서
+- **Vitest** - 단위/통합 테스트
+- **Storybook 10** - UI 컴포넌트 개발 및 인터랙션 테스트
+- **@testing-library/svelte** - 컴포넌트 테스트 유틸리티
 
 ## 📚 문서
 

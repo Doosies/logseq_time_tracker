@@ -189,19 +189,46 @@ camelCase.ts
 
 ```typescript
 // 1. 외부 라이브러리
-import React from 'react';
+import { onMount } from 'svelte';
 import express from 'express';
 
-// 2. 내부 절대 경로
-import { UserService } from '@/services';
-import { User } from '@/types';
+// 2. 모노레포 패키지
+import { Button } from '@personal/uikit';
 
-// 3. 상대 경로
+// 3. 내부 절대 경로 (Node.js subpath imports)
+import { buildEc5Url } from '#services/url_service';
+import type { ParsedUrl } from '#types/server';
+
+// 4. 상대 경로
 import { helper } from './helper';
 import { config } from '../config';
+```
 
-// 4. 타입 import
-import type { ApiResponse } from './types';
+### 경로 별칭 (Subpath Imports)
+
+프로젝트 내부 모듈 참조에는 Node.js subpath imports (`#`) 를 사용합니다.
+Vite의 `resolve.alias` 대신 `package.json`의 `imports` 필드와 `tsconfig.json`의 `paths`를 동기화합니다.
+
+```jsonc
+// package.json
+{
+  "imports": {
+    "#services/*": "./src/services/*",
+    "#stores/*": "./src/stores/*",
+    "#types/*": "./src/types/*"
+  }
+}
+
+// tsconfig.json
+{
+  "compilerOptions": {
+    "paths": {
+      "#services/*": ["src/services/*"],
+      "#stores/*": ["src/stores/*"],
+      "#types/*": ["src/types/*"]
+    }
+  }
+}
 ```
 
 ### Export 순서
