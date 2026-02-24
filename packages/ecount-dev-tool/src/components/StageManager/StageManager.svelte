@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { ParsedUrl } from '@/types/server';
+    import type { ParsedUrl } from '#types/server';
     import { Section, Button } from '@personal/uikit';
-    import { buildStageUrl, getStageButtonLabel } from '@/services/url_service';
-    import { updateTabUrl } from '@/services/tab_service';
-    import { getTabState } from '@/stores/current_tab.svelte';
+    import { buildStageUrl, getStageButtonLabel } from '#services/url_service';
+    import { updateTabUrl } from '#services/tab_service';
+    import { getTabState } from '#stores/current_tab.svelte';
 
     const tab = $derived(getTabState());
     const parsed = $derived(tab.parsed as ParsedUrl);

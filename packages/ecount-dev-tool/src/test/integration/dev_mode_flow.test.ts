@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { buildDevUrl } from '@/services/url_service';
-import type { PageInfo } from '@/types/server';
+import { buildDevUrl } from '#services/url_service';
+import type { PageInfo } from '#types/server';
 
 /**
  * 통합 테스트: devMode 활성화 플로우

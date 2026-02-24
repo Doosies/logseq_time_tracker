@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { parseEcountUrl, buildEc5Url, buildEc3Url, buildStageUrl, getStageButtonLabel } from '@/services/url_service';
+import { parseEcountUrl, buildEc5Url, buildEc3Url, buildStageUrl, getStageButtonLabel } from '#services/url_service';
 
 /**
  * 통합 테스트: 서버 변경 플로우

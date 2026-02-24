@@ -2,7 +2,6 @@ import { defineConfig } from 'vite';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { vanillaExtractPlugin } from '@vanilla-extract/vite-plugin';
 import webExtension from 'vite-plugin-web-extension';
-import { resolve } from 'path';
 
 export default defineConfig(({ mode }) => ({
     plugins: [
@@ -13,11 +12,6 @@ export default defineConfig(({ mode }) => ({
             browser: 'chrome',
         }),
     ],
-    resolve: {
-        alias: {
-            '@': resolve(__dirname, './src'),
-        },
-    },
     build: {
         outDir: 'dist',
         emptyOutDir: true,

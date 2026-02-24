@@ -1,4 +1,4 @@
-import type { PageInfo } from '@/types/server';
+import type { PageInfo } from '#types/server';
 
 /**
  * 로그인 화면에 값을 입력합니다.

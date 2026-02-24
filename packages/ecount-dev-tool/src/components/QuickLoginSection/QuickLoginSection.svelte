@@ -1,9 +1,9 @@
 <script lang="ts">
-    import type { LoginAccount } from '@/types/server';
+    import type { LoginAccount } from '#types/server';
     import { Section, Button, ButtonGroup } from '@personal/uikit';
-    import { executeScript } from '@/services/tab_service';
-    import { inputLogin } from '@/services/page_actions';
-    import { getTabState } from '@/stores/current_tab.svelte';
+    import { executeScript } from '#services/tab_service';
+    import { inputLogin } from '#services/page_actions';
+    import { getTabState } from '#stores/current_tab.svelte';
 
     const raw_accounts = import.meta.env.VITE_LOGIN_ACCOUNTS ?? '[]';
     const accounts: LoginAccount[] = JSON.parse(raw_accounts);

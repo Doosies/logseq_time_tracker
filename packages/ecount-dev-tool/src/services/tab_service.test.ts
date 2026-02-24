@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from './tab_service';
-import { asMock } from '@/test/mock_helpers';
+import { asMock } from '#test/mock_helpers';
 
 describe('getCurrentTab', () => {
     it('현재 활성 탭을 반환해야 함', async () => {

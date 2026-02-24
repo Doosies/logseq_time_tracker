@@ -5,14 +5,19 @@
         "lib": ["ESNext", "DOM", "DOM.Iterable", "WebWorker"],
         "types": ["chrome", "svelte"],
         "jsx": "preserve",
-        
+
         // Svelte는 verbatimModuleSyntax 비활성화 필요
         "verbatimModuleSyntax": false,
-        
-        // Path alias 설정
+
+        // package.json imports 필드와 동기화 (TypeScript 해석용)
         "baseUrl": ".",
         "paths": {
-            "@/*": ["src/*"]
+            "#services/*": ["src/services/*"],
+            "#components/*": ["src/components/*"],
+            "#stores/*": ["src/stores/*"],
+            "#constants/*": ["src/constants/*"],
+            "#types/*": ["src/types/*"],
+            "#test/*": ["src/test/*"]
         }
     },
     "include": ["src/**/*", "src/vite-env.d.ts"],

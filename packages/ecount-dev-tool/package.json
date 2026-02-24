@@ -3,6 +3,14 @@
     "version": "1.0.0",
     "description": "ecount.com Development Environment Manager Chrome Extension",
     "type": "module",
+    "imports": {
+        "#services/*": "./src/services/*",
+        "#components/*": "./src/components/*",
+        "#stores/*": "./src/stores/*",
+        "#constants/*": "./src/constants/*",
+        "#types/*": "./src/types/*",
+        "#test/*": "./src/test/*"
+    },
     "scripts": {
         "dev": "vite",
         "build": "vite build",

@@ -1,10 +1,10 @@
 <script lang="ts">
-    import type { ParsedUrl } from '@/types/server';
+    import type { ParsedUrl } from '#types/server';
     import { Section, Button, ToggleInput } from '@personal/uikit';
-    import { V5_SERVERS, V3_SERVERS } from '@/constants/servers';
-    import { buildEc5Url, buildEc3Url } from '@/services/url_service';
-    import { updateTabUrl } from '@/services/tab_service';
-    import { getTabState } from '@/stores/current_tab.svelte';
+    import { V5_SERVERS, V3_SERVERS } from '#constants/servers';
+    import { buildEc5Url, buildEc3Url } from '#services/url_service';
+    import { updateTabUrl } from '#services/tab_service';
+    import { getTabState } from '#stores/current_tab.svelte';
 
     const tab = $derived(getTabState());
     const parsed = $derived(tab.parsed as ParsedUrl);

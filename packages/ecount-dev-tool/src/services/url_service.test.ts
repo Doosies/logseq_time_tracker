@@ -7,7 +7,7 @@ import {
     getStageButtonLabel,
     buildDevUrl,
 } from './url_service';
-import type { PageInfo } from '@/types/server';
+import type { PageInfo } from '#types/server';
 
 describe('parseEcountUrl', () => {
     it('유효하지 않은 URL일 때 null을 반환해야 함', () => {

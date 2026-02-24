@@ -1,6 +1,6 @@
-import type { ParsedUrl, TabState } from '@/types/server';
-import { parseEcountUrl } from '@/services/url_service';
-import { getCurrentTab } from '@/services/tab_service';
+import type { ParsedUrl, TabState } from '#types/server';
+import { parseEcountUrl } from '#services/url_service';
+import { getCurrentTab } from '#services/tab_service';
 
 let current_url = $state('');
 let tab_id = $state(0);

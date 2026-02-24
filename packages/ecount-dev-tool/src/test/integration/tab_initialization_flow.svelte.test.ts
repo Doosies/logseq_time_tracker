@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { initializeTabState, getTabState, isSupported } from '@/stores/current_tab.svelte';
+import { initializeTabState, getTabState, isSupported } from '#stores/current_tab.svelte';
 
 type TabsQueryPromise = (queryInfo: chrome.tabs.QueryInfo) => Promise<chrome.tabs.Tab[]>;
 

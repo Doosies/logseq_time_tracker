@@ -1,16 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { initializeTabState, getTabState, isSupported } from '@/stores/current_tab.svelte';
+import { initializeTabState, getTabState, isSupported } from '#stores/current_tab.svelte';
 
-vi.mock('@/services/tab_service', () => ({
+vi.mock('#services/tab_service', () => ({
     getCurrentTab: vi.fn(),
 }));
 
-vi.mock('@/services/url_service', () => ({
+vi.mock('#services/url_service', () => ({
     parseEcountUrl: vi.fn(),
 }));
 
-import { getCurrentTab } from '@/services/tab_service';
-import { parseEcountUrl } from '@/services/url_service';
+import { getCurrentTab } from '#services/tab_service';
+import { parseEcountUrl } from '#services/url_service';
 
 describe('current_tab 스토어', () => {
     beforeEach(() => {

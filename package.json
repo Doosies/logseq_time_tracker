@@ -24,18 +24,29 @@
     ],
     "license": "MIT",
     "devDependencies": {
-        "@storybook/addon-svelte-csf": "^5.0.11",
         "@storybook/svelte-vite": "^10.2.11",
-        "@storybook/test": "^8.6.15",
+        "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@vanilla-extract/vite-plugin": "catalog:",
         "@testing-library/svelte": "^5.3.1",
         "@testing-library/user-event": "^14.6.1",
         "jiti": "catalog:",
         "prettier-plugin-svelte": "^3.5.0",
         "storybook": "^10.2.11",
-        "turbo": "^2.7.6"
+        "svelte": "catalog:",
+        "turbo": "^2.7.6",
+        "typescript": "catalog:",
+        "vite": "catalog:"
     },
     "engines": {
         "node": ">=20.0.0",
         "pnpm": ">=9.0.0"
+    },
+    "pnpm": {
+        "peerDependencyRules": {
+            "allowedVersions": {
+                "@docsearch/react>react": ">=19.0.0",
+                "@docsearch/react>react-dom": ">=19.0.0"
+            }
+        }
     }
 }

@@ -1,8 +1,8 @@
 <script lang="ts">
     import { Button, ButtonGroup } from '@personal/uikit';
-    import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from '@/services/tab_service';
-    import { switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from '@/services/page_actions';
-    import { buildDevUrl } from '@/services/url_service';
+    import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from '#services/tab_service';
+    import { switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from '#services/page_actions';
+    import { buildDevUrl } from '#services/url_service.js';
 
     async function handleV5Local(): Promise<void> {
         const tab = await getCurrentTab();

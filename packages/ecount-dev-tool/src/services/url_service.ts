@@ -1,5 +1,5 @@
-import type { ParsedUrl, PageInfo } from '@/types/server';
-import { DEFAULT_V3_DOMAIN, DEFAULT_V5_DOMAIN } from '@/constants/servers';
+import type { ParsedUrl, PageInfo } from '#types/server';
+import { DEFAULT_V3_DOMAIN, DEFAULT_V5_DOMAIN } from '#constants/servers';
 
 /**
  * ecount.com URL을 파싱하여 환경 정보를 추출합니다.
