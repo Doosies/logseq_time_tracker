@@ -1,7 +1,7 @@
 import { mount } from 'svelte';
-import App from './components/App';
 import { light_theme } from '@personal/uikit/design';
 import '@personal/uikit/design';
+import App from './components/App';
 
 // Apply theme to body
 document.body.className = light_theme;

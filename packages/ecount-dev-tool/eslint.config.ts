@@ -8,6 +8,10 @@ export default [
         ...globals.webextensions,
     }),
 
+    {
+        ignores: ['src/old/**'],
+    },
+
     // Svelte 파일 설정
     ...svelte.configs['flat/recommended'],
     {
