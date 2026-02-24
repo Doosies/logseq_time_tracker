@@ -14,9 +14,9 @@
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
-        "test": "vitest run",
+        "test": "vitest run --passWithNoTests",
         "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage"
+        "test:coverage": "vitest run --coverage --passWithNoTests"
     },
     "keywords": [
         "uikit",

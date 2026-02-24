@@ -1,9 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    initializeTabState,
-    getTabState,
-    isSupported,
-} from '@/stores/current_tab.svelte';
+import { initializeTabState, getTabState, isSupported } from '@/stores/current_tab.svelte';
+
+type TabsQueryPromise = (queryInfo: chrome.tabs.QueryInfo) => Promise<chrome.tabs.Tab[]>;
 
 /**
  * 통합 테스트: 스토어 초기화 → 상태 반영 플로우
@@ -11,6 +9,8 @@ import {
  * - .svelte.test.ts 확장자로 Svelte Runes 활성화
  */
 describe('스토어 초기화 → 상태 반영 플로우 (통합)', () => {
+    const mockTabsQuery = vi.mocked(chrome.tabs.query as TabsQueryPromise);
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -20,7 +20,7 @@ describe('스토어 초기화 → 상태 반영 플로우 (통합)', () => {
             id: 1,
             url: 'https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1',
         };
-        vi.mocked(chrome.tabs.query).mockResolvedValue([ec5_tab]);
+        mockTabsQuery.mockResolvedValue([ec5_tab as chrome.tabs.Tab]);
 
         await initializeTabState();
 
@@ -35,7 +35,7 @@ describe('스토어 초기화 → 상태 반영 플로우 (통합)', () => {
             id: 2,
             url: 'https://www.google.com/',
         };
-        vi.mocked(chrome.tabs.query).mockResolvedValue([non_ecount_tab]);
+        mockTabsQuery.mockResolvedValue([non_ecount_tab as chrome.tabs.Tab]);
 
         await initializeTabState();
 
@@ -47,8 +47,7 @@ describe('스토어 초기화 → 상태 반영 플로우 (통합)', () => {
             id: 3,
             url: 'https://stageba.ecount.com/ec5/view/erp',
         };
-        vi.mocked(chrome.tabs.query).mockResolvedValue([stage_tab]);
-
+        mockTabsQuery.mockResolvedValue([stage_tab as chrome.tabs.Tab]);
         await initializeTabState();
 
         const state = getTabState();

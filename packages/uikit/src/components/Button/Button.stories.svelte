@@ -1,10 +1,14 @@
 <script module>
     import { defineMeta } from '@storybook/addon-svelte-csf';
+    import { expect, fn, within, userEvent } from '@storybook/test';
     import Button from './Button.svelte';
 
     const { Story } = defineMeta({
         component: Button,
         title: 'uikit/Button',
+        args: {
+            onclick: fn(),
+        },
         argTypes: {
             variant: {
                 control: 'select',
@@ -16,12 +20,19 @@
             },
             disabled: { control: 'boolean' },
             fullWidth: { control: 'boolean' },
-            onclick: { action: 'clicked' },
         },
     });
 </script>
 
-<Story name="Primary" args={{ variant: 'primary' }}>
+<Story
+    name="Primary"
+    args={{ variant: 'primary' }}
+    play={async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('button')).toBeInTheDocument();
+        await expect(canvas.getByText('Click me')).toBeInTheDocument();
+    }}
+>
     Click me
 </Story>
 
@@ -41,12 +52,42 @@
     Medium
 </Story>
 
-<Story name="Disabled" args={{ disabled: true, variant: 'primary' }}>
+<Story
+    name="Disabled"
+    args={{ disabled: true, variant: 'primary' }}
+    play={async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button');
+        await expect(button).toBeDisabled();
+        await userEvent.click(button);
+        await expect(args.onclick).not.toHaveBeenCalled();
+    }}
+>
     Disabled
 </Story>
 
-<Story name="FullWidth" args={{ fullWidth: true, variant: 'primary' }}>
+<Story
+    name="FullWidth"
+    args={{ fullWidth: true, variant: 'primary' }}
+    play={async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('button')).toBeInTheDocument();
+    }}
+>
     Full Width
+</Story>
+
+<Story
+    name="WithClickHandler"
+    args={{ variant: 'primary' }}
+    play={async ({ canvasElement, args }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button');
+        await userEvent.click(button);
+        await expect(args.onclick).toHaveBeenCalledOnce();
+    }}
+>
+    Click to test
 </Story>
 
 <Story name="AllVariants" asChild>
@@ -62,8 +103,4 @@
         <Button size="sm" variant="primary">Small</Button>
         <Button size="md" variant="primary">Medium</Button>
     </div>
-</Story>
-
-<Story name="WithClickHandler" args={{ variant: 'primary', onclick: () => alert('Clicked!') }}>
-    Click to alert
 </Story>

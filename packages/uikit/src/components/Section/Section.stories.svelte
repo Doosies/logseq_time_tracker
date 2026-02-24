@@ -1,5 +1,6 @@
 <script module>
     import { defineMeta } from '@storybook/addon-svelte-csf';
+    import { expect, within } from '@storybook/test';
     import Section from './Section.svelte';
 
     const { Story } = defineMeta({
@@ -11,11 +12,26 @@
     });
 </script>
 
-<Story name="WithTitle" args={{ title: '섹션 제목' }}>
+<Story
+    name="WithTitle"
+    args={{ title: '섹션 제목' }}
+    play={async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('섹션 제목')).toBeInTheDocument();
+        await expect(canvas.getByText('섹션 내용입니다.')).toBeInTheDocument();
+    }}
+>
     <p>섹션 내용입니다.</p>
 </Story>
 
-<Story name="WithoutTitle">
+<Story
+    name="WithoutTitle"
+    play={async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.queryByText('섹션 제목')).not.toBeInTheDocument();
+        await expect(canvas.getByText('제목 없는 섹션 내용')).toBeInTheDocument();
+    }}
+>
     <p>제목 없는 섹션 내용</p>
 </Story>
 
