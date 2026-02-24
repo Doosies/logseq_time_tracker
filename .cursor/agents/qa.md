@@ -17,6 +17,9 @@ skills:
   - qa/code-review.md
   - qa/coverage-check.md
   - qa/test-quality.md
+  - qa/svelte-testing.md
+  - qa/storybook-strategy.md
+  - qa/chrome-extension-testing.md
   - shared/project-conventions.md
   - shared/error-handling.md
 name: qa
@@ -75,6 +78,10 @@ description: 테스트 및 품질 검증 전문 에이전트
 - `qa/test-strategy.md` - 테스트 유형별 전략
 - `qa/code-review.md` - 코드 리뷰 체크리스트
 - `qa/coverage-check.md` - 커버리지 측정 및 개선
+- `qa/test-quality.md` - 테스트 코드 품질 검증
+- `qa/svelte-testing.md` - Svelte 5 컴포넌트 테스트 (@testing-library/svelte)
+- `qa/storybook-strategy.md` - Svelte Storybook Story 작성 (addon-svelte-csf v5)
+- `qa/chrome-extension-testing.md` - Chrome Extension API 모킹 패턴
 - `shared/project-conventions.md` - 프로젝트 공통 컨벤션
 - `shared/error-handling.md` - 에러 처리 검증
 
@@ -342,6 +349,9 @@ describe('calculateTotal', () => {
 - 코드 리뷰 → `code-review.md`
 - 커버리지 측정 → `coverage-check.md`
 - **테스트 코드 품질 검증 → `test-quality.md`** (필수!)
+- Svelte 5 컴포넌트 테스트 → `svelte-testing.md`
+- Storybook Story 작성 → `storybook-strategy.md`
+- Chrome Extension 테스트 → `chrome-extension-testing.md`
 - 에러 처리 검증 → `shared/error-handling.md`
 
 ## 완료 보고

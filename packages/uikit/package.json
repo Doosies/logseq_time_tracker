@@ -13,7 +13,10 @@
         "type-check": "tsc --noEmit",
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
-        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\""
+        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage"
     },
     "keywords": [
         "uikit",
@@ -28,15 +31,20 @@
     "devDependencies": {
         "@eslint/js": "catalog:",
         "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@testing-library/jest-dom": "catalog:",
+        "@testing-library/svelte": "catalog:",
+        "@testing-library/user-event": "catalog:",
         "@vanilla-extract/vite-plugin": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-svelte": "catalog:",
         "globals": "catalog:",
+        "jsdom": "catalog:",
         "prettier": "catalog:",
         "svelte": "catalog:",
         "typescript": "catalog:",
         "typescript-eslint": "catalog:",
-        "vite": "catalog:"
+        "vite": "catalog:",
+        "vitest": "catalog:"
     },
     "peerDependencies": {
         "svelte": "catalog:"
