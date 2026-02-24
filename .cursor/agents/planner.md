@@ -1,7 +1,4 @@
 ---
-name: planner
-model: claude-4.5-sonnet-thinking
-description: 요구사항 분석 및 시스템 설계 전문 에이전트
 role: 기획자 (Planner)
 responsibilities:
   - 요구사항 분석 및 문서화
@@ -15,6 +12,9 @@ skills:
   - planner/api-design.md
   - shared/project-conventions.md
   - shared/error-handling.md
+name: planner
+model: claude-4.6-opus-high-thinking
+description: 요구사항 분석 및 시스템 설계 전문 에이전트
 ---
 
 # 기획 에이전트 (Planner Agent)

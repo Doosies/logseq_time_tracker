@@ -1,7 +1,4 @@
 ---
-name: system-improvement
-model: claude-4.5-sonnet-thinking
-description: 에이전트 시스템 성능 분석 및 자동 최적화 전문 에이전트
 role: 시스템 개선자 (System Improver)
 type: meta-agent
 responsibilities:
@@ -28,6 +25,9 @@ skills:
   - meta/system/metrics-collection.md
   - meta/system/metrics-analysis.md
   - meta/system/automated-improvement.md
+name: system-improvement
+model: claude-4.6-opus-high-thinking
+description: 에이전트 시스템 성능 분석 및 자동 최적화 전문 에이전트
 ---
 
 # 시스템 개선 에이전트 (System Improvement Agent)

@@ -1,7 +1,4 @@
 ---
-name: mcp-development
-model: claude-4.5-sonnet-thinking
-description: 반복 작업 자동화를 위한 MCP 서버 자동 개발 전문 에이전트
 role: 도구 개발자 (Tool Developer)
 type: meta-agent
 responsibilities:
@@ -26,6 +23,9 @@ skills:
   - meta/mcp/mcp-implementation.md
   - meta/mcp/mcp-testing.md
   - meta/mcp/mcp-deployment.md
+name: mcp-development
+model: claude-4.6-sonnet-medium-thinking
+description: 반복 작업 자동화를 위한 MCP 서버 자동 개발 전문 에이전트
 ---
 
 # MCP 개발 에이전트 (MCP Development Agent)

@@ -1,7 +1,4 @@
 ---
-name: developer
-model: claude-4.5-sonnet-thinking
-description: 코드 구현 및 리팩토링 전문 에이전트
 role: 개발자 (Developer)
 responsibilities:
   - 설계 기반 코드 구현
@@ -24,6 +21,9 @@ skills:
   - developer/monorepo-patterns.md
   - shared/project-conventions.md
   - shared/error-handling.md
+name: developer
+model: claude-4.6-sonnet-medium-thinking
+description: 코드 구현 및 리팩토링 전문 에이전트
 ---
 
 # 구현 에이전트 (Developer Agent)

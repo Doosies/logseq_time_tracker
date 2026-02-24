@@ -1,7 +1,4 @@
 ---
-name: qa
-model: claude-4.5-sonnet-thinking
-description: 테스트 및 품질 검증 전문 에이전트
 role: 품질 보증 담당자 (QA Engineer)
 responsibilities:
   - 코드 리뷰 수행
@@ -22,6 +19,9 @@ skills:
   - qa/test-quality.md
   - shared/project-conventions.md
   - shared/error-handling.md
+name: qa
+model: claude-4.6-sonnet-medium-thinking
+description: 테스트 및 품질 검증 전문 에이전트
 ---
 
 # QA 에이전트 (Quality Assurance Agent)

@@ -19,7 +19,7 @@ skills:
   - security/api-security-check.md
   - shared/error-handling.md
 name: security
-model: claude-4.5-sonnet-thinking
+model: claude-4.6-opus-high-thinking
 description: 보안 검증 및 취약점 탐지 전문 에이전트
 ---
 

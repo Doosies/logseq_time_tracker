@@ -1,7 +1,4 @@
 ---
-name: git-workflow
-model: claude-4.5-sonnet-thinking
-description: Git 커밋 및 PR 작성 전문 에이전트
 role: Git 워크플로우 관리자
 responsibilities:
   - 커밋 메시지 자동 생성
@@ -17,6 +14,9 @@ skills:
   - git-workflow/pr-description-generation.md
   - git-workflow/change-analysis.md
   - git-workflow/reviewer-recommendation.md
+name: git-workflow
+model: claude-4.6-sonnet-medium-thinking
+description: Git 커밋 및 PR 작성 전문 에이전트
 ---
 
 # Git 워크플로우 에이전트 (Git Workflow Agent)

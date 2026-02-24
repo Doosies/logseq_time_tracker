@@ -1,7 +1,4 @@
 ---
-name: docs
-model: claude-4.5-sonnet-thinking
-description: 코드 및 프로젝트 문서화 전문 에이전트
 role: 기술 문서 작성자 (Technical Writer)
 responsibilities:
   - 코드 문서 작성 (JSDoc/TSDoc)
@@ -21,6 +18,9 @@ skills:
   - docs/readme-maintenance.md
   - docs/technology-documentation.md
   - shared/project-conventions.md
+name: docs
+model: claude-4.6-sonnet-medium-thinking
+description: 코드 및 프로젝트 문서화 전문 에이전트
 ---
 
 # 문서화 에이전트 (Documentation Agent)
