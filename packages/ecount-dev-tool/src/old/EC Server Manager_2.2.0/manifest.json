@@ -1,18 +1,11 @@
 {
-  "name": "EC Server Manager",
-  "description": "EQC 업무용 확장 프로그램",
-  "version": "2.2.0",
-  "manifest_version": 3,
-  "permissions": [
-    "activeTab",
-    "scripting",
-    "storage",
-    "tabs"
-  ],
-  "host_permissions": [
-    "*://*.ecount.com/*"
-  ],
-  "action": {
-    "default_popup": "popup.html"
-  }
+    "name": "EC Server Manager",
+    "description": "EQC 업무용 확장 프로그램",
+    "version": "2.2.0",
+    "manifest_version": 3,
+    "permissions": ["activeTab", "scripting", "storage", "tabs"],
+    "host_permissions": ["*://*.ecount.com/*"],
+    "action": {
+        "default_popup": "popup.html"
+    }
 }

@@ -28,7 +28,7 @@ description: 의존성 감사, 카탈로그 관리, 버전 업데이트 프로�
 2. 공통 의존성 식별 (2개+ 패키지에서 사용)
 3. pnpm-workspace.yaml의 catalog에 최신 안정 버전 추가
 4. 각 package.json에서 버전을 `catalog:`로 교체
-5. `pnpm install` 실행
+5. `pnpm install --no-offline` 실행
 6. `pnpm type-check` + `pnpm test`로 검증
 ```
 
@@ -87,7 +87,7 @@ catalog:
 2. 최신 안정 버전 확인 (npm info <package> version)
 3. Breaking changes 확인 (CHANGELOG 참조)
 4. 버전 업데이트 적용
-5. pnpm install 실행
+5. pnpm install --no-offline 실행
 6. 검증: pnpm type-check → pnpm test → pnpm build
 ```
 
@@ -128,12 +128,12 @@ catalog:
 ### 의존성 제거 시
 - [ ] 실제로 미사용인지 소스 코드 검색
 - [ ] 빌드 도구/플러그인/타입 정의가 아닌지 확인
-- [ ] pnpm install 후 type-check + test
+- [ ] pnpm install --no-offline 후 type-check + test
 
 ### 버전 업데이트 시
 - [ ] Breaking changes 확인
 - [ ] catalog 사용 중인 경우 catalog에서 업데이트
-- [ ] pnpm install → type-check → test → build
+- [ ] pnpm install --no-offline → type-check → test → build
 
 ---
 

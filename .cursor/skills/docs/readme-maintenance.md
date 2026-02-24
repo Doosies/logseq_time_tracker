@@ -225,7 +225,7 @@ yarn add package-name
 
 ### pnpm
 \`\`\`bash
-pnpm add package-name
+pnpm add package-name --no-offline
 \`\`\`
 
 ### CDN

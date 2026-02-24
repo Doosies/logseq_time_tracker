@@ -38,9 +38,7 @@ describe('parseEcountUrl', () => {
     });
 
     it('zeus + ec5 URL을 올바르게 파싱해야 함', () => {
-        const result = parseEcountUrl(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1'
-        );
+        const result = parseEcountUrl('https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1');
         expect(result).not.toBeNull();
         expect(result!.environment).toBe('zeus');
         expect(result!.page_type).toBe('ec5');
@@ -55,9 +53,7 @@ describe('parseEcountUrl', () => {
     });
 
     it('zeus + ec3 (ECP050M) URL을 올바르게 파싱해야 함', () => {
-        const result = parseEcountUrl(
-            'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1'
-        );
+        const result = parseEcountUrl('https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1');
         expect(result).not.toBeNull();
         expect(result!.environment).toBe('zeus');
         expect(result!.page_type).toBe('ec3');
@@ -83,26 +79,20 @@ describe('parseEcountUrl', () => {
 
 describe('buildEc5Url', () => {
     it('EC5 URL을 올바르게 생성해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1'
-        );
+        const current_url = new URL('https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1');
         const result = buildEc5Url(current_url, 'zeus01lxba2', 'zeus01ba2');
         expect(result).toContain('zeus01lxba2.ecount.com');
         expect(result).toContain('__v3domains=zeus01ba2');
     });
 
     it('hash가 있을 때 hash를 보존해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp#/some/hash'
-        );
+        const current_url = new URL('https://zeus01lxba1.ecount.com/ec5/view/erp#/some/hash');
         const result = buildEc5Url(current_url, 'zeus01lxba2', 'zeus01ba2');
         expect(result).toContain('#/some/hash');
     });
 
     it('기존 __v3domains 파라미터를 교체해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp?foo=bar&__v3domains=zeus01ba1'
-        );
+        const current_url = new URL('https://zeus01lxba1.ecount.com/ec5/view/erp?foo=bar&__v3domains=zeus01ba1');
         const result = buildEc5Url(current_url, 'zeus01lxba2', 'zeus01ba2');
         expect(result).toContain('__v3domains=zeus01ba2');
         expect(result).not.toContain('__v3domains=zeus01ba1');
@@ -111,26 +101,20 @@ describe('buildEc5Url', () => {
 
 describe('buildEc3Url', () => {
     it('EC3 URL을 올바르게 생성해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1'
-        );
+        const current_url = new URL('https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1');
         const result = buildEc3Url(current_url, 'zeus01ba2', 'zeus01lxba2');
         expect(result).toContain('zeus01ba2.ecount.com');
         expect(result).toContain('__v5domains=zeus01lxba2');
     });
 
     it('hash가 있을 때 hash를 보존해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M#/hash'
-        );
+        const current_url = new URL('https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M#/hash');
         const result = buildEc3Url(current_url, 'zeus01ba2', 'zeus01lxba2');
         expect(result).toContain('#/hash');
     });
 
     it('기존 __v5domains 파라미터를 교체해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1'
-        );
+        const current_url = new URL('https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1');
         const result = buildEc3Url(current_url, 'zeus01ba2', 'zeus01lxba2');
         expect(result).toContain('__v5domains=zeus01lxba2');
         expect(result).not.toContain('__v5domains=zeus01lxba1');
@@ -139,9 +123,7 @@ describe('buildEc3Url', () => {
 
 describe('buildStageUrl', () => {
     it('stageba에서 stagelxba2로 전환해야 함', () => {
-        const current_url = new URL(
-            'https://stageba.ecount.com/ec5/view/erp'
-        );
+        const current_url = new URL('https://stageba.ecount.com/ec5/view/erp');
         const result = buildStageUrl(current_url);
         expect(result).not.toBeNull();
         expect(result).toContain('stagelxba2.ecount.com');
@@ -149,18 +131,14 @@ describe('buildStageUrl', () => {
     });
 
     it('stageba-dev에서 stagelxba2-dev로 전환해야 함', () => {
-        const current_url = new URL(
-            'https://stageba-dev.ecount.com/ec5/view/erp'
-        );
+        const current_url = new URL('https://stageba-dev.ecount.com/ec5/view/erp');
         const result = buildStageUrl(current_url);
         expect(result).not.toBeNull();
         expect(result).toContain('stagelxba2-dev.ecount.com');
     });
 
     it('stagelxba2에서 stageba로 전환해야 함', () => {
-        const current_url = new URL(
-            'https://stagelxba2.ecount.com/ec5/view/erp?foo=bar&__v3domains=stageba2'
-        );
+        const current_url = new URL('https://stagelxba2.ecount.com/ec5/view/erp?foo=bar&__v3domains=stageba2');
         const result = buildStageUrl(current_url);
         expect(result).not.toBeNull();
         expect(result).toContain('stageba.ecount.com');
@@ -168,9 +146,7 @@ describe('buildStageUrl', () => {
     });
 
     it('stagelxba2-dev에서 stageba-dev로 전환해야 함', () => {
-        const current_url = new URL(
-            'https://stagelxba2-dev.ecount.com/ec5/view/erp'
-        );
+        const current_url = new URL('https://stagelxba2-dev.ecount.com/ec5/view/erp');
         const result = buildStageUrl(current_url);
         expect(result).not.toBeNull();
         expect(result).toContain('stageba-dev.ecount.com');
@@ -226,9 +202,7 @@ describe('buildDevUrl', () => {
     });
 
     it('hasSetDevMode가 false이고 zeus 호스트일 때 -dev 서버 URL을 생성해야 함', () => {
-        const current_url = new URL(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01lxba1'
-        );
+        const current_url = new URL('https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01lxba1');
         const page_info: PageInfo = {
             hasSetDevMode: false,
             hasECountApp: false,

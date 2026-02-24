@@ -164,7 +164,7 @@ build: {
 ## 설정 변경 후 검증 프로세스
 
 ```markdown
-1. pnpm install (lock 파일 갱신)
+1. pnpm install --no-offline (lock 파일 갱신)
 2. pnpm type-check (타입 검증 - 가장 중요!)
 3. pnpm lint (린트 검증)
 4. pnpm test (테스트 회귀)

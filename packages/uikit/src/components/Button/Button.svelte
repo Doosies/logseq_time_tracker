@@ -22,10 +22,7 @@
     }: ButtonProps = $props();
 
     const getClassNames = () => {
-        const classes = [
-            styles.button_variant[variant],
-            styles.button_size[size]
-        ];
+        const classes = [styles.button_variant[variant], styles.button_size[size]];
         if (fullWidth) {
             classes.push(styles.button_full_width);
         }
@@ -33,11 +30,6 @@
     };
 </script>
 
-<button
-    class={getClassNames()}
-    {disabled}
-    onclick={() => onclick?.()}
-    type="button"
->
+<button class={getClassNames()} {disabled} onclick={() => onclick?.()} type="button">
     {@render children()}
 </button>

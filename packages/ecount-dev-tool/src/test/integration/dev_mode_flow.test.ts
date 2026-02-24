@@ -26,9 +26,7 @@ describe('devMode 활성화 플로우 (통합)', () => {
     });
 
     it('레거시 시스템(hasSetDevMode=false)에서 -dev 접미사와 __v3domains -dev가 적용되어야 함', () => {
-        const zeus_url = new URL(
-            'https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1'
-        );
+        const zeus_url = new URL('https://zeus01lxba1.ecount.com/ec5/view/erp?__v3domains=zeus01ba1');
         const page_info: PageInfo = {
             hasSetDevMode: false,
             hasECountApp: false,

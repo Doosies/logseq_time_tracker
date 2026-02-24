@@ -8,12 +8,7 @@
         oninput?: ((value: string) => void) | undefined;
     }
 
-    let {
-        value = $bindable(),
-        placeholder = '',
-        disabled = false,
-        oninput,
-    }: TextInputProps = $props();
+    let { value = $bindable(), placeholder = '', disabled = false, oninput }: TextInputProps = $props();
 
     const handleInput = (e: Event) => {
         const target = e.target as HTMLInputElement;
@@ -23,12 +18,5 @@
 </script>
 
 <div class={styles.text_input_container}>
-    <input
-        type="text"
-        class={styles.text_input_element}
-        {disabled}
-        {placeholder}
-        bind:value
-        oninput={handleInput}
-    />
+    <input type="text" class={styles.text_input_element} {disabled} {placeholder} bind:value oninput={handleInput} />
 </div>

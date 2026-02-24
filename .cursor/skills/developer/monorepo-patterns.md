@@ -100,7 +100,7 @@ catalog:
 3. tsconfig.json 작성 (extends ../../tsconfig.base.json)
 4. eslint.config.ts 작성 (extends 루트)
 5. src/ 디렉토리 구조 설정
-6. pnpm install 실행
+6. pnpm install --no-offline 실행
 7. turbo.json에 필요한 태스크 확인
 ```
 
@@ -184,7 +184,7 @@ package-b → shared-lib
 # 캐시 정리 후 재설치
 pnpm store prune
 rm -rf node_modules
-pnpm install
+pnpm install --no-offline
 ```
 
 ### 타입 인식 안됨
@@ -208,4 +208,4 @@ pnpm turbo run build --force
 - [ ] 공통 의존성 catalog 관리
 - [ ] 순환 의존성 없음
 - [ ] 패키지별 설정이 base에서 상속
-- [ ] pnpm install → type-check → test 모두 통과
+- [ ] pnpm install --no-offline → type-check → test 모두 통과

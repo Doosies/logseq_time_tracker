@@ -15,8 +15,6 @@
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('button', { name: '5.0 로컬' })).toBeInTheDocument();
         await expect(canvas.getByRole('button', { name: '3.0 로컬' })).toBeInTheDocument();
-        await expect(
-            canvas.getByRole('button', { name: 'disableMin 활성화 (devMode)' }),
-        ).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: 'disableMin 활성화 (devMode)' })).toBeInTheDocument();
     }}
 />

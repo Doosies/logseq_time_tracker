@@ -27,19 +27,14 @@
     {#if prefix}
         <div class={styles.prefix_container}>{prefix}</div>
     {/if}
-    
+
     {#if isTextMode}
-        <TextInput bind:value oninput={onchange}  />
+        <TextInput bind:value oninput={onchange} />
     {:else}
-        <Select bind:value {options} onchange={onchange} />
+        <Select bind:value {options} {onchange} />
     {/if}
-    
-    <button
-        type="button"
-        class={styles.toggle_icon}
-        onclick={onToggle}
-        aria-label="Toggle input mode"
-    >
+
+    <button type="button" class={styles.toggle_icon} onclick={onToggle} aria-label="Toggle input mode">
         {isTextMode ? '🔽' : '✏️'}
     </button>
 </div>

@@ -9,13 +9,13 @@ alwaysApply: true
 
 ### 필수 옵션
 
-**의존성 설치 시 항상 `--offline` 옵션 사용**
+**의존성 설치 시 항상 `--no-offline` 옵션 사용**
 
 ```bash
 # ✅ 올바른 사용
-pnpm install --offline
-pnpm add <package> --offline
-pnpm update --offline
+pnpm install --no-offline
+pnpm add <package> --no-offline
+pnpm update --no-offline
 
 # ❌ 잘못된 사용
 pnpm install
@@ -25,27 +25,18 @@ pnpm update
 
 ### 이유
 
-- 오프라인 모드는 이미 캐시된 패키지만 사용
-- 네트워크 요청을 최소화하여 빠른 설치
-- 예상치 못한 버전 변경 방지
-- 일관된 빌드 환경 보장
+- `.npmrc`에 `offline=true` 설정이 있을 수 있으므로 명시적으로 해제
+- 네트워크 접근이 필요한 경우 확실하게 보장
+- 캐시에 없는 패키지도 정상 설치 가능
 
 ### 예외 상황
 
-새로운 패키지를 처음 설치하거나 캐시를 갱신해야 하는 경우에만 `--offline` 옵션 제거:
-
-```bash
-# 새 패키지 추가 시 (최초 1회)
-pnpm add new-package
-
-# 이후 다시 offline 모드로 전환
-pnpm install --offline
-```
+없음. 모든 pnpm install/add/update 명령에 `--no-offline`을 반드시 추가합니다.
 
 ---
 
 ## 원칙
 
-- 모든 pnpm 명령어는 기본적으로 `--offline` 옵션 사용
-- 사용자가 명시적으로 온라인 설치를 요청하지 않는 한 오프라인 모드 유지
-- Shell 도구 사용 시 자동으로 `--offline` 옵션 추가
+- 모든 pnpm install/add/update 명령어는 `--no-offline` 옵션 필수
+- Shell 도구 사용 시 자동으로 `--no-offline` 옵션 추가
+- CLI 사용 상세 가이드: `.cursor/skills/shared/cli-usage.md` 참조

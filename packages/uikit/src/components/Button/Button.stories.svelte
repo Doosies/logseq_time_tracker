@@ -36,21 +36,13 @@
     Click me
 </Story>
 
-<Story name="Secondary" args={{ variant: 'secondary' }}>
-    Secondary
-</Story>
+<Story name="Secondary" args={{ variant: 'secondary' }}>Secondary</Story>
 
-<Story name="Accent" args={{ variant: 'accent' }}>
-    Accent
-</Story>
+<Story name="Accent" args={{ variant: 'accent' }}>Accent</Story>
 
-<Story name="Small" args={{ size: 'sm', variant: 'primary' }}>
-    Small
-</Story>
+<Story name="Small" args={{ size: 'sm', variant: 'primary' }}>Small</Story>
 
-<Story name="Medium" args={{ size: 'md', variant: 'primary' }}>
-    Medium
-</Story>
+<Story name="Medium" args={{ size: 'md', variant: 'primary' }}>Medium</Story>
 
 <Story
     name="Disabled"

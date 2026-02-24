@@ -62,16 +62,17 @@ import '@logseq/libs';
 
 ```json
 {
-  "logseq": {
-    "id": "your-plugin-id",
-    "title": "Your Plugin Title",
-    "icon": "./logo.svg",
-    "main": "dist/index.html"
-  }
+    "logseq": {
+        "id": "your-plugin-id",
+        "title": "Your Plugin Title",
+        "icon": "./logo.svg",
+        "main": "dist/index.html"
+    }
 }
 ```
 
 **설명**:
+
 - `id`: 플러그인의 고유 식별자 (필수)
 - `title`: 플러그인 표시 이름
 - `icon`: 플러그인 아이콘 경로
@@ -106,9 +107,9 @@ LogSeq 플러그인은 두 가지 모드를 지원합니다:
 
 ```json
 {
-  "logseq": {
-    "mode": "shadow"  // 또는 "iframe"
-  }
+    "logseq": {
+        "mode": "shadow" // 또는 "iframe"
+    }
 }
 ```
 
@@ -123,18 +124,21 @@ LogSeq 플러그인은 두 가지 모드를 지원합니다:
 **설명**: LogSeq 앱이 플러그인을 실행할 준비가 되었을 때 호출됩니다. 모든 플러그인 초기화 코드는 이 콜백 내부에 작성해야 합니다.
 
 **시그니처**:
+
 ```typescript
 ready(callback?: (e: any) => void | {}): Promise<any>
 ready(model?: Record<string, any>, callback?: (e: any) => void | {}): Promise<any>
 ```
 
 **매개변수**:
+
 - `callback`: 플러그인 초기화 콜백 함수
 - `model`: `provideModel`과 함께 사용할 모델 객체 (선택사항)
 
 **반환값**: Promise
 
 **예제**:
+
 ```typescript
 logseq.ready(() => {
     console.log('Plugin initialized');
@@ -145,7 +149,7 @@ logseq.ready(() => {
 logseq.provideModel({
     myMethod() {
         console.log('Called from UI');
-    }
+    },
 });
 
 logseq.ready({ myMethod }, () => {
@@ -153,7 +157,8 @@ logseq.ready({ myMethod }, () => {
 });
 ```
 
-**주의사항**: 
+**주의사항**:
+
 - `ready()` 호출 전에는 대부분의 LogSeq API를 사용할 수 없습니다.
 - `setMainUIInlineStyle()` 같은 일부 API는 `ready()` 호출 전에도 사용 가능합니다.
 
@@ -166,16 +171,19 @@ logseq.ready({ myMethod }, () => {
 **설명**: 플러그인의 메인 UI 컨테이너에 인라인 스타일을 설정합니다. 주로 UI 위치, 크기, z-index 등을 설정하는 데 사용됩니다.
 
 **시그니처**:
+
 ```typescript
 setMainUIInlineStyle(style: CSS.Properties): void
 ```
 
 **매개변수**:
+
 - `style`: CSS 속성 객체
 
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.setMainUIInlineStyle({
     position: 'fixed',
@@ -188,7 +196,8 @@ logseq.setMainUIInlineStyle({
 });
 ```
 
-**주의사항**: 
+**주의사항**:
+
 - `ready()` 호출 전에도 사용 가능합니다.
 - CSS 속성은 camelCase 형식으로 작성해야 합니다.
 
@@ -199,16 +208,19 @@ logseq.setMainUIInlineStyle({
 **설명**: 플러그인의 메인 UI를 표시합니다.
 
 **시그니처**:
+
 ```typescript
 showMainUI(opts?: { autoFocus: boolean }): void
 ```
 
 **매개변수**:
+
 - `opts.autoFocus`: UI 표시 시 자동 포커스 여부 (기본값: false)
 
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.showMainUI({ autoFocus: true });
 ```
@@ -220,16 +232,19 @@ logseq.showMainUI({ autoFocus: true });
 **설명**: 플러그인의 메인 UI를 숨깁니다.
 
 **시그니처**:
+
 ```typescript
 hideMainUI(opts?: { restoreEditingCursor: boolean }): void
 ```
 
 **매개변수**:
+
 - `opts.restoreEditingCursor`: UI 숨김 시 편집 커서 복원 여부 (기본값: false)
 
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.hideMainUI({ restoreEditingCursor: true });
 ```
@@ -241,6 +256,7 @@ logseq.hideMainUI({ restoreEditingCursor: true });
 **설명**: 플러그인의 메인 UI 표시/숨김을 토글합니다.
 
 **시그니처**:
+
 ```typescript
 toggleMainUI(): void
 ```
@@ -248,6 +264,7 @@ toggleMainUI(): void
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.toggleMainUI();
 ```
@@ -259,23 +276,26 @@ logseq.toggleMainUI();
 **설명**: LogSeq의 특정 위치에 커스텀 UI를 삽입합니다. 툴바, 페이지바, 또는 특정 DOM 요소에 UI를 추가할 수 있습니다.
 
 **시그니처**:
+
 ```typescript
 provideUI(ui: UIOptions): this
 ```
 
 **매개변수**:
+
 - `ui`: UI 옵션 객체
-  - `key`: UI의 고유 키
-  - `template`: HTML 템플릿 문자열
-  - `path`: DOM 선택자 (예: `#search`)
-  - `slot`: 슬롯 키 (예: `toolbar`, `pagebar`)
-  - `style`: CSS 스타일 객체
-  - `attrs`: HTML 속성 객체
-  - `close`: 외부 클릭 시 닫기 옵션 (`'outside'` 또는 선택자)
+    - `key`: UI의 고유 키
+    - `template`: HTML 템플릿 문자열
+    - `path`: DOM 선택자 (예: `#search`)
+    - `slot`: 슬롯 키 (예: `toolbar`, `pagebar`)
+    - `style`: CSS 스타일 객체
+    - `attrs`: HTML 속성 객체
+    - `close`: 외부 클릭 시 닫기 옵션 (`'outside'` 또는 선택자)
 
 **반환값**: `logseq` 객체 (체이닝 가능)
 
 **예제**:
+
 ```typescript
 // 툴바에 버튼 추가
 logseq.provideUI({
@@ -300,7 +320,8 @@ logseq.provideUI({
 });
 ```
 
-**주의사항**: 
+**주의사항**:
+
 - `data-on-click` 속성으로 클릭 이벤트를 처리하려면 `provideModel()`로 해당 메서드를 등록해야 합니다.
 - HTML 문자열 내에서 이벤트 핸들러를 직접 전달할 수 없습니다.
 
@@ -311,16 +332,19 @@ logseq.provideUI({
 **설명**: UI 템플릿에서 참조할 수 있는 메서드 모델을 제공합니다. `provideUI()`의 `data-on-click` 속성과 함께 사용됩니다.
 
 **시그니처**:
+
 ```typescript
 provideModel(model: Record<string, any>): this
 ```
 
 **매개변수**:
+
 - `model`: 메서드가 포함된 객체
 
 **반환값**: `logseq` 객체 (체이닝 가능)
 
 **예제**:
+
 ```typescript
 logseq.provideModel({
     togglePluginUI() {
@@ -344,7 +368,8 @@ logseq.provideUI({
 });
 ```
 
-**주의사항**: 
+**주의사항**:
+
 - 모델 메서드는 비동기 함수일 수 있습니다.
 - `ready()` 호출 전에 `provideModel()`을 호출할 수 있습니다.
 
@@ -355,18 +380,21 @@ logseq.provideUI({
 **설명**: LogSeq 앱에 커스텀 CSS를 주입합니다. 전역 스타일을 변경하거나 플러그인 UI 스타일을 추가하는 데 사용됩니다.
 
 **시그니처**:
+
 ```typescript
 provideStyle(style: StyleString | StyleOptions): this
 ```
 
 **매개변수**:
+
 - `style`: CSS 문자열 또는 옵션 객체
-  - `key`: 스타일의 고유 키 (옵션)
-  - `style`: CSS 문자열
+    - `key`: 스타일의 고유 키 (옵션)
+    - `style`: CSS 문자열
 
 **반환값**: `logseq` 객체 (체이닝 가능)
 
 **예제**:
+
 ```typescript
 // CSS 문자열 직접 전달
 logseq.provideStyle(`
@@ -399,6 +427,7 @@ logseq.provideStyle({
 **설명**: 툴바 또는 페이지바에 UI 아이템을 등록합니다. `provideUI()`의 간편한 대안입니다.
 
 **시그니처**:
+
 ```typescript
 registerUIItem(type: 'toolbar' | 'pagebar', opts: {
     key: string;
@@ -407,6 +436,7 @@ registerUIItem(type: 'toolbar' | 'pagebar', opts: {
 ```
 
 **매개변수**:
+
 - `type`: UI 아이템 타입 (`'toolbar'` 또는 `'pagebar'`)
 - `opts.key`: UI 아이템의 고유 키
 - `opts.template`: HTML 템플릿 문자열
@@ -414,6 +444,7 @@ registerUIItem(type: 'toolbar' | 'pagebar', opts: {
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.App.registerUIItem('toolbar', {
     key: 'my-toolbar-item',
@@ -425,7 +456,8 @@ logseq.App.registerUIItem('toolbar', {
 });
 ```
 
-**주의사항**: 
+**주의사항**:
+
 - `data-on-click` 핸들러는 `provideModel()`로 등록해야 합니다.
 - `ready()` 콜백 내부에서 호출해야 합니다.
 
@@ -436,6 +468,7 @@ logseq.App.registerUIItem('toolbar', {
 **설명**: 명령어를 등록합니다. 단축키와 명령 팔레트에 표시될 수 있습니다.
 
 **시그니처**:
+
 ```typescript
 registerCommand(
     type: string,
@@ -451,20 +484,22 @@ registerCommand(
 ```
 
 **매개변수**:
+
 - `type`: 명령어 타입 (일반적으로 명령어 키와 동일)
 - `opts.key`: 명령어의 고유 키
 - `opts.label`: 명령어 표시 이름
 - `opts.desc`: 명령어 설명 (선택사항)
 - `opts.palette`: 명령 팔레트에 표시할지 여부 (기본값: false)
 - `opts.keybinding`: 단축키 설정
-  - `binding`: 단축키 문자열 (예: `'mod+shift+p'`)
-  - `mode`: 단축키 모드 (`'global'`, `'non-editing'`, `'editing'`)
-  - `mac`: Mac 전용 단축키 (선택사항)
+    - `binding`: 단축키 문자열 (예: `'mod+shift+p'`)
+    - `mode`: 단축키 모드 (`'global'`, `'non-editing'`, `'editing'`)
+    - `mac`: Mac 전용 단축키 (선택사항)
 - `action`: 명령어 실행 시 호출될 콜백 함수
 
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.App.registerCommand(
     'show-plugin-ui',
@@ -486,6 +521,7 @@ logseq.App.registerCommand(
 ```
 
 **단축키 형식**:
+
 - `mod`: Cmd (Mac) 또는 Ctrl (Windows/Linux)
 - `shift`, `alt`, `ctrl`: 수정자 키
 - 예: `'mod+shift+p'`, `'ctrl+alt+t'`, `'cmd+k'` (Mac 전용)
@@ -497,6 +533,7 @@ logseq.App.registerCommand(
 **설명**: 명령 팔레트에 명령어를 등록합니다. `registerCommand()`와 유사하지만 팔레트 전용입니다.
 
 **시그니처**:
+
 ```typescript
 registerCommandPalette(
     opts: {
@@ -509,6 +546,7 @@ registerCommandPalette(
 ```
 
 **매개변수**:
+
 - `opts.key`: 명령어의 고유 키
 - `opts.label`: 명령어 표시 이름
 - `opts.keybinding`: 단축키 설정 (선택사항)
@@ -517,6 +555,7 @@ registerCommandPalette(
 **반환값**: 없음
 
 **예제**:
+
 ```typescript
 logseq.App.registerCommandPalette(
     {
@@ -542,19 +581,22 @@ logseq.App.registerCommandPalette(
 **설명**: LogSeq 이벤트를 구독합니다. 다양한 이벤트 타입을 지원합니다.
 
 **시그니처**:
+
 ```typescript
 on(event: LSPluginUserEvents, callback: (e: IHookEvent & E) => void): IUserOffHook
 ```
 
 **매개변수**:
+
 - `event`: 이벤트 타입
-  - `'ui:visible:changed'`: UI 표시 상태 변경
-  - `'settings:changed'`: 설정 변경
+    - `'ui:visible:changed'`: UI 표시 상태 변경
+    - `'settings:changed'`: 설정 변경
 - `callback`: 이벤트 발생 시 호출될 콜백 함수
 
 **반환값**: 이벤트 구독 해제 함수
 
 **예제**:
+
 ```typescript
 // UI 표시 상태 변경 감지
 const unsubscribe = logseq.on('ui:visible:changed', ({ visible }) => {
@@ -571,6 +613,7 @@ logseq.onSettingsChanged((newSettings, oldSettings) => {
 ```
 
 **지원 이벤트**:
+
 - `ui:visible:changed`: 플러그인 UI 표시/숨김 상태 변경
 - `settings:changed`: 플러그인 설정 변경
 
@@ -581,11 +624,13 @@ logseq.onSettingsChanged((newSettings, oldSettings) => {
 **설명**: 테마 모드(라이트/다크) 변경을 감지합니다.
 
 **시그니처**:
+
 ```typescript
-onThemeModeChanged: IUserHook<{ mode: 'dark' | 'light' }>
+onThemeModeChanged: IUserHook<{ mode: 'dark' | 'light' }>;
 ```
 
 **예제**:
+
 ```typescript
 logseq.App.onThemeModeChanged(({ mode }) => {
     console.log('Theme mode changed to:', mode);
@@ -605,11 +650,13 @@ logseq.App.onThemeModeChanged(({ mode }) => {
 **설명**: 현재 그래프 변경을 감지합니다.
 
 **시그니처**:
+
 ```typescript
-onCurrentGraphChanged: IUserHook
+onCurrentGraphChanged: IUserHook;
 ```
 
 **예제**:
+
 ```typescript
 logseq.App.onCurrentGraphChanged(async () => {
     const graph = await logseq.App.getCurrentGraph();
@@ -626,6 +673,7 @@ logseq.App.onCurrentGraphChanged(async () => {
 **설명**: 현재 편집 중인 블록을 가져옵니다.
 
 **시그니처**:
+
 ```typescript
 getCurrentBlock(): Promise<BlockEntity | null>
 ```
@@ -633,6 +681,7 @@ getCurrentBlock(): Promise<BlockEntity | null>
 **반환값**: 현재 블록 엔티티 또는 null
 
 **예제**:
+
 ```typescript
 const block = await logseq.Editor.getCurrentBlock();
 if (block) {
@@ -648,6 +697,7 @@ if (block) {
 **설명**: 현재 페이지를 가져옵니다.
 
 **시그니처**:
+
 ```typescript
 getCurrentPage(): Promise<PageEntity | BlockEntity | null>
 ```
@@ -655,6 +705,7 @@ getCurrentPage(): Promise<PageEntity | BlockEntity | null>
 **반환값**: 현재 페이지 엔티티 또는 null
 
 **예제**:
+
 ```typescript
 const page = await logseq.Editor.getCurrentPage();
 if (page) {
@@ -669,6 +720,7 @@ if (page) {
 **설명**: 블록을 삽입합니다.
 
 **시그니처**:
+
 ```typescript
 insertBlock(
     srcBlock: BlockIdentity,
@@ -685,17 +737,19 @@ insertBlock(
 ```
 
 **매개변수**:
+
 - `srcBlock`: 기준 블록 UUID 또는 블록 엔티티
 - `content`: 삽입할 블록 내용
 - `opts`: 옵션
-  - `before`: 기준 블록 앞에 삽입 (기본값: false, 뒤에 삽입)
-  - `sibling`: 형제 블록으로 삽입 (기본값: false, 자식으로 삽입)
-  - `focus`: 삽입 후 포커스 (기본값: false)
-  - `properties`: 블록 속성 객체
+    - `before`: 기준 블록 앞에 삽입 (기본값: false, 뒤에 삽입)
+    - `sibling`: 형제 블록으로 삽입 (기본값: false, 자식으로 삽입)
+    - `focus`: 삽입 후 포커스 (기본값: false)
+    - `properties`: 블록 속성 객체
 
 **반환값**: 생성된 블록 엔티티 또는 null
 
 **예제**:
+
 ```typescript
 const currentBlock = await logseq.Editor.getCurrentBlock();
 if (currentBlock) {
@@ -713,6 +767,7 @@ if (currentBlock) {
 **설명**: 블록 내용을 업데이트합니다.
 
 **시그니처**:
+
 ```typescript
 updateBlock(
     srcBlock: BlockIdentity,
@@ -722,6 +777,7 @@ updateBlock(
 ```
 
 **예제**:
+
 ```typescript
 const block = await logseq.Editor.getCurrentBlock();
 if (block) {
@@ -738,6 +794,7 @@ if (block) {
 **설명**: 사용자에게 메시지를 표시합니다.
 
 **시그니처**:
+
 ```typescript
 showMsg(
     content: string,
@@ -747,15 +804,17 @@ showMsg(
 ```
 
 **매개변수**:
+
 - `content`: 표시할 메시지
 - `status`: 메시지 타입 (`'success'`, `'warning'`, `'error'` 또는 커스텀 문자열)
 - `opts`: 옵션
-  - `key`: 메시지의 고유 키
-  - `timeout`: 자동 닫기 시간(ms)
+    - `key`: 메시지의 고유 키
+    - `timeout`: 자동 닫기 시간(ms)
 
 **반환값**: 메시지 키 (나중에 닫을 때 사용)
 
 **예제**:
+
 ```typescript
 // 성공 메시지
 await logseq.UI.showMsg('Operation completed!', 'success');
@@ -781,24 +840,27 @@ logseq.UI.closeMsg(msgKey);
 **설명**: 플러그인 설정 스키마를 정의합니다.
 
 **시그니처**:
+
 ```typescript
 useSettingsSchema(schemas: Array<SettingSchemaDesc>): this
 ```
 
 **매개변수**:
+
 - `schemas`: 설정 스키마 배열
-  - `key`: 설정 키
-  - `type`: 설정 타입 (`'string'`, `'number'`, `'boolean'`, `'enum'`, `'object'`, `'heading'`)
-  - `default`: 기본값
-  - `title`: 설정 제목
-  - `description`: 설정 설명
-  - `inputAs`: 입력 타입 (`'color'`, `'date'`, `'datetime-local'`, `'range'`, `'textarea'`)
-  - `enumChoices`: enum 타입일 때 선택지 배열
-  - `enumPicker`: enum 선택 UI 타입 (`'select'`, `'radio'`, `'checkbox'`)
+    - `key`: 설정 키
+    - `type`: 설정 타입 (`'string'`, `'number'`, `'boolean'`, `'enum'`, `'object'`, `'heading'`)
+    - `default`: 기본값
+    - `title`: 설정 제목
+    - `description`: 설정 설명
+    - `inputAs`: 입력 타입 (`'color'`, `'date'`, `'datetime-local'`, `'range'`, `'textarea'`)
+    - `enumChoices`: enum 타입일 때 선택지 배열
+    - `enumPicker`: enum 선택 UI 타입 (`'select'`, `'radio'`, `'checkbox'`)
 
 **반환값**: `logseq` 객체 (체이닝 가능)
 
 **예제**:
+
 ```typescript
 logseq.useSettingsSchema([
     {
@@ -835,11 +897,13 @@ logseq.useSettingsSchema([
 **설명**: 설정 변경을 감지합니다.
 
 **시그니처**:
+
 ```typescript
 onSettingsChanged<T = any>(cb: (a: T, b: T) => void): IUserOffHook
 ```
 
 **예제**:
+
 ```typescript
 logseq.onSettingsChanged((newSettings, oldSettings) => {
     console.log('Settings changed:', newSettings);
@@ -996,7 +1060,8 @@ logseq.setMainUIInlineStyle({
 
 **목적**: 플러그인 UI를 화면 중앙에 고정 위치로 표시합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - `ready()` 호출 전에도 사용 가능합니다.
 - CSS 속성은 camelCase 형식으로 작성해야 합니다.
 
@@ -1010,7 +1075,8 @@ logseq.ready(() => {
 
 **목적**: LogSeq가 플러그인을 실행할 준비가 되었을 때 초기화 코드를 실행합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - 대부분의 LogSeq API는 `ready()` 콜백 내부에서만 사용 가능합니다.
 - 비동기 작업도 이 콜백 내부에서 처리할 수 있습니다.
 
@@ -1029,7 +1095,8 @@ logseq.App.registerUIItem('toolbar', {
 
 **목적**: LogSeq 툴바에 플러그인 버튼을 추가합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - `data-on-click` 속성의 값은 `provideModel()`로 등록한 메서드 이름과 일치해야 합니다.
 - Tabler Icons (`ti ti-*`) 클래스를 사용할 수 있습니다.
 
@@ -1054,7 +1121,8 @@ logseq.App.registerCommand(
 
 **목적**: 단축키(`Cmd/Ctrl+Shift+P`)로 플러그인 UI를 열 수 있게 합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - `palette: true`로 설정하면 명령 팔레트에도 표시됩니다.
 - 단축키 충돌을 피하기 위해 고유한 조합을 사용하세요.
 
@@ -1099,7 +1167,8 @@ logseq.provideModel({
 
 **목적**: UI 템플릿에서 호출할 수 있는 메서드를 제공합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - `provideModel()`은 `ready()` 호출 전에도 사용 가능합니다.
 - 모델 메서드는 비동기 함수일 수 있습니다.
 
@@ -1123,7 +1192,8 @@ const renderApp = () => {
 
 **목적**: React 컴포넌트를 렌더링하여 플러그인 UI를 표시합니다.
 
-**주의사항**: 
+**주의사항**:
+
 - `index.html`에 `<div id="app"></div>` 요소가 있어야 합니다.
 - React 18+의 `createRoot` API를 사용합니다.
 
@@ -1138,6 +1208,7 @@ const renderApp = () => {
 **증상**: 플러그인이 LogSeq에 표시되지 않거나 오류가 발생합니다.
 
 **해결 방법**:
+
 - `package.json`의 `logseq` 설정이 올바른지 확인
 - `main` 경로가 올바른지 확인 (`dist/index.html`)
 - 빌드가 완료되었는지 확인
@@ -1148,6 +1219,7 @@ const renderApp = () => {
 **증상**: `logseq is not defined` 오류 발생
 
 **해결 방법**:
+
 ```typescript
 // 반드시 import 문을 최상단에 추가
 import '@logseq/libs';
@@ -1158,6 +1230,7 @@ import '@logseq/libs';
 **증상**: LogSeq API 호출이 실패하거나 아무 동작도 하지 않음
 
 **해결 방법**:
+
 - `logseq.ready()` 콜백 내부에서 호출하는지 확인
 - 비동기 API는 `await`를 사용하는지 확인
 - API 호출 전에 필요한 권한이 있는지 확인
@@ -1167,6 +1240,7 @@ import '@logseq/libs';
 **증상**: `showMainUI()` 호출 후 UI가 보이지 않음
 
 **해결 방법**:
+
 - `index.html`에 올바른 root 요소가 있는지 확인
 - `renderApp()` 함수가 호출되었는지 확인
 - CSS 스타일이 UI를 가리는지 확인
@@ -1177,6 +1251,7 @@ import '@logseq/libs';
 **증상**: 등록한 단축키가 반응하지 않음
 
 **해결 방법**:
+
 - 단축키 형식이 올바른지 확인 (`mod+shift+p`)
 - 다른 플러그인과 충돌하는지 확인
 - LogSeq 설정에서 단축키 확인
@@ -1187,6 +1262,7 @@ import '@logseq/libs';
 **증상**: UI 버튼 클릭 시 아무 동작도 하지 않음
 
 **해결 방법**:
+
 - `provideModel()`로 메서드를 등록했는지 확인
 - 메서드 이름이 `data-on-click` 값과 일치하는지 확인
 - `ready()` 콜백 내부에서 `provideModel()`을 호출했는지 확인
@@ -1196,6 +1272,7 @@ import '@logseq/libs';
 **증상**: React 앱이 표시되지 않음
 
 **해결 방법**:
+
 - `index.html`에 `<div id="app"></div>` 요소 확인
 - `renderApp()` 함수가 호출되었는지 확인
 - React와 ReactDOM 버전 호환성 확인
@@ -1204,33 +1281,35 @@ import '@logseq/libs';
 ### 디버깅 팁
 
 1. **콘솔 로그 활용**
-   ```typescript
-   console.log('Plugin loaded');
-   console.log('Current block:', await logseq.Editor.getCurrentBlock());
-   ```
+
+    ```typescript
+    console.log('Plugin loaded');
+    console.log('Current block:', await logseq.Editor.getCurrentBlock());
+    ```
 
 2. **LogSeq 개발자 도구 사용**
-   - LogSeq에서 `Ctrl+Shift+I` (Windows/Linux) 또는 `Cmd+Option+I` (Mac)
-   - 콘솔 탭에서 플러그인 로그 확인
+    - LogSeq에서 `Ctrl+Shift+I` (Windows/Linux) 또는 `Cmd+Option+I` (Mac)
+    - 콘솔 탭에서 플러그인 로그 확인
 
 3. **타입 체크**
-   ```typescript
-   // TypeScript로 타입 안전성 확보
-   const block = await logseq.Editor.getCurrentBlock();
-   if (block) {
-       // block은 BlockEntity 타입
-   }
-   ```
+
+    ```typescript
+    // TypeScript로 타입 안전성 확보
+    const block = await logseq.Editor.getCurrentBlock();
+    if (block) {
+        // block은 BlockEntity 타입
+    }
+    ```
 
 4. **에러 핸들링**
-   ```typescript
-   try {
-       await logseq.Editor.insertBlock(uuid, content);
-   } catch (error) {
-       console.error('Failed to insert block:', error);
-       await logseq.UI.showMsg('Failed to insert block', 'error');
-   }
-   ```
+    ```typescript
+    try {
+        await logseq.Editor.insertBlock(uuid, content);
+    } catch (error) {
+        console.error('Failed to insert block:', error);
+        await logseq.UI.showMsg('Failed to insert block', 'error');
+    }
+    ```
 
 ---
 
@@ -1281,15 +1360,18 @@ import '@logseq/libs';
 ## 추가 리소스
 
 ### 공식 문서
+
 - [LogSeq 플러그인 문서](https://plugins-doc.logseq.com/)
 - [API 레퍼런스](https://logseq.github.io/plugins/)
 - [샘플 코드](https://github.com/logseq/logseq-plugin-samples)
 
 ### 커뮤니티
+
 - [LogSeq Discord](https://discord.gg/logseq)
 - [GitHub Discussions](https://github.com/logseq/logseq/discussions)
 
 ### 유용한 링크
+
 - [Tabler Icons](https://tabler.io/icons) - UI 아이콘
 - [TypeScript 문서](https://www.typescriptlang.org/docs/)
 - [React 문서](https://react.dev/)

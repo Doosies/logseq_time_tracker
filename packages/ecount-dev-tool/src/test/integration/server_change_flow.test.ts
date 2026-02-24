@@ -1,11 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-    parseEcountUrl,
-    buildEc5Url,
-    buildEc3Url,
-    buildStageUrl,
-    getStageButtonLabel,
-} from '@/services/url_service';
+import { parseEcountUrl, buildEc5Url, buildEc3Url, buildStageUrl, getStageButtonLabel } from '@/services/url_service';
 
 /**
  * 통합 테스트: 서버 변경 플로우
@@ -27,8 +21,7 @@ describe('서버 변경 플로우 (통합)', () => {
     });
 
     it('zeus EC3(ECP050M) 환경에서 서버 변경 시 __v5domains 파라미터를 반환해야 함', () => {
-        const zeus_ec3_url =
-            'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1';
+        const zeus_ec3_url = 'https://zeus01ba1.ecount.com/ECERP/ECP/ECP050M?__v5domains=zeus01lxba1';
         const parsed = parseEcountUrl(zeus_ec3_url);
         expect(parsed).not.toBeNull();
         expect(parsed!.environment).toBe('zeus');
