@@ -2,10 +2,10 @@
     import * as styles from '../../design/styles/text_input.css';
 
     interface TextInputProps {
-        value?: string;
-        placeholder?: string;
-        disabled?: boolean;
-        oninput?: (value: string) => void;
+        value?: string | undefined;
+        placeholder?: string | undefined;
+        disabled?: boolean | undefined;
+        oninput?: ((value: string) => void) | undefined;
     }
 
     let {

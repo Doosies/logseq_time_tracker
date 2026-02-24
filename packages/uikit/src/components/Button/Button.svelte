@@ -4,11 +4,11 @@
     import * as styles from '../../design/styles/button.css';
 
     interface ButtonProps {
-        variant?: ButtonVariant;
-        size?: ButtonSize;
-        disabled?: boolean;
-        fullWidth?: boolean;
-        onclick?: () => void;
+        variant?: ButtonVariant | undefined;
+        size?: ButtonSize | undefined;
+        disabled?: boolean | undefined;
+        fullWidth?: boolean | undefined;
+        onclick?: (() => void) | undefined;
         children: Snippet;
     }
 

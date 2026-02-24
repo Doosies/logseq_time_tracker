@@ -3,7 +3,7 @@
     import * as styles from '../../design/styles/section.css';
 
     interface SectionProps {
-        title?: string;
+        title?: string | undefined;
         children: Snippet;
     }
 

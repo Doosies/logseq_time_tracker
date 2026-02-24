@@ -3,10 +3,10 @@
     import * as styles from '../../design/styles/select.css';
 
     interface SelectProps {
-        value?: string;
+        value?: string | undefined;
         options: SelectOption[];
-        disabled?: boolean;
-        onchange?: (value: string) => void;
+        disabled?: boolean | undefined;
+        onchange?: ((value: string) => void) | undefined;
     }
 
     let {

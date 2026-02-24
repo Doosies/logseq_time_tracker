@@ -5,12 +5,12 @@
     import { TextInput } from '../TextInput';
 
     interface ToggleInputProps {
-        value?: string;
-        prefix?: string;
+        value?: string | undefined;
+        prefix?: string | undefined;
         options: SelectOption[];
-        isTextMode?: boolean;
-        onToggle?: () => void;
-        onchange?: (value: string) => void;
+        isTextMode?: boolean | undefined;
+        onToggle?: (() => void) | undefined;
+        onchange?: ((value: string) => void) | undefined;
     }
 
     let {
@@ -29,7 +29,7 @@
     {/if}
     
     {#if isTextMode}
-        <TextInput bind:value oninput={onchange} />
+        <TextInput bind:value oninput={onchange}  />
     {:else}
         <Select bind:value {options} onchange={onchange} />
     {/if}
