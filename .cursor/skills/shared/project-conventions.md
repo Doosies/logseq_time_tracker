@@ -445,33 +445,83 @@ const API_KEY = process.env.API_KEY;
 
 ### Svelte 프로젝트
 
-```typescript
-// Svelte 5 Runes 모드 사용
-let count = $state(0);
-let doubled = $derived(count * 2);
+> 상세 규칙은 `developer/svelte-conventions.md` 참조.
 
-$effect(() => {
-  console.log(`count: ${count}`);
-});
+**핵심 원칙**: 컴포넌트 내부(`.svelte`)는 `camelCase` 사용, 외부 `.ts` 파일은 `snake_case` 유지.
+
+#### 파일/폴더 네이밍
+
+| 대상 | 패턴 | 예시 |
+|------|------|------|
+| 컴포넌트 파일 | `PascalCase.svelte` | `Button.svelte` |
+| 컴포넌트 폴더 | `PascalCase/` | `Button/` |
+| 스타일 파일 | `snake_case.css.ts` | `button_group.css.ts` |
+| 스토어 파일 | `snake_case.ts` | `current_tab.ts` |
+| 서비스 파일 | `snake_case.ts` | `url_service.ts` |
+
+#### 컴포넌트 내부 네이밍 (camelCase 예외 구역)
+
+```svelte
+<script lang="ts">
+  import type { Snippet } from 'svelte';
+
+  // ✅ Props 인터페이스: PascalCase + Props suffix
+  interface ButtonProps {
+    variant?: 'primary' | 'secondary';  // camelCase 속성
+    fullWidth?: boolean;                  // camelCase 속성
+    onclick?: () => void;                 // 소문자 (DOM 이벤트)
+    onToggle?: () => void;                // onXxx camelCase (커스텀 이벤트)
+    children: Snippet;
+  }
+
+  // ✅ $props 구조분해: camelCase
+  let { variant, fullWidth, onclick, onToggle, children }: ButtonProps = $props();
+
+  // ✅ $state / $derived: camelCase
+  let isActive = $state(false);
+  let currentClass = $derived(variant === 'primary' ? 'btn-primary' : 'btn-secondary');
+
+  // ✅ 함수명: camelCase
+  const getClassNames = (): string => { return ''; };
+
+  // ✅ 이벤트 핸들러: handleXxx camelCase
+  const handleClick = () => { onclick?.(); };
+</script>
 ```
 
-**TypeScript 설정 주의사항**:
-- `verbatimModuleSyntax: false` (Svelte 컴파일러와 호환 안됨)
-- `jsx: "preserve"` (Svelte가 처리)
-- ESLint: `eslint-plugin-svelte` 사용
+#### CSS/스타일 네이밍 (snake_case 유지)
 
-**디렉토리 구조**:
+```typescript
+// button_group.css.ts - ✅ snake_case 유지
+export const button_group_container = style({...});
+export const button_variant_primary = style({...});
+export const theme_vars = createThemeContract({...});
+```
+
+#### 디렉토리 구조
+
 ```
 src/
   components/
-    ActionBar/
-      ActionBar.svelte    # PascalCase.svelte
+    Button/
+      Button.svelte       # PascalCase/PascalCase.svelte
       index.ts            # barrel export
+  design/
+    styles/
+      button.css.ts       # snake_case.css.ts
+      button_group.css.ts # snake_case.css.ts (다단어)
+    theme/
+      contract.css.ts
   stores/
     current_tab.ts        # snake_case.ts
   services/
     url_service.ts        # snake_case.ts
 ```
+
+**TypeScript 설정**:
+- `verbatimModuleSyntax: false` (Svelte 컴파일러와 호환 안됨)
+- `jsx: "preserve"` (Svelte가 처리)
+- ESLint: `eslint-plugin-svelte` 사용
 
 ### React 프로젝트
 

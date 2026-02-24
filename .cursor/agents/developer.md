@@ -19,6 +19,7 @@ skills:
   - developer/dependency-management.md
   - developer/config-optimization.md
   - developer/monorepo-patterns.md
+  - developer/svelte-conventions.md
   - shared/project-conventions.md
   - shared/error-handling.md
 name: developer
@@ -79,6 +80,7 @@ description: 코드 구현 및 리팩토링 전문 에이전트
 - `developer/dependency-management.md` - 의존성 감사 및 관리
 - `developer/config-optimization.md` - 설정 파일 최적화 체크리스트
 - `developer/monorepo-patterns.md` - 모노레포 관리 패턴
+- `developer/svelte-conventions.md` - Svelte 프로젝트 네이밍 컨벤션
 - `shared/project-conventions.md` - 프로젝트 공통 컨벤션
 - `shared/error-handling.md` - 에러 처리 패턴
 
@@ -90,6 +92,10 @@ description: 코드 구현 및 리팩토링 전문 에이전트
 5. **에러 처리**: 모든 예외 상황 처리
 
 ## 코딩 컨벤션 (필수 준수)
+
+> **Svelte 컴포넌트 내부 예외**: `.svelte` 파일 내부 변수/props는 `camelCase` 사용.
+> 상세 규칙은 `developer/svelte-conventions.md` 참조.
+
 - **변수명**: `snake_case` (예: `user_count`, `max_retry`)
 - **함수명**: `camelCase` (예: `getUserById`, `calculateTotal`)
 - **클래스명**: `PascalCase` (예: `UserService`, `AuthController`)
@@ -189,12 +195,24 @@ apiClient.ts      // camelCase는 hook만
 ## 프레임워크별 주의사항
 
 ### Svelte 프로젝트 (uikit, ecount-dev-tool)
-- **Svelte 5 Runes 모드** 사용 (`$state`, `$derived`, `$effect`)
+
+> 상세 규칙은 `developer/svelte-conventions.md` 참조
+
+**TypeScript 설정**:
 - `verbatimModuleSyntax: false` 필수 (Svelte와 호환 안됨)
 - `jsx: "preserve"` 설정 (Svelte 컴파일러가 처리)
-- 컴포넌트 파일: `PascalCase.svelte`
-- 스토어/서비스 파일: `snake_case.ts`
 - ESLint: `eslint-plugin-svelte` 사용
+
+**Svelte 5 Runes 모드**: `$state`, `$derived`, `$effect` 사용
+
+**네이밍 핵심 원칙**:
+- 컴포넌트 파일: `PascalCase.svelte` (폴더도 `PascalCase/`)
+- 스타일 파일: `snake_case.css.ts`
+- 스토어/서비스 파일: `snake_case.ts`
+
+> ⚠️ **컴포넌트 내부 예외**: Svelte 컴포넌트 `.svelte` 파일 내부는 `camelCase` 사용
+> (props, 로컬 변수, $state/$derived 변수 모두 camelCase - TypeScript/Svelte 생태계 표준)
+> 일반 .ts 파일의 `snake_case` 규칙과 다름
 
 ### React 프로젝트 (time-tracker)
 - `verbatimModuleSyntax: true` 사용 가능
