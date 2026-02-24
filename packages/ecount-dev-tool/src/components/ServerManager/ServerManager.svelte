@@ -109,13 +109,13 @@
     .server-row {
         display: flex;
         align-items: center;
-        gap: 4px;
-        margin-bottom: 4px;
+        gap: var(--space-sm);
+        margin-bottom: var(--space-sm);
     }
 
     .server-row label {
         white-space: nowrap;
-        font-size: 12px;
+        font-size: var(--font-size-sm);
         min-width: 68px;
     }
 </style>

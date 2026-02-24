@@ -46,8 +46,8 @@
 <style>
     .action-bar {
         display: flex;
-        gap: 4px;
-        margin-top: 8px;
+        gap: var(--space-sm);
+        margin-top: var(--space-md);
     }
 
     .action-bar :global(button) {

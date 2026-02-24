@@ -31,8 +31,8 @@
 
 <style>
     .account-scroll {
-        min-height: calc(5 * 3em + 4 * 4px);
-        max-height: calc(5 * 3em + 4 * 4px);
+        min-height: calc(5 * 3em + 4 * var(--space-sm));
+        max-height: calc(5 * 3em + 4 * var(--space-sm));
         overflow-y: auto;
     }
 
@@ -40,7 +40,7 @@
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         grid-auto-rows: 3em;
-        gap: 4px;
+        gap: var(--space-sm);
     }
 
     .account-btn {
@@ -50,33 +50,33 @@
         justify-content: center;
         width: 100%;
         height: 100%;
-        padding: 0 4px;
+        padding: 0 var(--space-sm);
         border: none;
-        border-radius: 4px;
-        background-color: #1e3a5f;
+        border-radius: var(--radius-sm);
+        background-color: var(--color-primary);
         color: #fff;
-        font-weight: 700;
+        font-weight: var(--font-weight-bold);
         cursor: pointer;
         transition: background-color 0.15s ease;
     }
 
     .account-btn:hover {
-        background-color: #162d4a;
+        background-color: var(--color-primary-hover);
     }
 
     .account-btn:active {
-        background-color: #0f2035;
+        background-color: var(--color-primary-active);
     }
 
     .account-code {
-        font-size: 12px;
+        font-size: var(--font-size-sm);
         line-height: 1.1;
         opacity: 0.8;
     }
 
     .account-name {
-        font-size: 13px;
+        font-size: var(--font-size-md);
         line-height: 1.1;
-        font-weight: 700;
+        font-weight: var(--font-weight-bold);
     }
 </style>

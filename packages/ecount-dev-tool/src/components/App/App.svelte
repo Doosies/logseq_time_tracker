@@ -50,7 +50,7 @@
 
     .divider {
         border: none;
-        border-top: 1px solid #d1d9e0;
-        margin: 8px 0;
+        border-top: 1px solid var(--color-border);
+        margin: var(--space-md) 0;
     }
 </style>
