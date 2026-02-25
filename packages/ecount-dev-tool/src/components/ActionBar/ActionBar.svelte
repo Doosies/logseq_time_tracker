@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Button } from '@personal/uikit';
+    import { Button, Section } from '@personal/uikit';
     import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from '#services/tab_service';
     import { switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from '#services/page_actions';
     import { buildDevUrl } from '#services/url_service.js';
@@ -35,22 +35,34 @@
         const new_url = buildDevUrl(current_url, page_info);
         await updateTabUrl(tab.id, new_url.href);
     }
-</script>
 
-<div class="action-bar">
-    <Button variant="secondary" onclick={handleV5Local}>5.0로컬</Button>
-    <Button variant="secondary" onclick={handleV3Local}>3.0로컬</Button>
-    <Button variant="secondary" onclick={handleDevMode}>disableMin</Button>
-</div>
-
-<style>
-    .action-bar {
-        display: flex;
-        gap: var(--space-sm);
-        margin-top: var(--space-md);
+    interface ActionBarProps {
+        collapsed?: boolean;
+        onToggle?: (collapsed: boolean) => void;
     }
 
-    .action-bar :global(button) {
+    let { collapsed = false, onToggle }: ActionBarProps = $props();
+</script>
+
+<Section title="빠른 실행" collapsible {collapsed} {onToggle}>
+    <div class="action-bar-inner">
+        <Button variant="secondary" onclick={handleV5Local}>5.0로컬</Button>
+        <Button variant="secondary" onclick={handleV3Local}>3.0로컬</Button>
+        <Button variant="secondary" onclick={handleDevMode}>disableMin</Button>
+    </div>
+</Section>
+
+<style>
+    .action-bar-inner {
+        display: flex;
+        gap: var(--space-sm);
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--space-sm);
+    }
+
+    .action-bar-inner :global(button) {
         flex: 1;
         white-space: nowrap;
     }

@@ -75,47 +75,69 @@
 
         updateTabUrl(tab.tab_id, new_url);
     }
+
+    interface ServerManagerProps {
+        collapsed?: boolean;
+        onToggle?: (collapsed: boolean) => void;
+    }
+
+    let { collapsed = false, onToggle }: ServerManagerProps = $props();
 </script>
 
-<Section title="EC Server Manager">
-    <div class="server-row">
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label><b>V5 Server:</b></label>
-        <ToggleInput
-            bind:value={v5_value}
-            prefix={v5_text_mode ? '' : (parsed?.current_server ?? '')}
-            options={V5_SERVERS}
-            isTextMode={v5_text_mode}
-            onToggle={handleToggleV5}
-        />
+<Section title="서버 관리" collapsible {collapsed} {onToggle}>
+    <div class="server-panel">
+        <div class="server-row">
+            <span class="server-label">V5</span>
+            <ToggleInput
+                bind:value={v5_value}
+                prefix={v5_text_mode ? '' : (parsed?.current_server ?? '')}
+                options={V5_SERVERS}
+                isTextMode={v5_text_mode}
+                onToggle={handleToggleV5}
+            />
+        </div>
+        <div class="server-row">
+            <span class="server-label">V3</span>
+            <ToggleInput
+                bind:value={v3_value}
+                prefix={v3_text_mode ? '' : (parsed?.current_server ?? '')}
+                options={V3_SERVERS}
+                isTextMode={v3_text_mode}
+                onToggle={handleToggleV3}
+            />
+        </div>
     </div>
-
-    <div class="server-row">
-        <!-- svelte-ignore a11y_label_has_associated_control -->
-        <label><b>V3 Server:</b></label>
-        <ToggleInput
-            bind:value={v3_value}
-            prefix={v3_text_mode ? '' : (parsed?.current_server ?? '')}
-            options={V3_SERVERS}
-            isTextMode={v3_text_mode}
-            onToggle={handleToggleV3}
-        />
-    </div>
-
-    <Button fullWidth onclick={handleChangeServer}>Click</Button>
+    <Button fullWidth onclick={handleChangeServer}>서버 적용</Button>
 </Section>
 
 <style>
+    .server-panel {
+        background-color: var(--color-surface);
+        border: 1px solid var(--color-border);
+        border-radius: var(--radius-md);
+        padding: var(--space-md);
+        margin-bottom: var(--space-md);
+    }
+
     .server-row {
         display: flex;
         align-items: center;
         gap: var(--space-sm);
-        margin-bottom: var(--space-sm);
     }
 
-    .server-row label {
-        white-space: nowrap;
-        font-size: var(--font-size-sm);
-        min-width: 68px;
+    .server-row + .server-row {
+        margin-top: var(--space-md);
+    }
+
+    .server-label {
+        min-width: 28px;
+        padding: 2px 6px;
+        border-radius: var(--radius-sm);
+        background-color: var(--color-border);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-bold);
+        text-align: center;
+        flex-shrink: 0;
     }
 </style>
