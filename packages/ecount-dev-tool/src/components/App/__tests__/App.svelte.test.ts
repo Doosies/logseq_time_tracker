@@ -1,7 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/svelte';
+import userEvent from '@testing-library/user-event';
 import App from '../App.svelte';
 import { asMock } from '#test/mock_helpers';
+import { initializeSectionState } from '#stores/section_collapse.svelte';
+import { initializeVisibility } from '#stores/section_visibility.svelte';
 
 describe('App', () => {
     beforeEach(() => {
@@ -80,5 +83,292 @@ describe('App', () => {
         render(App);
 
         expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+    });
+
+    describe('섹션 접기/펼치기', () => {
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
+            await initializeSectionState();
+        });
+
+        it('섹션 타이틀 클릭 시 내용이 숨겨져야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const user = userEvent.setup();
+            const quick_login_toggle = screen.getByRole('button', { name: /빠른 로그인/ });
+
+            expect(quick_login_toggle).toBeInTheDocument();
+            await user.click(quick_login_toggle);
+
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    section_collapse_state: expect.objectContaining({ 'quick-login': true }),
+                }),
+            );
+        });
+
+        it('저장된 접기 상태가 있으면 접힌 채로 렌더링되어야 함', async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
+                if (key === 'section_collapse_state') {
+                    return Promise.resolve({
+                        section_collapse_state: { 'quick-login': true },
+                    });
+                }
+                return Promise.resolve({ [key]: undefined });
+            });
+            await initializeSectionState();
+
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            const toggle_btn = screen.getByRole('button', { name: /빠른 로그인/ });
+            expect(toggle_btn).toBeInTheDocument();
+
+            const chevron = toggle_btn.querySelector('span:last-child');
+            expect(chevron?.className).toContain('collapsed');
+        });
+
+        it('접힌 섹션을 다시 클릭하면 펼쳐져야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            const user = userEvent.setup();
+            const toggle_btn = screen.getByRole('button', { name: /빠른 로그인/ });
+
+            await user.click(toggle_btn);
+            await user.click(toggle_btn);
+
+            const calls = asMock(chrome.storage.sync.set).mock.calls;
+            const last_call = calls[calls.length - 1]?.[0] as Record<string, Record<string, boolean>>;
+            expect(last_call?.['section_collapse_state']?.['quick-login']).toBe(false);
+        });
+    });
+
+    describe('섹션 숨기기/보이기', () => {
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockImplementation(
+                (key: string) => Promise.resolve({ [key]: undefined }),
+            );
+            await initializeSectionState();
+            await initializeVisibility();
+        });
+
+        it('설정 버튼이 렌더링되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            expect(
+                screen.getByRole('button', { name: '섹션 설정' }),
+            ).toBeInTheDocument();
+        });
+
+        it('설정 버튼 클릭 시 패널이 열려야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            const user = userEvent.setup();
+            await user.click(
+                screen.getByRole('button', { name: '섹션 설정' }),
+            );
+
+            expect(screen.getByText('섹션 표시 설정')).toBeInTheDocument();
+        });
+
+        it('섹션 체크박스를 해제하면 해당 섹션이 숨겨져야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(
+                        screen.queryByText('로딩 중...'),
+                    ).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(
+                screen.getByRole('button', { name: /빠른 실행/ }),
+            ).toBeInTheDocument();
+
+            const user = userEvent.setup();
+            await user.click(
+                screen.getByRole('button', { name: '섹션 설정' }),
+            );
+
+            const checkboxes = screen.getAllByRole('checkbox');
+            const action_bar_checkbox = checkboxes[2] as HTMLElement;
+            await user.click(action_bar_checkbox);
+
+            await waitFor(() => {
+                expect(
+                    screen.queryByRole('button', { name: /빠른 실행/ }),
+                ).not.toBeInTheDocument();
+            });
+        });
+
+        it('숨긴 섹션 상태가 storage에 저장되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(
+                        screen.queryByText('로딩 중...'),
+                    ).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const user = userEvent.setup();
+            await user.click(
+                screen.getByRole('button', { name: '섹션 설정' }),
+            );
+
+            const checkboxes = screen.getAllByRole('checkbox');
+            await user.click(checkboxes[0] as HTMLElement);
+
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                section_visibility_state: expect.objectContaining({
+                    'quick-login': false,
+                }),
+            });
+        });
+
+        it('저장된 숨기기 상태에 따라 섹션이 숨겨진 채로 렌더링되어야 함', async () => {
+            asMock(chrome.storage.sync.get).mockImplementation(
+                (key: string) => {
+                    if (key === 'section_visibility_state') {
+                        return Promise.resolve({
+                            section_visibility_state: {
+                                'quick-login': false,
+                            },
+                        });
+                    }
+                    return Promise.resolve({ [key]: undefined });
+                },
+            );
+            await initializeVisibility();
+
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(
+                        screen.queryByText('로딩 중...'),
+                    ).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(
+                screen.queryByRole('button', { name: /빠른 로그인/ }),
+            ).not.toBeInTheDocument();
+            expect(
+                screen.getByRole('button', { name: /서버 관리/ }),
+            ).toBeInTheDocument();
+        });
+
+        it('마지막 보이는 섹션은 숨길 수 없어야 함', async () => {
+            asMock(chrome.storage.sync.get).mockImplementation(
+                (key: string) => {
+                    if (key === 'section_visibility_state') {
+                        return Promise.resolve({
+                            section_visibility_state: {
+                                'quick-login': false,
+                                'server-manager': false,
+                            },
+                        });
+                    }
+                    return Promise.resolve({ [key]: undefined });
+                },
+            );
+            await initializeVisibility();
+
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(
+                        screen.queryByText('로딩 중...'),
+                    ).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const user = userEvent.setup();
+            await user.click(
+                screen.getByRole('button', { name: '섹션 설정' }),
+            );
+
+            const checkboxes = screen.getAllByRole('checkbox');
+            const last_checkbox = checkboxes[2];
+
+            expect(last_checkbox).toBeDisabled();
+        });
     });
 });
