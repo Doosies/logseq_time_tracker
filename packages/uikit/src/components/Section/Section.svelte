@@ -12,7 +12,7 @@
 
 <div class={styles.section_container}>
     {#if title}
-        <div class={styles.section_title}>{title}</div>
+        <div class={styles.section_title} data-drag-handle>{title}</div>
     {/if}
     <div class={styles.section_content}>
         {@render children()}

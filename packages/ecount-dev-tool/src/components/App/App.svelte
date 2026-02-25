@@ -23,7 +23,7 @@
         { id: 'action-bar', label: '빠른 실행' },
     ];
 
-    const FLIP_DURATION_MS = 200;
+    const FLIP_DURATION_MS = 80;
     const DROP_TARGET_STYLE = { outline: 'none' };
 
     const tab = $derived(getTabState());
@@ -56,6 +56,14 @@
     async function handleDragStart(): Promise<void> {
         is_drag_enabled = true;
         await tick();
+    }
+
+    async function handleWrapperPointerDown(e: PointerEvent): Promise<void> {
+        if (!is_dnd_available) return;
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-drag-handle]')) {
+            await handleDragStart();
+        }
     }
 
     function handlePointerUp(): void {
@@ -114,7 +122,8 @@
                 onfinalize={handleFinalize}
             >
                 {#each dnd_sections as item (item.id)}
-                    <div class="section-wrapper">
+                    <!-- svelte-ignore a11y_no_static_element_interactions -->
+                    <div class="section-wrapper" onpointerdown={handleWrapperPointerDown}>
                         {#if is_dnd_available}
                             <button
                                 type="button"
@@ -173,9 +182,7 @@
     }
 
     .section-wrapper + .section-wrapper {
-        margin-top: var(--space-lg);
-        padding-top: var(--space-lg);
-        border-top: 1px solid var(--color-border);
+        margin-top: var(--space-sm);
     }
 
     .section-drag-bar {
@@ -223,5 +230,14 @@
     .section-drag-bar:active {
         cursor: grabbing;
         opacity: 1;
+    }
+
+    .section-wrapper :global([data-drag-handle]) {
+        cursor: grab;
+        user-select: none;
+    }
+
+    .section-wrapper :global([data-drag-handle]:active) {
+        cursor: grabbing;
     }
 </style>

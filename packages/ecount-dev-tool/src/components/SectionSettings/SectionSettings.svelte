@@ -20,7 +20,7 @@
 
     const all_ids = $derived(sections.map((s) => s.id));
 
-    const FLIP_DURATION_MS = 150;
+    const FLIP_DURATION_MS = 80;
     const DROP_TARGET_STYLE = { outline: 'none' };
 
     function transformDraggedElement(el: HTMLElement | undefined): void {

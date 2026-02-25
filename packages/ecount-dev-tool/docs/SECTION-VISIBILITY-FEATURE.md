@@ -1,7 +1,7 @@
 # 섹션 관리 기능 설계 문서
 
 **작성일**: 2026-02-25  
-**버전**: 3.1
+**버전**: 3.2
 
 ---
 
@@ -156,7 +156,7 @@ interface SectionSettingsProps {
 
 ### App.svelte 메인 화면 DnD
 
-- **드래그 핸들**: full-width 바 형태 (`──── ⠿ ────`), 항상 보이며 hover 시 강조
+- **드래그 핸들**: full-width 바 형태 (`──── ⠿ ────`), 항상 보이며 hover 시 강조. 섹션 제목 클릭으로도 드래그 시작 가능
 - **dragDisabled 패턴**: 핸들 pointerdown 시만 드래그 활성화 (섹션 내부 상호작용 보호)
 - **드래그 스타일링**: `transformDraggedElement`로 그림자/리프트 효과, `dropTargetStyle`로 기본 노란 outline 제거
 - **Stage 모드**: DnD 비활성화 (QuickLogin만 표시되므로 의미 없음)
@@ -201,6 +201,15 @@ const sections_to_render = $derived(
 ---
 
 ## 7. 변경 이력
+
+### v3.2 (2026-02-25)
+
+- **중복 구분선 제거**: 드래그 바가 섹션 구분 역할을 하므로 `border-top` 제거
+- **DnD 애니메이션 속도 개선**: `flipDurationMs` 200 → 80으로 단축 (설정 패널도 동일)
+- **섹션 제목 드래그 지원**: 제목 영역(`[data-drag-handle]`)을 클릭해도 드래그 시작
+  - Section 컴포넌트의 title div에 `data-drag-handle` 속성 추가
+  - App.svelte에서 이벤트 위임으로 `[data-drag-handle]` pointerdown 감지
+  - `cursor: grab` 스타일로 드래그 가능 영역 시각적 피드백
 
 ### v3.1 (2026-02-25)
 
