@@ -16,9 +16,9 @@ export const ZeusEnvironment: Story = {
     },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getByText('V5 Server:')).toBeInTheDocument();
-        await expect(canvas.getByText('V3 Server:')).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: 'Click' })).toBeInTheDocument();
+        await expect(canvas.getByText('V5')).toBeInTheDocument();
+        await expect(canvas.getByText('V3')).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '서버 적용' })).toBeInTheDocument();
     },
 };
 

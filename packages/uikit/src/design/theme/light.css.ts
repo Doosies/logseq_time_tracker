@@ -40,11 +40,11 @@ export const light_theme = createTheme(theme_vars, {
             bold: '700',
         },
         family: {
-            base: 'Arial, sans-serif',
+            base: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
         },
     },
     radius: {
-        sm: '4px',
-        md: '5px',
+        sm: '6px',
+        md: '8px',
     },
 });

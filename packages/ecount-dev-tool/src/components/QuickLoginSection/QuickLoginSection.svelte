@@ -64,19 +64,41 @@
         await removeAccount(index);
     }
 
+    interface QuickLoginSectionProps {
+        collapsed?: boolean;
+        onToggle?: (collapsed: boolean) => void;
+    }
+
+    let { collapsed = false, onToggle }: QuickLoginSectionProps = $props();
+
     function toggleEdit(): void {
         is_editing = !is_editing;
     }
 </script>
 
-<Section title="Quick Login Setting">
+<Section title="빠른 로그인" collapsible {collapsed} {onToggle}>
     <div class="section-header">
         <button class="edit-toggle" onclick={toggleEdit}>
             {is_editing ? '완료' : '편집'}
         </button>
     </div>
 
+    {#if is_editing}
+        <div class="add-form">
+            <TextInput bind:value={new_company} placeholder="회사코드" />
+            <TextInput bind:value={new_id} placeholder="아이디" />
+            <TextInput bind:value={new_password} placeholder="비밀번호" />
+            <Button variant="primary" size="sm" disabled={!can_add} onclick={handleAdd}>추가</Button>
+        </div>
+        {#if error_message}
+            <p class="error-msg">{error_message}</p>
+        {/if}
+    {/if}
+
     <div class="account-scroll">
+        {#if accounts.length === 0 && !is_editing}
+            <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
+        {/if}
         <div class="account-grid">
             {#each accounts as account, i (i)}
                 <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_tabindex -->
@@ -107,18 +129,6 @@
             {/each}
         </div>
     </div>
-
-    {#if is_editing}
-        <div class="add-form">
-            <TextInput bind:value={new_company} placeholder="회사코드" />
-            <TextInput bind:value={new_id} placeholder="아이디" />
-            <TextInput bind:value={new_password} placeholder="비밀번호" />
-            <Button variant="primary" size="sm" disabled={!can_add} onclick={handleAdd}>추가</Button>
-        </div>
-        {#if error_message}
-            <p class="error-msg">{error_message}</p>
-        {/if}
-    {/if}
 </Section>
 
 <style>
@@ -143,10 +153,19 @@
     }
 
     .account-scroll {
-        min-height: calc(3 * 3.5em + 2 * var(--space-lg));
-        max-height: calc(4 * 3.5em + 3 * var(--space-lg));
+        min-height: calc(2 * 3.5em + 1 * var(--space-lg));
+        max-height: calc(3 * 3.5em + 2 * var(--space-lg));
         overflow-y: auto;
         scrollbar-gutter: stable;
+        scrollbar-width: thin;
+        scrollbar-color: var(--color-border) transparent;
+    }
+
+    .empty-msg {
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        text-align: center;
+        padding: var(--space-lg) 0;
     }
 
     .account-grid {
@@ -230,7 +249,7 @@
     .add-form {
         display: flex;
         gap: var(--space-xs);
-        margin-top: var(--space-sm);
+        margin-bottom: var(--space-sm);
         align-items: center;
         width: 100%;
     }

@@ -64,8 +64,8 @@ describe('App', () => {
             { timeout: 2000 },
         );
 
-        expect(screen.getByText('V5 Server:')).toBeInTheDocument();
-        expect(screen.getByText('V3 Server:')).toBeInTheDocument();
+        expect(screen.getByText('V5')).toBeInTheDocument();
+        expect(screen.getByText('V3')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: '5.0로컬' })).toBeInTheDocument();
     });
 
@@ -79,6 +79,6 @@ describe('App', () => {
 
         render(App);
 
-        expect(screen.getByText('Quick Login Setting')).toBeInTheDocument();
+        expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
     });
 });
