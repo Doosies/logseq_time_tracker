@@ -5,13 +5,14 @@
     import { ServerManager } from '#components/ServerManager';
     import { StageManager } from '#components/StageManager';
     import { ActionBar } from '#components/ActionBar';
-    import { initializeTabState, getTabState, isSupported } from '#stores/current_tab.svelte';
+    import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
+    import { initializeAccounts } from '#stores/accounts.svelte';
 
     const tab = $derived(getTabState());
-    const supported = $derived(isSupported());
 
     onMount(() => {
         initializeTabState();
+        initializeAccounts();
     });
 </script>
 
@@ -25,10 +26,6 @@
             <p>로딩 중...</p>
         {:else if tab.is_stage}
             <StageManager />
-        {:else if supported}
-            <ServerManager />
-            <hr class="divider" />
-            <ActionBar />
         {:else}
             <ServerManager />
             <hr class="divider" />

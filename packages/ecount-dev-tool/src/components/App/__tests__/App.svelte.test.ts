@@ -66,7 +66,7 @@ describe('App', () => {
 
         expect(screen.getByText('V5 Server:')).toBeInTheDocument();
         expect(screen.getByText('V3 Server:')).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: '5.0 로컬' })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: '5.0로컬' })).toBeInTheDocument();
     });
 
     it('QuickLoginSection이 항상 렌더링되어야 함', async () => {

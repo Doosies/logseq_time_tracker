@@ -13,8 +13,8 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.getByRole('button', { name: '5.0 로컬' })).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: '3.0 로컬' })).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: 'disableMin 활성화 (devMode)' })).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '5.0로컬' })).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '3.0로컬' })).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: 'disableMin' })).toBeInTheDocument();
     },
 };
