@@ -8,15 +8,8 @@
     import { SectionSettings } from '#components/SectionSettings';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
     import { initializeAccounts } from '#stores/accounts.svelte';
-    import {
-        initializeSectionState,
-        getSectionCollapsed,
-        toggleSection,
-    } from '#stores/section_collapse.svelte';
-    import {
-        initializeVisibility,
-        isSectionVisible,
-    } from '#stores/section_visibility.svelte';
+    import { initializeSectionState, getSectionCollapsed, toggleSection } from '#stores/section_collapse.svelte';
+    import { initializeVisibility, isSectionVisible } from '#stores/section_visibility.svelte';
 
     const SECTION_LIST = [
         { id: 'quick-login', label: '빠른 로그인' },
@@ -26,22 +19,12 @@
 
     const tab = $derived(getTabState());
 
-    const show_quick_login = $derived(
-        isSectionVisible('quick-login'),
-    );
-    const show_server_manager = $derived(
-        isSectionVisible('server-manager'),
-    );
-    const show_action_bar = $derived(
-        isSectionVisible('action-bar'),
-    );
+    const show_quick_login = $derived(isSectionVisible('quick-login'));
+    const show_server_manager = $derived(isSectionVisible('server-manager'));
+    const show_action_bar = $derived(isSectionVisible('action-bar'));
 
-    const need_divider_after_login = $derived(
-        show_quick_login && (show_server_manager || show_action_bar),
-    );
-    const need_divider_between_sm_ab = $derived(
-        show_server_manager && show_action_bar,
-    );
+    const need_divider_after_login = $derived(show_quick_login && (show_server_manager || show_action_bar));
+    const need_divider_between_sm_ab = $derived(show_server_manager && show_action_bar);
 
     onMount(() => {
         initializeTabState();
@@ -87,10 +70,7 @@
                 {#if need_divider_between_sm_ab || (!show_server_manager && need_divider_after_login)}
                     <hr class="divider" />
                 {/if}
-                <ActionBar
-                    collapsed={getSectionCollapsed('action-bar')}
-                    onToggle={() => toggleSection('action-bar')}
-                />
+                <ActionBar collapsed={getSectionCollapsed('action-bar')} onToggle={() => toggleSection('action-bar')} />
             {/if}
         {/if}
     </div>

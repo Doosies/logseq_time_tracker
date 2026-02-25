@@ -58,10 +58,7 @@
                 {@const visible = isSectionVisible(section.id)}
                 {@const visible_count = all_ids.filter((id) => isSectionVisible(id)).length}
                 {@const is_last_visible = visible && visible_count <= 1}
-                <label
-                    class="settings-item"
-                    class:disabled={is_last_visible}
-                >
+                <label class="settings-item" class:disabled={is_last_visible}>
                     <input
                         type="checkbox"
                         checked={visible}
@@ -90,7 +87,9 @@
         color: var(--color-text-secondary);
         padding: var(--space-xs) var(--space-sm);
         border-radius: var(--radius-sm);
-        transition: color 0.15s ease, background-color 0.15s ease;
+        transition:
+            color 0.15s ease,
+            background-color 0.15s ease;
         line-height: 1;
     }
 

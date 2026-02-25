@@ -1,9 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import {
-    initializeVisibility,
-    isSectionVisible,
-    toggleVisibility,
-} from '#stores/section_visibility.svelte';
+import { initializeVisibility, isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
 import { asMock } from '#test/mock_helpers';
 
 const ALL_IDS = ['quick-login', 'server-manager', 'action-bar'];
@@ -54,9 +50,7 @@ describe('section_visibility 스토어', () => {
         });
 
         it('storage 접근 실패 시 기본 상태를 사용해야 함', async () => {
-            asMock(chrome.storage.sync.get).mockRejectedValue(
-                new Error('Storage error'),
-            );
+            asMock(chrome.storage.sync.get).mockRejectedValue(new Error('Storage error'));
 
             await initializeVisibility();
 
@@ -75,10 +69,7 @@ describe('section_visibility 스토어', () => {
         it('보이는 섹션을 숨길 수 있어야 함', async () => {
             expect(isSectionVisible('quick-login')).toBe(true);
 
-            const result = await toggleVisibility(
-                'quick-login',
-                ALL_IDS,
-            );
+            const result = await toggleVisibility('quick-login', ALL_IDS);
 
             expect(result).toBe(true);
             expect(isSectionVisible('quick-login')).toBe(false);
@@ -88,10 +79,7 @@ describe('section_visibility 스토어', () => {
             await toggleVisibility('quick-login', ALL_IDS);
             expect(isSectionVisible('quick-login')).toBe(false);
 
-            const result = await toggleVisibility(
-                'quick-login',
-                ALL_IDS,
-            );
+            const result = await toggleVisibility('quick-login', ALL_IDS);
 
             expect(result).toBe(true);
             expect(isSectionVisible('quick-login')).toBe(true);
@@ -117,10 +105,7 @@ describe('section_visibility 스토어', () => {
             await toggleVisibility('quick-login', ALL_IDS);
             await toggleVisibility('server-manager', ALL_IDS);
 
-            const result = await toggleVisibility(
-                'action-bar',
-                ALL_IDS,
-            );
+            const result = await toggleVisibility('action-bar', ALL_IDS);
 
             expect(result).toBe(false);
             expect(isSectionVisible('action-bar')).toBe(true);
@@ -129,14 +114,9 @@ describe('section_visibility 스토어', () => {
         it('storage 저장 실패 시 이전 상태로 롤백해야 함', async () => {
             expect(isSectionVisible('quick-login')).toBe(true);
 
-            asMock(chrome.storage.sync.set).mockRejectedValueOnce(
-                new Error('Storage error'),
-            );
+            asMock(chrome.storage.sync.set).mockRejectedValueOnce(new Error('Storage error'));
 
-            const result = await toggleVisibility(
-                'quick-login',
-                ALL_IDS,
-            );
+            const result = await toggleVisibility('quick-login', ALL_IDS);
 
             expect(result).toBe(false);
             expect(isSectionVisible('quick-login')).toBe(true);

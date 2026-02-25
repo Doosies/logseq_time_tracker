@@ -37,17 +37,12 @@ export async function initializeVisibility(): Promise<void> {
     }
 }
 
-export async function toggleVisibility(
-    section_id: string,
-    visible_ids: string[],
-): Promise<boolean> {
+export async function toggleVisibility(section_id: string, visible_ids: string[]): Promise<boolean> {
     if (!is_loaded) return false;
 
     const current = isSectionVisible(section_id);
     if (current) {
-        const visible_count = visible_ids.filter((id) =>
-            isSectionVisible(id),
-        ).length;
+        const visible_count = visible_ids.filter((id) => isSectionVisible(id)).length;
         if (visible_count <= 1) return false;
     }
 
