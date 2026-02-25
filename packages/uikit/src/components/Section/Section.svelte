@@ -4,15 +4,23 @@
 
     interface SectionProps {
         title?: string | undefined;
+        action?: Snippet | undefined;
         children: Snippet;
     }
 
-    let { title, children }: SectionProps = $props();
+    let { title, action, children }: SectionProps = $props();
 </script>
 
 <div class={styles.section_container}>
-    {#if title}
-        <div class={styles.section_title} data-drag-handle>{title}</div>
+    {#if title || action}
+        <div class={styles.section_title_row}>
+            {#if title}
+                <div class={styles.section_title} data-drag-handle>{title}</div>
+            {/if}
+            {#if action}
+                {@render action()}
+            {/if}
+        </div>
     {/if}
     <div class={styles.section_content}>
         {@render children()}

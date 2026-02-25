@@ -70,11 +70,11 @@
 </script>
 
 <Section title="빠른 로그인">
-    <div class="section-header">
+    {#snippet action()}
         <button class="edit-toggle" onclick={toggleEdit}>
             {is_editing ? '완료' : '편집'}
         </button>
-    </div>
+    {/snippet}
 
     {#if is_editing}
         <div class="add-form">
@@ -125,12 +125,6 @@
 </Section>
 
 <style>
-    .section-header {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: var(--space-xs);
-    }
-
     .edit-toggle {
         background: none;
         border: none;
