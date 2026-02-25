@@ -1,7 +1,7 @@
 # 섹션 관리 기능 설계 문서
 
 **작성일**: 2026-02-25  
-**버전**: 3.0
+**버전**: 3.1
 
 ---
 
@@ -156,8 +156,9 @@ interface SectionSettingsProps {
 
 ### App.svelte 메인 화면 DnD
 
-- **드래그 핸들**: 섹션 사이 경계에 hover 시 나타나는 6-dot 핸들
+- **드래그 핸들**: full-width 바 형태 (`──── ⠿ ────`), 항상 보이며 hover 시 강조
 - **dragDisabled 패턴**: 핸들 pointerdown 시만 드래그 활성화 (섹션 내부 상호작용 보호)
+- **드래그 스타일링**: `transformDraggedElement`로 그림자/리프트 효과, `dropTargetStyle`로 기본 노란 outline 제거
 - **Stage 모드**: DnD 비활성화 (QuickLogin만 표시되므로 의미 없음)
 - **숨겨진 섹션 처리**: 드롭 완료 시 보이는 섹션 순서 + 숨겨진 섹션 순서 병합
 
@@ -200,6 +201,18 @@ const sections_to_render = $derived(
 ---
 
 ## 7. 변경 이력
+
+### v3.1 (2026-02-25)
+
+- **드래그 핸들 UX 개선**: 보이지 않는 작은 버튼 → 항상 보이는 full-width 바 (`──── ⠿ ────`)
+  - `::before`/`::after` 의사 요소로 양쪽 선 + 중앙 grip dots
+  - 기본 `opacity: 0.3`, hover 시 `opacity: 0.7` + primary 색상 전환
+- **드래그 중 UI 개선**: `transformDraggedElement`로 그림자/리프트 효과 적용
+  - `dropTargetStyle: { outline: 'none' }`으로 기본 노란 outline 제거
+  - 설정 패널에도 동일한 드래그 스타일 적용
+- **계정 코드 가독성 개선**: `.account-code`의 `opacity: 0.8` 제거
+  - `font-size: xs` + `letter-spacing: 0.03em`으로 시각적 구분 유지
+- **테스트**: 159개 통과 (변경 없음)
 
 ### v3.0 (2026-02-25)
 

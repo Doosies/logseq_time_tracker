@@ -224,9 +224,9 @@
     }
 
     .account-code {
-        font-size: var(--font-size-sm);
+        font-size: var(--font-size-xs);
         line-height: 1.1;
-        opacity: 0.8;
+        letter-spacing: 0.03em;
         overflow-wrap: break-word;
         word-break: break-word;
     }

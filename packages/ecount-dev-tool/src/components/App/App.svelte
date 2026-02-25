@@ -31,6 +31,7 @@
     ];
 
     const FLIP_DURATION_MS = 200;
+    const DROP_TARGET_STYLE = { outline: 'none' };
 
     const tab = $derived(getTabState());
     const section_order = $derived(getSectionOrder());
@@ -41,7 +42,9 @@
 
     const sections_to_render = $derived(
         tab.is_stage
-            ? visible_ordered_sections.filter((id) => id === 'quick-login')
+            ? visible_ordered_sections.filter(
+                  (id) => id === 'quick-login',
+              )
             : visible_ordered_sections,
     );
 
@@ -55,6 +58,17 @@
     $effect(() => {
         dnd_sections = sections_to_render.map((id) => ({ id }));
     });
+
+    function transformDraggedElement(
+        el: HTMLElement | undefined,
+    ): void {
+        if (!el) return;
+        el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.18)';
+        el.style.borderRadius = '8px';
+        el.style.opacity = '0.92';
+        el.style.background = 'var(--color-background)';
+        el.style.border = '1px solid var(--color-border)';
+    }
 
     async function handleDragStart(): Promise<void> {
         is_drag_enabled = true;
@@ -81,7 +95,10 @@
         const hidden_sections = section_order.filter(
             (id) => !isSectionVisible(id),
         );
-        await setSectionOrder([...new_visible_order, ...hidden_sections]);
+        await setSectionOrder([
+            ...new_visible_order,
+            ...hidden_sections,
+        ]);
     }
 
     onMount(() => {
@@ -101,7 +118,7 @@
         {#if tab.is_loading}
             <p>로딩 중...</p>
         {:else if tab.is_stage}
-            {#each sections_to_render as section_id, i (section_id)}
+            {#each sections_to_render as section_id (section_id)}
                 {#if section_id === 'quick-login'}
                     <QuickLoginSection />
                 {/if}
@@ -116,6 +133,8 @@
                     flipDurationMs: FLIP_DURATION_MS,
                     dragDisabled: !is_drag_enabled,
                     type: 'main-sections',
+                    dropTargetStyle: DROP_TARGET_STYLE,
+                    transformDraggedElement,
                 }}
                 onconsider={handleConsider}
                 onfinalize={handleFinalize}
@@ -125,22 +144,22 @@
                         {#if is_dnd_available}
                             <button
                                 type="button"
-                                class="section-drag-handle"
+                                class="section-drag-bar"
                                 onpointerdown={handleDragStart}
                                 aria-label="드래그하여 섹션 순서 변경"
                             >
                                 <svg
-                                    width="16"
-                                    height="6"
-                                    viewBox="0 0 16 6"
+                                    width="14"
+                                    height="8"
+                                    viewBox="0 0 14 8"
                                     fill="currentColor"
                                 >
-                                    <circle cx="4" cy="1" r="1" />
-                                    <circle cx="8" cy="1" r="1" />
-                                    <circle cx="12" cy="1" r="1" />
-                                    <circle cx="4" cy="5" r="1" />
-                                    <circle cx="8" cy="5" r="1" />
-                                    <circle cx="12" cy="5" r="1" />
+                                    <circle cx="3" cy="2" r="1.2" />
+                                    <circle cx="7" cy="2" r="1.2" />
+                                    <circle cx="11" cy="2" r="1.2" />
+                                    <circle cx="3" cy="6" r="1.2" />
+                                    <circle cx="7" cy="6" r="1.2" />
+                                    <circle cx="11" cy="6" r="1.2" />
                                 </svg>
                             </button>
                         {/if}
@@ -190,42 +209,50 @@
         border-top: 1px solid var(--color-border);
     }
 
-    .section-drag-handle {
-        position: absolute;
-        top: -2px;
-        left: 50%;
-        transform: translateX(-50%);
+    .section-drag-bar {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: var(--color-background);
-        border: 1px solid var(--color-border);
-        border-radius: var(--radius-sm);
+        width: 100%;
+        padding: 3px 0;
+        margin-bottom: var(--space-xs);
         cursor: grab;
         color: var(--color-text-secondary);
-        padding: 2px var(--space-md);
-        opacity: 0;
+        background: none;
+        border: none;
+        border-radius: var(--radius-sm);
+        opacity: 0.3;
         transition:
             opacity 0.15s ease,
+            background-color 0.15s ease,
             color 0.15s ease;
-        z-index: 1;
     }
 
-    .section-wrapper:hover > .section-drag-handle {
-        opacity: 0.5;
+    .section-drag-bar::before,
+    .section-drag-bar::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: currentColor;
+        opacity: 0.4;
     }
 
-    .section-drag-handle:hover {
-        opacity: 1 !important;
-        color: var(--color-text);
+    .section-drag-bar::before {
+        margin-right: var(--space-sm);
+    }
+
+    .section-drag-bar::after {
+        margin-left: var(--space-sm);
+    }
+
+    .section-drag-bar:hover {
+        opacity: 0.7;
         background-color: var(--color-surface);
+        color: var(--color-primary);
     }
 
-    .section-drag-handle:active {
+    .section-drag-bar:active {
         cursor: grabbing;
-    }
-
-    .section-wrapper:first-child > .section-drag-handle {
-        top: 0;
+        opacity: 1;
     }
 </style>

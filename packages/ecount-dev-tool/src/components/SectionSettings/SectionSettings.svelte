@@ -2,12 +2,7 @@
     import { dndzone } from 'svelte-dnd-action';
     import type { DndEvent } from 'svelte-dnd-action';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
-    import {
-        getSectionOrder,
-        setSectionOrder,
-        moveSectionUp,
-        moveSectionDown,
-    } from '#stores/section_order.svelte';
+    import { getSectionOrder, setSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
 
     interface SectionItem {
         id: string;
@@ -26,13 +21,22 @@
     const all_ids = $derived(sections.map((s) => s.id));
 
     const FLIP_DURATION_MS = 150;
+    const DROP_TARGET_STYLE = { outline: 'none' };
+
+    function transformDraggedElement(
+        el: HTMLElement | undefined,
+    ): void {
+        if (!el) return;
+        el.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
+        el.style.borderRadius = '6px';
+        el.style.opacity = '0.92';
+        el.style.background = 'var(--color-background)';
+    }
 
     $effect(() => {
         const order = getSectionOrder();
         const section_map = new Map(sections.map((s) => [s.id, s]));
-        dnd_items = order
-            .map((id) => section_map.get(id))
-            .filter((s): s is SectionItem => s !== undefined);
+        dnd_items = order.map((id) => section_map.get(id)).filter((s): s is SectionItem => s !== undefined);
     });
 
     function handleToggle(): void {
@@ -56,10 +60,7 @@
         await toggleVisibility(section_id, all_ids);
     }
 
-    async function handleItemKeydown(
-        event: KeyboardEvent,
-        section_id: string,
-    ): Promise<void> {
+    async function handleItemKeydown(event: KeyboardEvent, section_id: string): Promise<void> {
         if (event.key === 'ArrowUp') {
             event.preventDefault();
             await moveSectionUp(section_id);
@@ -73,9 +74,7 @@
         dnd_items = e.detail.items;
     }
 
-    async function handleFinalize(
-        e: CustomEvent<DndEvent<SectionItem>>,
-    ): Promise<void> {
+    async function handleFinalize(e: CustomEvent<DndEvent<SectionItem>>): Promise<void> {
         dnd_items = e.detail.items;
         const new_order = dnd_items.map((item) => item.id);
         await setSectionOrder(new_order);
@@ -103,11 +102,7 @@
     </button>
 
     {#if is_open}
-        <div
-            class="settings-panel"
-            role="listbox"
-            aria-label="섹션 순서 및 표시 설정"
-        >
+        <div class="settings-panel" role="listbox" aria-label="섹션 순서 및 표시 설정">
             <div class="panel-title">섹션 설정</div>
             <div
                 class="settings-list"
@@ -115,6 +110,8 @@
                     items: dnd_items,
                     flipDurationMs: FLIP_DURATION_MS,
                     type: 'settings',
+                    dropTargetStyle: DROP_TARGET_STYLE,
+                    transformDraggedElement,
                 }}
                 onconsider={handleConsider}
                 onfinalize={handleFinalize}
@@ -133,12 +130,7 @@
                         onkeydown={(e) => handleItemKeydown(e, section.id)}
                     >
                         <span class="drag-handle" aria-hidden="true">
-                            <svg
-                                width="10"
-                                height="14"
-                                viewBox="0 0 10 14"
-                                fill="currentColor"
-                            >
+                            <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
                                 <circle cx="3" cy="2" r="1.2" />
                                 <circle cx="7" cy="2" r="1.2" />
                                 <circle cx="3" cy="7" r="1.2" />
