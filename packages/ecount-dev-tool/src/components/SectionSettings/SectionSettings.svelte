@@ -1,6 +1,13 @@
 <script lang="ts">
+    import { dndzone } from 'svelte-dnd-action';
+    import type { DndEvent } from 'svelte-dnd-action';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
-    import { getSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
+    import {
+        getSectionOrder,
+        setSectionOrder,
+        moveSectionUp,
+        moveSectionDown,
+    } from '#stores/section_order.svelte';
 
     interface SectionItem {
         id: string;
@@ -14,6 +21,19 @@
     let { sections }: SectionSettingsProps = $props();
 
     let is_open = $state(false);
+    let dnd_items = $state<SectionItem[]>([]);
+
+    const all_ids = $derived(sections.map((s) => s.id));
+
+    const FLIP_DURATION_MS = 150;
+
+    $effect(() => {
+        const order = getSectionOrder();
+        const section_map = new Map(sections.map((s) => [s.id, s]));
+        dnd_items = order
+            .map((id) => section_map.get(id))
+            .filter((s): s is SectionItem => s !== undefined);
+    });
 
     function handleToggle(): void {
         is_open = !is_open;
@@ -32,26 +52,33 @@
         }
     }
 
-    const all_ids = $derived(sections.map((s) => s.id));
-
-    const ordered_sections = $derived.by(() => {
-        const order = getSectionOrder();
-        const section_map = new Map(sections.map((s) => [s.id, s]));
-        return order
-            .map((id) => section_map.get(id))
-            .filter((s): s is SectionItem => s !== undefined);
-    });
-
     async function handleItemToggle(section_id: string): Promise<void> {
         await toggleVisibility(section_id, all_ids);
     }
 
-    async function handleMoveUp(section_id: string): Promise<void> {
-        await moveSectionUp(section_id);
+    async function handleItemKeydown(
+        event: KeyboardEvent,
+        section_id: string,
+    ): Promise<void> {
+        if (event.key === 'ArrowUp') {
+            event.preventDefault();
+            await moveSectionUp(section_id);
+        } else if (event.key === 'ArrowDown') {
+            event.preventDefault();
+            await moveSectionDown(section_id);
+        }
     }
 
-    async function handleMoveDown(section_id: string): Promise<void> {
-        await moveSectionDown(section_id);
+    function handleConsider(e: CustomEvent<DndEvent<SectionItem>>): void {
+        dnd_items = e.detail.items;
+    }
+
+    async function handleFinalize(
+        e: CustomEvent<DndEvent<SectionItem>>,
+    ): Promise<void> {
+        dnd_items = e.detail.items;
+        const new_order = dnd_items.map((item) => item.id);
+        await setSectionOrder(new_order);
     }
 </script>
 
@@ -76,42 +103,62 @@
     </button>
 
     {#if is_open}
-        <div class="settings-panel" role="menu">
+        <div
+            class="settings-panel"
+            role="listbox"
+            aria-label="섹션 순서 및 표시 설정"
+        >
             <div class="panel-title">섹션 설정</div>
-            {#each ordered_sections as section, i (section.id)}
-                {@const visible = isSectionVisible(section.id)}
-                {@const visible_count = all_ids.filter((id) => isSectionVisible(id)).length}
-                {@const is_last_visible = visible && visible_count <= 1}
-                {@const is_first = i === 0}
-                {@const is_last = i === ordered_sections.length - 1}
-                <div class="settings-item" class:disabled={is_last_visible}>
-                    <label class="item-checkbox">
-                        <input
-                            type="checkbox"
-                            checked={visible}
-                            disabled={is_last_visible}
-                            onchange={() => handleItemToggle(section.id)}
-                        />
-                        <span class="item-label">{section.label}</span>
-                    </label>
-                    <div class="item-actions">
-                        <button
-                            type="button"
-                            class="move-btn"
-                            disabled={is_first}
-                            onclick={() => handleMoveUp(section.id)}
-                            aria-label="{section.label} 위로 이동"
-                        >▲</button>
-                        <button
-                            type="button"
-                            class="move-btn"
-                            disabled={is_last}
-                            onclick={() => handleMoveDown(section.id)}
-                            aria-label="{section.label} 아래로 이동"
-                        >▼</button>
+            <div
+                class="settings-list"
+                use:dndzone={{
+                    items: dnd_items,
+                    flipDurationMs: FLIP_DURATION_MS,
+                    type: 'settings',
+                }}
+                onconsider={handleConsider}
+                onfinalize={handleFinalize}
+            >
+                {#each dnd_items as section (section.id)}
+                    {@const visible = isSectionVisible(section.id)}
+                    {@const visible_count = all_ids.filter((id) => isSectionVisible(id)).length}
+                    {@const is_last_visible = visible && visible_count <= 1}
+                    <div
+                        class="settings-item"
+                        class:disabled={is_last_visible}
+                        role="option"
+                        tabindex="0"
+                        aria-selected={visible}
+                        aria-label="{section.label} - 드래그하여 순서 변경"
+                        onkeydown={(e) => handleItemKeydown(e, section.id)}
+                    >
+                        <span class="drag-handle" aria-hidden="true">
+                            <svg
+                                width="10"
+                                height="14"
+                                viewBox="0 0 10 14"
+                                fill="currentColor"
+                            >
+                                <circle cx="3" cy="2" r="1.2" />
+                                <circle cx="7" cy="2" r="1.2" />
+                                <circle cx="3" cy="7" r="1.2" />
+                                <circle cx="7" cy="7" r="1.2" />
+                                <circle cx="3" cy="12" r="1.2" />
+                                <circle cx="7" cy="12" r="1.2" />
+                            </svg>
+                        </span>
+                        <label class="item-checkbox">
+                            <input
+                                type="checkbox"
+                                checked={visible}
+                                disabled={is_last_visible}
+                                onchange={() => handleItemToggle(section.id)}
+                            />
+                            <span class="item-label">{section.label}</span>
+                        </label>
                     </div>
-                </div>
-            {/each}
+                {/each}
+            </div>
         </div>
     {/if}
 </div>
@@ -151,12 +198,11 @@
         top: 100%;
         right: 0;
         z-index: 10;
-        min-width: 160px;
+        min-width: 200px;
         background-color: var(--color-background);
         border: 1px solid var(--color-border);
         border-radius: var(--radius-md);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        padding: var(--space-sm) 0;
     }
 
     .panel-title {
@@ -165,19 +211,33 @@
         padding: var(--space-sm) var(--space-md);
         font-weight: var(--font-weight-medium);
         border-bottom: 1px solid var(--color-border);
-        margin-bottom: var(--space-xs);
+    }
+
+    .settings-list {
+        padding: var(--space-xs) 0;
     }
 
     .settings-item {
         display: flex;
         align-items: center;
-        justify-content: space-between;
+        gap: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
         transition: background-color 0.1s ease;
+        cursor: grab;
+        outline: none;
     }
 
     .settings-item:hover {
         background-color: var(--color-surface);
+    }
+
+    .settings-item:focus-visible {
+        background-color: var(--color-surface);
+        box-shadow: inset 0 0 0 2px var(--color-primary);
+    }
+
+    .settings-item:active {
+        cursor: grabbing;
     }
 
     .settings-item.disabled {
@@ -186,6 +246,19 @@
 
     .settings-item.disabled:hover {
         background-color: transparent;
+    }
+
+    .drag-handle {
+        display: flex;
+        align-items: center;
+        color: var(--color-text-secondary);
+        opacity: 0.4;
+        flex-shrink: 0;
+        transition: opacity 0.1s ease;
+    }
+
+    .settings-item:hover .drag-handle {
+        opacity: 0.8;
     }
 
     .item-checkbox {
@@ -206,33 +279,5 @@
         font-size: var(--font-size-sm);
         color: var(--color-text);
         user-select: none;
-    }
-
-    .item-actions {
-        display: flex;
-        gap: 2px;
-        flex-shrink: 0;
-    }
-
-    .move-btn {
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 0 var(--space-xs);
-        font-size: 10px;
-        color: var(--color-text-secondary);
-        border-radius: var(--radius-sm);
-        line-height: 1;
-        transition: color 0.1s ease, background-color 0.1s ease;
-    }
-
-    .move-btn:hover:not(:disabled) {
-        color: var(--color-text);
-        background-color: var(--color-surface);
-    }
-
-    .move-btn:disabled {
-        opacity: 0.3;
-        cursor: not-allowed;
     }
 </style>

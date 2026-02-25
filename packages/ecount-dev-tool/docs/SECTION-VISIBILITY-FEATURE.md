@@ -1,7 +1,7 @@
 # 섹션 관리 기능 설계 문서
 
 **작성일**: 2026-02-25  
-**버전**: 2.0
+**버전**: 3.0
 
 ---
 
@@ -10,7 +10,7 @@
 섹션(빠른 로그인, 서버 관리, 빠른 실행)의 **표시 여부**와 **표시 순서**를 사용자가 설정할 수 있는 기능.
 
 - **숨기기/보이기**: 섹션을 완전히 숨기거나 다시 표시
-- **순서 변경**: 섹션의 표시 순서를 ▲/▼ 버튼으로 조정
+- **순서 변경**: 드래그앤드롭으로 섹션 표시 순서 조정 (설정 패널 + 메인 화면)
 
 ---
 
@@ -30,7 +30,10 @@ chrome.storage.sync
           │
     SectionSettings
     ├── 체크박스 → 숨기기/보이기
-    └── ▲/▼ 버튼 → 순서 변경
+    └── 드래그앤드롭 → 순서 변경 (svelte-dnd-action)
+          │
+    App.svelte (메인 화면)
+    └── 드래그 핸들 → 섹션 직접 드래그 순서 변경
 ```
 
 ### 2.2 Storage 키
@@ -119,11 +122,14 @@ getSectionOrder(): string[]
 initializeSectionOrder(): Promise<void>
 // chrome.storage.sync에서 순서 복원
 
+setSectionOrder(new_order: string[]): Promise<boolean>
+// 전체 순서를 한번에 설정 (DnD용)
+
 moveSectionUp(section_id: string): Promise<boolean>
-// 섹션을 위로 이동. 첫 번째 항목이면 false
+// 섹션을 위로 이동. 첫 번째 항목이면 false (키보드 접근성 폴백)
 
 moveSectionDown(section_id: string): Promise<boolean>
-// 섹션을 아래로 이동. 마지막 항목이면 false
+// 섹션을 아래로 이동. 마지막 항목이면 false (키보드 접근성 폴백)
 ```
 
 ### SectionSettings.svelte Props
@@ -143,10 +149,17 @@ interface SectionSettingsProps {
 
 - **패널 제목**: "섹션 설정"
 - **체크박스**: 각 섹션의 숨기기/보이기 토글
-- **▲/▼ 버튼**: 각 항목의 순서 변경
-  - 첫 번째 항목: ▲ 비활성화
-  - 마지막 항목: ▼ 비활성화
+- **드래그앤드롭**: 항목을 드래그하여 순서 변경 (`svelte-dnd-action`)
+- **키보드 접근성**: ArrowUp/Down으로 순서 변경 (`moveSectionUp`/`moveSectionDown` 폴백)
+- **드래그 핸들**: 6-dot grip 아이콘 (각 항목 좌측)
 - **목록 순서**: `getSectionOrder()` 기반으로 표시
+
+### App.svelte 메인 화면 DnD
+
+- **드래그 핸들**: 섹션 사이 경계에 hover 시 나타나는 6-dot 핸들
+- **dragDisabled 패턴**: 핸들 pointerdown 시만 드래그 활성화 (섹션 내부 상호작용 보호)
+- **Stage 모드**: DnD 비활성화 (QuickLogin만 표시되므로 의미 없음)
+- **숨겨진 섹션 처리**: 드롭 완료 시 보이는 섹션 순서 + 숨겨진 섹션 순서 병합
 
 ---
 
@@ -170,22 +183,34 @@ const sections_to_render = $derived(
 
 ### 구분선(divider) 로직
 
-- 보이는 섹션 사이에만 자동 삽입
-- `i > 0`일 때 각 섹션 앞에 `<hr class="divider" />` 삽입
+- DnD 호환을 위해 CSS border 기반으로 변경 (기존 `<hr>` 제거)
+- `.section-wrapper + .section-wrapper`에 `border-top` 적용
+- Stage 모드에서는 `.section-divider` div 사용
 
 ---
 
 ## 6. 테스트 현황
 
-- **전체 테스트**: 155개 통과
-- **section_order 단위 테스트**: 13개
-  - 초기화: 6개 (기본값, 유효 데이터, 잘못된 데이터, storage 오류, 누락 ID 추가, 알 수 없는 ID 필터)
-  - 순서 변경: 7개 (위로/아래로 이동, 경계 조건, 저장 실패 롤백 등)
-- **App.svelte 통합 테스트**: 섹션 순서 관련 3개 추가
+- **전체 테스트**: 159개 통과
+- **section_order 단위 테스트**: 16개
+  - 초기화: 7개 (기본값, 유효 데이터, 잘못된 데이터, storage 오류, 누락 ID 추가, 알 수 없는 ID 필터, 초기화 전 setSectionOrder 불가)
+  - 순서 변경: 9개 (위로/아래로 이동, 경계 조건, 저장 실패 롤백, setSectionOrder 전체 순서 변경/저장/롤백)
+- **App.svelte 통합 테스트**: 섹션 순서 관련 4개 (기본 순서, 저장된 순서, 설정 패널 DnD 핸들, 메인 화면 DnD 핸들)
 
 ---
 
 ## 7. 변경 이력
+
+### v3.0 (2026-02-25)
+
+- **드래그앤드롭 순서 변경 도입**: ▲/▼ 버튼을 svelte-dnd-action 기반 DnD로 교체
+  - 의존성 추가: `svelte-dnd-action` (~8KB, 0 외부 의존성)
+  - Store: `setSectionOrder()` 함수 추가 (DnD finalize 시 전체 순서 일괄 설정)
+  - SectionSettings: 드래그 핸들(grip dots) + DnD zone으로 항목 순서 변경
+  - App.svelte: 메인 화면 섹션 직접 DnD (dragDisabled 패턴 + 드래그 핸들)
+  - Divider: `<hr>` → CSS border 기반 (DnD 호환)
+- **접근성**: 설정 패널에서 ArrowUp/Down 키보드 폴백 유지, aria 속성 추가
+- **테스트**: 159개 통과 (setSectionOrder 3개 + DnD DOM 구조 1개 추가)
 
 ### v2.0 (2026-02-25)
 

@@ -23,7 +23,8 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@personal/uikit": "workspace:*"
+        "@personal/uikit": "workspace:*",
+        "svelte-dnd-action": "^0.9.69"
     },
     "devDependencies": {
         "@eslint/js": "catalog:",

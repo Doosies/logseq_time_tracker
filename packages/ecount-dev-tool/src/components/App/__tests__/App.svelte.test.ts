@@ -349,7 +349,7 @@ describe('App', () => {
             ).toBeTruthy();
         });
 
-        it('설정 패널에서 순서 변경 버튼이 표시되어야 함', async () => {
+        it('설정 패널에서 드래그 핸들이 표시되어야 함', async () => {
             asMock(chrome.tabs.query).mockResolvedValue([
                 {
                     id: 1,
@@ -364,14 +364,33 @@ describe('App', () => {
             const user = userEvent.setup();
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
-            const move_up_buttons = screen.getAllByRole('button', {
-                name: /위로 이동/,
+            const listitem_elements = screen.getAllByRole('listitem', {
+                name: /드래그하여 순서 변경/,
             });
-            const move_down_buttons = screen.getAllByRole('button', {
-                name: /아래로 이동/,
+            expect(listitem_elements.length).toBe(3);
+        });
+
+        it('메인 화면에서 드래그 핸들이 렌더링되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const drag_handle_buttons = screen.getAllByRole('button', {
+                name: '드래그하여 섹션 순서 변경',
             });
-            expect(move_up_buttons.length).toBe(3);
-            expect(move_down_buttons.length).toBe(3);
+            expect(drag_handle_buttons.length).toBe(3);
         });
     });
 });

@@ -67,6 +67,22 @@ export async function moveSectionUp(section_id: string): Promise<boolean> {
     }
 }
 
+export async function setSectionOrder(new_order: string[]): Promise<boolean> {
+    if (!is_loaded) return false;
+
+    const prev = [...order];
+    order = [...new_order];
+
+    try {
+        await syncToStorage();
+        return true;
+    } catch (e) {
+        order = prev;
+        console.error('섹션 순서 저장 실패:', e);
+        return false;
+    }
+}
+
 export async function moveSectionDown(section_id: string): Promise<boolean> {
     if (!is_loaded) return false;
 

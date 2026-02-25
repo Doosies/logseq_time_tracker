@@ -5,6 +5,7 @@ import {
     initializeSectionOrder,
     moveSectionUp,
     moveSectionDown,
+    setSectionOrder,
 } from '../section_order.svelte';
 import { asMock } from '#test/mock_helpers';
 
@@ -12,9 +13,11 @@ describe('section_order 스토어', () => {
     it('초기화 전에는 이동이 불가능해야 함', async () => {
         const up_result = await moveSectionUp('server-manager');
         const down_result = await moveSectionDown('server-manager');
+        const set_result = await setSectionOrder(['action-bar', 'quick-login', 'server-manager']);
 
         expect(up_result).toBe(false);
         expect(down_result).toBe(false);
+        expect(set_result).toBe(false);
     });
 
     describe('초기화', () => {
@@ -162,6 +165,35 @@ describe('section_order 스토어', () => {
             );
 
             const result = await moveSectionUp('server-manager');
+
+            expect(result).toBe(false);
+            expect(getSectionOrder()).toEqual([...DEFAULT_ORDER]);
+        });
+
+        it('setSectionOrder로 전체 순서를 변경할 수 있어야 함', async () => {
+            const new_order = ['action-bar', 'server-manager', 'quick-login'];
+            const result = await setSectionOrder(new_order);
+
+            expect(result).toBe(true);
+            expect(getSectionOrder()).toEqual(new_order);
+        });
+
+        it('setSectionOrder 변경 결과가 storage에 저장되어야 함', async () => {
+            const new_order = ['action-bar', 'server-manager', 'quick-login'];
+            await setSectionOrder(new_order);
+
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                section_order_state: new_order,
+            });
+        });
+
+        it('setSectionOrder storage 저장 실패 시 이전 순서로 롤백해야 함', async () => {
+            asMock(chrome.storage.sync.set).mockRejectedValueOnce(
+                new Error('Storage error'),
+            );
+
+            const new_order = ['action-bar', 'server-manager', 'quick-login'];
+            const result = await setSectionOrder(new_order);
 
             expect(result).toBe(false);
             expect(getSectionOrder()).toEqual([...DEFAULT_ORDER]);
