@@ -1,5 +1,6 @@
 <script lang="ts">
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
+    import { getSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
 
     interface SectionItem {
         id: string;
@@ -33,8 +34,24 @@
 
     const all_ids = $derived(sections.map((s) => s.id));
 
+    const ordered_sections = $derived.by(() => {
+        const order = getSectionOrder();
+        const section_map = new Map(sections.map((s) => [s.id, s]));
+        return order
+            .map((id) => section_map.get(id))
+            .filter((s): s is SectionItem => s !== undefined);
+    });
+
     async function handleItemToggle(section_id: string): Promise<void> {
         await toggleVisibility(section_id, all_ids);
+    }
+
+    async function handleMoveUp(section_id: string): Promise<void> {
+        await moveSectionUp(section_id);
+    }
+
+    async function handleMoveDown(section_id: string): Promise<void> {
+        await moveSectionDown(section_id);
     }
 </script>
 
@@ -47,30 +64,53 @@
         onclick={handleToggle}
         aria-label="섹션 설정"
         aria-expanded={is_open}
-        title="섹션 표시 설정"
     >
         <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
-            <path d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.902 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.116l.094-.318z"/>
+            <path
+                d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"
+            />
+            <path
+                d="M9.796 1.343c-.527-1.79-3.065-1.79-3.592 0l-.094.319a.873.873 0 0 1-1.255.52l-.292-.16c-1.64-.892-3.433.902-2.54 2.541l.159.292a.873.873 0 0 1-.52 1.255l-.319.094c-1.79.527-1.79 3.065 0 3.592l.319.094a.873.873 0 0 1 .52 1.255l-.16.292c-.892 1.64.902 3.434 2.541 2.54l.292-.159a.873.873 0 0 1 1.255.52l.094.319c.527 1.79 3.065 1.79 3.592 0l.094-.319a.873.873 0 0 1 1.255-.52l.292.16c1.64.893 3.434-.902 2.54-2.541l-.159-.292a.873.873 0 0 1 .52-1.255l.319-.094c1.79-.527 1.79-3.065 0-3.592l-.319-.094a.873.873 0 0 1-.52-1.255l.16-.292c.893-1.64-.902-3.433-2.541-2.54l-.292.159a.873.873 0 0 1-1.255-.52l-.094-.319zm-2.633.283c.246-.835 1.428-.835 1.674 0l.094.319a1.873 1.873 0 0 0 2.693 1.115l.291-.16c.764-.415 1.6.42 1.184 1.185l-.159.292a1.873 1.873 0 0 0 1.116 2.692l.318.094c.835.246.835 1.428 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.291c.415.764-.42 1.6-1.185 1.184l-.291-.159a1.873 1.873 0 0 0-2.693 1.116l-.094.318c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.692-1.115l-.292.16c-.764.415-1.6-.42-1.184-1.185l.159-.291A1.873 1.873 0 0 0 1.945 8.93l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094A1.873 1.873 0 0 0 3.06 4.377l-.16-.292c-.415-.764.42-1.6 1.185-1.184l.292.159a1.873 1.873 0 0 0 2.692-1.116l.094-.318z"
+            />
         </svg>
     </button>
 
     {#if is_open}
         <div class="settings-panel" role="menu">
-            <div class="panel-title">섹션 표시 설정</div>
-            {#each sections as section (section.id)}
+            <div class="panel-title">섹션 설정</div>
+            {#each ordered_sections as section, i (section.id)}
                 {@const visible = isSectionVisible(section.id)}
                 {@const visible_count = all_ids.filter((id) => isSectionVisible(id)).length}
                 {@const is_last_visible = visible && visible_count <= 1}
-                <label class="settings-item" class:disabled={is_last_visible}>
-                    <input
-                        type="checkbox"
-                        checked={visible}
-                        disabled={is_last_visible}
-                        onchange={() => handleItemToggle(section.id)}
-                    />
-                    <span class="item-label">{section.label}</span>
-                </label>
+                {@const is_first = i === 0}
+                {@const is_last = i === ordered_sections.length - 1}
+                <div class="settings-item" class:disabled={is_last_visible}>
+                    <label class="item-checkbox">
+                        <input
+                            type="checkbox"
+                            checked={visible}
+                            disabled={is_last_visible}
+                            onchange={() => handleItemToggle(section.id)}
+                        />
+                        <span class="item-label">{section.label}</span>
+                    </label>
+                    <div class="item-actions">
+                        <button
+                            type="button"
+                            class="move-btn"
+                            disabled={is_first}
+                            onclick={() => handleMoveUp(section.id)}
+                            aria-label="{section.label} 위로 이동"
+                        >▲</button>
+                        <button
+                            type="button"
+                            class="move-btn"
+                            disabled={is_last}
+                            onclick={() => handleMoveDown(section.id)}
+                            aria-label="{section.label} 아래로 이동"
+                        >▼</button>
+                    </div>
+                </div>
             {/each}
         </div>
     {/if}
@@ -131,9 +171,8 @@
     .settings-item {
         display: flex;
         align-items: center;
-        gap: var(--space-md);
+        justify-content: space-between;
         padding: var(--space-sm) var(--space-md);
-        cursor: pointer;
         transition: background-color 0.1s ease;
     }
 
@@ -142,7 +181,6 @@
     }
 
     .settings-item.disabled {
-        cursor: not-allowed;
         opacity: 0.5;
     }
 
@@ -150,7 +188,16 @@
         background-color: transparent;
     }
 
-    .settings-item input[type='checkbox'] {
+    .item-checkbox {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        cursor: pointer;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .item-checkbox input[type='checkbox'] {
         accent-color: var(--color-primary);
         cursor: inherit;
     }
@@ -159,5 +206,33 @@
         font-size: var(--font-size-sm);
         color: var(--color-text);
         user-select: none;
+    }
+
+    .item-actions {
+        display: flex;
+        gap: 2px;
+        flex-shrink: 0;
+    }
+
+    .move-btn {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0 var(--space-xs);
+        font-size: 10px;
+        color: var(--color-text-secondary);
+        border-radius: var(--radius-sm);
+        line-height: 1;
+        transition: color 0.1s ease, background-color 0.1s ease;
+    }
+
+    .move-btn:hover:not(:disabled) {
+        color: var(--color-text);
+        background-color: var(--color-surface);
+    }
+
+    .move-btn:disabled {
+        opacity: 0.3;
+        cursor: not-allowed;
     }
 </style>

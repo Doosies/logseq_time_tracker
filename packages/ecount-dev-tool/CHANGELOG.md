@@ -68,6 +68,24 @@
 
 ## [Unreleased]
 
+### Added
+- **섹션 순서 변경 기능**: SectionSettings 패널에서 ▲/▼ 버튼으로 섹션 표시 순서 변경 가능
+  - `section_order.svelte.ts` 스토어 추가 (chrome.storage.sync 기반 영속화)
+  - 누락된 섹션 ID 자동 복구, 알 수 없는 ID 자동 필터링
+  - 저장 실패 시 이전 순서로 롤백
+- **App 동적 렌더링**: 섹션이 저장된 순서대로 렌더링되도록 변경
+
+### Removed
+- **접기(Collapse) 토글 기능 제거**: 숨기기/보이기 기능으로 대체
+  - `section_collapse.svelte.ts` 스토어 삭제
+  - Section 컴포넌트에서 `collapsible`, `collapsed`, `onToggle` props 제거
+  - 관련 CSS 스타일(chevron, collapsible) 제거
+  - Storage 키 `section_collapse_state` 더 이상 사용하지 않음
+
+### Changed
+- **SectionSettings 패널**: 제목 "섹션 표시 설정" → "섹션 설정", 순서 변경 버튼 추가
+- **Section 컴포넌트(UIKit)**: 단순화 (title + children만 유지)
+
 ---
 
 ## 버전 형식 가이드

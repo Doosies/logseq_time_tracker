@@ -8,8 +8,8 @@
     import { SectionSettings } from '#components/SectionSettings';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
     import { initializeAccounts } from '#stores/accounts.svelte';
-    import { initializeSectionState, getSectionCollapsed, toggleSection } from '#stores/section_collapse.svelte';
     import { initializeVisibility, isSectionVisible } from '#stores/section_visibility.svelte';
+    import { initializeSectionOrder, getSectionOrder } from '#stores/section_order.svelte';
 
     const SECTION_LIST = [
         { id: 'quick-login', label: '빠른 로그인' },
@@ -18,24 +18,23 @@
     ];
 
     const tab = $derived(getTabState());
+    const section_order = $derived(getSectionOrder());
 
-    const show_quick_login = $derived(isSectionVisible('quick-login'));
-    const show_server_manager = $derived(isSectionVisible('server-manager'));
-    const show_action_bar = $derived(isSectionVisible('action-bar'));
-
-    const visible_section_count = $derived(
-        [show_quick_login, show_server_manager, show_action_bar].filter(Boolean).length,
+    const visible_ordered_sections = $derived(
+        section_order.filter((id) => isSectionVisible(id)),
     );
-    const is_collapsible = $derived(visible_section_count > 1);
 
-    const need_divider_after_login = $derived(show_quick_login && (show_server_manager || show_action_bar));
-    const need_divider_between_sm_ab = $derived(show_server_manager && show_action_bar);
+    const sections_to_render = $derived(
+        tab.is_stage
+            ? visible_ordered_sections.filter((id) => id === 'quick-login')
+            : visible_ordered_sections,
+    );
 
     onMount(() => {
         initializeTabState();
         initializeAccounts();
-        initializeSectionState();
         initializeVisibility();
+        initializeSectionOrder();
     });
 </script>
 
@@ -43,46 +42,34 @@
     <div class="app-content">
         <SectionSettings sections={SECTION_LIST} />
 
-        {#if show_quick_login}
-            <QuickLoginSection
-                collapsible={is_collapsible}
-                collapsed={is_collapsible && getSectionCollapsed('quick-login')}
-                onToggle={() => toggleSection('quick-login')}
-            />
-        {/if}
-
         {#if tab.is_loading}
-            {#if need_divider_after_login}
-                <hr class="divider" />
-            {/if}
             <p>로딩 중...</p>
         {:else if tab.is_stage}
-            {#if show_quick_login}
+            {#each sections_to_render as section_id, i (section_id)}
+                {#if i > 0}
+                    <hr class="divider" />
+                {/if}
+                {#if section_id === 'quick-login'}
+                    <QuickLoginSection />
+                {/if}
+            {/each}
+            {#if sections_to_render.some((id) => id === 'quick-login')}
                 <hr class="divider" />
             {/if}
             <StageManager />
         {:else}
-            {#if show_server_manager}
-                {#if need_divider_after_login}
+            {#each sections_to_render as section_id, i (section_id)}
+                {#if i > 0}
                     <hr class="divider" />
                 {/if}
-                <ServerManager
-                    collapsible={is_collapsible}
-                    collapsed={is_collapsible && getSectionCollapsed('server-manager')}
-                    onToggle={() => toggleSection('server-manager')}
-                />
-            {/if}
-
-            {#if show_action_bar}
-                {#if need_divider_between_sm_ab || (!show_server_manager && need_divider_after_login)}
-                    <hr class="divider" />
+                {#if section_id === 'quick-login'}
+                    <QuickLoginSection />
+                {:else if section_id === 'server-manager'}
+                    <ServerManager />
+                {:else if section_id === 'action-bar'}
+                    <ActionBar />
                 {/if}
-                <ActionBar
-                    collapsible={is_collapsible}
-                    collapsed={is_collapsible && getSectionCollapsed('action-bar')}
-                    onToggle={() => toggleSection('action-bar')}
-                />
-            {/if}
+            {/each}
         {/if}
     </div>
 </Card>

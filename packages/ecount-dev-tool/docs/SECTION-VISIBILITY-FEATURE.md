@@ -1,23 +1,16 @@
-# 섹션 숨기기/보이기 기능 설계 문서
+# 섹션 관리 기능 설계 문서
 
 **작성일**: 2026-02-25  
-**버전**: 1.1
+**버전**: 2.0
 
 ---
 
 ## 1. 개요
 
-각 섹션(빠른 로그인, 서버 관리, 빠른 실행)을 완전히 숨기거나 다시 표시할 수 있는 기능.  
-기존 접기/펼치기(collapse)와 달리, 숨기기(visibility)는 섹션 자체를 화면에서 제거한다.
+섹션(빠른 로그인, 서버 관리, 빠른 실행)의 **표시 여부**와 **표시 순서**를 사용자가 설정할 수 있는 기능.
 
-### 접기 vs 숨기기 비교
-
-| 기능 | 접기(Collapse) | 숨기기(Visibility) |
-|------|---------------|-------------------|
-| 타이틀 표시 | O (항상 보임) | X (완전히 제거) |
-| 내용 표시 | X (접힌 상태) | X (전체 미표시) |
-| 토글 위치 | 섹션 타이틀 클릭 | 설정 패널 (⚙) |
-| 독립성 | 숨기기와 독립 | 접기와 독립 |
+- **숨기기/보이기**: 섹션을 완전히 숨기거나 다시 표시
+- **순서 변경**: 섹션의 표시 순서를 ▲/▼ 버튼으로 조정
 
 ---
 
@@ -27,40 +20,37 @@
 
 ```
 chrome.storage.sync
-    ↕ (읽기/쓰기)
-section_visibility.svelte.ts (스토어)
-    ↕ (상태 제공)
-App.svelte
-    ├─ visible_section_count (derived)
-    ├─ is_collapsible = visible_section_count > 1
-    ├─ SectionSettings (⚙ 설정 패널)
-    ├─ {#if visible} QuickLoginSection collapsible={is_collapsible} {/if}
-    ├─ {#if visible} ServerManager collapsible={is_collapsible} {/if}
-    └─ {#if visible} ActionBar collapsible={is_collapsible} {/if}
+  ├── section_visibility_state: Record<string, boolean>
+  └── section_order_state: string[]
+          │
+    App.svelte
+    ├── getSectionOrder() → 순서
+    ├── isSectionVisible() → 필터
+    └── visible_ordered_sections → 동적 렌더링
+          │
+    SectionSettings
+    ├── 체크박스 → 숨기기/보이기
+    └── ▲/▼ 버튼 → 순서 변경
 ```
 
 ### 2.2 Storage 키
 
-- **키**: `section_visibility_state`
-- **타입**: `Record<string, boolean>`
-- **기본값**: `{}` (없는 키는 `true`로 간주 = 기본 보임)
+| 키 | 타입 | 기본값 | 설명 |
+|----|------|--------|------|
+| `section_visibility_state` | `Record<string, boolean>` | `{}` | 섹션별 가시성 (없는 키는 `true` = 기본 보임) |
+| `section_order_state` | `string[]` | `['quick-login', 'server-manager', 'action-bar']` | 섹션 표시 순서 |
 
 ### 2.3 안전장치
 
+**가시성 (section_visibility)**:
 - **최소 1개 섹션 보장**: 마지막 보이는 섹션은 숨길 수 없음
 - **롤백**: storage 저장 실패 시 이전 상태로 복원
 - **유효성 검증**: 저장 데이터가 올바르지 않으면 기본 상태 사용
 
-### 2.4 섹션 접기 토글 비활성화
-
-**문제**: 섹션이 1개만 보일 때 접기(collapse)하면 모든 콘텐츠가 사라져 사용자에게 혼란을 줌.
-
-**해결**:
-
-- `App.svelte`에서 `visible_section_count` (보이는 섹션 수) 계산
-- `is_collapsible = visible_section_count > 1` 로 접기 가능 여부 결정
-- 각 섹션 컴포넌트(QuickLoginSection, ServerManager, ActionBar)에 `collapsible` prop 추가
-- 1개 섹션만 보일 때: 자동으로 접기 토글 비활성화 + 접힌 상태 해제
+**순서 (section_order)**:
+- **누락된 ID 자동 추가**: 저장된 순서에 없는 섹션 ID는 끝에 추가
+- **알 수 없는 ID 필터링**: 기본 순서에 없는 ID는 무시
+- **저장 실패 시 롤백**: storage 저장 실패 시 이전 순서로 복원
 
 ---
 
@@ -70,22 +60,33 @@ App.svelte
 
 | 파일 | 역할 |
 |------|------|
-| `stores/section_visibility.svelte.ts` | 가시성 상태 관리 스토어 |
-| `components/SectionSettings/SectionSettings.svelte` | 설정 UI 컴포넌트 |
-| `components/SectionSettings/index.ts` | 배럴 export |
-| `stores/__tests__/section_visibility.svelte.test.ts` | 스토어 단위 테스트 (11개) |
+| `stores/section_order.svelte.ts` | 섹션 순서 상태 관리 스토어 |
+| `stores/__tests__/section_order.svelte.test.ts` | 순서 스토어 단위 테스트 (13개) |
+
+### 삭제된 파일
+
+| 파일 | 제거 이유 |
+|------|-----------|
+| `stores/section_collapse.svelte.ts` | 숨기기/보이기로 대체되어 접기 기능 불필요 |
+| `stores/__tests__/section_collapse.svelte.test.ts` | 위 스토어 삭제에 따른 테스트 제거 |
 
 ### 수정 파일
 
 | 파일 | 변경 내용 |
 |------|-----------|
-| `stores/index.ts` | `section_visibility.svelte` export 추가 |
-| `components/App/App.svelte` | SectionSettings 배치, 조건부 렌더링, `visible_section_count`, `is_collapsible` derived state 추가 |
-| `components/App/__tests__/App.svelte.test.ts` | 숨기기/보이기 통합 테스트 (6개), 섹션 접기 토글 비활성화 테스트 (3개) |
-| `components/QuickLoginSection/QuickLoginSection.svelte` | `collapsible` prop 추가 |
-| `components/ServerManager/ServerManager.svelte` | `collapsible` prop 추가 |
-| `components/ActionBar/ActionBar.svelte` | `collapsible` prop 추가 |
-| `components/SectionSettings/SectionSettings.svelte` | UI 스타일 개선 (버튼 border 제거, opacity 0.6, 호버 시 강조, margin-bottom) |
+| `stores/index.ts` | `section_order.svelte` export 추가, `section_collapse` export 제거 |
+| `components/App/App.svelte` | `getSectionOrder()` + `isSectionVisible()` 기반 동적 렌더링, 구분선 로직 단순화 |
+| `components/App/__tests__/App.svelte.test.ts` | 섹션 순서 관련 통합 테스트 3개 추가 |
+| `components/SectionSettings/SectionSettings.svelte` | 패널 제목 "섹션 설정", ▲/▼ 이동 버튼 추가, 순서 기반 목록 표시 |
+| `components/QuickLoginSection/QuickLoginSection.svelte` | `collapsible`, `collapsed`, `onToggle` props 제거 |
+| `components/ServerManager/ServerManager.svelte` | `collapsible`, `collapsed`, `onToggle` props 제거 |
+| `components/ActionBar/ActionBar.svelte` | `collapsible`, `collapsed`, `onToggle` props 제거 |
+| `packages/uikit/Section/Section.svelte` | `collapsible`, `collapsed`, `onToggle` props 제거 |
+| `packages/uikit/design/styles/section.css.ts` | `section_title_collapsible`, `section_chevron`, `section_chevron_collapsed`, `section_content_collapsed` 스타일 제거 |
+
+### 제거된 Storage 키
+
+- `section_collapse_state` (chrome.storage.sync에서 더 이상 사용하지 않음)
 
 ---
 
@@ -107,6 +108,24 @@ toggleVisibility(
 // 가시성 토글. 마지막 섹션이면 false 반환
 ```
 
+### section_order.svelte.ts
+
+```typescript
+DEFAULT_ORDER: readonly ['quick-login', 'server-manager', 'action-bar']
+
+getSectionOrder(): string[]
+// 현재 섹션 순서 반환
+
+initializeSectionOrder(): Promise<void>
+// chrome.storage.sync에서 순서 복원
+
+moveSectionUp(section_id: string): Promise<boolean>
+// 섹션을 위로 이동. 첫 번째 항목이면 false
+
+moveSectionDown(section_id: string): Promise<boolean>
+// 섹션을 아래로 이동. 마지막 항목이면 false
+```
+
 ### SectionSettings.svelte Props
 
 ```typescript
@@ -120,40 +139,69 @@ interface SectionSettingsProps {
 }
 ```
 
-### SectionSettings.svelte UI 스타일
+### SectionSettings.svelte UI
 
-- **설정 버튼(⚙)**: border 제거, opacity 0.6으로 은은하게 표시
-- **호버**: 호버 시에만 눈에 띄도록 강조
-- **간격**: `.settings-root`에 margin-bottom 추가하여 간격 조정
+- **패널 제목**: "섹션 설정"
+- **체크박스**: 각 섹션의 숨기기/보이기 토글
+- **▲/▼ 버튼**: 각 항목의 순서 변경
+  - 첫 번째 항목: ▲ 비활성화
+  - 마지막 항목: ▼ 비활성화
+- **목록 순서**: `getSectionOrder()` 기반으로 표시
 
-### 섹션 컴포넌트 collapsible prop
+---
 
-QuickLoginSection, ServerManager, ActionBar에 공통으로 추가:
+## 5. App.svelte 렌더링 로직
+
+### 동적 렌더링
 
 ```typescript
-interface SectionProps {
-    collapsible?: boolean;  // true일 때만 접기 토글 활성화
-}
+// 순서 + 가시성 기반 필터링
+const visible_ordered_sections = $derived(
+    section_order.filter((id) => isSectionVisible(id)),
+);
+
+// Stage 탭에서는 quick-login만, 일반 탭에서는 전체
+const sections_to_render = $derived(
+    tab.is_stage
+        ? visible_ordered_sections.filter((id) => id === 'quick-login')
+        : visible_ordered_sections,
+);
 ```
 
----
+### 구분선(divider) 로직
 
-## 5. 테스트 현황
-
-- 스토어 단위 테스트: **11개** (초기화 4 + 토글 6 + 기본값 1)
-- 통합 테스트: **9개** (설정 버튼 렌더링, 패널 열기, 숨기기, 저장, 복원, 최소 보장 + 섹션 접기 토글 비활성화 3개)
-- 전체 테스트: **156개 통과** (기존 153 + 신규 3)
-- 커버리지: **83.26%**
+- 보이는 섹션 사이에만 자동 삽입
+- `i > 0`일 때 각 섹션 앞에 `<hr class="divider" />` 삽입
 
 ---
 
-## 6. 변경 이력
+## 6. 테스트 현황
+
+- **전체 테스트**: 155개 통과
+- **section_order 단위 테스트**: 13개
+  - 초기화: 6개 (기본값, 유효 데이터, 잘못된 데이터, storage 오류, 누락 ID 추가, 알 수 없는 ID 필터)
+  - 순서 변경: 7개 (위로/아래로 이동, 경계 조건, 저장 실패 롤백 등)
+- **App.svelte 통합 테스트**: 섹션 순서 관련 3개 추가
+
+---
+
+## 7. 변경 이력
+
+### v2.0 (2026-02-25)
+
+- **접기(Collapse) 토글 기능 제거**: 숨기기/보이기로 대체되어 불필요
+  - 삭제: `section_collapse.svelte.ts`, `section_collapse.svelte.test.ts`
+  - 제거: Section 컴포넌트의 `collapsible`, `collapsed`, `onToggle` props 및 관련 스타일
+  - 제거: Storage 키 `section_collapse_state`
+- **섹션 순서 변경 기능 추가**
+  - 신규: `section_order.svelte.ts` 스토어
+  - SectionSettings에 ▲/▼ 이동 버튼 추가
+  - App.svelte 동적 렌더링 (`getSectionOrder()` + `isSectionVisible()`)
+  - 구분선 로직 단순화
 
 ### v1.1 (2026-02-25)
 
-- **UI 정리**: SectionSettings 설정 버튼 border 제거, opacity 0.6, 호버 시 강조, margin-bottom 추가
-- **섹션 접기 토글 비활성화**: 1개 섹션만 보일 때 접기 비활성화 및 접힌 상태 자동 해제
-- **collapsible prop**: QuickLoginSection, ServerManager, ActionBar에 추가
+- UI 정리, 섹션 접기 토글 비활성화 (v2.0에서 접기 기능 전체 제거)
 
 ### v1.0 (2026-02-25)
 

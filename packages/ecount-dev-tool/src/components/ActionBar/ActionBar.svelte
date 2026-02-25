@@ -36,16 +36,9 @@
         await updateTabUrl(tab.id, new_url.href);
     }
 
-    interface ActionBarProps {
-        collapsible?: boolean;
-        collapsed?: boolean;
-        onToggle?: (collapsed: boolean) => void;
-    }
-
-    let { collapsible = true, collapsed = false, onToggle }: ActionBarProps = $props();
 </script>
 
-<Section title="빠른 실행" {collapsible} {collapsed} {onToggle}>
+<Section title="빠른 실행">
     <div class="action-bar-inner">
         <Button variant="secondary" onclick={handleV5Local}>5.0로컬</Button>
         <Button variant="secondary" onclick={handleV3Local}>3.0로컬</Button>

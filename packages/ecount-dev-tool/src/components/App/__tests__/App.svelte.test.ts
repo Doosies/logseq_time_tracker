@@ -3,8 +3,8 @@ import { render, screen, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import App from '../App.svelte';
 import { asMock } from '#test/mock_helpers';
-import { initializeSectionState } from '#stores/section_collapse.svelte';
 import { initializeVisibility } from '#stores/section_visibility.svelte';
+import { initializeSectionOrder } from '#stores/section_order.svelte';
 
 describe('App', () => {
     beforeEach(() => {
@@ -82,98 +82,19 @@ describe('App', () => {
 
         render(App);
 
+        await waitFor(
+            () => {
+                expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+            },
+            { timeout: 2000 },
+        );
+
         expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
-    });
-
-    describe('섹션 접기/펼치기', () => {
-        beforeEach(async () => {
-            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
-            await initializeSectionState();
-        });
-
-        it('섹션 타이틀 클릭 시 내용이 숨겨져야 함', async () => {
-            asMock(chrome.tabs.query).mockResolvedValue([
-                {
-                    id: 1,
-                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
-                } as chrome.tabs.Tab,
-            ]);
-
-            render(App);
-
-            await waitFor(
-                () => {
-                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
-                },
-                { timeout: 2000 },
-            );
-
-            const user = userEvent.setup();
-            const quick_login_toggle = screen.getByRole('button', { name: /빠른 로그인/ });
-
-            expect(quick_login_toggle).toBeInTheDocument();
-            await user.click(quick_login_toggle);
-
-            expect(chrome.storage.sync.set).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    section_collapse_state: expect.objectContaining({ 'quick-login': true }),
-                }),
-            );
-        });
-
-        it('저장된 접기 상태가 있으면 접힌 채로 렌더링되어야 함', async () => {
-            asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
-                if (key === 'section_collapse_state') {
-                    return Promise.resolve({
-                        section_collapse_state: { 'quick-login': true },
-                    });
-                }
-                return Promise.resolve({ [key]: undefined });
-            });
-            await initializeSectionState();
-
-            asMock(chrome.tabs.query).mockResolvedValue([
-                {
-                    id: 1,
-                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp',
-                } as chrome.tabs.Tab,
-            ]);
-
-            render(App);
-
-            const toggle_btn = screen.getByRole('button', { name: /빠른 로그인/ });
-            expect(toggle_btn).toBeInTheDocument();
-
-            const chevron = toggle_btn.querySelector('span:last-child');
-            expect(chevron?.className).toContain('collapsed');
-        });
-
-        it('접힌 섹션을 다시 클릭하면 펼쳐져야 함', async () => {
-            asMock(chrome.tabs.query).mockResolvedValue([
-                {
-                    id: 1,
-                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp',
-                } as chrome.tabs.Tab,
-            ]);
-
-            render(App);
-
-            const user = userEvent.setup();
-            const toggle_btn = screen.getByRole('button', { name: /빠른 로그인/ });
-
-            await user.click(toggle_btn);
-            await user.click(toggle_btn);
-
-            const calls = asMock(chrome.storage.sync.set).mock.calls;
-            const last_call = calls[calls.length - 1]?.[0] as Record<string, Record<string, boolean>>;
-            expect(last_call?.['section_collapse_state']?.['quick-login']).toBe(false);
-        });
     });
 
     describe('섹션 숨기기/보이기', () => {
         beforeEach(async () => {
             asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
-            await initializeSectionState();
             await initializeVisibility();
         });
 
@@ -203,7 +124,7 @@ describe('App', () => {
             const user = userEvent.setup();
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
-            expect(screen.getByText('섹션 표시 설정')).toBeInTheDocument();
+            expect(screen.getByText('섹션 설정')).toBeInTheDocument();
         });
 
         it('섹션 체크박스를 해제하면 해당 섹션이 숨겨져야 함', async () => {
@@ -223,7 +144,7 @@ describe('App', () => {
                 { timeout: 2000 },
             );
 
-            expect(screen.getByRole('button', { name: /빠른 실행/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: '5.0로컬' })).toBeInTheDocument();
 
             const user = userEvent.setup();
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
@@ -233,7 +154,7 @@ describe('App', () => {
             await user.click(action_bar_checkbox);
 
             await waitFor(() => {
-                expect(screen.queryByRole('button', { name: /빠른 실행/ })).not.toBeInTheDocument();
+                expect(screen.queryByRole('button', { name: '5.0로컬' })).not.toBeInTheDocument();
             });
         });
 
@@ -296,8 +217,8 @@ describe('App', () => {
                 { timeout: 2000 },
             );
 
-            expect(screen.queryByRole('button', { name: /빠른 로그인/ })).not.toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /서버 관리/ })).toBeInTheDocument();
+            expect(screen.queryByText('빠른 로그인')).not.toBeInTheDocument();
+            expect(screen.getByText('서버 관리')).toBeInTheDocument();
         });
 
         it('마지막 보이는 섹션은 숨길 수 없어야 함', async () => {
@@ -340,17 +261,24 @@ describe('App', () => {
         });
     });
 
-    describe('섹션 접기 토글 비활성화', () => {
-        const supported_tab_url = 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1';
+    describe('섹션 순서 변경', () => {
+        const DOCUMENT_POSITION_FOLLOWING = 4;
 
         beforeEach(async () => {
-            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
-            await initializeSectionState();
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) =>
+                Promise.resolve({ [key]: undefined }),
+            );
             await initializeVisibility();
+            await initializeSectionOrder();
         });
 
-        it('3개 섹션 모두 보일 때 접기 토글 활성화', async () => {
-            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+        it('기본 순서대로 섹션이 렌더링되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
 
             render(App);
 
@@ -361,27 +289,42 @@ describe('App', () => {
                 { timeout: 2000 },
             );
 
-            expect(screen.getByRole('button', { name: /빠른 로그인/ })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /서버 관리/ })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /빠른 실행/ })).toBeInTheDocument();
+            const quick_login = screen.getByText('빠른 로그인');
+            const server_manager = screen.getByText('서버 관리');
+            const action_bar_title = screen.getByText('빠른 실행');
+
+            expect(
+                quick_login.compareDocumentPosition(server_manager) &
+                    DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            expect(
+                server_manager.compareDocumentPosition(action_bar_title) &
+                    DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
         });
 
-        it('1개 섹션만 보일 때 접기 토글 비활성화', async () => {
+        it('저장된 순서에 따라 섹션이 렌더링되어야 함', async () => {
             asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
-                if (key === 'section_visibility_state') {
+                if (key === 'section_order_state') {
                     return Promise.resolve({
-                        section_visibility_state: {
-                            'quick-login': false,
-                            'server-manager': false,
-                            'action-bar': true,
-                        },
+                        section_order_state: [
+                            'action-bar',
+                            'quick-login',
+                            'server-manager',
+                        ],
                     });
                 }
                 return Promise.resolve({ [key]: undefined });
             });
             await initializeVisibility();
+            await initializeSectionOrder();
 
-            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
 
             render(App);
 
@@ -391,43 +334,44 @@ describe('App', () => {
                 },
                 { timeout: 2000 },
             );
-
-            expect(screen.queryByText('빠른 로그인')).not.toBeInTheDocument();
-            expect(screen.queryByText('서버 관리')).not.toBeInTheDocument();
 
             const action_bar_title = screen.getByText('빠른 실행');
-            expect(action_bar_title.closest('button')).toBeNull();
+            const quick_login = screen.getByText('빠른 로그인');
+            const server_manager = screen.getByText('서버 관리');
+
+            expect(
+                action_bar_title.compareDocumentPosition(quick_login) &
+                    DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
+            expect(
+                quick_login.compareDocumentPosition(server_manager) &
+                    DOCUMENT_POSITION_FOLLOWING,
+            ).toBeTruthy();
         });
 
-        it('2개 섹션 보일 때 접기 토글 활성화', async () => {
-            asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
-                if (key === 'section_visibility_state') {
-                    return Promise.resolve({
-                        section_visibility_state: {
-                            'quick-login': false,
-                            'server-manager': true,
-                            'action-bar': true,
-                        },
-                    });
-                }
-                return Promise.resolve({ [key]: undefined });
-            });
-            await initializeVisibility();
-
-            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+        it('설정 패널에서 순서 변경 버튼이 표시되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
 
             render(App);
 
-            await waitFor(
-                () => {
-                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
-                },
-                { timeout: 2000 },
-            );
+            expect(screen.getByRole('button', { name: '섹션 설정' })).toBeInTheDocument();
 
-            expect(screen.queryByText('빠른 로그인')).not.toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /서버 관리/ })).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /빠른 실행/ })).toBeInTheDocument();
+            const user = userEvent.setup();
+            await user.click(screen.getByRole('button', { name: '섹션 설정' }));
+
+            const move_up_buttons = screen.getAllByRole('button', {
+                name: /위로 이동/,
+            });
+            const move_down_buttons = screen.getAllByRole('button', {
+                name: /아래로 이동/,
+            });
+            expect(move_up_buttons.length).toBe(3);
+            expect(move_down_buttons.length).toBe(3);
         });
     });
 });

@@ -76,16 +76,9 @@
         updateTabUrl(tab.tab_id, new_url);
     }
 
-    interface ServerManagerProps {
-        collapsible?: boolean;
-        collapsed?: boolean;
-        onToggle?: (collapsed: boolean) => void;
-    }
-
-    let { collapsible = true, collapsed = false, onToggle }: ServerManagerProps = $props();
 </script>
 
-<Section title="서버 관리" {collapsible} {collapsed} {onToggle}>
+<Section title="서버 관리">
     <div class="server-panel">
         <div class="server-row">
             <span class="server-label">V5</span>
