@@ -65,18 +65,19 @@
     }
 
     interface QuickLoginSectionProps {
+        collapsible?: boolean;
         collapsed?: boolean;
         onToggle?: (collapsed: boolean) => void;
     }
 
-    let { collapsed = false, onToggle }: QuickLoginSectionProps = $props();
+    let { collapsible = true, collapsed = false, onToggle }: QuickLoginSectionProps = $props();
 
     function toggleEdit(): void {
         is_editing = !is_editing;
     }
 </script>
 
-<Section title="빠른 로그인" collapsible {collapsed} {onToggle}>
+<Section title="빠른 로그인" {collapsible} {collapsed} {onToggle}>
     <div class="section-header">
         <button class="edit-toggle" onclick={toggleEdit}>
             {is_editing ? '완료' : '편집'}

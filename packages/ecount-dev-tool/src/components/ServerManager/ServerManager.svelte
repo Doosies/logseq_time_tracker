@@ -77,14 +77,15 @@
     }
 
     interface ServerManagerProps {
+        collapsible?: boolean;
         collapsed?: boolean;
         onToggle?: (collapsed: boolean) => void;
     }
 
-    let { collapsed = false, onToggle }: ServerManagerProps = $props();
+    let { collapsible = true, collapsed = false, onToggle }: ServerManagerProps = $props();
 </script>
 
-<Section title="서버 관리" collapsible {collapsed} {onToggle}>
+<Section title="서버 관리" {collapsible} {collapsed} {onToggle}>
     <div class="server-panel">
         <div class="server-row">
             <span class="server-label">V5</span>

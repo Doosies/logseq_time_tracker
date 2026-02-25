@@ -339,4 +339,95 @@ describe('App', () => {
             expect(last_checkbox).toBeDisabled();
         });
     });
+
+    describe('섹션 접기 토글 비활성화', () => {
+        const supported_tab_url = 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1';
+
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
+            await initializeSectionState();
+            await initializeVisibility();
+        });
+
+        it('3개 섹션 모두 보일 때 접기 토글 활성화', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.getByRole('button', { name: /빠른 로그인/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /서버 관리/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /빠른 실행/ })).toBeInTheDocument();
+        });
+
+        it('1개 섹션만 보일 때 접기 토글 비활성화', async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
+                if (key === 'section_visibility_state') {
+                    return Promise.resolve({
+                        section_visibility_state: {
+                            'quick-login': false,
+                            'server-manager': false,
+                            'action-bar': true,
+                        },
+                    });
+                }
+                return Promise.resolve({ [key]: undefined });
+            });
+            await initializeVisibility();
+
+            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.queryByText('빠른 로그인')).not.toBeInTheDocument();
+            expect(screen.queryByText('서버 관리')).not.toBeInTheDocument();
+
+            const action_bar_title = screen.getByText('빠른 실행');
+            expect(action_bar_title.closest('button')).toBeNull();
+        });
+
+        it('2개 섹션 보일 때 접기 토글 활성화', async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
+                if (key === 'section_visibility_state') {
+                    return Promise.resolve({
+                        section_visibility_state: {
+                            'quick-login': false,
+                            'server-manager': true,
+                            'action-bar': true,
+                        },
+                    });
+                }
+                return Promise.resolve({ [key]: undefined });
+            });
+            await initializeVisibility();
+
+            asMock(chrome.tabs.query).mockResolvedValue([{ id: 1, url: supported_tab_url } as chrome.tabs.Tab]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.queryByText('빠른 로그인')).not.toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /서버 관리/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: /빠른 실행/ })).toBeInTheDocument();
+        });
+    });
 });

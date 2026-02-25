@@ -23,6 +23,11 @@
     const show_server_manager = $derived(isSectionVisible('server-manager'));
     const show_action_bar = $derived(isSectionVisible('action-bar'));
 
+    const visible_section_count = $derived(
+        [show_quick_login, show_server_manager, show_action_bar].filter(Boolean).length,
+    );
+    const is_collapsible = $derived(visible_section_count > 1);
+
     const need_divider_after_login = $derived(show_quick_login && (show_server_manager || show_action_bar));
     const need_divider_between_sm_ab = $derived(show_server_manager && show_action_bar);
 
@@ -40,7 +45,8 @@
 
         {#if show_quick_login}
             <QuickLoginSection
-                collapsed={getSectionCollapsed('quick-login')}
+                collapsible={is_collapsible}
+                collapsed={is_collapsible && getSectionCollapsed('quick-login')}
                 onToggle={() => toggleSection('quick-login')}
             />
         {/if}
@@ -61,7 +67,8 @@
                     <hr class="divider" />
                 {/if}
                 <ServerManager
-                    collapsed={getSectionCollapsed('server-manager')}
+                    collapsible={is_collapsible}
+                    collapsed={is_collapsible && getSectionCollapsed('server-manager')}
                     onToggle={() => toggleSection('server-manager')}
                 />
             {/if}
@@ -70,7 +77,11 @@
                 {#if need_divider_between_sm_ab || (!show_server_manager && need_divider_after_login)}
                     <hr class="divider" />
                 {/if}
-                <ActionBar collapsed={getSectionCollapsed('action-bar')} onToggle={() => toggleSection('action-bar')} />
+                <ActionBar
+                    collapsible={is_collapsible}
+                    collapsed={is_collapsible && getSectionCollapsed('action-bar')}
+                    onToggle={() => toggleSection('action-bar')}
+                />
             {/if}
         {/if}
     </div>

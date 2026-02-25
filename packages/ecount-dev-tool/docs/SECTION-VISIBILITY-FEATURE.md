@@ -1,7 +1,7 @@
 # 섹션 숨기기/보이기 기능 설계 문서
 
 **작성일**: 2026-02-25  
-**버전**: 1.0
+**버전**: 1.1
 
 ---
 
@@ -31,10 +31,12 @@ chrome.storage.sync
 section_visibility.svelte.ts (스토어)
     ↕ (상태 제공)
 App.svelte
+    ├─ visible_section_count (derived)
+    ├─ is_collapsible = visible_section_count > 1
     ├─ SectionSettings (⚙ 설정 패널)
-    ├─ {#if visible} QuickLoginSection {/if}
-    ├─ {#if visible} ServerManager {/if}
-    └─ {#if visible} ActionBar {/if}
+    ├─ {#if visible} QuickLoginSection collapsible={is_collapsible} {/if}
+    ├─ {#if visible} ServerManager collapsible={is_collapsible} {/if}
+    └─ {#if visible} ActionBar collapsible={is_collapsible} {/if}
 ```
 
 ### 2.2 Storage 키
@@ -48,6 +50,17 @@ App.svelte
 - **최소 1개 섹션 보장**: 마지막 보이는 섹션은 숨길 수 없음
 - **롤백**: storage 저장 실패 시 이전 상태로 복원
 - **유효성 검증**: 저장 데이터가 올바르지 않으면 기본 상태 사용
+
+### 2.4 섹션 접기 토글 비활성화
+
+**문제**: 섹션이 1개만 보일 때 접기(collapse)하면 모든 콘텐츠가 사라져 사용자에게 혼란을 줌.
+
+**해결**:
+
+- `App.svelte`에서 `visible_section_count` (보이는 섹션 수) 계산
+- `is_collapsible = visible_section_count > 1` 로 접기 가능 여부 결정
+- 각 섹션 컴포넌트(QuickLoginSection, ServerManager, ActionBar)에 `collapsible` prop 추가
+- 1개 섹션만 보일 때: 자동으로 접기 토글 비활성화 + 접힌 상태 해제
 
 ---
 
@@ -67,8 +80,12 @@ App.svelte
 | 파일 | 변경 내용 |
 |------|-----------|
 | `stores/index.ts` | `section_visibility.svelte` export 추가 |
-| `components/App/App.svelte` | SectionSettings 배치, 조건부 렌더링 |
-| `components/App/__tests__/App.svelte.test.ts` | 숨기기/보이기 통합 테스트 (6개) |
+| `components/App/App.svelte` | SectionSettings 배치, 조건부 렌더링, `visible_section_count`, `is_collapsible` derived state 추가 |
+| `components/App/__tests__/App.svelte.test.ts` | 숨기기/보이기 통합 테스트 (6개), 섹션 접기 토글 비활성화 테스트 (3개) |
+| `components/QuickLoginSection/QuickLoginSection.svelte` | `collapsible` prop 추가 |
+| `components/ServerManager/ServerManager.svelte` | `collapsible` prop 추가 |
+| `components/ActionBar/ActionBar.svelte` | `collapsible` prop 추가 |
+| `components/SectionSettings/SectionSettings.svelte` | UI 스타일 개선 (버튼 border 제거, opacity 0.6, 호버 시 강조, margin-bottom) |
 
 ---
 
@@ -103,10 +120,41 @@ interface SectionSettingsProps {
 }
 ```
 
+### SectionSettings.svelte UI 스타일
+
+- **설정 버튼(⚙)**: border 제거, opacity 0.6으로 은은하게 표시
+- **호버**: 호버 시에만 눈에 띄도록 강조
+- **간격**: `.settings-root`에 margin-bottom 추가하여 간격 조정
+
+### 섹션 컴포넌트 collapsible prop
+
+QuickLoginSection, ServerManager, ActionBar에 공통으로 추가:
+
+```typescript
+interface SectionProps {
+    collapsible?: boolean;  // true일 때만 접기 토글 활성화
+}
+```
+
 ---
 
 ## 5. 테스트 현황
 
 - 스토어 단위 테스트: **11개** (초기화 4 + 토글 6 + 기본값 1)
-- 통합 테스트: **6개** (설정 버튼 렌더링, 패널 열기, 숨기기, 저장, 복원, 최소 보장)
-- 전체 테스트: **153개 통과** (기존 136 + 신규 17)
+- 통합 테스트: **9개** (설정 버튼 렌더링, 패널 열기, 숨기기, 저장, 복원, 최소 보장 + 섹션 접기 토글 비활성화 3개)
+- 전체 테스트: **156개 통과** (기존 153 + 신규 3)
+- 커버리지: **83.26%**
+
+---
+
+## 6. 변경 이력
+
+### v1.1 (2026-02-25)
+
+- **UI 정리**: SectionSettings 설정 버튼 border 제거, opacity 0.6, 호버 시 강조, margin-bottom 추가
+- **섹션 접기 토글 비활성화**: 1개 섹션만 보일 때 접기 비활성화 및 접힌 상태 자동 해제
+- **collapsible prop**: QuickLoginSection, ServerManager, ActionBar에 추가
+
+### v1.0 (2026-02-25)
+
+- 초기 설계: 섹션 숨기기/보이기 기능
