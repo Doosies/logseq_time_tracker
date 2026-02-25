@@ -265,9 +265,7 @@ describe('App', () => {
         const DOCUMENT_POSITION_FOLLOWING = 4;
 
         beforeEach(async () => {
-            asMock(chrome.storage.sync.get).mockImplementation((key: string) =>
-                Promise.resolve({ [key]: undefined }),
-            );
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
             await initializeVisibility();
             await initializeSectionOrder();
         });
@@ -293,25 +291,15 @@ describe('App', () => {
             const server_manager = screen.getByText('서버 관리');
             const action_bar_title = screen.getByText('빠른 실행');
 
-            expect(
-                quick_login.compareDocumentPosition(server_manager) &
-                    DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
-            expect(
-                server_manager.compareDocumentPosition(action_bar_title) &
-                    DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
+            expect(quick_login.compareDocumentPosition(server_manager) & DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+            expect(server_manager.compareDocumentPosition(action_bar_title) & DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         });
 
         it('저장된 순서에 따라 섹션이 렌더링되어야 함', async () => {
             asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
                 if (key === 'section_order_state') {
                     return Promise.resolve({
-                        section_order_state: [
-                            'action-bar',
-                            'quick-login',
-                            'server-manager',
-                        ],
+                        section_order_state: ['action-bar', 'quick-login', 'server-manager'],
                     });
                 }
                 return Promise.resolve({ [key]: undefined });
@@ -339,14 +327,8 @@ describe('App', () => {
             const quick_login = screen.getByText('빠른 로그인');
             const server_manager = screen.getByText('서버 관리');
 
-            expect(
-                action_bar_title.compareDocumentPosition(quick_login) &
-                    DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
-            expect(
-                quick_login.compareDocumentPosition(server_manager) &
-                    DOCUMENT_POSITION_FOLLOWING,
-            ).toBeTruthy();
+            expect(action_bar_title.compareDocumentPosition(quick_login) & DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+            expect(quick_login.compareDocumentPosition(server_manager) & DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
         });
 
         it('설정 패널에서 드래그 핸들이 표시되어야 함', async () => {

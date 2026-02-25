@@ -23,9 +23,7 @@
     const FLIP_DURATION_MS = 150;
     const DROP_TARGET_STYLE = { outline: 'none' };
 
-    function transformDraggedElement(
-        el: HTMLElement | undefined,
-    ): void {
+    function transformDraggedElement(el: HTMLElement | undefined): void {
         if (!el) return;
         el.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
         el.style.borderRadius = '6px';

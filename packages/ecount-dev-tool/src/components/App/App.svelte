@@ -10,15 +10,8 @@
     import { SectionSettings } from '#components/SectionSettings';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
     import { initializeAccounts } from '#stores/accounts.svelte';
-    import {
-        initializeVisibility,
-        isSectionVisible,
-    } from '#stores/section_visibility.svelte';
-    import {
-        initializeSectionOrder,
-        getSectionOrder,
-        setSectionOrder,
-    } from '#stores/section_order.svelte';
+    import { initializeVisibility, isSectionVisible } from '#stores/section_visibility.svelte';
+    import { initializeSectionOrder, getSectionOrder, setSectionOrder } from '#stores/section_order.svelte';
 
     interface DndSectionItem {
         id: string;
@@ -36,32 +29,22 @@
     const tab = $derived(getTabState());
     const section_order = $derived(getSectionOrder());
 
-    const visible_ordered_sections = $derived(
-        section_order.filter((id) => isSectionVisible(id)),
-    );
+    const visible_ordered_sections = $derived(section_order.filter((id) => isSectionVisible(id)));
 
     const sections_to_render = $derived(
-        tab.is_stage
-            ? visible_ordered_sections.filter(
-                  (id) => id === 'quick-login',
-              )
-            : visible_ordered_sections,
+        tab.is_stage ? visible_ordered_sections.filter((id) => id === 'quick-login') : visible_ordered_sections,
     );
 
     let dnd_sections = $state<DndSectionItem[]>([]);
     let is_drag_enabled = $state(false);
 
-    const is_dnd_available = $derived(
-        !tab.is_loading && !tab.is_stage && dnd_sections.length > 1,
-    );
+    const is_dnd_available = $derived(!tab.is_loading && !tab.is_stage && dnd_sections.length > 1);
 
     $effect(() => {
         dnd_sections = sections_to_render.map((id) => ({ id }));
     });
 
-    function transformDraggedElement(
-        el: HTMLElement | undefined,
-    ): void {
+    function transformDraggedElement(el: HTMLElement | undefined): void {
         if (!el) return;
         el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.18)';
         el.style.borderRadius = '8px';
@@ -79,26 +62,17 @@
         is_drag_enabled = false;
     }
 
-    function handleConsider(
-        e: CustomEvent<DndEvent<DndSectionItem>>,
-    ): void {
+    function handleConsider(e: CustomEvent<DndEvent<DndSectionItem>>): void {
         dnd_sections = e.detail.items;
     }
 
-    async function handleFinalize(
-        e: CustomEvent<DndEvent<DndSectionItem>>,
-    ): Promise<void> {
+    async function handleFinalize(e: CustomEvent<DndEvent<DndSectionItem>>): Promise<void> {
         dnd_sections = e.detail.items;
         is_drag_enabled = false;
 
         const new_visible_order = dnd_sections.map((s) => s.id);
-        const hidden_sections = section_order.filter(
-            (id) => !isSectionVisible(id),
-        );
-        await setSectionOrder([
-            ...new_visible_order,
-            ...hidden_sections,
-        ]);
+        const hidden_sections = section_order.filter((id) => !isSectionVisible(id));
+        await setSectionOrder([...new_visible_order, ...hidden_sections]);
     }
 
     onMount(() => {
@@ -148,12 +122,7 @@
                                 onpointerdown={handleDragStart}
                                 aria-label="드래그하여 섹션 순서 변경"
                             >
-                                <svg
-                                    width="14"
-                                    height="8"
-                                    viewBox="0 0 14 8"
-                                    fill="currentColor"
-                                >
+                                <svg width="14" height="8" viewBox="0 0 14 8" fill="currentColor">
                                     <circle cx="3" cy="2" r="1.2" />
                                     <circle cx="7" cy="2" r="1.2" />
                                     <circle cx="11" cy="2" r="1.2" />
