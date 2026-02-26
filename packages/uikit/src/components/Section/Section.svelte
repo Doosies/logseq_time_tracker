@@ -15,7 +15,7 @@
     {#if title || action}
         <div class={styles.section_title_row}>
             {#if title}
-                <div class={styles.section_title} data-drag-handle>{title}</div>
+                <div class={styles.section_title} data-drag-handle data-section-header>{title}</div>
             {/if}
             {#if action}
                 {@render action()}

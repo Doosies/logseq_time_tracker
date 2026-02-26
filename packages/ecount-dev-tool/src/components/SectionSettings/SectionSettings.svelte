@@ -97,7 +97,7 @@
                         tabindex={0}
                         aria-selected={visible}
                         aria-label="{section.label} - 드래그하여 순서 변경"
-                        onkeydown={(e) => handleItemKeydown(e, section.id)}
+                        onkeydown={(e: KeyboardEvent) => handleItemKeydown(e, section.id)}
                     >
                         <Dnd.Handle variant="icon" />
                         <label class="item-checkbox">

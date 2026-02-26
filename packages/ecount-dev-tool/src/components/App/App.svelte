@@ -137,4 +137,8 @@
         background-color: var(--color-surface);
         color: var(--color-primary);
     }
+
+    :global(.section-wrapper:hover) :global([data-section-header]) {
+        color: var(--color-primary);
+    }
 </style>
