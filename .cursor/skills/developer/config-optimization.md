@@ -88,6 +88,28 @@ packages/*/eslint.config.ts ← 패키지별 (extends 루트)
 - [ ] React 패키지: `eslint-plugin-react-hooks`, `eslint-plugin-react-refresh` 추가
 - [ ] Chrome Extension: `globals.webextensions`, `chrome: 'readonly'` 추가
 
+### 모노레포에서 tsconfigRootDir
+
+모노레포에서 패키지별 ESLint가 올바른 `tsconfig.json`을 참조하려면, `tsconfigRootDir`를 **각 패키지 디렉토리 기준**으로 설정해야 합니다.
+
+```typescript
+// packages/uikit/eslint.config.ts
+export default createSvelteConfig({
+  tsconfigRootDir: import.meta.dirname,  // 이 패키지 루트 기준
+});
+```
+
+루트 `__dirname`이 아닌 **각 패키지의 `import.meta.dirname`** 을 사용합니다. 루트 기준으로 설정하면 `Parsing error: No tsconfigRootDir was set` 또는 잘못된 tsconfig 참조 오류가 발생합니다.
+
+### Storybook addon 설정
+
+Storybook 10에서 `addon-essentials`만으로는 docs/a11y가 포함되지 않을 수 있습니다:
+
+- `@storybook/addon-docs`, `@storybook/addon-a11y`를 `pnpm-workspace.yaml` catalog에 추가
+- `.storybook/main.ts`의 `addons` 배열에 명시적 등록
+- `.storybook/preview.ts`에 `parameters.a11y` 설정
+- **버전 호환**: addon 버전은 반드시 core Storybook 메이저 버전과 일치해야 함 (예: Storybook 10.x → addon-docs 10.x)
+
 ---
 
 ## Vite 설정

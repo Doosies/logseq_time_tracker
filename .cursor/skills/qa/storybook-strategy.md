@@ -368,6 +368,45 @@ stories 경로: ../packages/*/src/**/*.stories.ts
 
 `main.ts`의 `svelteCompilePlugin()`이 `.svelte`, `.svelte.ts`, `.svelte.js` 파일을 직접 컴파일합니다.
 
+### autodocs 및 a11y 활성화
+
+**autodocs 설정**:
+- `preview.ts`에 `tags: ['autodocs']` 추가 → 모든 스토리에 자동 문서 페이지 생성
+- 각 스토리의 `meta`에 `parameters.docs.description.component`로 컴포넌트 설명 추가
+
+**a11y 설정**:
+- `@storybook/addon-a11y`를 `main.ts`의 `addons`에 등록
+- `preview.ts`의 `parameters.a11y`에 글로벌 a11y 옵션 설정
+- 특정 스토리에서 규칙 비활성화가 필요한 경우 `parameters.a11y.config.rules`로 개별 설정
+
+```typescript
+// preview.ts
+const preview: Preview = {
+  tags: ['autodocs'],
+  parameters: {
+    a11y: {
+      config: {},
+      options: { restoreScroll: true },
+    },
+  },
+};
+```
+
+```typescript
+// 특정 스토리에서 region 규칙 비활성화
+const meta = {
+  parameters: {
+    a11y: {
+      config: {
+        rules: [{ id: 'region', enabled: false }],
+      },
+    },
+  },
+} satisfies Meta<typeof Component>;
+```
+
+**주의**: `addon-essentials`만으로는 docs/a11y가 포함되지 않는 Storybook 버전이 있습니다. addon-docs, addon-a11y를 `main.ts`에 명시적으로 등록하세요.
+
 ---
 
 ## Story 작성 체크리스트

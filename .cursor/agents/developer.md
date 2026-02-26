@@ -292,13 +292,14 @@ function getUserById(id) {
 
 ## 리팩토링
 
-**Skill 사용**: `developer/refactoring-patterns.md`
+**Skill 사용**: `developer/refactoring-patterns.md`, `developer/headless-components.md` (Compound Component 전환 시)
 
 리팩토링 시:
 1. 테스트가 있는지 확인 (없으면 먼저 작성)
 2. 작은 단위로 리팩토링
 3. 각 단계마다 테스트 실행
 4. 기능 변경 없음 확인
+5. **API/구조 변경 시**: 코드베이스 검색으로 모든 사용처를 찾아 업데이트 (예: `<Card>` → `<Card.Root>`)
 
 ## Skill 활용 시점
 

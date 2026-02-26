@@ -331,6 +331,9 @@ describe('calculateTotal', () => {
   - 변수: `snake_case`
   - 함수: `camelCase`
   - 클래스: `PascalCase`
+- [ ] **Compound Component 검증** (해당 시):
+  - 사용처(`<Component>`)가 모두 `<Component.Root>` 등으로 업데이트되었는지 확인
+  - Part 컴포넌트(Trigger, Content, Item 등)가 `...rest`로 `aria-label` 등 HTML 속성을 전달하는지 확인
 
 ## 커버리지 목표
 

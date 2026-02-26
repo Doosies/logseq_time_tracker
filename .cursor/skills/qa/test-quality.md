@@ -294,6 +294,16 @@ describe('Calculator', () => {
 });
 ```
 
+### Testing Library 쿼리 선택 가이드
+
+> 상세 가이드: `qa/svelte-testing.md`의 "Testing Library 쿼리 사용 시 주의사항" 섹션 참고
+
+- 동일 텍스트/역할의 요소가 여러 개일 수 있으면 `getAllBy*` 사용 (`getBy*`는 2개 이상이면 에러)
+- 조건부 렌더링 검증에는 `queryBy*` 사용 (요소 없으면 `null` 반환)
+- 네이티브 HTML 요소 키보드 테스트 시 올바른 키 사용:
+  - `<input type="checkbox">`: **Space** (Enter 아님)
+  - `<button>`: **Enter** 또는 **Space**
+
 ---
 
 ### 6. 엣지 케이스 커버리지

@@ -238,6 +238,54 @@ screen.getByTestId('save-button');
 container.querySelector('.btn-primary');
 ```
 
+## Testing Library 쿼리 사용 시 주의사항
+
+### getBy vs getAllBy 선택 기준
+
+- **`getBy*`**: 해당 조건을 만족하는 요소가 **정확히 1개**일 때만 사용
+- **`getAllBy*`**: 동일 텍스트/역할을 가진 요소가 **2개 이상**일 수 있을 때 사용
+- **`queryBy*`**: 요소가 없을 수 있을 때 (조건부 렌더링 검증)
+
+```typescript
+// ❌ 동일 텍스트가 여러 번 렌더되는 경우
+screen.getByText('=====');  // "Multiple elements found" 에러
+
+// ✅ 여러 요소가 예상되는 경우
+const elements = screen.getAllByText('=====');
+expect(elements.length).toBeGreaterThan(0);
+
+// ✅ 요소가 없을 수 있는 경우 (조건부 렌더링)
+expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+```
+
+### HTML 요소별 키보드 동작
+
+네이티브 HTML 요소는 키보드 상호작용이 다릅니다. 테스트 작성 시 올바른 키를 사용해야 합니다.
+
+| 요소 | 토글/활성화 키 | 비고 |
+|------|----------------|------|
+| `<input type="checkbox">` | **Space** | Enter는 동작하지 않음 |
+| `<input type="radio">` | **Arrow 키** (그룹 내 이동), **Space** (선택) | |
+| `<button>` | **Enter**, **Space** | 둘 다 가능 |
+| `<a href>` | **Enter** | Space는 페이지 스크롤 |
+| `<select>` | **Enter**, **Space** (드롭다운 열기), **Arrow 키** (선택) | |
+
+```typescript
+// ❌ checkbox에 Enter 전송 → 토글되지 않음
+const user = userEvent.setup();
+const checkbox = screen.getByRole('checkbox');
+checkbox.focus();
+await user.keyboard('{Enter}');
+
+// ✅ checkbox는 Space로 토글
+const user = userEvent.setup();
+const checkbox = screen.getByRole('checkbox');
+checkbox.focus();
+await user.keyboard(' ');
+```
+
+키보드 상호작용 테스트 작성 전, [ARIA Authoring Practices](https://www.w3.org/WAI/ARIA/apg/)를 참고하여 올바른 키를 확인합니다.
+
 ---
 
 ## 조건부 렌더링 테스트

@@ -149,6 +149,8 @@ Svelte 5.4+에서는 `createContext` API를 사용할 수 있습니다.
 </button>
 ```
 
+> **주의**: Trigger, Item 등 **모든 Part 컴포넌트**는 반드시 `...rest` 패턴을 적용해야 합니다. 소비자가 전달하는 `aria-label`, `aria-expanded`, `disabled`, `tabindex` 등 접근성/HTML 속성을 누락하면 a11y와 동작이 깨집니다. Part 작성/수정 시 `let { children, class: extra_class = '', ...rest }: Props = $props()` 패턴 사용 여부를 반드시 확인하세요.
+
 ### class Prop으로 스타일 주입
 
 소비자가 시각적 스타일을 `class`로 주입합니다.
@@ -300,3 +302,41 @@ export { default as Select } from './Select.svelte';
 - [ ] Barrel export: `export { default as Part } from './Part.svelte'`
 - [ ] 디렉토리 구조: `ComponentName/Part.svelte` + `index.ts`
 - [ ] Props 인터페이스: `XxxProps`, camelCase (svelte-conventions 준수)
+
+## Compound Component 마이그레이션 체크리스트
+
+기존 컴포넌트를 Compound Component 패턴으로 전환할 때 **반드시** 수행:
+
+- [ ] **사용처 검색**: `grep` 또는 코드베이스 검색으로 `<ComponentName>` 사용처 모두 식별
+- [ ] **Root 업데이트**: `<Component>` → `<Component.Root>` (또는 namespace import에 맞게)
+- [ ] **Part rest props 검증**: Trigger, Content, Item 등 Part 컴포넌트가 `...rest`로 HTML 속성을 전달하는지 확인
+- [ ] **접근성 속성 확인**: `aria-label`, `aria-expanded`, `aria-controls` 등이 소비자에서 전달되는 경우 Part가 `...rest`로 받아 전달하는지 확인
+- [ ] **테스트/스토리 업데이트**: StoryWrapper, 테스트 픽스처에서 새 구조 반영
+
+### 실수 예시
+
+```svelte
+<!-- ❌ Card를 Compound Component로 전환 후 사용처 미업데이트 → 런타임 오류 -->
+<Card>
+  <div>content</div>
+</Card>
+
+<!-- ✅ 올바른 사용 -->
+<Card.Root>
+  <div>content</div>
+</Card.Root>
+```
+
+```svelte
+<!-- ❌ Trigger에서 ...rest 누락 → aria-label 무시 -->
+<script lang="ts">
+  let { children, class: extra_class }: Props = $props();
+</script>
+<button class={extra_class}>{@render children()}</button>
+
+<!-- ✅ ...rest로 HTML 속성 전달 -->
+<script lang="ts">
+  let { children, class: extra_class, ...rest }: Props = $props();
+</script>
+<button class={extra_class} {...rest}>{@render children()}</button>
+```
