@@ -1,5 +1,6 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
+    import { ButtonGroup as PrimitiveButtonGroup } from '../../primitives/ButtonGroup';
     import * as styles from '../../design/styles/button_group.css';
 
     interface ButtonGroupProps {
@@ -9,6 +10,6 @@
     let { children }: ButtonGroupProps = $props();
 </script>
 
-<div class={styles.button_group_container}>
+<PrimitiveButtonGroup class={styles.button_group_container}>
     {@render children()}
-</div>
+</PrimitiveButtonGroup>

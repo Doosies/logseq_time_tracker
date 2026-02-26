@@ -1,6 +1,7 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
     import type { ButtonVariant, ButtonSize } from '../../design/types';
+    import { Button as PrimitiveButton } from '../../primitives/Button';
     import * as styles from '../../design/styles/button.css';
 
     interface ButtonProps {
@@ -35,6 +36,6 @@
     };
 </script>
 
-<button class={getClassNames()} {disabled} onclick={() => onclick?.()} type="button">
+<PrimitiveButton class={getClassNames()} {disabled} {onclick}>
     {@render children()}
-</button>
+</PrimitiveButton>

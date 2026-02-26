@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { TextInput as PrimitiveTextInput } from '../../primitives/TextInput';
     import * as styles from '../../design/styles/text_input.css';
 
     interface TextInputProps {
@@ -9,14 +10,8 @@
     }
 
     let { value = $bindable(), placeholder = '', disabled = false, oninput }: TextInputProps = $props();
-
-    const handleInput = (e: Event) => {
-        const target = e.target as HTMLInputElement;
-        value = target.value;
-        oninput?.(target.value);
-    };
 </script>
 
 <div class={styles.text_input_container}>
-    <input type="text" class={styles.text_input_element} {disabled} {placeholder} bind:value oninput={handleInput} />
+    <PrimitiveTextInput class={styles.text_input_element} bind:value {disabled} {placeholder} {oninput} />
 </div>
