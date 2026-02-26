@@ -5,6 +5,7 @@ catalog:
     # Svelte
     svelte: ^5.50.0
     '@sveltejs/vite-plugin-svelte': ^6.2.4
+    svelte-dnd-action: ^0.9.69
 
     # TypeScript & Build
     typescript: ^5.9.3
