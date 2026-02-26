@@ -22,10 +22,6 @@ Only rendered when the popover is open. Positioned absolutely below the trigger.
     const class_name = $derived([popover_content, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveContent
-    class={class_name}
-    {...(role != null ? { role } : {})}
-    {...(label != null ? { label } : {})}
->
+<PrimitiveContent class={class_name} {...role != null ? { role } : {}} {...label != null ? { label } : {}}>
     {@render children()}
 </PrimitiveContent>

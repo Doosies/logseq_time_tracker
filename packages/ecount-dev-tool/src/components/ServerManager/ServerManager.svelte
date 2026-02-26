@@ -44,12 +44,8 @@
     function handleChangeServer(): void {
         if (!parsed) return;
 
-        const to_v5 = server_ui.v5_text_mode
-            ? server_ui.v5_value
-            : parsed.current_server + server_ui.v5_value;
-        const to_v3 = server_ui.v3_text_mode
-            ? server_ui.v3_value
-            : parsed.current_server + server_ui.v3_value;
+        const to_v5 = server_ui.v5_text_mode ? server_ui.v5_value : parsed.current_server + server_ui.v5_value;
+        const to_v3 = server_ui.v3_text_mode ? server_ui.v3_value : parsed.current_server + server_ui.v3_value;
 
         let new_url: string;
         if (parsed.page_type === 'ec3') {
@@ -60,7 +56,6 @@
 
         updateTabUrl(tab.tab_id, new_url);
     }
-
 </script>
 
 <Section.Root>

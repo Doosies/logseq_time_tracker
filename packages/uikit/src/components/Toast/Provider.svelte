@@ -25,6 +25,6 @@ Wraps children to provide `show(message)` and `hide(id?)` via context.
     let { duration, children }: Props = $props();
 </script>
 
-<PrimitiveProvider {...(duration != null ? { duration } : {})}>
+<PrimitiveProvider {...duration != null ? { duration } : {}}>
     {@render children()}
 </PrimitiveProvider>

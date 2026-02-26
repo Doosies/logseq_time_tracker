@@ -34,14 +34,7 @@ Wraps `Dnd.Zone` to provide a sortable list of checkbox items.
         class?: string;
     }
 
-    let {
-        items,
-        type,
-        onconsider,
-        onfinalize,
-        children,
-        class: extra_class,
-    }: Props = $props();
+    let { items, type, onconsider, onfinalize, children, class: extra_class }: Props = $props();
 
     const class_name = $derived([checkbox_list_container, extra_class].filter(Boolean).join(' '));
 </script>
@@ -49,9 +42,9 @@ Wraps `Dnd.Zone` to provide a sortable list of checkbox items.
 <PrimitiveRoot
     {items}
     class={class_name}
-    {...(type != null ? { type } : {})}
-    {...(onconsider != null ? { onconsider } : {})}
-    {...(onfinalize != null ? { onfinalize } : {})}
+    {...type != null ? { type } : {}}
+    {...onconsider != null ? { onconsider } : {}}
+    {...onfinalize != null ? { onfinalize } : {}}
 >
     {@render children()}
 </PrimitiveRoot>

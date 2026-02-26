@@ -25,20 +25,14 @@
     }
 
     function handleToggle(id: string): void {
-        items = items.map((item) =>
-            item.id === id ? { ...item, visible: !item.visible } : item,
-        );
+        items = items.map((item) => (item.id === id ? { ...item, visible: !item.visible } : item));
     }
 </script>
 
 <CheckboxList.Root {items} onconsider={handleConsider} onfinalize={handleFinalize}>
     {#each items as item (item.id)}
         {@const is_last_visible = item.visible && visible_count <= 1}
-        <CheckboxList.Item
-            checked={item.visible}
-            disabled={is_last_visible}
-            ontoggle={() => handleToggle(item.id)}
-        >
+        <CheckboxList.Item checked={item.visible} disabled={is_last_visible} ontoggle={() => handleToggle(item.id)}>
             {item.label}
         </CheckboxList.Item>
     {/each}

@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-    DEFAULT_ORDER,
-    getSectionOrder,
-    initializeSectionOrder,
-    setSectionOrder,
-} from '#stores/section_order.svelte';
+import { DEFAULT_ORDER, getSectionOrder, initializeSectionOrder, setSectionOrder } from '#stores/section_order.svelte';
 import { initializeVisibility, isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
 import { asMock } from '#test/mock_helpers';
 
@@ -19,10 +14,7 @@ interface DndSectionItem {
  * 2. hidden 섹션을 뒤에 이어붙임
  * 3. setSectionOrder 호출
  */
-async function simulateFinalize(
-    reordered_items: DndSectionItem[],
-    section_order: string[],
-): Promise<boolean> {
+async function simulateFinalize(reordered_items: DndSectionItem[], section_order: string[]): Promise<boolean> {
     const new_visible_order = reordered_items.map((s) => s.id);
     const hidden_sections = section_order.filter((id) => !isSectionVisible(id));
     return setSectionOrder([...new_visible_order, ...hidden_sections]);
@@ -30,9 +22,7 @@ async function simulateFinalize(
 
 describe('DnD 콜백 로직 (handleFinalize)', () => {
     beforeEach(async () => {
-        asMock(chrome.storage.sync.get).mockImplementation((key: string) =>
-            Promise.resolve({ [key]: undefined }),
-        );
+        asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
         asMock(chrome.storage.sync.set).mockResolvedValue(undefined);
         await initializeVisibility();
         await initializeSectionOrder();
@@ -73,9 +63,7 @@ describe('DnD 콜백 로직 (handleFinalize)', () => {
         await toggleVisibility('action-bar', [...DEFAULT_ORDER]);
 
         const section_order = getSectionOrder();
-        const reordered: DndSectionItem[] = [
-            { id: 'quick-login', section_type: 'quick-login' },
-        ];
+        const reordered: DndSectionItem[] = [{ id: 'quick-login', section_type: 'quick-login' }];
 
         const result = await simulateFinalize(reordered, section_order);
 

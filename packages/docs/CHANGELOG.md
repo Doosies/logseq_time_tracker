@@ -10,6 +10,6 @@
 ### Added
 
 - (v0.1.0) - VitePress 문서화 사이트
-  - 가이드 문서 구조
-  - API 문서 구조
-  - VitePress 1.6 설정
+    - 가이드 문서 구조
+    - API 문서 구조
+    - VitePress 1.6 설정

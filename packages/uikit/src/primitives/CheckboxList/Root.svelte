@@ -13,14 +13,7 @@
         class?: string;
     }
 
-    let {
-        items,
-        type = 'checkbox-list',
-        onconsider,
-        onfinalize,
-        children,
-        class: extra_class,
-    }: Props = $props();
+    let { items, type = 'checkbox-list', onconsider, onfinalize, children, class: extra_class }: Props = $props();
 
     setContext('checkbox-list', {});
 </script>
@@ -29,8 +22,8 @@
     {items}
     {type}
     class={extra_class}
-    {...(onconsider != null ? { onconsider } : {})}
-    {...(onfinalize != null ? { onfinalize } : {})}
+    {...onconsider != null ? { onconsider } : {}}
+    {...onfinalize != null ? { onfinalize } : {}}
 >
     {@render children()}
 </Zone>

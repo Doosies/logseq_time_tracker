@@ -34,9 +34,9 @@
     {flipDurationMs}
     {dragDisabled}
     {dropTargetStyle}
-    {...(extraClass != null ? { class: extraClass } : {})}
-    {...(onconsider != null ? { onconsider } : {})}
-    {...(onfinalize != null ? { onfinalize } : {})}
+    {...extraClass != null ? { class: extraClass } : {}}
+    {...onconsider != null ? { onconsider } : {}}
+    {...onfinalize != null ? { onfinalize } : {}}
 >
     {@render children()}
 </PrimitiveZone>

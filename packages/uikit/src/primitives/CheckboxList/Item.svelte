@@ -11,14 +11,7 @@
         class?: string;
     }
 
-    let {
-        checked = false,
-        disabled = false,
-        ontoggle,
-        children,
-        class: extra_class,
-        ...rest
-    }: Props = $props();
+    let { checked = false, disabled = false, ontoggle, children, class: extra_class, ...rest }: Props = $props();
 </script>
 
 <Row class={extra_class} {...rest}>

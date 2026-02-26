@@ -35,7 +35,6 @@
         const new_url = buildDevUrl(current_url, page_info);
         await updateTabUrl(tab.id, new_url.href);
     }
-
 </script>
 
 <Section.Root>

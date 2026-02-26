@@ -35,9 +35,7 @@ const chrome_mock = {
     },
     storage: {
         sync: {
-            get: vi.fn().mockImplementation((key: string) =>
-                Promise.resolve({ [key]: storage_data[key] }),
-            ),
+            get: vi.fn().mockImplementation((key: string) => Promise.resolve({ [key]: storage_data[key] })),
             set: vi.fn().mockImplementation((items: Record<string, unknown>) => {
                 Object.assign(storage_data, items);
                 return Promise.resolve();
