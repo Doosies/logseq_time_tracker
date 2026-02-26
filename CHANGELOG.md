@@ -11,6 +11,7 @@
 ### Fixed
 
 - **[@personal/uikit](./packages/uikit)** DnD 드래그 시 아이템 위치 변경 안 되는 버그 수정 - CSS `transform` 충돌 해결
+- **[@personal/uikit](./packages/uikit)** DnD 드래그 시 `<select>` 요소의 선택값이 초기값으로 리셋되는 버그 수정 - ghost 요소에 select value 동기화
 
 ### Added
 
