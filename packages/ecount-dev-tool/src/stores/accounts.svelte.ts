@@ -1,3 +1,4 @@
+import { SvelteSet } from 'svelte/reactivity';
 import type { LoginAccount } from '#types/server';
 
 const STORAGE_KEY = 'login_accounts';
@@ -39,7 +40,7 @@ export function isDuplicate(account: LoginAccount): boolean {
 }
 
 function deduplicateAccounts(list: LoginAccount[]): LoginAccount[] {
-    const seen = new Set<string>();
+    const seen = new SvelteSet<string>();
     return list.filter((a) => {
         const key = getAccountKey(a);
         if (seen.has(key)) return false;

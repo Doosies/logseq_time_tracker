@@ -94,16 +94,10 @@
         {/if}
         <div class="account-grid">
             {#each accounts as account, i (i)}
-                <!-- svelte-ignore a11y_no_static_element_interactions a11y_no_noninteractive_tabindex -->
-                <div
-                    class="account-btn"
-                    class:editing={is_editing}
-                    role="button"
-                    tabindex="0"
+                <Button
+                    variant="primary"
+                    class="account-cell {is_editing ? 'editing' : ''}"
                     onclick={() => handleLogin(account)}
-                    onkeydown={(e) => {
-                        if (e.key === 'Enter') handleLogin(account);
-                    }}
                 >
                     {#if is_editing}
                         <button
@@ -118,7 +112,7 @@
                     {/if}
                     <span class="account-code">{account.company}</span>
                     <span class="account-name">{account.id}</span>
-                </div>
+                </Button>
             {/each}
         </div>
     </div>
@@ -128,15 +122,24 @@
     .edit-toggle {
         background: none;
         border: none;
+        border-radius: var(--radius-sm);
         color: var(--color-primary);
         font-size: var(--font-size-sm);
         font-weight: var(--font-weight-bold);
         cursor: pointer;
         padding: var(--space-xs) var(--space-sm);
+        transition:
+            background-color 0.15s ease,
+            color 0.15s ease;
     }
 
     .edit-toggle:hover {
-        text-decoration: underline;
+        background-color: var(--color-surface);
+        color: var(--color-primary-hover);
+    }
+
+    .edit-toggle:active {
+        background-color: var(--color-border);
     }
 
     .account-scroll {
@@ -162,7 +165,7 @@
         gap: var(--space-lg);
     }
 
-    .account-btn {
+    .account-grid :global(.account-cell) {
         position: relative;
         display: flex;
         flex-direction: column;
@@ -172,24 +175,10 @@
         min-width: 0;
         height: 100%;
         padding: 0 var(--space-sm);
-        border: none;
-        border-radius: var(--radius-sm);
-        background-color: var(--color-primary);
-        color: #fff;
-        font-weight: var(--font-weight-bold);
-        cursor: pointer;
-        transition: background-color 0.15s ease;
+        margin: 0;
     }
 
-    .account-btn:hover {
-        background-color: var(--color-primary-hover);
-    }
-
-    .account-btn:active {
-        background-color: var(--color-primary-active);
-    }
-
-    .account-btn.editing {
+    .account-grid :global(.account-cell.editing) {
         cursor: default;
         opacity: 0.85;
     }
@@ -211,10 +200,18 @@
         justify-content: center;
         cursor: pointer;
         padding: 0;
+        transition:
+            transform 0.1s ease,
+            opacity 0.15s ease;
     }
 
     .remove-btn:hover {
-        opacity: 0.8;
+        opacity: 0.85;
+        transform: scale(1.2);
+    }
+
+    .remove-btn:active {
+        transform: scale(0.9);
     }
 
     .account-code {
