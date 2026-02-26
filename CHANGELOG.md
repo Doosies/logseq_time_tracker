@@ -1,58 +1,15 @@
 # Changelog
 
-
 이 프로젝트의 모든 주요 변경사항을 기록합니다.
 
 형식은 [Keep a Changelog](https://keepachangelog.com/ko/1.0.0/)를 따르며,
 버전 관리는 [Semantic Versioning](https://semver.org/lang/ko/)을 따릅니다.
 
-## [Unreleased]
-
-### Fixed
-
-- **[@personal/uikit](./packages/uikit)** DnD 드래그 시 아이템 위치 변경 안 되는 버그 수정 - CSS `transform` 충돌 해결
-- **[@personal/uikit](./packages/uikit)** DnD 드래그 시 `<select>` 요소의 선택값이 초기값으로 리셋되는 버그 수정 - ghost 요소에 select value 동기화
-
-### Added
-
-- **[@personal/uikit](./packages/uikit)** 헤드리스 Dnd Compound Component (`Dnd.Zone`, `Dnd.Row`, `Dnd.Handle`)
-  - `Dnd.Zone`: svelte-dnd-action 래퍼, children snippet 렌더링
-  - `Dnd.Row`: 최소 스타일 드래그 가능 행 래퍼
-  - `Dnd.Handle`: DragHandle re-export
-  - namespace import 지원: `import { Dnd } from '@personal/uikit'`
-- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** DnD handleFinalize 콜백 로직 단위 테스트 5개
-
-### Changed
-
-- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** DndZone + snippet API → Dnd.Zone + each + Dnd.Row compound API로 마이그레이션
-- **[@personal/uikit](./packages/uikit)** Dnd.Zone: `dndzone` → `dragHandleZone` 전환으로 핸들 전용 드래그 지원
-- **[@personal/uikit](./packages/uikit)** DragHandle: `use:dragHandle` action 적용, cursor 라이브러리 자동 관리로 전환
-- **[@personal/uikit](./packages/uikit)** Dnd.Zone에서 `dragHandleSelector`, `interactiveSelector` props 및 `blockDragFromInteractive` 제거
-- **[@personal/uikit](./packages/uikit)** Dnd.Row에서 cursor:grab CSS 제거 (핸들 전용 드래그)
-- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** App.svelte에서 DRAG_HANDLE_SELECTOR 상수 및 관련 cursor CSS 제거
-- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** SectionSettings.svelte에서 cursor:grab CSS 제거
+> 패키지별 변경사항은 각 패키지의 CHANGELOG를 참조하세요:
+> [uikit](./packages/uikit/CHANGELOG.md), [ecount-dev-tool](./packages/ecount-dev-tool/CHANGELOG.md),
+> [mcp-server](./packages/mcp-server/CHANGELOG.md), [time-tracker](./packages/time-tracker/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
 
 ## [0.2.0] - 2026-02-09
-
-### Added
-
-- **[@personal/uikit](./packages/uikit)** (v0.1.0) - Svelte 5 기반 공유 UI 컴포넌트 라이브러리
-  - Button, ButtonGroup 컴포넌트
-  - Card, Section 레이아웃 컴포넌트
-  - TextInput, ToggleInput, Select 입력 컴포넌트
-  - vanilla-extract 기반 디자인 시스템
-  - Light/Dark 테마 지원
-  - 디자인 토큰 시스템 (Contract)
-
-### Changed
-
-- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** (v2.2.0 → v2.3.0)
-  - Vanilla JavaScript → Svelte 5 + TypeScript 완전 리팩토링
-  - 컴포넌트 기반 아키텍처로 전환 (8개 컴포넌트)
-  - 서비스 레이어 분리 (url_service, tab_service, page_actions)
-  - Svelte Store 기반 상태 관리
-  - @personal/uikit 통합
-  - 타입 안정성 강화
 
 ### Changed (프로젝트 전역)
 
@@ -66,40 +23,14 @@
   - `pnpm-workspace.yaml`에 catalog 추가
   - 버전 관리 중앙화
 
-### Fixed
-
-- **[@personal/mcp-server](./packages/mcp-server)**
-  - TypeScript 타입 에러 수정 (`src/index.ts`)
-- **[@personal/time-tracker](./packages/time-tracker)**
-  - 테스트 파일 타입 에러 수정 (`tests/main.test.tsx`)
-
 ## [0.1.0] - 2026-02-06
 
 ### Added
 
 - 모노레포 초기 구성
-  - **[@personal/time-tracker](./packages/time-tracker)** (v0.1.0) - Logseq 플러그인
-    - React 19 기반 UI 컴포넌트
-    - Vanilla Extract 스타일링
-    - Vitest 테스트 설정
-    - Logseq SDK 통합
-  - **[@personal/docs](./packages/docs)** (v0.1.0) - VitePress 문서화 사이트
-    - 가이드 문서 구조
-    - API 문서 구조
-    - VitePress 1.6 설정
-  - **[@personal/mcp-server](./packages/mcp-server)** (v0.1.0) - Cursor용 MCP 서버
-    - MCP SDK 1.25 통합
-    - get_current_time 도구
-    - calculate 도구
-    - info://server 리소스
-  - **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** (v2.2.0) - Chrome 확장프로그램
-    - Quick Login 기능
-    - EC Server Manager (V5/V3 서버 전환)
-    - Local Server Buttons
-    - Stage Server Manager
-- Turborepo 빌드 시스템 설정
-- pnpm 워크스페이스 구성
-- 공통 개발 도구 설정
-  - TypeScript 5.9
-  - ESLint & Prettier
-  - Vitest (테스트 프레임워크)
+  - Turborepo 빌드 시스템 설정
+  - pnpm 워크스페이스 구성
+  - 공통 개발 도구 설정
+    - TypeScript 5.9
+    - ESLint & Prettier
+    - Vitest (테스트 프레임워크)
