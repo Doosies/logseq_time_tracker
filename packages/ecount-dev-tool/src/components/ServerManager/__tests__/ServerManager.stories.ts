@@ -5,6 +5,9 @@ import ServerManagerStoryWrapper from './ServerManagerStoryWrapper.svelte';
 const meta = {
     component: ServerManagerStoryWrapper,
     title: 'ecount-dev-tool/ServerManager',
+    argTypes: {
+        url: { control: 'text', description: '현재 탭 URL (서버 환경 결정)' },
+    },
 } satisfies Meta<typeof ServerManagerStoryWrapper>;
 
 export default meta;

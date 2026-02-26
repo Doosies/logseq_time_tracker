@@ -20,7 +20,8 @@ const meta = {
         onchange: fn(),
     },
     argTypes: {
-        disabled: { control: 'boolean' },
+        disabled: { control: 'boolean', description: '비활성화 상태' },
+        value: { control: 'text', description: '선택된 값' },
     },
 } satisfies Meta<typeof Select>;
 

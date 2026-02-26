@@ -12,14 +12,16 @@ const meta = {
         variant: {
             control: 'select',
             options: ['primary', 'secondary', 'accent'],
+            description: '버튼 스타일 변형',
         },
         size: {
             control: 'radio',
             options: ['sm', 'md'],
+            description: '버튼 크기',
         },
-        disabled: { control: 'boolean' },
-        fullWidth: { control: 'boolean' },
-        label: { control: 'text' },
+        disabled: { control: 'boolean', description: '비활성화 상태' },
+        fullWidth: { control: 'boolean', description: '전체 너비 사용' },
+        label: { control: 'text', description: '버튼 텍스트' },
     },
 } satisfies Meta<typeof ButtonStoryWrapper>;
 

@@ -96,9 +96,12 @@ export function createBrowserConfig(): Linter.FlatConfig[] {
 
 /**
  * Svelte 패키지용 preset (플러그인 + 파서 + 규칙 포함)
+ * @param additionalGlobals - 전역 변수 정의
+ * @param tsconfigRootDir - tsconfig.json이 있는 디렉토리 (monorepo에서 .ts 파싱 오류 방지)
  */
 export function createSvelteConfig(
     additionalGlobals?: Record<string, boolean | 'readonly' | 'writable'>,
+    tsconfigRootDir?: string,
 ): Linter.FlatConfig[] {
     return [
         ignores,
@@ -111,6 +114,13 @@ export function createSvelteConfig(
                     ...globals.browser,
                     ...additionalGlobals,
                 },
+                ...(tsconfigRootDir
+                    ? {
+                          parserOptions: {
+                              tsconfigRootDir,
+                          },
+                      }
+                    : {}),
             },
         },
         {

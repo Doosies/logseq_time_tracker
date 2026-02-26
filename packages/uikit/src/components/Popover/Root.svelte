@@ -23,6 +23,6 @@ Manages open/close state via context. Closes on outside click or Escape key.
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<PrimitiveRoot class={extra_class}>
+<PrimitiveRoot {...extra_class != null ? { class: extra_class } : {}}>
     {@render children()}
 </PrimitiveRoot>

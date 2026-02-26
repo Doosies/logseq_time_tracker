@@ -24,6 +24,7 @@ if (typeof globalThis.chrome === 'undefined') {
 document.body.classList.add(light_theme);
 
 const preview: Preview = {
+    tags: ['autodocs'],
     parameters: {
         controls: {
             matchers: {

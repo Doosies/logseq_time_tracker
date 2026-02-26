@@ -9,8 +9,9 @@ const meta = {
         oninput: fn(),
     },
     argTypes: {
-        disabled: { control: 'boolean' },
-        placeholder: { control: 'text' },
+        disabled: { control: 'boolean', description: '비활성화 상태' },
+        placeholder: { control: 'text', description: '플레이스홀더 텍스트' },
+        value: { control: 'text', description: '입력 값' },
     },
 } satisfies Meta<typeof TextInput>;
 

@@ -9,6 +9,7 @@ const meta = {
         scenario: {
             control: 'select',
             options: ['default', 'withComponents', 'headerFooterOnly', 'allParts'],
+            description: '카드 레이아웃 시나리오',
         },
     },
 } satisfies Meta<typeof CardStoryWrapper>;

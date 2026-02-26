@@ -9,6 +9,7 @@ const meta = {
         scenario: {
             control: 'select',
             options: ['default', 'mixed', 'withDisabled'],
+            description: '버튼 그룹 시나리오',
         },
     },
 } satisfies Meta<typeof ButtonGroupStoryWrapper>;

@@ -6,10 +6,11 @@ const meta = {
     component: SectionStoryWrapper,
     title: 'uikit/Section',
     argTypes: {
-        title: { control: 'text' },
+        title: { control: 'text', description: '섹션 제목' },
         scenario: {
             control: 'select',
             options: ['withTitle', 'withoutTitle', 'longContent', 'withAction'],
+            description: '섹션 레이아웃 시나리오',
         },
     },
 } satisfies Meta<typeof SectionStoryWrapper>;

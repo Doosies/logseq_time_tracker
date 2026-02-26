@@ -10,8 +10,8 @@ const meta = {
         onchange: fn(),
     },
     argTypes: {
-        isTextMode: { control: 'boolean' },
-        prefix: { control: 'text' },
+        isTextMode: { control: 'boolean', description: '텍스트 입력 모드 여부' },
+        prefix: { control: 'text', description: '입력 앞에 표시되는 접두사' },
     },
 } satisfies Meta<typeof ToggleInputStoryWrapper>;
 
@@ -53,7 +53,7 @@ export const ToggleClick: Story = {
         const canvas = within(canvasElement);
         const toggle_btn = canvas.getByRole('button', { name: 'Toggle input mode' });
         await userEvent.click(toggle_btn);
-        await expect(args['onToggle']).toHaveBeenCalledOnce();
+        await expect((args as Record<string, unknown>)['onToggle']).toHaveBeenCalledOnce();
     },
 };
 
@@ -63,7 +63,7 @@ export const SelectChange: Story = {
         const canvas = within(canvasElement);
         const select = canvas.getByRole('combobox');
         await userEvent.selectOptions(select, 'b');
-        await expect(args['onchange']).toHaveBeenCalledWith('b');
+        await expect((args as Record<string, unknown>)['onchange']).toHaveBeenCalledWith('b');
     },
 };
 
@@ -73,7 +73,7 @@ export const TextInput: Story = {
         const canvas = within(canvasElement);
         const input = canvas.getByRole('textbox');
         await userEvent.type(input, 'hello');
-        await expect(args['onchange']).toHaveBeenCalled();
+        await expect((args as Record<string, unknown>)['onchange']).toHaveBeenCalled();
     },
 };
 
