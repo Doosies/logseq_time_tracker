@@ -9,8 +9,20 @@ const base_button = style({
     borderRadius: theme_vars.radius.sm,
     cursor: 'pointer',
     fontWeight: theme_vars.font.weight.bold,
-    transition: 'background-color 0.2s ease',
+    transition:
+        'filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease',
     textAlign: 'center',
+    selectors: {
+        '&:hover:not(:disabled)': {
+            filter: 'brightness(1.2)',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+        },
+        '&:active:not(:disabled)': {
+            filter: 'brightness(0.85)',
+            transform: 'scale(0.97)',
+            boxShadow: 'none',
+        },
+    },
     ':disabled': {
         backgroundColor: theme_vars.color.disabled,
         color: theme_vars.color.disabled_text,
@@ -24,12 +36,6 @@ export const button_variant = styleVariants({
         {
             backgroundColor: theme_vars.color.primary,
             color: '#ffffff',
-            ':hover:not(:disabled)': {
-                backgroundColor: theme_vars.color.primary_hover,
-            },
-            ':active:not(:disabled)': {
-                backgroundColor: theme_vars.color.primary_active,
-            },
         },
     ],
     secondary: [
@@ -37,9 +43,6 @@ export const button_variant = styleVariants({
         {
             backgroundColor: theme_vars.color.secondary,
             color: '#ffffff',
-            ':hover:not(:disabled)': {
-                backgroundColor: theme_vars.color.secondary_hover,
-            },
         },
     ],
     accent: [
@@ -47,12 +50,6 @@ export const button_variant = styleVariants({
         {
             backgroundColor: theme_vars.color.accent,
             color: '#ffffff',
-            ':hover:not(:disabled)': {
-                backgroundColor: theme_vars.color.accent_hover,
-            },
-            ':active:not(:disabled)': {
-                backgroundColor: theme_vars.color.accent_active,
-            },
         },
     ],
 });

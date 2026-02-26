@@ -7,6 +7,7 @@ export const theme_vars = createGlobalThemeContract({
         primary_active: 'color-primary-active',
         secondary: 'color-secondary',
         secondary_hover: 'color-secondary-hover',
+        secondary_active: 'color-secondary-active',
         accent: 'color-accent',
         accent_hover: 'color-accent-hover',
         accent_active: 'color-accent-active',

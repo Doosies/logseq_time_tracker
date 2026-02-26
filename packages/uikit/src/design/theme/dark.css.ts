@@ -8,6 +8,7 @@ export const dark_theme = createTheme(theme_vars, {
         primary_active: '#1e40af',
         secondary: '#64748b',
         secondary_hover: '#475569',
+        secondary_active: '#334155',
         accent: '#0f766e',
         accent_hover: '#115e59',
         accent_active: '#134e4a',

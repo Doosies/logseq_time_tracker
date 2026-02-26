@@ -8,6 +8,7 @@
         size?: ButtonSize | undefined;
         disabled?: boolean | undefined;
         fullWidth?: boolean | undefined;
+        class?: string | undefined;
         onclick?: (() => void) | undefined;
         children: Snippet;
     }
@@ -17,6 +18,7 @@
         size = 'md',
         disabled = false,
         fullWidth = false,
+        class: extra_class,
         onclick,
         children,
     }: ButtonProps = $props();
@@ -25,6 +27,9 @@
         const classes = [styles.button_variant[variant], styles.button_size[size]];
         if (fullWidth) {
             classes.push(styles.button_full_width);
+        }
+        if (extra_class) {
+            classes.push(extra_class);
         }
         return classes.join(' ');
     };

@@ -7,6 +7,13 @@ globalStyle('*, *::before, *::after', {
     padding: 0,
 });
 
+globalStyle('html', {
+    overflowY: 'auto',
+    scrollbarGutter: 'stable',
+    scrollbarWidth: 'thin',
+    scrollbarColor: `${theme_vars.color.border} transparent`,
+});
+
 globalStyle('html, body', {
     fontFamily: theme_vars.font.family.base,
     fontSize: theme_vars.font.size.md,

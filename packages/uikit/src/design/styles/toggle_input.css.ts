@@ -15,9 +15,13 @@ export const toggle_icon = style({
     fontSize: theme_vars.font.size.sm,
     marginLeft: theme_vars.space.xs,
     color: theme_vars.color.text_secondary,
-    transition: 'color 0.2s ease',
+    transition: 'color 0.15s ease, transform 0.1s ease',
     ':hover': {
         color: theme_vars.color.primary,
+        transform: 'scale(1.15)',
+    },
+    ':active': {
+        transform: 'scale(0.9)',
     },
 });
 

@@ -8,6 +8,7 @@ export const light_theme = createTheme(theme_vars, {
         primary_active: '#1e40af',
         secondary: '#475569',
         secondary_hover: '#334155',
+        secondary_active: '#1e293b',
         accent: '#0f766e',
         accent_hover: '#115e59',
         accent_active: '#134e4a',
