@@ -1,14 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, fn, within, userEvent } from 'storybook/test';
-import ToggleInput from '../ToggleInput.svelte';
-
-const options = [
-    { value: 'a', label: 'Option A' },
-    { value: 'b', label: 'Option B' },
-];
+import ToggleInputStoryWrapper from './ToggleInputStoryWrapper.svelte';
 
 const meta = {
-    component: ToggleInput,
+    component: ToggleInputStoryWrapper,
     title: 'uikit/ToggleInput',
     args: {
         onToggle: fn(),
@@ -18,13 +13,13 @@ const meta = {
         isTextMode: { control: 'boolean' },
         prefix: { control: 'text' },
     },
-} satisfies Meta<typeof ToggleInput>;
+} satisfies Meta<typeof ToggleInputStoryWrapper>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const SelectMode: Story = {
-    args: { options, isTextMode: false },
+    args: { isTextMode: false },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('combobox')).toBeInTheDocument();
@@ -35,7 +30,7 @@ export const SelectMode: Story = {
 };
 
 export const TextMode: Story = {
-    args: { options, isTextMode: true },
+    args: { isTextMode: true },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByRole('textbox')).toBeInTheDocument();
@@ -45,7 +40,7 @@ export const TextMode: Story = {
 };
 
 export const WithPrefix: Story = {
-    args: { options, prefix: 'Server:' },
+    args: { prefix: 'Server:' },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByText('Server:')).toBeInTheDocument();
@@ -53,7 +48,7 @@ export const WithPrefix: Story = {
 };
 
 export const ToggleClick: Story = {
-    args: { options },
+    args: {},
     play: async ({ canvasElement, args }) => {
         const canvas = within(canvasElement);
         const toggle_btn = canvas.getByRole('button', { name: 'Toggle input mode' });
@@ -63,7 +58,7 @@ export const ToggleClick: Story = {
 };
 
 export const SelectChange: Story = {
-    args: { options, isTextMode: false },
+    args: { isTextMode: false },
     play: async ({ canvasElement, args }) => {
         const canvas = within(canvasElement);
         const select = canvas.getByRole('combobox');
@@ -73,7 +68,7 @@ export const SelectChange: Story = {
 };
 
 export const TextInput: Story = {
-    args: { options, isTextMode: true },
+    args: { isTextMode: true },
     play: async ({ canvasElement, args }) => {
         const canvas = within(canvasElement);
         const input = canvas.getByRole('textbox');
@@ -83,7 +78,7 @@ export const TextInput: Story = {
 };
 
 export const EmptyPrefix: Story = {
-    args: { options, prefix: '' },
+    args: { prefix: '' },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.queryByText('Server:')).not.toBeInTheDocument();
