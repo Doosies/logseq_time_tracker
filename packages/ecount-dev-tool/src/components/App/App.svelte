@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { onMount, tick } from 'svelte';
-    import { dndzone } from 'svelte-dnd-action';
-    import type { DndEvent } from 'svelte-dnd-action';
-    import { Card } from '@personal/uikit';
+    import { onMount } from 'svelte';
+    import { Card, Dnd } from '@personal/uikit';
+    import type { DndEvent } from '@personal/uikit';
     import { QuickLoginSection } from '#components/QuickLoginSection';
     import { ServerManager } from '#components/ServerManager';
     import { StageManager } from '#components/StageManager';
@@ -15,6 +14,7 @@
 
     interface DndSectionItem {
         id: string;
+        section_type: string;
     }
 
     const SECTION_LIST = [
@@ -23,8 +23,7 @@
         { id: 'action-bar', label: '빠른 실행' },
     ];
 
-    const FLIP_DURATION_MS = 80;
-    const DROP_TARGET_STYLE = { outline: 'none' };
+    const DRAG_HANDLE_SELECTOR = '.section-drag-bar, [data-drag-handle]';
 
     const tab = $derived(getTabState());
     const section_order = $derived(getSectionOrder());
@@ -36,39 +35,12 @@
     );
 
     let dnd_sections = $state<DndSectionItem[]>([]);
-    let is_drag_enabled = $state(false);
 
     const is_dnd_available = $derived(!tab.is_loading && !tab.is_stage && dnd_sections.length > 1);
 
     $effect(() => {
-        dnd_sections = sections_to_render.map((id) => ({ id }));
+        dnd_sections = sections_to_render.map((id) => ({ id, section_type: id }));
     });
-
-    function transformDraggedElement(el: HTMLElement | undefined): void {
-        if (!el) return;
-        el.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.18)';
-        el.style.borderRadius = '8px';
-        el.style.opacity = '0.92';
-        el.style.background = 'var(--color-background)';
-        el.style.border = '1px solid var(--color-border)';
-    }
-
-    async function handleDragStart(): Promise<void> {
-        is_drag_enabled = true;
-        await tick();
-    }
-
-    async function handleWrapperPointerDown(e: PointerEvent): Promise<void> {
-        if (!is_dnd_available) return;
-        const target = e.target as HTMLElement;
-        if (target.closest('[data-drag-handle]')) {
-            await handleDragStart();
-        }
-    }
-
-    function handlePointerUp(): void {
-        is_drag_enabled = false;
-    }
 
     function handleConsider(e: CustomEvent<DndEvent<DndSectionItem>>): void {
         dnd_sections = e.detail.items;
@@ -76,7 +48,6 @@
 
     async function handleFinalize(e: CustomEvent<DndEvent<DndSectionItem>>): Promise<void> {
         dnd_sections = e.detail.items;
-        is_drag_enabled = false;
 
         const new_visible_order = dnd_sections.map((s) => s.id);
         const hidden_sections = section_order.filter((id) => !isSectionVisible(id));
@@ -90,8 +61,6 @@
         initializeSectionOrder();
     });
 </script>
-
-<svelte:window onpointerup={handlePointerUp} />
 
 <Card>
     <div class="app-content">
@@ -108,49 +77,30 @@
             <div class="section-divider"></div>
             <StageManager />
         {:else}
-            <div
-                class="sections-dnd-container"
-                use:dndzone={{
-                    items: dnd_sections,
-                    flipDurationMs: FLIP_DURATION_MS,
-                    dragDisabled: !is_drag_enabled,
-                    type: 'main-sections',
-                    dropTargetStyle: DROP_TARGET_STYLE,
-                    transformDraggedElement,
-                }}
+            <Dnd.Zone
+                items={dnd_sections}
+                type="main-sections"
+                dragDisabled={!is_dnd_available}
+                dragHandleSelector={DRAG_HANDLE_SELECTOR}
                 onconsider={handleConsider}
                 onfinalize={handleFinalize}
+                class="sections-dnd-container"
             >
                 {#each dnd_sections as item (item.id)}
-                    <!-- svelte-ignore a11y_no_static_element_interactions -->
-                    <div class="section-wrapper" onpointerdown={handleWrapperPointerDown}>
+                    <Dnd.Row class="section-wrapper">
                         {#if is_dnd_available}
-                            <button
-                                type="button"
-                                class="section-drag-bar"
-                                onpointerdown={handleDragStart}
-                                aria-label="드래그하여 섹션 순서 변경"
-                            >
-                                <svg width="14" height="8" viewBox="0 0 14 8" fill="currentColor">
-                                    <circle cx="3" cy="2" r="1.2" />
-                                    <circle cx="7" cy="2" r="1.2" />
-                                    <circle cx="11" cy="2" r="1.2" />
-                                    <circle cx="3" cy="6" r="1.2" />
-                                    <circle cx="7" cy="6" r="1.2" />
-                                    <circle cx="11" cy="6" r="1.2" />
-                                </svg>
-                            </button>
+                            <Dnd.Handle label="드래그하여 섹션 순서 변경" />
                         {/if}
-                        {#if item.id === 'quick-login'}
+                        {#if item.section_type === 'quick-login'}
                             <QuickLoginSection />
-                        {:else if item.id === 'server-manager'}
+                        {:else if item.section_type === 'server-manager'}
                             <ServerManager />
-                        {:else if item.id === 'action-bar'}
+                        {:else if item.section_type === 'action-bar'}
                             <ActionBar />
                         {/if}
-                    </div>
+                    </Dnd.Row>
                 {/each}
-            </div>
+            </Dnd.Zone>
         {/if}
     </div>
 </Card>
@@ -172,72 +122,28 @@
         opacity: 0.5;
     }
 
-    .sections-dnd-container {
+    :global(.sections-dnd-container) {
         display: flex;
         flex-direction: column;
     }
 
-    .section-wrapper {
+    :global(.section-wrapper) {
         position: relative;
+        cursor: grab;
     }
 
-    .section-wrapper + .section-wrapper {
+    :global(.section-wrapper:active) {
+        cursor: grabbing;
+    }
+
+    :global(.section-wrapper + .section-wrapper) {
         margin-top: var(--space-sm);
     }
 
-    .section-drag-bar {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 100%;
-        padding: 3px 0;
-        margin-bottom: var(--space-xs);
-        cursor: grab;
-        color: var(--color-text-secondary);
-        background: none;
-        border: none;
-        border-radius: var(--radius-sm);
-        opacity: 0.3;
-        transition:
-            opacity 0.15s ease,
-            background-color 0.15s ease,
-            color 0.15s ease;
-    }
-
-    .section-drag-bar::before,
-    .section-drag-bar::after {
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: currentColor;
-        opacity: 0.4;
-    }
-
-    .section-drag-bar::before {
-        margin-right: var(--space-sm);
-    }
-
-    .section-drag-bar::after {
-        margin-left: var(--space-sm);
-    }
-
-    .section-drag-bar:hover {
+    /* bar variant 호버 시 section-wrapper 전체 hover로 활성화 */
+    :global(.section-wrapper:hover) :global([data-drag-handle]) {
         opacity: 0.7;
         background-color: var(--color-surface);
         color: var(--color-primary);
-    }
-
-    .section-drag-bar:active {
-        cursor: grabbing;
-        opacity: 1;
-    }
-
-    .section-wrapper :global([data-drag-handle]) {
-        cursor: grab;
-        user-select: none;
-    }
-
-    .section-wrapper :global([data-drag-handle]:active) {
-        cursor: grabbing;
     }
 </style>

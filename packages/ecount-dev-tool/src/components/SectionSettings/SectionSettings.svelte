@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { dndzone } from 'svelte-dnd-action';
-    import type { DndEvent } from 'svelte-dnd-action';
+    import { clickOutside, Dnd } from '@personal/uikit';
+    import type { DndEvent } from '@personal/uikit';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
     import { getSectionOrder, setSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
 
@@ -19,17 +19,7 @@
     let dnd_items = $state<SectionItem[]>([]);
 
     const all_ids = $derived(sections.map((s) => s.id));
-
-    const FLIP_DURATION_MS = 80;
-    const DROP_TARGET_STYLE = { outline: 'none' };
-
-    function transformDraggedElement(el: HTMLElement | undefined): void {
-        if (!el) return;
-        el.style.boxShadow = '0 4px 16px rgba(0, 0, 0, 0.15)';
-        el.style.borderRadius = '6px';
-        el.style.opacity = '0.92';
-        el.style.background = 'var(--color-background)';
-    }
+    const visible_count = $derived(all_ids.filter((id) => isSectionVisible(id)).length);
 
     $effect(() => {
         const order = getSectionOrder();
@@ -41,17 +31,8 @@
         is_open = !is_open;
     }
 
-    function handleClickOutside(event: MouseEvent): void {
-        const target = event.target as HTMLElement;
-        if (!target.closest('.settings-root')) {
-            is_open = false;
-        }
-    }
-
-    function handleKeydown(event: KeyboardEvent): void {
-        if (event.key === 'Escape') {
-            is_open = false;
-        }
+    function handleClose(): void {
+        is_open = false;
     }
 
     async function handleItemToggle(section_id: string): Promise<void> {
@@ -79,9 +60,7 @@
     }
 </script>
 
-<svelte:document onclick={handleClickOutside} onkeydown={handleKeydown} />
-
-<div class="settings-root">
+<div class="settings-root" use:clickOutside={handleClose}>
     <button
         type="button"
         class="settings-trigger"
@@ -102,41 +81,25 @@
     {#if is_open}
         <div class="settings-panel" role="listbox" aria-label="섹션 순서 및 표시 설정">
             <div class="panel-title">섹션 설정</div>
-            <div
-                class="settings-list"
-                use:dndzone={{
-                    items: dnd_items,
-                    flipDurationMs: FLIP_DURATION_MS,
-                    type: 'settings',
-                    dropTargetStyle: DROP_TARGET_STYLE,
-                    transformDraggedElement,
-                }}
+            <Dnd.Zone
+                items={dnd_items}
+                type="settings"
                 onconsider={handleConsider}
                 onfinalize={handleFinalize}
+                class="settings-list"
             >
                 {#each dnd_items as section (section.id)}
                     {@const visible = isSectionVisible(section.id)}
-                    {@const visible_count = all_ids.filter((id) => isSectionVisible(id)).length}
                     {@const is_last_visible = visible && visible_count <= 1}
-                    <div
-                        class="settings-item"
-                        class:disabled={is_last_visible}
+                    <Dnd.Row
+                        class="settings-item {is_last_visible ? 'disabled' : ''}"
                         role="option"
-                        tabindex="0"
+                        tabindex={0}
                         aria-selected={visible}
                         aria-label="{section.label} - 드래그하여 순서 변경"
                         onkeydown={(e) => handleItemKeydown(e, section.id)}
                     >
-                        <span class="drag-handle" aria-hidden="true">
-                            <svg width="10" height="14" viewBox="0 0 10 14" fill="currentColor">
-                                <circle cx="3" cy="2" r="1.2" />
-                                <circle cx="7" cy="2" r="1.2" />
-                                <circle cx="3" cy="7" r="1.2" />
-                                <circle cx="7" cy="7" r="1.2" />
-                                <circle cx="3" cy="12" r="1.2" />
-                                <circle cx="7" cy="12" r="1.2" />
-                            </svg>
-                        </span>
+                        <Dnd.Handle variant="icon" />
                         <label class="item-checkbox">
                             <input
                                 type="checkbox"
@@ -146,9 +109,9 @@
                             />
                             <span class="item-label">{section.label}</span>
                         </label>
-                    </div>
+                    </Dnd.Row>
                 {/each}
-            </div>
+            </Dnd.Zone>
         </div>
     {/if}
 </div>
@@ -173,7 +136,8 @@
         border-radius: var(--radius-sm);
         transition:
             color 0.15s ease,
-            background-color 0.15s ease;
+            background-color 0.15s ease,
+            transform 0.1s ease;
         opacity: 0.6;
     }
 
@@ -181,6 +145,11 @@
         color: var(--color-text);
         background-color: var(--color-surface);
         opacity: 1;
+    }
+
+    .settings-trigger:active {
+        transform: scale(0.9);
+        opacity: 0.8;
     }
 
     .settings-panel {
@@ -203,11 +172,11 @@
         border-bottom: 1px solid var(--color-border);
     }
 
-    .settings-list {
+    :global(.settings-list) {
         padding: var(--space-xs) 0;
     }
 
-    .settings-item {
+    :global(.settings-item) {
         display: flex;
         align-items: center;
         gap: var(--space-sm);
@@ -217,37 +186,29 @@
         outline: none;
     }
 
-    .settings-item:hover {
+    :global(.settings-item:hover) {
         background-color: var(--color-surface);
     }
 
-    .settings-item:focus-visible {
+    :global(.settings-item:focus-visible) {
         background-color: var(--color-surface);
         box-shadow: inset 0 0 0 2px var(--color-primary);
     }
 
-    .settings-item:active {
+    :global(.settings-item:active) {
         cursor: grabbing;
     }
 
-    .settings-item.disabled {
+    :global(.settings-item.disabled) {
         opacity: 0.5;
     }
 
-    .settings-item.disabled:hover {
+    :global(.settings-item.disabled:hover) {
         background-color: transparent;
     }
 
-    .drag-handle {
-        display: flex;
-        align-items: center;
-        color: var(--color-text-secondary);
-        opacity: 0.4;
-        flex-shrink: 0;
-        transition: opacity 0.1s ease;
-    }
-
-    .settings-item:hover .drag-handle {
+    /* icon variant 호버 시 settings-item hover로 활성화 */
+    :global(.settings-item:hover) :global([data-drag-handle]) {
         opacity: 0.8;
     }
 
