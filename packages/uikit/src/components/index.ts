@@ -5,3 +5,7 @@ export { ToggleInput } from './ToggleInput';
 export { Section } from './Section';
 export { ButtonGroup } from './ButtonGroup';
 export { Card } from './Card';
+export { DndZone } from './DndZone';
+export type { DndEvent } from './DndZone';
+export { DragHandle } from './DragHandle';
+export * as Dnd from './Dnd';
