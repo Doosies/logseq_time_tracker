@@ -41,12 +41,14 @@
         "jsdom": "catalog:",
         "prettier": "catalog:",
         "svelte": "catalog:",
+        "svelte-dnd-action": "catalog:",
         "typescript": "catalog:",
         "typescript-eslint": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:"
     },
     "peerDependencies": {
-        "svelte": "catalog:"
+        "svelte": "catalog:",
+        "svelte-dnd-action": "catalog:"
     }
 }
