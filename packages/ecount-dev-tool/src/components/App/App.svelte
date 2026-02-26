@@ -132,7 +132,7 @@
         margin-top: var(--space-sm);
     }
 
-    :global(.section-wrapper:hover) :global([data-drag-handle]) {
+    :global(.section-wrapper) > :global([data-drag-handle]:hover) {
         opacity: 0.7;
         background-color: var(--color-surface);
         color: var(--color-primary);
