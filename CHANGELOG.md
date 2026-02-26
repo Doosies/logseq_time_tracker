@@ -8,6 +8,22 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- **[@personal/uikit](./packages/uikit)** DnD 드래그 시 아이템 위치 변경 안 되는 버그 수정 - CSS `transform` 충돌 해결
+
+### Added
+
+- **[@personal/uikit](./packages/uikit)** 헤드리스 Dnd Compound Component (`Dnd.Zone`, `Dnd.Row`, `Dnd.Handle`)
+  - `Dnd.Zone`: svelte-dnd-action 래퍼, children snippet 렌더링
+  - `Dnd.Row`: 최소 스타일 드래그 가능 행 래퍼
+  - `Dnd.Handle`: DragHandle re-export
+  - namespace import 지원: `import { Dnd } from '@personal/uikit'`
+
+### Changed
+
+- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** DndZone + snippet API → Dnd.Zone + each + Dnd.Row compound API로 마이그레이션
+
 ## [0.2.0] - 2026-02-09
 
 ### Added
