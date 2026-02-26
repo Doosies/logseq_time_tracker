@@ -9,6 +9,12 @@
 
 ## [0.3.0] - 2026-02-26
 
+### Added
+
+- 섹션 숨기기/보이기 기능 추가
+- 섹션 접기/펼치기 기능 추가
+- 섹션 순서 변경 기능 추가
+
 ### Changed
 
 - SectionSettings: clickOutside + 수동 상태 → Popover + CheckboxList Compound API
@@ -16,6 +22,27 @@
 - ServerManager: Section + ToggleInput flat API → Compound API, 이중 토글 방지
 - ActionBar: Section flat API → Section Compound API
 - StageManager: Section flat API → Section Compound API
+- 섹션 순서 변경을 드래그앤드롭으로 교체
+- 섹션 DnD UX 개선 (구분선 제거, 애니메이션 속도, 제목 드래그)
+- 섹션 1개일 때 접기 비활성화 및 설정 버튼 UI 개선
+- 팝업 레이아웃 개선 및 accounts 스토어 강화
+- DndZone + snippet → Dnd.Zone + Dnd.Row compound API 마이그레이션
+- 드래그 핸들 전용 DnD로 전환
+
+### Fixed
+
+- App.svelte: `<Card>` → `<Card.Root>` Compound Component 마이그레이션 누락 수정
+- DnD ghost 요소에서 select 선택값 동기화
+- chrome API mock 타입 에러 수정
+
+### Refactored
+
+- server UI store 및 컴포넌트 개선
+
+### Tests
+
+- App.svelte.test.ts: 접근성 검증(aria-label, role, keyboard) 및 에러 처리 테스트 추가
+- StageManager.svelte.test.ts: 접근성 검증 및 에러 처리 테스트 추가
 
 ## [0.2.0] - 2026-02-09
 

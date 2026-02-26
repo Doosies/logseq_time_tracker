@@ -2,88 +2,88 @@
 
 ## TypeScript 설정
 
-`tsconfig.json`에서 TypeScript 컴파일러 옵션을 설정합니다:
+루트 `tsconfig.base.json`에서 공통 설정을 관리하고 각 패키지가 이를 상속합니다.
+
+### UIKit (Svelte)
 
 ```json
 {
-    "compilerOptions": {
-        "target": "ESNext",
-        "lib": ["DOM", "DOM.Iterable", "ESNext"],
-        "jsx": "react-jsx",
-        "strict": true
-    }
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"]
+  }
 }
 ```
 
-## Vite 설정
+### Ecount Dev Tool (Svelte + Chrome)
 
-`vite.config.ts`에서 Vite와 Vitest를 설정합니다:
-
-```ts
-export default defineConfig({
-    plugins: [logseqDevPlugin(), react()],
-    build: {
-        target: 'esnext',
-        minify: 'esbuild',
-    },
-    test: {
-        globals: true,
-        environment: 'jsdom',
-    },
-});
+```json
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["chrome"]
+  }
+}
 ```
 
 ## ESLint 설정
 
-`eslint.config.js`에서 린팅 규칙을 설정합니다:
+루트 `eslint.config.ts`에서 Svelte + TypeScript 규칙을 통합 관리합니다:
 
-- TypeScript ESLint
-- React Hooks 규칙
-- Prettier 통합
+```typescript
+import { createSvelteConfig } from '../../eslint.config.ts';
+
+// 각 패키지에서 tsconfigRootDir 전달
+export default createSvelteConfig(undefined, import.meta.dirname);
+```
+
+## Vite 설정
+
+UIKit과 Ecount Dev Tool은 Vite를 빌드 도구로 사용합니다.
+
+### UIKit
+
+vanilla-extract 플러그인을 포함하여 CSS-in-TypeScript 스타일링을 처리합니다.
+
+### Ecount Dev Tool
+
+`vite-plugin-web-extension`을 사용하여 Chrome Extension manifest를 처리합니다.
+
+## Storybook 설정
+
+`.storybook/` 디렉토리에서 전역 설정을 관리합니다:
+
+- `main.ts`: 애드온 목록 (`addon-docs`, `addon-a11y`)
+- `preview.ts`: 글로벌 autodocs, a11y 파라미터
+
+```bash
+pnpm storybook
+```
 
 ## Prettier 설정
 
-`.prettierrc`에서 코드 포맷팅 규칙을 설정합니다:
+`prettier-plugin-svelte`를 사용하여 Svelte 파일을 포맷합니다.
 
-```json
-{
-    "semi": true,
-    "singleQuote": false,
-    "tabWidth": 2,
-    "trailingComma": "all"
-}
-```
-
-## Logseq 플러그인 설정
-
-`package.json`의 `logseq` 필드에서 플러그인 메타데이터를 설정합니다:
-
-```json
-{
-    "logseq": {
-        "id": "logseq-plugin-personal",
-        "title": "Personal Plugin",
-        "icon": "./logo.svg",
-        "main": "dist/index.html"
-    }
-}
+```bash
+pnpm format
 ```
 
 ## Turborepo 설정
 
-`turbo.json`에서 빌드 파이프라인을 설정합니다:
+`turbo.json`에서 빌드 파이프라인을 정의합니다:
 
 ```json
 {
-    "pipeline": {
-        "build": {
-            "dependsOn": ["^build"],
-            "outputs": ["dist/**"]
-        },
-        "dev": {
-            "cache": false,
-            "persistent": true
-        }
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
     }
+  }
 }
 ```

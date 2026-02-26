@@ -14,7 +14,10 @@
         "type-check": "turbo type-check",
         "clean": "turbo clean && rm -rf node_modules",
         "storybook": "storybook dev -p 6006",
-        "build-storybook": "storybook build"
+        "build-storybook": "storybook build",
+        "docs": "pnpm --filter @personal/docs dev",
+        "docs:build": "pnpm --filter @personal/docs build",
+        "docs:preview": "pnpm --filter @personal/docs preview"
     },
     "keywords": [
         "logseq-plugin",

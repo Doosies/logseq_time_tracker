@@ -26,6 +26,11 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 - ecount.com URL 자동 분석
 - 서버 전환 시 올바른 URL 생성
 
+### 4. 섹션 관리
+- **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, StageManager, ActionBar) 순서 변경
+- **섹션 숨기기/보이기**: 설정 버튼(SectionSettings)으로 불필요한 섹션 숨기기
+- **섹션 접기/펼치기**: 각 섹션 헤더 클릭으로 접기/펼치기 (섹션 1개일 때 비활성화)
+
 ## 개발
 
 ### 의존성 설치
@@ -61,7 +66,8 @@ src/
 │   ├── QuickLoginSection/
 │   ├── ServerManager/
 │   ├── StageManager/
-│   └── ActionBar/
+│   ├── ActionBar/
+│   └── SectionSettings/   # 섹션 표시/숨기기 설정
 ├── services/           # 비즈니스 로직
 │   ├── url_service.ts  # URL 파싱/빌드
 │   ├── tab_service.ts  # Chrome Tab API
@@ -113,6 +119,7 @@ import type { ParsedUrl } from '#types/server';
 
 ### 컴포넌트 기반 아키텍처
 - Svelte 5 Runes API 사용
+- Compound Component 패턴으로 Section, Card, Popover, Dnd 등 구성
 - 재사용 가능한 컴포넌트 구조
 - 상태 관리: Svelte 5 Runes (`stores/current_tab.svelte.ts`)
 
@@ -307,6 +314,7 @@ pnpm storybook
 
 ## 버전 히스토리
 
+- **v2.4.0**: Compound Component 마이그레이션 + 섹션 관리 기능 (DnD, 숨기기/보이기, 접기/펼치기)
 - **v2.3.0**: Storybook CSF3 마이그레이션, subpath imports (`#`) 전환
 - **v2.2.0**: TypeScript + Svelte 5 전환
 - **v2.1.0**: 기존 JavaScript 버전

@@ -9,6 +9,24 @@
 > [uikit](./packages/uikit/CHANGELOG.md), [ecount-dev-tool](./packages/ecount-dev-tool/CHANGELOG.md),
 > [mcp-server](./packages/mcp-server/CHANGELOG.md), [time-tracker](./packages/time-tracker/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
 
+## [0.3.0] - 2026-02-26
+
+### Added (프로젝트 전역)
+
+- Storybook `addon-docs`, `addon-a11y` 추가
+- Storybook autodocs 전역 활성화
+- `prettier-plugin-svelte` 추가 및 전체 포매팅 적용
+- Storybook + Vitest 테스트 환경 설정
+- `svelte-dnd-action`을 pnpm catalog에 추가
+
+### Changed (프로젝트 전역)
+
+- ESLint `tsconfigRootDir` 설정 추가 - `createSvelteConfig`에 매개변수 전달
+- `@storybook/addon-essentials` 제거 (Storybook 10 내장)
+- Storybook CSF 마이그레이션 및 경로 별칭을 Node.js subpath imports로 전환
+- 빌드 설정 통합, ESLint 개선, 테스트 구조 정리
+- 컴포넌트 단위 테스트를 Storybook play function으로 통합
+
 ## [0.2.0] - 2026-02-09
 
 ### Changed (프로젝트 전역)

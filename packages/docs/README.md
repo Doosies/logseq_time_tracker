@@ -1,8 +1,8 @@
 # @personal/docs
 
-Documentation site for Personal Logseq Plugin
+Documentation site for Personal Monorepo
 
-VitePress 기반 문서화 사이트입니다. Personal 모노레포의 모든 패키지에 대한 가이드와 API 문서를 제공합니다.
+VitePress 기반 문서화 사이트입니다. Personal 모노레포의 모든 패키지(UIKit, Ecount Dev Tool, MCP Server, Time Tracker)에 대한 가이드와 API 문서를 제공합니다.
 
 ## 📋 목차
 
@@ -17,9 +17,11 @@ VitePress 기반 문서화 사이트입니다. Personal 모노레포의 모든 �
 
 이 문서 사이트는 Personal 모노레포의 모든 패키지에 대한 문서를 중앙화하여 제공합니다:
 
-- **Time Tracker 플러그인**: Logseq 플러그인 개발 가이드
+- **UIKit**: Svelte 5 공유 UI 컴포넌트 라이브러리 (Compound Pattern, vanilla-extract)
+- **Ecount Dev Tool**: Chrome 확장프로그램 (이카운트 개발 환경 관리)
 - **MCP Server**: Cursor MCP 서버 사용 가이드
-- **기술 문서**: Vanilla Extract, Logseq Plugin API 등
+- **Time Tracker**: Logseq 시간 추적 플러그인
+- **기술 문서**: Vanilla Extract, Storybook, Svelte Testing Library 등
 
 ## 📚 문서 구조
 
@@ -35,11 +37,11 @@ packages/docs/
 │   ├── logseq-plugin-api.md # Logseq Plugin API
 │   ├── vanilla-extract.md   # Vanilla Extract 가이드
 │   └── mcp-server.md        # MCP 서버 가이드
-├── api/                      # API 문서
+├── api/                      # API 문서 (UIKit)
 │   ├── index.md             # API 개요
-│   ├── components.md         # 컴포넌트 API
-│   ├── hooks.md             # 훅 API
-│   └── utils.md             # 유틸리티 API
+│   ├── components.md        # 컴포넌트 API
+│   ├── actions.md           # Svelte actions
+│   └── design-tokens.md     # 디자인 토큰
 ├── .vitepress/
 │   └── config.ts            # VitePress 설정
 └── index.md                 # 홈페이지

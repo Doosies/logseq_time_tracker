@@ -5,14 +5,85 @@
 ```
 personal/
 ├── packages/
-│   ├── time-tracker/        # Logseq 플러그인
-│   └── docs/                # 문서화 사이트
+│   ├── uikit/              # Svelte 5 UI 컴포넌트 라이브러리
+│   ├── ecount-dev-tool/    # Chrome 확장프로그램
+│   ├── mcp-server/         # Cursor MCP 서버
+│   ├── time-tracker/       # Logseq 플러그인
+│   └── docs/               # VitePress 문서 사이트
+├── .storybook/             # Storybook 전역 설정
 ├── turbo.json              # Turborepo 설정
 ├── pnpm-workspace.yaml     # pnpm 워크스페이스
+├── eslint.config.ts        # ESLint 통합 설정
 └── package.json            # 루트 패키지
 ```
 
-## Plugin 패키지
+## UIKit 패키지
+
+```
+packages/uikit/
+├── src/
+│   ├── primitives/        # Headless primitive 컴포넌트 (11개)
+│   │   ├── Button/
+│   │   ├── Card/
+│   │   ├── Section/
+│   │   ├── Popover/
+│   │   ├── Toast/
+│   │   ├── Dnd/
+│   │   └── ...
+│   ├── components/        # Styled compound 컴포넌트 (11개)
+│   │   ├── Button/
+│   │   ├── Card/          # Root, Header, Body, Footer
+│   │   ├── Section/       # Root, Header, Title, Action, Content
+│   │   ├── Popover/       # Root, Trigger, Content
+│   │   ├── Toast/         # Provider, Root
+│   │   ├── CheckboxList/  # Root, Item
+│   │   ├── Dnd/           # Zone, Row, Handle
+│   │   └── ...
+│   ├── actions/           # Svelte actions (clickOutside 등)
+│   ├── design/            # vanilla-extract 디자인 시스템
+│   │   ├── theme/         # Light/Dark 테마, 디자인 토큰
+│   │   └── styles/        # 컴포넌트별 스타일
+│   └── index.ts
+├── package.json
+└── tsconfig.json
+```
+
+## Ecount Dev Tool 패키지
+
+```
+packages/ecount-dev-tool/
+├── src/
+│   ├── components/        # Svelte 컴포넌트
+│   │   ├── App/           # 루트 컴포넌트
+│   │   ├── QuickLoginSection/
+│   │   ├── ServerManager/
+│   │   ├── StageManager/
+│   │   ├── ActionBar/
+│   │   └── SectionSettings/
+│   ├── services/          # 비즈니스 로직
+│   │   ├── url_service.ts
+│   │   ├── tab_service.ts
+│   │   └── page_actions.ts
+│   ├── stores/            # Svelte 5 Runes 스토어
+│   ├── types/
+│   ├── constants/
+│   ├── manifest.json      # Chrome Extension Manifest
+│   └── popup.ts           # Entry Point
+└── package.json
+```
+
+## MCP Server 패키지
+
+```
+packages/mcp-server/
+├── src/
+│   ├── index.ts           # 메인 서버
+│   ├── tools/             # MCP 도구 정의
+│   └── resources/         # MCP 리소스 정의
+└── package.json
+```
+
+## Time Tracker 패키지
 
 ```
 packages/time-tracker/
@@ -20,14 +91,7 @@ packages/time-tracker/
 │   ├── main.tsx           # 플러그인 진입점
 │   └── App.tsx            # React 컴포넌트
 ├── tests/
-│   ├── setup.ts           # Vitest 설정
-│   ├── example.test.ts    # 예제 테스트
-│   └── App.test.tsx       # 컴포넌트 테스트
-├── index.html             # HTML 엔트리
-├── logo.svg               # 플러그인 아이콘
-├── vite.config.ts         # Vite 설정
-├── tsconfig.json          # TypeScript 설정
-└── package.json           # 패키지 설정
+└── package.json
 ```
 
 ## Docs 패키지
@@ -36,35 +100,24 @@ packages/time-tracker/
 packages/docs/
 ├── .vitepress/
 │   └── config.ts          # VitePress 설정
-├── guide/
-│   ├── index.md           # 가이드 홈
-│   ├── installation.md    # 설치 가이드
-│   └── quick-start.md     # 빠른 시작
-├── api/
-│   └── index.md           # API 문서
-├── index.md               # 문서 홈
-└── package.json           # 패키지 설정
+├── guide/                 # 가이드 문서
+├── api/                   # API 레퍼런스
+└── package.json
 ```
 
-## 주요 파일 설명
+## 주요 설정 파일
 
-### `main.tsx`
+### turbo.json
+Turborepo 파이프라인: 빌드, 테스트, 린트 작업의 캐싱과 병렬 실행을 관리합니다.
 
-플러그인의 진입점입니다. Logseq API 초기화와 React 렌더링을 담당합니다.
+### eslint.config.ts
+통합 ESLint 설정: Svelte, TypeScript 규칙을 중앙에서 관리하며 각 패키지에 `tsconfigRootDir`을 전달합니다.
 
-### `App.tsx`
-
-메인 React 컴포넌트입니다. 플러그인 UI를 정의합니다.
-
-### `vite.config.ts`
-
-Vite와 Vitest 설정을 포함합니다. `vite-plugin-logseq` 플러그인이 HMR을 활성화합니다.
-
-### `turbo.json`
-
-Turborepo 파이프라인을 정의합니다. 빌드, 테스트, 린트 작업의 실행 순서와 캐싱을 관리합니다.
+### pnpm-workspace.yaml
+패키지 워크스페이스 정의와 의존성 catalog을 포함합니다.
 
 ## 다음 단계
 
 - [설정](/guide/configuration) 커스터마이징
 - [테스트](/guide/testing) 작성하기
+- [Storybook](/guide/storybook) 컴포넌트 개발
