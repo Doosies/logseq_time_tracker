@@ -18,8 +18,13 @@
     }
 </script>
 
-<Section title="Stage Server Manager">
-    <Button fullWidth onclick={handleStageSwitch}>
-        {button_label}
-    </Button>
-</Section>
+<Section.Root>
+    <Section.Header>
+        <Section.Title>Stage Server Manager</Section.Title>
+    </Section.Header>
+    <Section.Content>
+        <Button fullWidth onclick={handleStageSwitch}>
+            {button_label}
+        </Button>
+    </Section.Content>
+</Section.Root>

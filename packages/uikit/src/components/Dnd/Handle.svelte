@@ -1,3 +1,14 @@
+<!--
+@component Dnd.Handle - 드래그 핸들
+
+primitives/Dnd/Handle을 감싸는 styled 래퍼입니다.
+`variant`로 bar(기본) 또는 icon 스타일을 선택할 수 있습니다.
+
+@example
+```svelte
+<Dnd.Handle variant="icon" label="드래그하여 순서 변경" />
+```
+-->
 <script lang="ts">
     import { Handle as PrimitiveHandle } from '../../primitives/Dnd';
 
@@ -10,13 +21,13 @@
 </script>
 
 {#if variant === 'bar'}
-    <div class="drag-handle-bar" data-drag-handle>
+    <div class="drag-handle-bar">
         <PrimitiveHandle {label}>
             <span class="grip-dots"></span>
         </PrimitiveHandle>
     </div>
 {:else}
-    <PrimitiveHandle {label} class="drag-handle-icon"></PrimitiveHandle>
+    <PrimitiveHandle {label} class="drag-handle-icon" />
 {/if}
 
 <style>

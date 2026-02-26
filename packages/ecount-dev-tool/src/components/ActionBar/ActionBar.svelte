@@ -38,13 +38,18 @@
 
 </script>
 
-<Section title="빠른 실행">
-    <div class="action-bar-inner">
-        <Button variant="secondary" onclick={handleV5Local}>5.0로컬</Button>
-        <Button variant="secondary" onclick={handleV3Local}>3.0로컬</Button>
-        <Button variant="secondary" onclick={handleDevMode}>disableMin</Button>
-    </div>
-</Section>
+<Section.Root>
+    <Section.Header>
+        <Section.Title>빠른 실행</Section.Title>
+    </Section.Header>
+    <Section.Content>
+        <div class="action-bar-inner">
+            <Button variant="secondary" onclick={handleV5Local}>5.0로컬</Button>
+            <Button variant="secondary" onclick={handleV3Local}>3.0로컬</Button>
+            <Button variant="secondary" onclick={handleDevMode}>disableMin</Button>
+        </div>
+    </Section.Content>
+</Section.Root>
 
 <style>
     .action-bar-inner {

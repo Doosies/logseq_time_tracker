@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { ParsedUrl } from '#types/server';
-    import { Section, Button, ToggleInput } from '@personal/uikit';
+    import { Section, Button, ToggleInput, TextInput, Select } from '@personal/uikit';
     import { V5_SERVERS, V3_SERVERS } from '#constants/servers';
     import { buildEc5Url, buildEc3Url } from '#services/url_service';
     import { updateTabUrl } from '#services/tab_service';
@@ -16,7 +16,6 @@
     });
 
     function handleToggleV5(): void {
-        server_ui.v5_text_mode = !server_ui.v5_text_mode;
         if (server_ui.v5_text_mode && parsed) {
             const server = parsed.current_server;
             if (server && server !== '=====') {
@@ -30,7 +29,6 @@
     }
 
     function handleToggleV3(): void {
-        server_ui.v3_text_mode = !server_ui.v3_text_mode;
         if (server_ui.v3_text_mode && parsed) {
             const server = parsed.current_server;
             if (server && server !== '=====') {
@@ -65,31 +63,52 @@
 
 </script>
 
-<Section title="서버 관리">
-    <div class="server-panel">
-        <div class="server-row">
-            <span class="server-label">V5</span>
-            <ToggleInput
-                bind:value={server_ui.v5_value}
-                prefix={server_ui.v5_text_mode ? '' : (parsed?.current_server ?? '')}
-                options={V5_SERVERS}
-                isTextMode={server_ui.v5_text_mode}
-                onToggle={handleToggleV5}
-            />
+<Section.Root>
+    <Section.Header>
+        <Section.Title>서버 관리</Section.Title>
+    </Section.Header>
+    <Section.Content>
+        <div class="server-panel">
+            <div class="server-row">
+                <span class="server-label">V5</span>
+                <ToggleInput.Root
+                    bind:value={server_ui.v5_value}
+                    bind:isTextMode={server_ui.v5_text_mode}
+                    onToggle={handleToggleV5}
+                >
+                    {#if !server_ui.v5_text_mode && parsed?.current_server}
+                        <ToggleInput.Prefix>{parsed.current_server}</ToggleInput.Prefix>
+                    {/if}
+                    {#if server_ui.v5_text_mode}
+                        <TextInput bind:value={server_ui.v5_value} />
+                    {:else}
+                        <Select bind:value={server_ui.v5_value} options={V5_SERVERS} />
+                    {/if}
+                    <ToggleInput.Toggle />
+                </ToggleInput.Root>
+            </div>
+            <div class="server-row">
+                <span class="server-label">V3</span>
+                <ToggleInput.Root
+                    bind:value={server_ui.v3_value}
+                    bind:isTextMode={server_ui.v3_text_mode}
+                    onToggle={handleToggleV3}
+                >
+                    {#if !server_ui.v3_text_mode && parsed?.current_server}
+                        <ToggleInput.Prefix>{parsed.current_server}</ToggleInput.Prefix>
+                    {/if}
+                    {#if server_ui.v3_text_mode}
+                        <TextInput bind:value={server_ui.v3_value} />
+                    {:else}
+                        <Select bind:value={server_ui.v3_value} options={V3_SERVERS} />
+                    {/if}
+                    <ToggleInput.Toggle />
+                </ToggleInput.Root>
+            </div>
         </div>
-        <div class="server-row">
-            <span class="server-label">V3</span>
-            <ToggleInput
-                bind:value={server_ui.v3_value}
-                prefix={server_ui.v3_text_mode ? '' : (parsed?.current_server ?? '')}
-                options={V3_SERVERS}
-                isTextMode={server_ui.v3_text_mode}
-                onToggle={handleToggleV3}
-            />
-        </div>
-    </div>
-    <Button fullWidth onclick={handleChangeServer}>서버 적용</Button>
-</Section>
+        <Button fullWidth onclick={handleChangeServer}>서버 적용</Button>
+    </Section.Content>
+</Section.Root>
 
 <style>
     .server-panel {

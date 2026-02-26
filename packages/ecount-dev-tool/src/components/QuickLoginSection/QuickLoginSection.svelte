@@ -69,54 +69,58 @@
     }
 </script>
 
-<Section title="빠른 로그인">
-    {#snippet action()}
-        <button class="edit-toggle" onclick={toggleEdit}>
-            {is_editing ? '완료' : '편집'}
-        </button>
-    {/snippet}
-
-    {#if is_editing}
-        <div class="add-form">
-            <TextInput bind:value={new_company} placeholder="회사코드" />
-            <TextInput bind:value={new_id} placeholder="아이디" />
-            <TextInput bind:value={new_password} placeholder="비밀번호" />
-            <Button variant="primary" size="sm" disabled={!can_add} onclick={handleAdd}>추가</Button>
-        </div>
-        {#if error_message}
-            <p class="error-msg">{error_message}</p>
+<Section.Root>
+    <Section.Header>
+        <Section.Title>빠른 로그인</Section.Title>
+        <Section.Action>
+            <button class="edit-toggle" onclick={toggleEdit}>
+                {is_editing ? '완료' : '편집'}
+            </button>
+        </Section.Action>
+    </Section.Header>
+    <Section.Content>
+        {#if is_editing}
+            <div class="add-form">
+                <TextInput bind:value={new_company} placeholder="회사코드" />
+                <TextInput bind:value={new_id} placeholder="아이디" />
+                <TextInput bind:value={new_password} placeholder="비밀번호" />
+                <Button variant="primary" size="sm" disabled={!can_add} onclick={handleAdd}>추가</Button>
+            </div>
+            {#if error_message}
+                <p class="error-msg">{error_message}</p>
+            {/if}
         {/if}
-    {/if}
 
-    <div class="account-scroll">
-        {#if accounts.length === 0 && !is_editing}
-            <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
-        {/if}
-        <div class="account-grid">
-            {#each accounts as account, i (i)}
-                <Button
-                    variant="primary"
-                    class="account-cell {is_editing ? 'editing' : ''}"
-                    onclick={() => handleLogin(account)}
-                >
-                    {#if is_editing}
-                        <button
-                            class="remove-btn"
-                            onclick={(e) => {
-                                e.stopPropagation();
-                                handleRemove(i);
-                            }}
-                        >
-                            &times;
-                        </button>
-                    {/if}
-                    <span class="account-code">{account.company}</span>
-                    <span class="account-name">{account.id}</span>
-                </Button>
-            {/each}
+        <div class="account-scroll">
+            {#if accounts.length === 0 && !is_editing}
+                <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
+            {/if}
+            <div class="account-grid">
+                {#each accounts as account, i (i)}
+                    <Button
+                        variant="primary"
+                        class="account-cell {is_editing ? 'editing' : ''}"
+                        onclick={() => handleLogin(account)}
+                    >
+                        {#if is_editing}
+                            <button
+                                class="remove-btn"
+                                onclick={(e) => {
+                                    e.stopPropagation();
+                                    handleRemove(i);
+                                }}
+                            >
+                                &times;
+                            </button>
+                        {/if}
+                        <span class="account-code">{account.company}</span>
+                        <span class="account-name">{account.id}</span>
+                    </Button>
+                {/each}
+            </div>
         </div>
-    </div>
-</Section>
+    </Section.Content>
+</Section.Root>
 
 <style>
     .edit-toggle {
