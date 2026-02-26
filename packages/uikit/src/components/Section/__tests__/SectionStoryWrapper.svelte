@@ -3,21 +3,28 @@
 
     interface Props {
         title?: string;
-        scenario?: 'withTitle' | 'withoutTitle' | 'longContent';
+        scenario?: 'withTitle' | 'withoutTitle' | 'longContent' | 'withAction';
     }
 
     let { title, scenario = 'withTitle' }: Props = $props();
 </script>
 
 <Section.Root>
-    {#if title}
+    {#if scenario === 'withAction'}
+        <Section.Header>
+            <Section.Title>{title}</Section.Title>
+            <Section.Action>
+                <button type="button">편집</button>
+            </Section.Action>
+        </Section.Header>
+    {:else if title}
         <Section.Header>
             <Section.Title>{title}</Section.Title>
         </Section.Header>
     {/if}
 
     <Section.Content>
-        {#if scenario === 'withTitle'}
+        {#if scenario === 'withTitle' || scenario === 'withAction'}
             <p>섹션 내용입니다.</p>
         {:else if scenario === 'withoutTitle'}
             <p>제목 없는 섹션 내용</p>

@@ -1,3 +1,11 @@
+<!--
+@component Popover.Content - Popover content panel
+
+Only rendered when the popover is open. Positioned absolutely below the trigger.
+
+@prop role - ARIA role (default: 'dialog')
+@prop label - ARIA label for accessibility
+-->
 <script lang="ts">
     import { Content as PrimitiveContent } from '../../primitives/Popover';
     import { popover_content } from '../../design/styles/popover.css';

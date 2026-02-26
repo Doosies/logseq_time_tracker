@@ -1,3 +1,24 @@
+<!--
+@component CheckboxList.Root - Drag-and-drop checkbox list container
+
+Wraps `Dnd.Zone` to provide a sortable list of checkbox items.
+
+@prop items - Array of items with `{ id: string | number }` shape
+@prop type - DnD zone type identifier (default: 'checkbox-list')
+@prop onconsider - DnD consider event callback
+@prop onfinalize - DnD finalize event callback
+
+@example
+```svelte
+<CheckboxList.Root {items} onconsider={handleConsider} onfinalize={handleFinalize}>
+    {#each items as item (item.id)}
+        <CheckboxList.Item checked={item.visible} ontoggle={() => toggle(item.id)}>
+            {item.label}
+        </CheckboxList.Item>
+    {/each}
+</CheckboxList.Root>
+```
+-->
 <script lang="ts" generics="T extends { id: string | number }">
     import { Root as PrimitiveRoot } from '../../primitives/CheckboxList';
     import { checkbox_list_container } from '../../design/styles/checkbox_list.css';

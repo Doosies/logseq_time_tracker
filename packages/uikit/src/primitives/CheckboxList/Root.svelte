@@ -1,4 +1,5 @@
 <script lang="ts" generics="T extends { id: string | number }">
+    import { setContext } from 'svelte';
     import { Zone } from '../Dnd';
     import type { DndEvent } from 'svelte-dnd-action';
     import type { Snippet } from 'svelte';

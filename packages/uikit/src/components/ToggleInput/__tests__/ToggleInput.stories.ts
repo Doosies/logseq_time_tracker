@@ -84,3 +84,23 @@ export const EmptyPrefix: Story = {
         await expect(canvas.queryByText('Server:')).not.toBeInTheDocument();
     },
 };
+
+export const ToggleButton: Story = {
+    args: { isTextMode: false },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByRole('combobox')).toBeInTheDocument();
+        const toggle_btn = canvas.getByRole('button', { name: 'Toggle input mode' });
+        await userEvent.click(toggle_btn);
+        await expect(canvas.getByRole('textbox')).toBeInTheDocument();
+        await expect(canvas.queryByRole('combobox')).not.toBeInTheDocument();
+    },
+};
+
+export const PrefixRendered: Story = {
+    args: { prefix: 'PREFIX' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('PREFIX')).toBeInTheDocument();
+    },
+};

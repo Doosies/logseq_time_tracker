@@ -9,7 +9,7 @@ const meta = {
         title: { control: 'text' },
         scenario: {
             control: 'select',
-            options: ['withTitle', 'withoutTitle', 'longContent'],
+            options: ['withTitle', 'withoutTitle', 'longContent', 'withAction'],
         },
     },
 } satisfies Meta<typeof SectionStoryWrapper>;
@@ -37,4 +37,23 @@ export const WithoutTitle: Story = {
 
 export const LongContent: Story = {
     args: { title: '긴 내용', scenario: 'longContent' },
+};
+
+export const WithAction: Story = {
+    args: { title: '섹션 제목', scenario: 'withAction' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('섹션 제목')).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '편집' })).toBeInTheDocument();
+    },
+};
+
+export const LongContentRendered: Story = {
+    args: { title: '긴 내용', scenario: 'longContent' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('긴 내용')).toBeInTheDocument();
+        await expect(canvas.getByText('첫 번째 단락')).toBeInTheDocument();
+        await expect(canvas.getByText('두 번째 단락')).toBeInTheDocument();
+    },
 };

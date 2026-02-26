@@ -1,3 +1,8 @@
+<!--
+@component Popover.Trigger - Button that toggles the popover
+
+Renders a `<button>` with `aria-expanded` reflecting open state.
+-->
 <script lang="ts">
     import { Trigger as PrimitiveTrigger } from '../../primitives/Popover';
     import { popover_trigger } from '../../design/styles/popover.css';

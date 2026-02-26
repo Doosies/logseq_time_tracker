@@ -7,19 +7,15 @@
 
 ## [Unreleased]
 
-### Fixed
-
-- DnD 핸들 hover 스타일이 섹션 전체가 아닌 핸들 요소에 직접 hover할 때만 적용되도록 수정
-
-### Added
-
-- DnD handleFinalize 콜백 로직 단위 테스트 5개
+## [0.3.0] - 2026-02-26
 
 ### Changed
 
-- DndZone + snippet API → Dnd.Zone + each + Dnd.Row compound API로 마이그레이션 ([@personal/uikit](./packages/uikit) 기반)
-- App.svelte에서 DRAG_HANDLE_SELECTOR 상수 및 관련 cursor CSS 제거
-- SectionSettings.svelte에서 cursor:grab CSS 제거
+- SectionSettings: clickOutside + 수동 상태 → Popover + CheckboxList Compound API
+- QuickLoginSection: Section flat API → Section Compound API
+- ServerManager: Section + ToggleInput flat API → Compound API, 이중 토글 방지
+- ActionBar: Section flat API → Section Compound API
+- StageManager: Section flat API → Section Compound API
 
 ## [0.2.0] - 2026-02-09
 

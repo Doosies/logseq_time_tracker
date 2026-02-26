@@ -7,25 +7,31 @@
 
 ## [Unreleased]
 
-### Fixed
-
-- DnD 드래그 시 아이템 위치 변경 안 되는 버그 수정 - CSS `transform` 충돌 해결
-- DnD 드래그 시 `<select>` 요소의 선택값이 초기값으로 리셋되는 버그 수정 - ghost 요소에 select value 동기화
+## [0.2.0] - 2026-02-26
 
 ### Added
 
-- 헤드리스 Dnd Compound Component (`Dnd.Zone`, `Dnd.Row`, `Dnd.Handle`)
-  - `Dnd.Zone`: svelte-dnd-action 래퍼, children snippet 렌더링
-  - `Dnd.Row`: 최소 스타일 드래그 가능 행 래퍼
-  - `Dnd.Handle`: DragHandle re-export
-  - namespace import 지원: `import { Dnd } from '@personal/uikit'`
+- Popover Compound 컴포넌트 (Root/Trigger/Content) - clickOutside 자동 닫힘, Escape 키, aria-expanded
+- Toast Compound 컴포넌트 (Provider/Root) - 자동 타이머 기반 알림
+- CheckboxList Compound 컴포넌트 (Root/Item) - DnD 지원 체크박스 리스트
+- Dnd.Handle styled 래퍼 - primitives/Dnd/Handle 기반 (bar/icon variant)
+- CheckboxList.Item에 HTMLAttributes 확장 (rest props 지원)
 
-### Changed
+### Fixed
 
-- Dnd.Zone: `dndzone` → `dragHandleZone` 전환으로 핸들 전용 드래그 지원
-- DragHandle: `use:dragHandle` action 적용, cursor 라이브러리 자동 관리로 전환
-- Dnd.Zone에서 `dragHandleSelector`, `interactiveSelector` props 및 `blockDragFromInteractive` 제거
-- Dnd.Row에서 cursor:grab CSS 제거 (핸들 전용 드래그)
+- CheckboxList Root에서 `setContext` import 누락 버그 수정
+- Dnd Handle에서 삭제된 DragHandle import를 primitives/Dnd/Handle로 교체
+
+### Tests
+
+- Popover 엣지케이스 스토리 3개 추가 (AriaExpanded, ContentHasLabel, MultipleToggle)
+- Toast 엣지케이스 스토리 2개 추가 (MultipleToasts, ToastHasContent)
+- CheckboxList 엣지케이스 스토리 3개 추가 (ToggleChecked, DisabledCannotToggle, ItemLabelsRendered)
+- Dnd 스토리 신규 생성 3개 (Default, HasDragHandles, HandleHasAriaLabel)
+- Section 엣지케이스 스토리 2개 추가 (WithAction, LongContentRendered)
+- Card 엣지케이스 스토리 2개 추가 (HeaderAndFooterOnly, AllParts)
+- ToggleInput 엣지케이스 스토리 2개 추가 (ToggleButton, PrefixRendered)
+- 전체 58개 테스트 통과
 
 ## [0.1.0] - 2026-02-09
 

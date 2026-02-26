@@ -1,3 +1,9 @@
+<!--
+@component Toast.Root - Toast message renderer
+
+Renders all active toast messages as `role="alert"` elements.
+Place inside a `Toast.Provider`.
+-->
 <script lang="ts">
     import { Root as PrimitiveRoot } from '../../primitives/Toast';
     import { toast_container } from '../../design/styles/toast.css';

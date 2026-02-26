@@ -1,3 +1,12 @@
+<!--
+@component CheckboxList.Item - Individual checkbox item with drag handle
+
+Renders a drag handle, checkbox input, and children label inside a Dnd.Row.
+
+@prop checked - Checkbox checked state
+@prop disabled - Disables the checkbox
+@prop ontoggle - Callback when checkbox is toggled
+-->
 <script lang="ts">
     import { Item as PrimitiveItem } from '../../primitives/CheckboxList';
     import {

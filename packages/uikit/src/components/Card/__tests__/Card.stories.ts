@@ -8,7 +8,7 @@ const meta = {
     argTypes: {
         scenario: {
             control: 'select',
-            options: ['default', 'withComponents'],
+            options: ['default', 'withComponents', 'headerFooterOnly', 'allParts'],
         },
     },
 } satisfies Meta<typeof CardStoryWrapper>;
@@ -20,7 +20,27 @@ export const Default: Story = {
     args: { scenario: 'default' },
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
+        await expect(canvas.getByText('카드 헤더')).toBeInTheDocument();
         await expect(canvas.getByText('카드 기본 내용')).toBeInTheDocument();
+    },
+};
+
+export const HeaderAndFooterOnly: Story = {
+    args: { scenario: 'headerFooterOnly' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('카드 헤더')).toBeInTheDocument();
+        await expect(canvas.getByText('카드 푸터')).toBeInTheDocument();
+    },
+};
+
+export const AllParts: Story = {
+    args: { scenario: 'allParts' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('카드 헤더')).toBeInTheDocument();
+        await expect(canvas.getByText('카드 기본 내용')).toBeInTheDocument();
+        await expect(canvas.getByText('카드 푸터')).toBeInTheDocument();
     },
 };
 

@@ -39,3 +39,38 @@ export const CloseOnSecondClick: Story = {
         await expect(canvas.queryByRole('dialog')).not.toBeInTheDocument();
     },
 };
+
+export const AriaExpanded: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const trigger = canvas.getByRole('button');
+        await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+        await userEvent.click(trigger);
+        await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+        await userEvent.click(trigger);
+        await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+    },
+};
+
+export const ContentHasLabel: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const trigger = canvas.getByRole('button');
+        await userEvent.click(trigger);
+        const dialog = canvas.getByRole('dialog');
+        await expect(dialog).toHaveAttribute('aria-label', '팝오버 메뉴');
+    },
+};
+
+export const MultipleToggle: Story = {
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const trigger = canvas.getByRole('button');
+        for (let i = 0; i < 5; i++) {
+            await userEvent.click(trigger);
+        }
+        await expect(canvas.getByRole('dialog')).toBeInTheDocument();
+        await userEvent.click(trigger);
+        await expect(canvas.queryByRole('dialog')).not.toBeInTheDocument();
+    },
+};
