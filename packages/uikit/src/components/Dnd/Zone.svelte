@@ -17,9 +17,8 @@ svelte-dnd-action을 래핑한 헤드리스 컴포넌트.
 ```
 -->
 <script lang="ts" generics="T extends { id: string | number }">
-    import { dndzone } from 'svelte-dnd-action';
+    import { dragHandleZone } from 'svelte-dnd-action';
     import type { DndEvent } from 'svelte-dnd-action';
-    import { blockDragFromInteractive, type BlockDragOptions } from '../../actions';
     import type { Snippet } from 'svelte';
 
     interface Props {
@@ -28,8 +27,6 @@ svelte-dnd-action을 래핑한 헤드리스 컴포넌트.
         flipDurationMs?: number;
         dragDisabled?: boolean;
         dropTargetStyle?: Record<string, string>;
-        dragHandleSelector?: string;
-        interactiveSelector?: string;
         onconsider?: (e: CustomEvent<DndEvent<T>>) => void;
         onfinalize?: (e: CustomEvent<DndEvent<T>>) => void;
         children: Snippet;
@@ -42,22 +39,11 @@ svelte-dnd-action을 래핑한 헤드리스 컴포넌트.
         flipDurationMs = 80,
         dragDisabled = false,
         dropTargetStyle = { outline: 'none' },
-        dragHandleSelector,
-        interactiveSelector,
         onconsider,
         onfinalize,
         children,
         class: extraClass,
     }: Props = $props();
-
-    const blockOptions = $derived<BlockDragOptions | undefined>(
-        dragHandleSelector
-            ? {
-                  dragHandleSelector,
-                  ...(interactiveSelector ? { interactiveSelector } : {}),
-              }
-            : undefined,
-    );
 
     function handleConsider(e: Event): void {
         onconsider?.(e as CustomEvent<DndEvent<T>>);
@@ -70,8 +56,7 @@ svelte-dnd-action을 래핑한 헤드리스 컴포넌트.
 
 <div
     class={extraClass}
-    use:dndzone={{ items, type, flipDurationMs, dragDisabled, dropTargetStyle }}
-    use:blockDragFromInteractive={blockOptions}
+    use:dragHandleZone={{ items, type, flipDurationMs, dragDisabled, dropTargetStyle }}
     onconsider={handleConsider}
     onfinalize={handleFinalize}
 >
@@ -83,5 +68,6 @@ svelte-dnd-action을 래핑한 헤드리스 컴포넌트.
         border: none !important;
         outline: none !important;
         transition: none !important;
+        background-color: rgba(255, 255, 255, 0.85) !important;
     }
 </style>

@@ -19,10 +19,17 @@
   - `Dnd.Row`: 최소 스타일 드래그 가능 행 래퍼
   - `Dnd.Handle`: DragHandle re-export
   - namespace import 지원: `import { Dnd } from '@personal/uikit'`
+- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** DnD handleFinalize 콜백 로직 단위 테스트 5개
 
 ### Changed
 
 - **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** DndZone + snippet API → Dnd.Zone + each + Dnd.Row compound API로 마이그레이션
+- **[@personal/uikit](./packages/uikit)** Dnd.Zone: `dndzone` → `dragHandleZone` 전환으로 핸들 전용 드래그 지원
+- **[@personal/uikit](./packages/uikit)** DragHandle: `use:dragHandle` action 적용, cursor 라이브러리 자동 관리로 전환
+- **[@personal/uikit](./packages/uikit)** Dnd.Zone에서 `dragHandleSelector`, `interactiveSelector` props 및 `blockDragFromInteractive` 제거
+- **[@personal/uikit](./packages/uikit)** Dnd.Row에서 cursor:grab CSS 제거 (핸들 전용 드래그)
+- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** App.svelte에서 DRAG_HANDLE_SELECTOR 상수 및 관련 cursor CSS 제거
+- **[@personal/ecount-dev-tool](./packages/ecount-dev-tool)** SectionSettings.svelte에서 cursor:grab CSS 제거
 
 ## [0.2.0] - 2026-02-09
 

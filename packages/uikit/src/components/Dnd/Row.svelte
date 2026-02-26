@@ -30,12 +30,7 @@ HTML div attributes를 restProps로 전달할 수 있습니다.
 
 <style>
     .dnd-row {
-        cursor: grab;
         outline: none;
         user-select: none;
-    }
-
-    .dnd-row:active {
-        cursor: grabbing;
     }
 </style>

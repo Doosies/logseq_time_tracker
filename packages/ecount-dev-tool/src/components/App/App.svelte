@@ -23,8 +23,6 @@
         { id: 'action-bar', label: '빠른 실행' },
     ];
 
-    const DRAG_HANDLE_SELECTOR = '.section-drag-bar, [data-drag-handle]';
-
     const tab = $derived(getTabState());
     const section_order = $derived(getSectionOrder());
 
@@ -81,7 +79,6 @@
                 items={dnd_sections}
                 type="main-sections"
                 dragDisabled={!is_dnd_available}
-                dragHandleSelector={DRAG_HANDLE_SELECTOR}
                 onconsider={handleConsider}
                 onfinalize={handleFinalize}
                 class="sections-dnd-container"
@@ -129,11 +126,6 @@
 
     :global(.section-wrapper) {
         position: relative;
-        cursor: grab;
-    }
-
-    :global(.section-wrapper:active) {
-        cursor: grabbing;
     }
 
     :global(.section-wrapper + .section-wrapper) {

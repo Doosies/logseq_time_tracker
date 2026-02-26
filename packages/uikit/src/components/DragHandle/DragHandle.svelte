@@ -1,4 +1,6 @@
 <script lang="ts">
+    import { dragHandle } from 'svelte-dnd-action';
+
     interface Props {
         variant?: 'bar' | 'icon';
         label?: string;
@@ -8,11 +10,11 @@
 </script>
 
 {#if variant === 'bar'}
-    <div class="drag-handle-bar" data-drag-handle role="button" tabindex="-1" aria-label={label}>
+    <div class="drag-handle-bar" data-drag-handle use:dragHandle role="button" tabindex="-1" aria-label={label}>
         <span class="grip-dots"></span>
     </div>
 {:else}
-    <span class="drag-handle-icon" data-drag-handle aria-hidden="true"></span>
+    <span class="drag-handle-icon" data-drag-handle use:dragHandle aria-hidden="true"></span>
 {/if}
 
 <style>
@@ -33,7 +35,6 @@
         width: 100%;
         padding: 3px 0;
         margin-bottom: var(--space-xs);
-        cursor: grab;
         color: var(--color-text-secondary);
         background: none;
         border: none;
@@ -64,7 +65,6 @@
     }
 
     .drag-handle-bar:active {
-        cursor: grabbing;
         opacity: 1;
     }
 
@@ -86,10 +86,5 @@
         color: var(--color-text-secondary);
         opacity: 0.4;
         transition: opacity 0.1s ease;
-        cursor: grab;
-    }
-
-    .drag-handle-icon:active {
-        cursor: grabbing;
     }
 </style>

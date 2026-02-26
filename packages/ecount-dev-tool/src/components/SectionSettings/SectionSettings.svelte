@@ -182,7 +182,6 @@
         gap: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
         transition: background-color 0.1s ease;
-        cursor: grab;
         outline: none;
     }
 
@@ -193,10 +192,6 @@
     :global(.settings-item:focus-visible) {
         background-color: var(--color-surface);
         box-shadow: inset 0 0 0 2px var(--color-primary);
-    }
-
-    :global(.settings-item:active) {
-        cursor: grabbing;
     }
 
     :global(.settings-item.disabled) {
