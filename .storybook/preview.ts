@@ -32,6 +32,12 @@ const preview: Preview = {
                 date: /Date$/i,
             },
         },
+        a11y: {
+            config: {},
+            options: {
+                restoreScroll: true,
+            },
+        },
     },
 };
 

@@ -25,6 +25,8 @@
     "license": "MIT",
     "devDependencies": {
         "@eslint/js": "catalog:",
+        "@storybook/addon-a11y": "catalog:",
+        "@storybook/addon-docs": "^10.2.12",
         "@storybook/svelte-vite": "^10.2.11",
         "@sveltejs/vite-plugin-svelte": "catalog:",
         "@testing-library/svelte": "^5.3.1",

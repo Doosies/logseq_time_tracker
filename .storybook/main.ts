@@ -57,6 +57,7 @@ function svelteCompilePlugin(): Plugin {
 
 const config: StorybookConfig = {
     stories: ['../packages/*/src/**/*.stories.ts'],
+    addons: ['@storybook/addon-docs', '@storybook/addon-a11y'],
     framework: {
         name: '@storybook/svelte-vite',
         options: { docgen: false },
