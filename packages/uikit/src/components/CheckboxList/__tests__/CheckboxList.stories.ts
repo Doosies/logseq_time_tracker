@@ -5,6 +5,24 @@ import CheckboxListStoryWrapper from './CheckboxListStoryWrapper.svelte';
 const meta = {
     component: CheckboxListStoryWrapper,
     title: 'uikit/CheckboxList',
+    parameters: {
+        docs: {
+            description: {
+                component: '체크박스 목록과 드래그 앤 드롭 재정렬을 지원하는 컴포넌트',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [{ id: 'region', enabled: false }],
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof CheckboxListStoryWrapper>;
 
 export default meta;

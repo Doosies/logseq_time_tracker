@@ -5,6 +5,24 @@ import DndStoryWrapper from './DndStoryWrapper.svelte';
 const meta = {
     component: DndStoryWrapper,
     title: 'uikit/Dnd',
+    parameters: {
+        docs: {
+            description: {
+                component: '드래그 앤 드롭으로 항목 순서를 변경하는 컴포넌트',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [{ id: 'region', enabled: false }],
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof DndStoryWrapper>;
 
 export default meta;

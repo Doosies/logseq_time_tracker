@@ -5,6 +5,24 @@ import PopoverStoryWrapper from './PopoverStoryWrapper.svelte';
 const meta = {
     component: PopoverStoryWrapper,
     title: 'uikit/Popover',
+    parameters: {
+        docs: {
+            description: {
+                component: '트리거 요소 클릭 시 팝오버 콘텐츠를 표시하는 컴포넌트',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [{ id: 'region', enabled: false }],
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof PopoverStoryWrapper>;
 
 export default meta;

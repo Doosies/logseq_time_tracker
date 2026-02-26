@@ -5,10 +5,18 @@ import TextInput from '../TextInput.svelte';
 const meta = {
     component: TextInput,
     title: 'uikit/TextInput',
+    parameters: {
+        docs: {
+            description: {
+                component: '단일 행 텍스트 입력 필드 컴포넌트',
+            },
+        },
+    },
     args: {
         oninput: fn(),
     },
     argTypes: {
+        oninput: { description: '텍스트 입력 이벤트 핸들러', action: 'input' },
         disabled: { control: 'boolean', description: '비활성화 상태' },
         placeholder: { control: 'text', description: '플레이스홀더 텍스트' },
         value: { control: 'text', description: '입력 값' },

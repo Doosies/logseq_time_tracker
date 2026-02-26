@@ -5,6 +5,13 @@ import ServerManagerStoryWrapper from './ServerManagerStoryWrapper.svelte';
 const meta = {
     component: ServerManagerStoryWrapper,
     title: 'ecount-dev-tool/ServerManager',
+    parameters: {
+        docs: {
+            description: {
+                component: '서버 환경을 전환하는 관리 컴포넌트',
+            },
+        },
+    },
     argTypes: {
         url: { control: 'text', description: '현재 탭 URL (서버 환경 결정)' },
     },

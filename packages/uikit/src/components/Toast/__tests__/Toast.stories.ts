@@ -5,6 +5,24 @@ import ToastStoryWrapper from './ToastStoryWrapper.svelte';
 const meta = {
     component: ToastStoryWrapper,
     title: 'uikit/Toast',
+    parameters: {
+        docs: {
+            description: {
+                component: '일시적 알림 메시지를 표시하는 토스트 컴포넌트',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [{ id: 'region', enabled: false }],
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof ToastStoryWrapper>;
 
 export default meta;

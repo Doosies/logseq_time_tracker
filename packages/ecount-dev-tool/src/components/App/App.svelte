@@ -60,7 +60,7 @@
     });
 </script>
 
-<Card>
+<Card.Root>
     <div class="app-content">
         <SectionSettings sections={SECTION_LIST} />
 
@@ -100,7 +100,7 @@
             </Dnd.Zone>
         {/if}
     </div>
-</Card>
+</Card.Root>
 
 <style>
     .app-content {

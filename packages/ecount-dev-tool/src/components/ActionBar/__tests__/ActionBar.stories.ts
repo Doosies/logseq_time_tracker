@@ -5,6 +5,19 @@ import ActionBar from '../ActionBar.svelte';
 const meta = {
     component: ActionBar,
     title: 'ecount-dev-tool/ActionBar',
+    parameters: {
+        docs: {
+            description: {
+                component: '개발 모드 전환, 서버 변경 등 주요 액션 버튼 모음',
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof ActionBar>;
 
 export default meta;

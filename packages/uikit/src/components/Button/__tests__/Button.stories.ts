@@ -5,10 +5,18 @@ import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 const meta = {
     component: ButtonStoryWrapper,
     title: 'uikit/Button',
+    parameters: {
+        docs: {
+            description: {
+                component: '다양한 스타일 변형과 크기를 지원하는 기본 버튼 컴포넌트',
+            },
+        },
+    },
     args: {
         onclick: fn(),
     },
     argTypes: {
+        onclick: { description: '버튼 클릭 이벤트 핸들러', action: 'clicked' },
         variant: {
             control: 'select',
             options: ['primary', 'secondary', 'accent'],

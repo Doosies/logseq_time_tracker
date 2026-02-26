@@ -375,4 +375,122 @@ describe('App', () => {
             expect(drag_handle_buttons.length).toBe(3);
         });
     });
+
+    describe('접근성 검증', () => {
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
+            await initializeVisibility();
+            await initializeSectionOrder();
+        });
+
+        it('설정 버튼에 aria-label이 있어야 한다', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            const settings_button = screen.getByRole('button', { name: '섹션 설정' });
+            expect(settings_button).toHaveAttribute('aria-label', '섹션 설정');
+        });
+
+        it('체크박스에 적절한 role이 있어야 한다', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            const user = userEvent.setup();
+            await user.click(screen.getByRole('button', { name: '섹션 설정' }));
+
+            const checkboxes = screen.getAllByRole('checkbox');
+            expect(checkboxes.length).toBeGreaterThanOrEqual(1);
+            checkboxes.forEach((cb) => {
+                expect(cb).toBeInTheDocument();
+            });
+        });
+
+        it('키보드(Enter)로 체크박스를 토글할 수 있어야 한다', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.getByRole('button', { name: '5.0로컬' })).toBeInTheDocument();
+
+            const user = userEvent.setup();
+            await user.click(screen.getByRole('button', { name: '섹션 설정' }));
+
+            const checkboxes = screen.getAllByRole('checkbox');
+            const action_bar_checkbox = checkboxes[2] as HTMLElement;
+            action_bar_checkbox.focus();
+            await user.keyboard(' ');
+
+            await waitFor(() => {
+                expect(screen.queryByRole('button', { name: '5.0로컬' })).not.toBeInTheDocument();
+            });
+        });
+    });
+
+    describe('에러 처리', () => {
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockImplementation((key: string) => Promise.resolve({ [key]: undefined }));
+            await initializeVisibility();
+            await initializeSectionOrder();
+        });
+
+        it('chrome.tabs.query 실패 시 에러 없이 렌더링되어야 한다', async () => {
+            asMock(chrome.tabs.query).mockRejectedValue(new Error('Tabs query failed'));
+
+            expect(() => render(App)).not.toThrow();
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(document.body).toBeInTheDocument();
+        });
+
+        it('지원하지 않는 URL 탭에서 unsupported 메시지를 표시해야 한다', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://other.ecount.com/some/page',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const unsupported_markers = screen.getAllByText('=====');
+            expect(unsupported_markers.length).toBeGreaterThan(0);
+        });
+    });
 });

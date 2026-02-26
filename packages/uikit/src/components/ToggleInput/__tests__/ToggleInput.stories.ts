@@ -5,11 +5,20 @@ import ToggleInputStoryWrapper from './ToggleInputStoryWrapper.svelte';
 const meta = {
     component: ToggleInputStoryWrapper,
     title: 'uikit/ToggleInput',
+    parameters: {
+        docs: {
+            description: {
+                component: '토글 버튼으로 텍스트/셀렉트 입력을 전환하는 복합 컴포넌트',
+            },
+        },
+    },
     args: {
         onToggle: fn(),
         onchange: fn(),
     },
     argTypes: {
+        onToggle: { description: '토글 상태 변경 핸들러', action: 'toggled' },
+        onchange: { description: '입력값 변경 핸들러', action: 'changed' },
         isTextMode: { control: 'boolean', description: '텍스트 입력 모드 여부' },
         prefix: { control: 'text', description: '입력 앞에 표시되는 접두사' },
     },

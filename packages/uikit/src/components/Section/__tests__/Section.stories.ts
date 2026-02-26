@@ -5,6 +5,13 @@ import SectionStoryWrapper from './SectionStoryWrapper.svelte';
 const meta = {
     component: SectionStoryWrapper,
     title: 'uikit/Section',
+    parameters: {
+        docs: {
+            description: {
+                component: '제목과 접기/펼치기를 지원하는 섹션 컴포넌트',
+            },
+        },
+    },
     argTypes: {
         title: { control: 'text', description: '섹션 제목' },
         scenario: {

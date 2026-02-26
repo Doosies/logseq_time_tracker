@@ -5,6 +5,13 @@ import CardStoryWrapper from './CardStoryWrapper.svelte';
 const meta = {
     component: CardStoryWrapper,
     title: 'uikit/Card',
+    parameters: {
+        docs: {
+            description: {
+                component: 'Header, Body, Footer로 구성된 컨테이너 카드 컴포넌트',
+            },
+        },
+    },
     argTypes: {
         scenario: {
             control: 'select',

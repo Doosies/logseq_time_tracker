@@ -5,6 +5,13 @@ import ButtonGroupStoryWrapper from './ButtonGroupStoryWrapper.svelte';
 const meta = {
     component: ButtonGroupStoryWrapper,
     title: 'uikit/ButtonGroup',
+    parameters: {
+        docs: {
+            description: {
+                component: '여러 버튼을 그룹으로 묶어 일관된 간격으로 배치하는 컴포넌트',
+            },
+        },
+    },
     argTypes: {
         scenario: {
             control: 'select',

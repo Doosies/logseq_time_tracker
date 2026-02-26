@@ -5,6 +5,19 @@ import QuickLoginSection from '../QuickLoginSection.svelte';
 const meta = {
     component: QuickLoginSection,
     title: 'ecount-dev-tool/QuickLoginSection',
+    parameters: {
+        docs: {
+            description: {
+                component: '저장된 계정으로 빠르게 로그인하는 섹션',
+            },
+        },
+    },
+    argTypes: {
+        scenario: {
+            control: false,
+            description: '테스트 시나리오 설명',
+        },
+    },
 } satisfies Meta<typeof QuickLoginSection>;
 
 export default meta;

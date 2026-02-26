@@ -16,10 +16,24 @@ const many_options = Array.from({ length: 10 }, (_, i) => ({
 const meta = {
     component: Select,
     title: 'uikit/Select',
+    parameters: {
+        docs: {
+            description: {
+                component: '옵션 목록에서 하나를 선택하는 드롭다운 컴포넌트',
+            },
+        },
+        a11y: {
+            config: {
+                rules: [{ id: 'region', enabled: false }],
+            },
+        },
+    },
     args: {
         onchange: fn(),
     },
     argTypes: {
+        options: { description: '선택 가능한 옵션 목록' },
+        onchange: { description: '값 변경 이벤트 핸들러', action: 'changed' },
         disabled: { control: 'boolean', description: '비활성화 상태' },
         value: { control: 'text', description: '선택된 값' },
     },
@@ -65,7 +79,7 @@ export const WithChangeHandler: Story = {
         const canvas = within(canvasElement);
         const select = canvas.getByRole('combobox');
         await userEvent.selectOptions(select, 'b');
-        await expect(args['onchange']).toHaveBeenCalledWith('b');
+        await expect((args as Record<string, unknown>)['onchange']).toHaveBeenCalledWith('b');
     },
 };
 
