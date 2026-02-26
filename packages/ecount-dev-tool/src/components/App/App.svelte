@@ -132,8 +132,7 @@
         margin-top: var(--space-sm);
     }
 
-    /* bar variant 호버 시 section-wrapper 전체 hover로 활성화 */
-    :global(.section-wrapper:hover) :global([data-drag-handle]) {
+    :global(.section-wrapper) :global([data-drag-handle]:hover) {
         opacity: 0.7;
         background-color: var(--color-surface);
         color: var(--color-primary);
