@@ -9,8 +9,7 @@ const base_button = style({
     borderRadius: theme_vars.radius.sm,
     cursor: 'pointer',
     fontWeight: theme_vars.font.weight.bold,
-    transition:
-        'filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease',
+    transition: 'filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease',
     textAlign: 'center',
     selectors: {
         '&:hover:not(:disabled)': {

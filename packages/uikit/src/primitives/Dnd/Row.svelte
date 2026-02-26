@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Row as PrimitiveRow } from '../../primitives/Dnd';
     import type { Snippet } from 'svelte';
     import type { HTMLAttributes } from 'svelte/elements';
 
@@ -9,16 +8,8 @@
     }
 
     let { children, class: extraClass, ...restProps }: Props = $props();
-    const class_name = $derived(`dnd-row ${extraClass ?? ''}`);
 </script>
 
-<PrimitiveRow class={class_name} {...restProps}>
+<div class={extraClass} {...restProps}>
     {@render children()}
-</PrimitiveRow>
-
-<style>
-    :global(.dnd-row) {
-        outline: none;
-        user-select: none;
-    }
-</style>
+</div>

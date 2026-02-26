@@ -13,7 +13,7 @@
     const class_name = $derived([toggle_icon, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveToggle class={class_name} {...(label != null ? { label } : {})}>
+<PrimitiveToggle class={class_name} {...label != null ? { label } : {}}>
     {#if children}
         {@render children()}
     {/if}
