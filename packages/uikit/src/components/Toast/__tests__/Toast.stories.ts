@@ -17,12 +17,6 @@ const meta = {
             },
         },
     },
-    argTypes: {
-        scenario: {
-            control: false,
-            description: '테스트 시나리오 설명',
-        },
-    },
 } satisfies Meta<typeof ToastStoryWrapper>;
 
 export default meta;
