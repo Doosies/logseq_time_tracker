@@ -48,4 +48,19 @@ export const light_theme = createTheme(theme_vars, {
         sm: '6px',
         md: '8px',
     },
+    transition: {
+        fast: '0.1s ease',
+        normal: '0.15s ease',
+        slow: '0.3s ease',
+    },
+    z_index: {
+        base: '1',
+        above: '2',
+        popover: '10',
+    },
+    shadow: {
+        sm: '0 1px 3px rgba(0, 0, 0, 0.08)',
+        md: '0 4px 12px rgba(0, 0, 0, 0.12)',
+        lg: '0 8px 24px rgba(0, 0, 0, 0.16)',
+    },
 });

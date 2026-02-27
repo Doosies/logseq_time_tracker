@@ -11,7 +11,7 @@ export const popover_trigger = style({
     color: theme_vars.color.text_secondary,
     padding: theme_vars.space.xs,
     borderRadius: theme_vars.radius.sm,
-    transition: 'color 0.15s ease, background-color 0.15s ease',
+    transition: `color ${theme_vars.transition.normal}, background-color ${theme_vars.transition.normal}`,
     opacity: '0.6',
     selectors: {
         '&:hover': {
@@ -30,10 +30,10 @@ export const popover_content = style({
     position: 'absolute',
     top: '100%',
     right: '0',
-    zIndex: 10,
+    zIndex: theme_vars.z_index.popover,
     minWidth: '200px',
     backgroundColor: theme_vars.color.background,
     border: `1px solid ${theme_vars.color.border}`,
     borderRadius: theme_vars.radius.md,
-    boxShadow: '0 4px 12px rgba(0, 0, 0, 0.12)',
+    boxShadow: theme_vars.shadow.md,
 });

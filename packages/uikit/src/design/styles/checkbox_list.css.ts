@@ -10,7 +10,7 @@ export const checkbox_list_item = style({
     alignItems: 'center',
     gap: theme_vars.space.sm,
     padding: `${theme_vars.space.sm} ${theme_vars.space.md}`,
-    transition: 'background-color 0.1s ease',
+    transition: `background-color ${theme_vars.transition.fast}`,
     outline: 'none',
     selectors: {
         '&:hover': {

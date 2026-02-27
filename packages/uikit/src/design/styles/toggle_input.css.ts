@@ -15,7 +15,7 @@ export const toggle_icon = style({
     fontSize: theme_vars.font.size.sm,
     marginLeft: theme_vars.space.xs,
     color: theme_vars.color.text_secondary,
-    transition: 'color 0.15s ease, transform 0.1s ease',
+    transition: `color ${theme_vars.transition.normal}, transform ${theme_vars.transition.fast}`,
     ':hover': {
         color: theme_vars.color.primary,
         transform: 'scale(1.15)',

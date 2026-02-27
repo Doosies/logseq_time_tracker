@@ -9,7 +9,7 @@ export const select_container = style({
 
 export const select_element = style({
     width: '100%',
-    padding: '4px 6px',
+    padding: `${theme_vars.space.sm} 6px`,
     border: `1px solid ${theme_vars.color.border}`,
     borderRadius: theme_vars.radius.sm,
     boxSizing: 'border-box',

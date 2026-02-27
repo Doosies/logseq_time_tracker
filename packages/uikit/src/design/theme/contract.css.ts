@@ -47,4 +47,19 @@ export const theme_vars = createGlobalThemeContract({
         sm: 'radius-sm',
         md: 'radius-md',
     },
+    transition: {
+        fast: 'transition-fast',
+        normal: 'transition-normal',
+        slow: 'transition-slow',
+    },
+    z_index: {
+        base: 'z-index-base',
+        above: 'z-index-above',
+        popover: 'z-index-popover',
+    },
+    shadow: {
+        sm: 'shadow-sm',
+        md: 'shadow-md',
+        lg: 'shadow-lg',
+    },
 });

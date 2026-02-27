@@ -126,7 +126,7 @@
 
     .server-label {
         min-width: 28px;
-        padding: 2px 6px;
+        padding: var(--space-xs) var(--space-sm);
         border-radius: var(--radius-sm);
         background-color: var(--color-border);
         color: var(--color-text-secondary);

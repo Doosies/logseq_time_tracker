@@ -4,17 +4,17 @@ import { theme_vars } from '../theme/contract.css';
 const base_button = style({
     display: 'inline-block',
     padding: '7px 10px',
-    margin: '4px 0',
+    margin: `${theme_vars.space.sm} 0`,
     border: 'none',
     borderRadius: theme_vars.radius.sm,
     cursor: 'pointer',
     fontWeight: theme_vars.font.weight.bold,
-    transition: 'filter 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease',
+    transition: `filter ${theme_vars.transition.normal}, box-shadow ${theme_vars.transition.normal}, transform ${theme_vars.transition.fast}`,
     textAlign: 'center',
     selectors: {
         '&:hover:not(:disabled)': {
             filter: 'brightness(1.2)',
-            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.25)',
+            boxShadow: theme_vars.shadow.sm,
         },
         '&:active:not(:disabled)': {
             filter: 'brightness(0.85)',
