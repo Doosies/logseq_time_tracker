@@ -15,6 +15,7 @@
 
 ### Changed
 
+- QuickLoginSection: 계정 편집 폼 버튼 순서 "수정 → 취소"에서 "취소 → 수정"으로 변경
 - DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` (via uikit)
 - Quick login add-form position: above buttons → below buttons
 - Drag handle UI: restored bar-style with grip dots
@@ -24,6 +25,7 @@
 
 ### Fixed
 
+- QuickLoginSection: 편집 모드에서 팝업 닫힘 시 미저장 변경사항이 스토리지에 유지되던 버그 수정 (batch mode 도입)
 - 섹션 설정 팝업이 App 영역 클릭 시 닫히지 않던 버그 수정 (`SectionSettings`)
 - Drag handle hover scope (only bar, not entire card content)
 - Drag feedback color (fallback values for theme scope issue)

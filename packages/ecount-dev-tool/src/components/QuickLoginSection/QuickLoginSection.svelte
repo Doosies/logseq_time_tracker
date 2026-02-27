@@ -10,10 +10,12 @@
         updateAccount,
         removeAccount,
         reorderAccounts,
-        restoreAccounts,
         getAccountsSnapshot,
         isDuplicate,
         getAccountKey,
+        beginBatch,
+        commitBatch,
+        discardBatch,
     } from '#stores/accounts.svelte';
     import { isActiveAccount, setActiveAccount } from '#stores/active_account.svelte';
 
@@ -161,24 +163,25 @@
         is_editing = !is_editing;
         if (is_editing) {
             accounts_snapshot = getAccountsSnapshot();
+            beginBatch();
             syncDndItems();
         } else {
             resetForm();
         }
     }
 
-    async function handleCancel(): Promise<void> {
-        const ok = await restoreAccounts(accounts_snapshot);
-        if (ok) {
-            syncDndItems();
-        } else {
-            showError('복원에 실패했습니다.');
-        }
+    function handleCancel(): void {
+        discardBatch(accounts_snapshot);
+        syncDndItems();
         is_editing = false;
         resetForm();
     }
 
-    function handleApply(): void {
+    async function handleApply(): Promise<void> {
+        const ok = await commitBatch();
+        if (!ok) {
+            showError('저장에 실패했습니다.');
+        }
         is_editing = false;
         resetForm();
     }
@@ -271,6 +274,9 @@
                 <TextInput bind:value={new_company} placeholder="회사코드" />
                 <TextInput bind:value={new_id} placeholder="아이디" />
                 <TextInput bind:value={new_password} placeholder="비밀번호" />
+                {#if editing_index !== null}
+                    <Button variant="secondary" size="sm" onclick={resetForm}>취소</Button>
+                {/if}
                 <Button
                     variant="primary"
                     size="sm"
@@ -279,9 +285,6 @@
                 >
                     {editing_index !== null ? '수정' : '추가'}
                 </Button>
-                {#if editing_index !== null}
-                    <Button variant="secondary" size="sm" onclick={resetForm}>취소</Button>
-                {/if}
             </div>
             {#if error_message}
                 <p class="error-msg">{error_message}</p>

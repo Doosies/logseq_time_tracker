@@ -5,6 +5,7 @@ const STORAGE_KEY = 'login_accounts';
 
 let accounts = $state<LoginAccount[]>([]);
 let is_loaded = $state(false);
+let batch_mode = false;
 
 function getDefaultAccounts(): LoginAccount[] {
     try {
@@ -58,6 +59,7 @@ async function syncToStorage(): Promise<void> {
 async function withSync(updater: () => void, error_label: string): Promise<boolean> {
     const prev = accounts;
     updater();
+    if (batch_mode) return true;
     try {
         await syncToStorage();
         return true;
@@ -154,6 +156,28 @@ export async function restoreAccounts(snapshot: LoginAccount[]): Promise<boolean
 
 export function getAccountsSnapshot(): LoginAccount[] {
     return $state.snapshot(accounts);
+}
+
+export function beginBatch(): void {
+    batch_mode = true;
+}
+
+export async function commitBatch(): Promise<boolean> {
+    batch_mode = false;
+    try {
+        await syncToStorage();
+        return true;
+    } catch (e) {
+        console.error('계정 일괄 저장 실패:', e);
+        return false;
+    }
+}
+
+export function discardBatch(snapshot: LoginAccount[]): void {
+    batch_mode = false;
+    if (isValidAccountArray(snapshot)) {
+        accounts = deduplicateAccounts(snapshot);
+    }
 }
 
 export { getAccountKey };

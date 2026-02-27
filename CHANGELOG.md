@@ -11,8 +11,13 @@
 
 ## [0.3.1] - 2026-02-27
 
+### Changed
+
+- QuickLoginSection: 계정 편집 폼 버튼 순서 변경 (취소 → 수정) (ecount-dev-tool)
+
 ### Fixed
 
+- QuickLoginSection: 편집 모드에서 팝업 닫힘 시 미저장 변경사항이 유지되던 버그 수정 (ecount-dev-tool)
 - QuickLoginSection: 로그인 후 섹션 헤더가 항상 파란색으로 표시되던 문제 수정 (ecount-dev-tool)
 - Sortable: DnD 시 빠른로그인 섹션 버벅거림 수정 (uikit)
 - Storybook stories: Popover, Toast, ActionBar에서 존재하지 않는 scenario argTypes 제거 (uikit)
