@@ -1,6 +1,6 @@
 ---
 name: project-conventions
-description: 프로젝트 전체 컨벤션 - AGENTS.md 상세 버전
+description: "Project-wide coding conventions and style guide. Use when checking naming rules (snake_case variables, camelCase functions, PascalCase components), file naming patterns (.svelte, .css.ts, .test.ts), import/export ordering, Svelte 5 component structure, Vanilla Extract CSS naming, Git commit format, or environment variable setup. Detailed reference for AGENTS.md."
 ---
 
 # 프로젝트 컨벤션

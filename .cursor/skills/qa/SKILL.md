@@ -1,6 +1,6 @@
 ---
 name: qa
-description: Testing and quality assurance skill. Use when writing tests, performing code reviews, checking coverage, or verifying Storybook stories.
+description: "Testing and quality assurance skill using Vitest and Testing Library. Use when writing unit/integration tests, testing Svelte 5 components, creating Storybook stories with play functions, performing code reviews, checking coverage (80%+ target), testing Chrome extensions, or verifying regression safety."
 ---
 
 # QA Skill

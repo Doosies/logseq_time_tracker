@@ -1,6 +1,6 @@
 ---
 name: docs-agent
-description: Code and project documentation skill. Use when writing JSDoc/TSDoc, generating API docs, updating README/CHANGELOG, or detecting stale documentation.
+description: "Code and project documentation skill. Use when writing JSDoc/TSDoc for public APIs, generating OpenAPI/Swagger docs, updating README.md or CHANGELOG.md, detecting stale documentation, or documenting complex algorithms. Mandatory targets: public APIs, complex algorithms, configuration files."
 ---
 
 # Documentation Skill

@@ -1,6 +1,6 @@
 ---
 name: developer
-description: Code implementation and refactoring skill. Use when implementing features from design docs, refactoring code, writing Svelte/TypeScript code, or developing MCP servers.
+description: "Code implementation and refactoring skill for Svelte 5 / TypeScript monorepo (pnpm workspace + Turbo). Use when implementing features, refactoring code, writing Svelte 5 Runes components, Vanilla Extract styles, headless component patterns, MCP server development, managing dependencies (pnpm catalog), or optimizing tsconfig/eslint/vite configs."
 ---
 
 # Developer Skill

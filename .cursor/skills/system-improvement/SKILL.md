@@ -1,6 +1,6 @@
 ---
 name: system-improvement
-description: Agent system performance analysis and optimization skill. Use when analyzing metrics, detecting bottlenecks, running A/B tests, optimizing workflows, or generating improvement rules.
+description: "Agent system performance analysis and optimization skill. Use when analyzing cycle metrics from .cursor/metrics/cycles/, detecting workflow bottlenecks, running A/B tests for rule changes, optimizing agent rules and skills, generating daily/weekly performance summaries, or monitoring performance degradation trends."
 ---
 
 # System Improvement Skill

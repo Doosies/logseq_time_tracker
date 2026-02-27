@@ -1,6 +1,6 @@
 ---
 name: git-workflow
-description: Git commit and PR workflow skill. Use when generating commit messages, creating PR descriptions, analyzing code changes, or recommending reviewers.
+description: "Git commit and PR workflow skill using Conventional Commits format. Use when generating commit messages (feat/fix/refactor/chore), creating PR descriptions, splitting changes into logical commits, analyzing git diffs, or recommending reviewers. Supports Korean PR descriptions with English commit messages."
 ---
 
 # Git Workflow Skill

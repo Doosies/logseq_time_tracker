@@ -1,6 +1,6 @@
 ---
 name: security
-description: Security verification and vulnerability detection skill. Use when scanning code for vulnerabilities, detecting sensitive data, validating inputs, or defending against prompt injection.
+description: "Security verification and vulnerability detection skill. Use when scanning for SQL Injection, XSS, CSRF, or prototype pollution vulnerabilities, detecting hardcoded API keys/passwords/tokens, validating user inputs, defending against prompt injection, checking dependency vulnerabilities (npm audit), or reviewing API authentication/authorization."
 ---
 
 # Security Skill

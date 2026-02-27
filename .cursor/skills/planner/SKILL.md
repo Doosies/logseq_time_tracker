@@ -1,6 +1,6 @@
 ---
 name: planner
-description: Requirements analysis and system architecture design skill. Use when analyzing requirements, designing APIs, planning architecture, or selecting tech stacks.
+description: "Requirements analysis and system architecture design skill. Use when analyzing user requirements for new features, designing RESTful APIs, planning system architecture, selecting tech stacks, creating data models, or defining migration checklists. Resource-oriented URL design principles."
 ---
 
 # Planner Skill

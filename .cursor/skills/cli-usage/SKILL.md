@@ -1,6 +1,6 @@
 ---
 name: cli-usage
-description: CLI/터미널 명령어 실행 가이드. 에이전트가 Shell 도구로 pnpm, git, turbo 등 CLI 명령어를 실행할 때 참조. 패키지 매니저 옵션, 명령어 체이닝, 에러 처리 등 포함.
+description: "CLI/terminal command guide for pnpm monorepo on Windows/PowerShell. Use when running pnpm install/add (--no-offline required), pnpm build/test/lint/type-check, turbo commands, git operations, or troubleshooting ERR_PNPM_NO_OFFLINE_META/ENOENT errors. Includes command chaining rules and verification order."
 ---
 
 # CLI 사용 가이드
