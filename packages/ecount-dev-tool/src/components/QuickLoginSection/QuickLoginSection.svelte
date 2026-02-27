@@ -46,23 +46,30 @@
 
     const CLICK_THRESHOLD_PX = 5;
     const CLICK_TIME_LIMIT_MS = 300;
-    let pointer_start: { x: number; y: number; time: number } | null = null;
 
-    function handleCellPointerDown(event: PointerEvent): void {
+    function handleCellPointerDown(event: PointerEvent, index: number, account: LoginAccount): void {
         const target = event.target as HTMLElement;
         if (target.closest('.remove-btn')) return;
-        pointer_start = { x: event.clientX, y: event.clientY, time: Date.now() };
-    }
 
-    function handleCellPointerUp(event: PointerEvent, index: number, account: LoginAccount): void {
-        if (!pointer_start) return;
-        const dx = Math.abs(event.clientX - pointer_start.x);
-        const dy = Math.abs(event.clientY - pointer_start.y);
-        const dt = Date.now() - pointer_start.time;
-        pointer_start = null;
-        if (dx < CLICK_THRESHOLD_PX && dy < CLICK_THRESHOLD_PX && dt < CLICK_TIME_LIMIT_MS) {
-            handleAccountCellClick(index, account);
+        const start_x = event.clientX;
+        const start_y = event.clientY;
+        const start_time = Date.now();
+        const pointer_id = event.pointerId;
+
+        function onPointerUp(e: PointerEvent): void {
+            if (e.pointerId !== pointer_id) return;
+            document.removeEventListener('pointerup', onPointerUp, true);
+
+            const dx = Math.abs(e.clientX - start_x);
+            const dy = Math.abs(e.clientY - start_y);
+            const dt = Date.now() - start_time;
+
+            if (dx < CLICK_THRESHOLD_PX && dy < CLICK_THRESHOLD_PX && dt < CLICK_TIME_LIMIT_MS) {
+                handleAccountCellClick(index, account);
+            }
         }
+
+        document.addEventListener('pointerup', onPointerUp, true);
     }
 
     const can_add = $derived(
@@ -230,8 +237,7 @@
                                     style="animation-delay: {(i % 5) * -0.15}s"
                                     role="button"
                                     tabindex="0"
-                                    onpointerdown={handleCellPointerDown}
-                                    onpointerup={(e) => handleCellPointerUp(e, i, item.account)}
+                                    onpointerdown={(e) => handleCellPointerDown(e, i, item.account)}
                                     onkeydown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
                                             e.preventDefault();
