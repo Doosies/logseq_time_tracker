@@ -6,7 +6,6 @@ export * as Section from './Section';
 export { ButtonGroup } from './ButtonGroup';
 export * as Card from './Card';
 export * as Dnd from './Dnd';
-export type { DndEvent } from './Dnd';
 export * as Popover from './Popover';
 export * as Toast from './Toast';
 export * as CheckboxList from './CheckboxList';

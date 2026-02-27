@@ -1,6 +1,5 @@
 <script lang="ts">
     import * as CheckboxList from '../';
-    import type { DndEvent } from 'svelte-dnd-action';
 
     interface ListItem {
         id: string;
@@ -16,12 +15,8 @@
 
     const visible_count = $derived(items.filter((i) => i.visible).length);
 
-    function handleConsider(e: CustomEvent<DndEvent<ListItem>>): void {
-        items = e.detail.items;
-    }
-
-    function handleFinalize(e: CustomEvent<DndEvent<ListItem>>): void {
-        items = e.detail.items;
+    function handleReorder(new_items: ListItem[]): void {
+        items = new_items;
     }
 
     function handleToggle(id: string): void {
@@ -29,11 +24,16 @@
     }
 </script>
 
-<CheckboxList.Root {items} onconsider={handleConsider} onfinalize={handleFinalize}>
-    {#each items as item (item.id)}
+<CheckboxList.Root {items} onreorder={handleReorder}>
+    {#snippet item({ item, handleAttach })}
         {@const is_last_visible = item.visible && visible_count <= 1}
-        <CheckboxList.Item checked={item.visible} disabled={is_last_visible} ontoggle={() => handleToggle(item.id)}>
+        <CheckboxList.Item
+            {handleAttach}
+            checked={item.visible}
+            disabled={is_last_visible}
+            ontoggle={() => handleToggle(item.id)}
+        >
             {item.label}
         </CheckboxList.Item>
-    {/each}
+    {/snippet}
 </CheckboxList.Root>

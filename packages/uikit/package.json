@@ -10,7 +10,7 @@
     "scripts": {
         "dev": "vite dev",
         "build": "vite build",
-        "type-check": "tsc --noEmit",
+        "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
@@ -26,6 +26,8 @@
     ],
     "license": "MIT",
     "dependencies": {
+        "@dnd-kit/helpers": "catalog:",
+        "@dnd-kit/svelte": "catalog:",
         "@vanilla-extract/css": "catalog:"
     },
     "devDependencies": {
@@ -41,14 +43,12 @@
         "jsdom": "catalog:",
         "prettier": "catalog:",
         "svelte": "catalog:",
-        "svelte-dnd-action": "catalog:",
         "typescript": "catalog:",
         "typescript-eslint": "catalog:",
         "vite": "catalog:",
         "vitest": "catalog:"
     },
     "peerDependencies": {
-        "svelte": "catalog:",
-        "svelte-dnd-action": "catalog:"
+        "svelte": "catalog:"
     }
 }

@@ -1,6 +1,5 @@
 <script lang="ts">
     import * as Dnd from '../';
-    import type { DndEvent } from 'svelte-dnd-action';
 
     interface DndItem {
         id: string;
@@ -13,20 +12,20 @@
         { id: '3', label: 'Row 3' },
     ]);
 
-    function handleConsider(e: CustomEvent<DndEvent<DndItem>>): void {
-        items = e.detail.items;
-    }
-
-    function handleFinalize(e: CustomEvent<DndEvent<DndItem>>): void {
-        items = e.detail.items;
+    function handleReorder(new_items: DndItem[]): void {
+        items = new_items;
     }
 </script>
 
-<Dnd.Zone {items} onconsider={handleConsider} onfinalize={handleFinalize}>
-    {#each items as item (item.id)}
-        <Dnd.Row>
-            <Dnd.Handle variant="icon" />
-            <span>{item.label}</span>
-        </Dnd.Row>
+<Dnd.Provider {items} onreorder={handleReorder}>
+    {#each items as item, index (item.id)}
+        <Dnd.Sortable id={item.id} {index}>
+            {#snippet children({ handleAttach })}
+                <div style="display:flex;align-items:center;gap:0.5em;">
+                    <span data-drag-handle aria-label="드래그하여 순서 변경" {@attach handleAttach}> ⠿ </span>
+                    <span>{item.label}</span>
+                </div>
+            {/snippet}
+        </Dnd.Sortable>
     {/each}
-</Dnd.Zone>
+</Dnd.Provider>

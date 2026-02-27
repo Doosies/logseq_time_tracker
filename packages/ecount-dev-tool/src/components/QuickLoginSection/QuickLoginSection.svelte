@@ -1,10 +1,23 @@
 <script lang="ts">
     import type { LoginAccount } from '#types/server';
-    import { Section, Button, TextInput } from '@personal/uikit';
+    import { Section, Button, TextInput, Dnd } from '@personal/uikit';
     import { executeScript } from '#services/tab_service';
     import { inputLogin } from '#services/page_actions';
     import { getTabState } from '#stores/current_tab.svelte';
-    import { getAccounts, addAccount, removeAccount, isDuplicate } from '#stores/accounts.svelte';
+    import {
+        getAccounts,
+        addAccount,
+        removeAccount,
+        reorderAccounts,
+        isDuplicate,
+        getAccountKey,
+    } from '#stores/accounts.svelte';
+    import { isActiveAccount, setActiveAccount, getActiveAccountKey } from '#stores/active_account.svelte';
+
+    interface DndAccountItem {
+        id: string;
+        account: LoginAccount;
+    }
 
     let is_editing = $state(false);
     let is_submitting = $state(false);
@@ -16,6 +29,16 @@
 
     const accounts = $derived(getAccounts());
     const tab = $derived(getTabState());
+    const has_active = $derived(getActiveAccountKey() !== null);
+
+    let dnd_items = $state<DndAccountItem[]>([]);
+
+    function syncDndItems(): void {
+        dnd_items = getAccounts().map((a) => ({
+            id: getAccountKey(a),
+            account: a,
+        }));
+    }
 
     const can_add = $derived(
         !is_submitting && new_company.trim() !== '' && new_id.trim() !== '' && new_password.trim() !== '',
@@ -25,6 +48,7 @@
         if (is_editing) return;
         const key = `${account.company}§${account.id}`;
         executeScript(tab.tab_id, inputLogin as (...args: never[]) => void, [key, account.password]);
+        setActiveAccount(account);
     }
 
     function showError(message: string): void {
@@ -52,6 +76,7 @@
                 new_company = '';
                 new_id = '';
                 new_password = '';
+                syncDndItems();
             } else {
                 showError('저장에 실패했습니다.');
             }
@@ -62,14 +87,23 @@
 
     async function handleRemove(index: number): Promise<void> {
         await removeAccount(index);
+        syncDndItems();
+    }
+
+    async function handleDndReorder(new_items: DndAccountItem[]): Promise<void> {
+        dnd_items = new_items;
+        await reorderAccounts(new_items.map((i) => i.account));
     }
 
     function toggleEdit(): void {
         is_editing = !is_editing;
+        if (is_editing) {
+            syncDndItems();
+        }
     }
 </script>
 
-<Section.Root>
+<Section.Root class={has_active ? 'section-active' : ''}>
     <Section.Header>
         <Section.Title>빠른 로그인</Section.Title>
         <Section.Action>
@@ -79,6 +113,56 @@
         </Section.Action>
     </Section.Header>
     <Section.Content>
+        <div class="account-scroll {is_editing ? 'editing' : ''}">
+            {#if accounts.length === 0 && !is_editing}
+                <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
+            {/if}
+
+            {#if is_editing}
+                <Dnd.Provider items={dnd_items} onreorder={handleDndReorder} class="account-grid editing">
+                    {#each dnd_items as item, i (item.id)}
+                        <Dnd.Sortable id={item.id} index={i}>
+                            {#snippet children({ handleAttach })}
+                                <div class="account-cell-wrap jiggle" style="animation-delay: {(i % 5) * -0.15}s">
+                                    <span
+                                        data-drag-handle
+                                        aria-label="드래그하여 계정 순서 변경"
+                                        {@attach handleAttach}
+                                    >
+                                        ⠿
+                                    </span>
+                                    <button
+                                        class="remove-btn"
+                                        onclick={(e) => {
+                                            e.stopPropagation();
+                                            handleRemove(i);
+                                        }}
+                                    >
+                                        &times;
+                                    </button>
+                                    <span class="account-code">{item.account.company}</span>
+                                    <span class="account-name">{item.account.id}</span>
+                                </div>
+                            {/snippet}
+                        </Dnd.Sortable>
+                    {/each}
+                </Dnd.Provider>
+            {:else}
+                <div class="account-grid">
+                    {#each accounts as account (getAccountKey(account))}
+                        <Button
+                            variant="primary"
+                            class="account-cell {isActiveAccount(account) ? 'active' : ''}"
+                            onclick={() => handleLogin(account)}
+                        >
+                            <span class="account-code">{account.company}</span>
+                            <span class="account-name">{account.id}</span>
+                        </Button>
+                    {/each}
+                </div>
+            {/if}
+        </div>
+
         {#if is_editing}
             <div class="add-form">
                 <TextInput bind:value={new_company} placeholder="회사코드" />
@@ -90,35 +174,6 @@
                 <p class="error-msg">{error_message}</p>
             {/if}
         {/if}
-
-        <div class="account-scroll">
-            {#if accounts.length === 0 && !is_editing}
-                <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
-            {/if}
-            <div class="account-grid">
-                {#each accounts as account, i (i)}
-                    <Button
-                        variant="primary"
-                        class="account-cell {is_editing ? 'editing' : ''}"
-                        onclick={() => handleLogin(account)}
-                    >
-                        {#if is_editing}
-                            <button
-                                class="remove-btn"
-                                onclick={(e) => {
-                                    e.stopPropagation();
-                                    handleRemove(i);
-                                }}
-                            >
-                                &times;
-                            </button>
-                        {/if}
-                        <span class="account-code">{account.company}</span>
-                        <span class="account-name">{account.id}</span>
-                    </Button>
-                {/each}
-            </div>
-        </div>
     </Section.Content>
 </Section.Root>
 
@@ -133,8 +188,8 @@
         cursor: pointer;
         padding: var(--space-xs) var(--space-sm);
         transition:
-            background-color 0.15s ease,
-            color 0.15s ease;
+            background-color var(--transition-normal),
+            color var(--transition-normal);
     }
 
     .edit-toggle:hover {
@@ -153,6 +208,13 @@
         scrollbar-gutter: stable;
         scrollbar-width: thin;
         scrollbar-color: var(--color-border) transparent;
+        contain: content;
+    }
+
+    .account-scroll.editing {
+        max-height: none;
+        overflow: visible;
+        padding: var(--space-sm);
     }
 
     .empty-msg {
@@ -162,7 +224,9 @@
         padding: var(--space-lg) 0;
     }
 
-    .account-grid {
+    /* --- Grid (shared normal + edit) --- */
+
+    :global(.account-grid) {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(4.5em, 1fr));
         grid-auto-rows: 3.5em;
@@ -182,40 +246,10 @@
         margin: 0;
     }
 
-    .account-grid :global(.account-cell.editing) {
-        cursor: default;
-        opacity: 0.85;
-    }
-
-    .remove-btn {
-        position: absolute;
-        top: 2px;
-        right: 2px;
-        width: 16px;
-        height: 16px;
-        border-radius: 50%;
-        border: none;
-        background-color: var(--color-error);
-        color: #fff;
-        font-size: 10px;
-        line-height: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        padding: 0;
-        transition:
-            transform 0.1s ease,
-            opacity 0.15s ease;
-    }
-
-    .remove-btn:hover {
-        opacity: 0.85;
-        transform: scale(1.2);
-    }
-
-    .remove-btn:active {
-        transform: scale(0.9);
+    .account-grid :global(.account-cell.active) {
+        outline: 2px solid var(--color-primary);
+        outline-offset: -2px;
+        box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary) 25%, transparent);
     }
 
     .account-code {
@@ -234,10 +268,119 @@
         word-break: break-word;
     }
 
+    /* --- Edit mode: jiggle cells --- */
+
+    :global(.account-grid.editing) :global(.dnd-sortable) {
+        height: 100%;
+    }
+
+    :global(.account-cell-wrap) {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-width: 0;
+        height: 100%;
+        padding: 0 var(--space-sm);
+        margin: 0;
+        background-color: var(--color-primary);
+        color: var(--color-background);
+        border-radius: var(--radius-md);
+        cursor: grab;
+        user-select: none;
+    }
+
+    :global(.account-cell-wrap:active) {
+        cursor: grabbing;
+    }
+
+    @keyframes jiggle {
+        0% {
+            transform: rotate(-1.5deg);
+        }
+        25% {
+            transform: rotate(1deg);
+        }
+        50% {
+            transform: rotate(-1deg);
+        }
+        75% {
+            transform: rotate(1.5deg);
+        }
+        100% {
+            transform: rotate(-1.5deg);
+        }
+    }
+
+    :global(.jiggle) {
+        animation: jiggle 0.4s ease-in-out infinite;
+    }
+
+    :global(.account-cell-wrap[data-dragging]) {
+        animation: none;
+    }
+
+    :global(.account-cell-wrap) :global([data-drag-handle]) {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: grab;
+        opacity: 0;
+        z-index: var(--z-index-above);
+        font-size: 0;
+    }
+
+    :global(.account-cell-wrap) :global([data-drag-handle]:active) {
+        cursor: grabbing;
+    }
+
+    .remove-btn {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        border: none;
+        background-color: var(--color-error);
+        color: var(--color-background);
+        font-size: 10px;
+        line-height: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        padding: 0;
+        z-index: var(--z-index-base);
+        transition:
+            transform var(--transition-fast),
+            opacity var(--transition-normal);
+    }
+
+    .remove-btn:hover {
+        opacity: 0.85;
+        transform: scale(1.2);
+    }
+
+    .remove-btn:active {
+        transform: scale(0.9);
+    }
+
+    /* --- Active section header --- */
+
+    :global(.section-active) :global([data-section-header]) {
+        color: var(--color-primary);
+    }
+
+    /* --- Common --- */
+
     .add-form {
         display: flex;
         gap: var(--space-xs);
-        margin-bottom: var(--space-sm);
+        margin-top: var(--space-sm);
         align-items: center;
         width: 100%;
     }

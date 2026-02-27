@@ -1,6 +1,5 @@
 <script lang="ts">
     import { Popover, CheckboxList } from '@personal/uikit';
-    import type { DndEvent } from '@personal/uikit';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
     import { getSectionOrder, setSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
 
@@ -40,13 +39,9 @@
         }
     }
 
-    function handleConsider(e: CustomEvent<DndEvent<SectionItem>>): void {
-        dnd_items = e.detail.items;
-    }
-
-    async function handleFinalize(e: CustomEvent<DndEvent<SectionItem>>): Promise<void> {
-        dnd_items = e.detail.items;
-        const new_order = dnd_items.map((item) => item.id);
+    async function handleReorder(new_items: SectionItem[]): Promise<void> {
+        dnd_items = new_items;
+        const new_order = new_items.map((item) => item.id);
         await setSectionOrder(new_order);
     }
 
@@ -74,17 +69,12 @@
     </Popover.Trigger>
     <Popover.Content role="listbox" label="섹션 순서 및 표시 설정">
         <div class="panel-title">섹션 설정</div>
-        <CheckboxList.Root
-            items={dnd_items}
-            type="settings"
-            onconsider={handleConsider}
-            onfinalize={handleFinalize}
-            class="settings-list"
-        >
-            {#each dnd_items as section (section.id)}
+        <CheckboxList.Root items={dnd_items} onreorder={handleReorder} class="settings-list">
+            {#snippet item({ item: section, handleAttach })}
                 {@const visible = isSectionVisible(section.id)}
                 {@const is_last_visible = visible && visible_count <= 1}
                 <CheckboxList.Item
+                    {handleAttach}
                     checked={visible}
                     disabled={is_last_visible}
                     ontoggle={() => handleItemToggle(section.id)}
@@ -93,7 +83,7 @@
                 >
                     <span class="item-label">{section.label}</span>
                 </CheckboxList.Item>
-            {/each}
+            {/snippet}
         </CheckboxList.Root>
     </Popover.Content>
 </Popover.Root>
@@ -123,7 +113,7 @@
         align-items: center;
         gap: var(--space-sm);
         padding: var(--space-sm) var(--space-md);
-        transition: background-color 0.1s ease;
+        transition: background-color var(--transition-fast);
         outline: none;
     }
 

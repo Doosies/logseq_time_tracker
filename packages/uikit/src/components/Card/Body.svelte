@@ -10,6 +10,6 @@
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<PrimitiveBody class={extra_class}>
+<PrimitiveBody class={extra_class ?? ''}>
     {@render children()}
 </PrimitiveBody>

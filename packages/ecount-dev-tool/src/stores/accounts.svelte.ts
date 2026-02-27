@@ -119,3 +119,13 @@ export async function removeAccount(index: number): Promise<boolean> {
         accounts = accounts.filter((_, i) => i !== index);
     }, '계정 제거 실패:');
 }
+
+export async function reorderAccounts(new_list: LoginAccount[]): Promise<boolean> {
+    if (!is_loaded) return false;
+
+    return withSync(() => {
+        accounts = deduplicateAccounts(new_list);
+    }, '계정 순서 변경 실패:');
+}
+
+export { getAccountKey };

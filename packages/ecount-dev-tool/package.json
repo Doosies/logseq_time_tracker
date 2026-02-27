@@ -14,7 +14,7 @@
     "scripts": {
         "dev": "vite",
         "build": "vite build",
-        "type-check": "tsc --noEmit",
+        "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
@@ -23,12 +23,12 @@
         "test:coverage": "vitest run --coverage"
     },
     "dependencies": {
-        "@personal/uikit": "workspace:*",
-        "svelte-dnd-action": "^0.9.69"
+        "@personal/uikit": "workspace:*"
     },
     "devDependencies": {
         "@eslint/js": "catalog:",
         "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@testing-library/dom": "catalog:",
         "@testing-library/jest-dom": "catalog:",
         "@testing-library/svelte": "catalog:",
         "@testing-library/user-event": "catalog:",

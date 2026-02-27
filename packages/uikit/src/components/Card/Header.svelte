@@ -10,6 +10,6 @@
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<PrimitiveHeader class={extra_class}>
+<PrimitiveHeader class={extra_class ?? ''}>
     {@render children()}
 </PrimitiveHeader>

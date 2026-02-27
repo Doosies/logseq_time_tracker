@@ -121,10 +121,22 @@ describe('App', () => {
 
             render(App);
 
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
             const user = userEvent.setup();
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
-            expect(screen.getByText('섹션 설정')).toBeInTheDocument();
+            await waitFor(
+                () => {
+                    expect(screen.getByText('섹션 설정')).toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
         });
 
         it('섹션 체크박스를 해제하면 해당 섹션이 숨겨져야 함', async () => {
@@ -346,10 +358,10 @@ describe('App', () => {
             const user = userEvent.setup();
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
-            const listitem_elements = screen.getAllByRole('listitem', {
+            const option_elements = screen.getAllByRole('option', {
                 name: /드래그하여 순서 변경/,
             });
-            expect(listitem_elements.length).toBe(3);
+            expect(option_elements.length).toBe(3);
         });
 
         it('메인 화면에서 드래그 핸들이 렌더링되어야 함', async () => {
@@ -369,10 +381,8 @@ describe('App', () => {
                 { timeout: 2000 },
             );
 
-            const drag_handle_buttons = screen.getAllByRole('button', {
-                name: '드래그하여 섹션 순서 변경',
-            });
-            expect(drag_handle_buttons.length).toBe(3);
+            const drag_handle_elements = screen.getAllByLabelText('드래그하여 섹션 순서 변경');
+            expect(drag_handle_elements.length).toBe(3);
         });
     });
 
