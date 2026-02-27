@@ -2,10 +2,12 @@
     import { Sortable as PrimitiveSortable } from '../../primitives/Dnd';
     import type { Snippet } from 'svelte';
 
+    type HandleAttach = (node: HTMLElement) => () => void;
+
     interface Props {
         id: string | number;
         index: number;
-        children: Snippet<[{ handleAttach: unknown }]>;
+        children: Snippet<[{ handleAttach: HandleAttach }]>;
         class?: string;
     }
 

@@ -150,7 +150,10 @@
         dnd_items = new_items;
         await reorderAccounts(new_items.map((i) => i.account));
         if (editing_index !== null) {
-            resetForm();
+            const editing_key = `${new_company.trim()}§${new_id.trim()}`;
+            const new_index = new_items.findIndex((item) => item.id === editing_key);
+            editing_index = new_index !== -1 ? new_index : null;
+            if (new_index === -1) resetForm();
         }
     }
 
@@ -210,7 +213,7 @@
                 >
                     {#each dnd_items as item, i (item.id)}
                         <Dnd.Sortable id={item.id} index={i}>
-                            {#snippet children({ handleAttach })}
+                            {#snippet children({ handleAttach }: { handleAttach: (node: HTMLElement) => () => void })}
                                 <div
                                     class="account-cell-wrap jiggle {editing_index === i ? 'editing' : ''}"
                                     style="animation-delay: {(i % 5) * -0.15}s"
@@ -276,6 +279,9 @@
                 >
                     {editing_index !== null ? '수정' : '추가'}
                 </Button>
+                {#if editing_index !== null}
+                    <Button variant="secondary" size="sm" onclick={resetForm}>취소</Button>
+                {/if}
             </div>
             {#if error_message}
                 <p class="error-msg">{error_message}</p>
