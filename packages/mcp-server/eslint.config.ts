@@ -1,4 +1,4 @@
-import { createNodeConfig } from '../../eslint.config.js';
+import { createNodeConfig } from '../../eslint.config.ts';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
