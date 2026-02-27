@@ -12,7 +12,7 @@
         isDuplicate,
         getAccountKey,
     } from '#stores/accounts.svelte';
-    import { isActiveAccount, setActiveAccount, getActiveAccountKey } from '#stores/active_account.svelte';
+    import { isActiveAccount, setActiveAccount } from '#stores/active_account.svelte';
 
     interface DndAccountItem {
         id: string;
@@ -29,7 +29,6 @@
 
     const accounts = $derived(getAccounts());
     const tab = $derived(getTabState());
-    const has_active = $derived(getActiveAccountKey() !== null);
 
     let dnd_items = $state<DndAccountItem[]>([]);
 
@@ -103,7 +102,7 @@
     }
 </script>
 
-<Section.Root class={has_active ? 'section-active' : ''}>
+<Section.Root>
     <Section.Header>
         <Section.Title>빠른 로그인</Section.Title>
         <Section.Action>
@@ -367,12 +366,6 @@
 
     .remove-btn:active {
         transform: scale(0.9);
-    }
-
-    /* --- Active section header --- */
-
-    :global(.section-active) :global([data-section-header]) {
-        color: var(--color-primary);
     }
 
     /* --- Common --- */

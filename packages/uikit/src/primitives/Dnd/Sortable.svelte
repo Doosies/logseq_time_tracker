@@ -13,12 +13,14 @@
 
     let { id, index, children, class: extra_class }: Props = $props();
 
-    const sortable = $derived.by(() =>
-        createSortable({
-            id,
-            index,
-        }),
-    );
+    const sortable = createSortable({
+        get id() {
+            return id;
+        },
+        get index() {
+            return index;
+        },
+    });
 </script>
 
 <div class={extra_class} {@attach sortable.attach}>
