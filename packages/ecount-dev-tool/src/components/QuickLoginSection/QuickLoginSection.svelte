@@ -353,7 +353,7 @@
         justify-content: center;
         cursor: pointer;
         padding: 0;
-        z-index: var(--z-index-base);
+        z-index: var(--z-index-above);
         transition:
             transform var(--transition-fast),
             opacity var(--transition-normal);
