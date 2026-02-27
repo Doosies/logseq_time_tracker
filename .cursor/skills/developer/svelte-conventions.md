@@ -105,6 +105,20 @@ export const theme_vars = createThemeContract({
 });
 ```
 
+### 디자인 토큰 의미적 용도 (필수)
+
+테마 토큰(theme_vars.color.* 등)은 **의미적 용도(semantic purpose)**를 고려하여 사용합니다:
+
+| 토큰 | 의도된 용도 | 주의 |
+|------|-------------|------|
+| `color.background` | 페이지/컨테이너 배경 (라이트: 밝은색, 다크: 어두운색) | 버튼 텍스트 등에 사용 금지 (다크 모드에서 가독성 저하) |
+| `color.text` | 본문 텍스트 (배경과 대비되는 색) | 버튼 텍스트에 사용 가능 |
+| `color.primary` | 강조/CTA 요소 | 버튼 배경, 링크 등 |
+
+**맥락에 맞는 토큰 선택**:
+- 버튼 텍스트: `color.text` 또는 `color.primary` 사용. `color.background`는 사용 금지
+- 하드코딩(`#ffffff` 등)을 토큰으로 교체 시: 다크 테마에서 가독성 저하되면 교체하지 않음
+
 ## 일반 .ts 파일 네이밍 (snake_case 유지)
 
 컴포넌트 외부의 일반 `.ts` 파일은 AGENTS.md 규칙을 따릅니다.

@@ -357,6 +357,34 @@ QA 에이전트를 위한 테스트 포인트:
 3. **관련 없는 코드 수정 금지**: 현재 목표에만 집중
 4. **추측 금지**: 코드를 직접 읽고 확인
 
+### 설정 파일 포매팅 보존 (필수)
+
+`package.json`, `tsconfig.json`, `pnpm-workspace.yaml` 등 설정 파일을 수정할 때:
+
+1. **기존 들여쓰기 확인**: 수정 전 파일을 읽어 들여쓰기 칸 수(2칸/4칸) 확인
+2. **동일하게 유지**: 수정 후 동일한 들여쓰기 적용
+3. **JSON.stringify 사용 시**: `JSON.stringify(obj, null, N)`에서 N을 기존 파일의 들여쓰기 칸 수로 설정
+   - 예: 프로젝트 루트 `package.json`이 4칸이면 `JSON.stringify(pkg, null, 4)`
+4. **Prettier 적용**: `pnpm format` 실행 시 프로젝트 `.prettierrc`(tabWidth) 준수. 수동 작성 시 tabWidth와 일치시킬 것
+
+### 디자인 토큰 의미적 용도 (필수, Vanilla Extract / theme_vars)
+
+테마 토큰(theme_vars.color.* 등)을 사용할 때 **의미적 용도(semantic purpose)**를 고려합니다:
+
+1. **토큰의 의도된 용도 확인**
+   - `color.background`: 페이지/컨테이너 배경 (라이트: 밝은색, 다크: 어두운색)
+   - `color.text`: 본문 텍스트 (배경과 대비되는 색)
+   - `color.primary`: 강조/CTA 요소
+   - 단순 "해당 색이 하드코딩과 같다"만으로 교체하지 말 것
+
+2. **맥락에 맞는 토큰 선택**
+   - 버튼 텍스트: `color.background` 위에선 `color.text` 또는 `color.primary` 사용. `color.background`는 사용 금지 (다크 모드에서 가독성 저하)
+   - 카드 배경: `color.background` 사용 가능
+
+3. **거부 판단이 맞는 경우**
+   - `#ffffff` 등을 `color.background`로 교체 시, 다크 테마에서 가독성 저하되면 교체하지 않음
+   - 대안: `color.text`, 별도 토큰 추가, 또는 기존 하드코딩 유지
+
 ### 외부 라이브러리 API 사용 시 (필수)
 
 외부 라이브러리(`node_modules` 등)의 API를 사용할 때는 **반드시** 다음을 수행합니다:

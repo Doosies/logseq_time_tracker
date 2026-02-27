@@ -215,6 +215,24 @@ describe('calculateTotal', () => {
 - Branch Coverage 측정
 - 80% 미만 시 추가 테스트
 
+### 검증 중 발견 이슈 처리 (Proactive 수정)
+
+검증(테스트 실행, 타입 체크, 코드 리뷰) 중 이슈를 발견했을 때:
+
+**QA가 직접 수정 가능** (1-2분 이내, 3줄 이하):
+- TypeScript 타입 에러 (exactOptionalPropertyTypes, undefined 체크 등)
+- Prop 오타/잘못된 값 (예: `handle={true}` → 올바른 prop)
+- Import 누락
+- 단순한 Linter 자동 수정 가능 항목
+
+**Developer 에이전트에게 위임** (복잡한 수정):
+- 로직 변경
+- 새 함수/컴포넌트 추가
+- 3줄 초과 수정
+- 설계와 충돌하는 수정
+
+**직접 수정한 경우**: 완료 보고에 "수정한 이슈" 항목으로 명시
+
 ### 5단계: 테스트 코드 품질 검증 (필수!)
 - **Skill 사용**: `qa/test-quality.md`
 - 테스트 코드 가독성 확인
