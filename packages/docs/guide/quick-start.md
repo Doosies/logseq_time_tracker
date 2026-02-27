@@ -6,23 +6,23 @@
 
 ```svelte
 <script>
-  import { Button, Card, Section, TextInput } from '@personal/uikit';
-  import '@personal/uikit/design';
+    import { Button, Card, Section, TextInput } from '@personal/uikit';
+    import '@personal/uikit/design';
 </script>
 
 <Card.Root>
-  <Card.Header>설정</Card.Header>
-  <Card.Body>
-    <Section.Root>
-      <Section.Header>
-        <Section.Title>기본 정보</Section.Title>
-      </Section.Header>
-      <Section.Content>
-        <TextInput placeholder="이름을 입력하세요" />
-        <Button variant="primary">저장</Button>
-      </Section.Content>
-    </Section.Root>
-  </Card.Body>
+    <Card.Header>설정</Card.Header>
+    <Card.Body>
+        <Section.Root>
+            <Section.Header>
+                <Section.Title>기본 정보</Section.Title>
+            </Section.Header>
+            <Section.Content>
+                <TextInput placeholder="이름을 입력하세요" />
+                <Button variant="primary">저장</Button>
+            </Section.Content>
+        </Section.Root>
+    </Card.Body>
 </Card.Root>
 ```
 

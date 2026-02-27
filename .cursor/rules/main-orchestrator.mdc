@@ -849,6 +849,25 @@ System-Improvement 에이전트가 개선 제안을 생성한 후:
 
 각 단계 완료 후 반드시 검증합니다.
 
+### 서브에이전트 결과 즉시 검증 (필수)
+
+Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검증 없이 다음 단계로 진행하지 않습니다.
+
+**검증 절차**:
+1. **ReadLints** 실행 (변경된 파일 경로 지정)
+2. **`pnpm type-check`** 실행 (타입 오류 확인)
+3. **위험 패턴 스캔**: 변경된 파일에서 다음 패턴 grep 검사
+   - `Object.prototype` 수정: `Object.defineProperty(Object.prototype` 등
+   - `Array.prototype` 수정
+   - `process.on('uncaughtException')` (에러 억제)
+   - `onUnhandledError` (에러 무시)
+
+**발견 시 조치**:
+- 위험 패턴 발견 → 해당 에이전트에게 **즉시 수정 요청**, 다음 단계 진행 금지
+- Linter/타입 오류 → 품질 게이트 거부 절차 적용
+
+**근거**: prototype 오염, 에러 억제 등 위험한 코드가 검증 없이 적용되면 `@testing-library`, `userEvent` 등 전체 테스트 환경이 손상됨.
+
 ### 기획 단계 후
 
 **체크리스트**:
@@ -910,7 +929,7 @@ Task tool 사용:
 - subagent_type: security
 - description: "코드 보안 취약점 스캔"
 - prompt: "다음 코드의 보안 취약점을 스캔해주세요:
-  - 코드 보안 취약점 스캔 (SQL Injection, XSS, CSRF 등)
+  - 코드 보안 취약점 스캔 (SQL Injection, XSS, CSRF, 전역 prototype 오염 등)
   - 민감 정보 하드코딩 탐지
   - 안전하지 않은 함수 사용 체크
   - 입력 검증 누락 체크

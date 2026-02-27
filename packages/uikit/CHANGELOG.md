@@ -7,6 +7,24 @@
 
 ## [Unreleased]
 
+### Added
+
+- DnD primitives/components: `Provider`, `Sortable` (`@dnd-kit/svelte` 기반)
+- Design tokens: `transition` (fast, normal, slow), `z_index` (base, above, popover), `shadow` (sm, md, lg)
+- Dark theme shadow values with higher opacity for visibility
+
+### Changed
+
+- DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` + `@dnd-kit/helpers`
+- Styled components CSS: hardcoded values → theme token references (button, card, popover, toggle_input, checkbox_list, text_input, select)
+- `type-check` script: added `svelte-check` for `.svelte` file type validation
+- `exactOptionalPropertyTypes` compatibility fixes (Card, Section, CheckboxList)
+
+### Removed
+
+- DnD primitives/components: `Zone`, `Row`, `Handle` (svelte-dnd-action 기반)
+- `DndEvent` type export
+
 ## [0.2.0] - 2026-02-26
 
 ### Added

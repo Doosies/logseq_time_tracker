@@ -18,26 +18,26 @@ UIKit은 세 가지 레이어로 구성됩니다:
 
 단일 import으로 사용하는 컴포넌트입니다.
 
-| 컴포넌트 | 설명 |
-|----------|------|
-| `Button` | 버튼 (primary/secondary/accent) |
-| `ButtonGroup` | 버튼 그룹 레이아웃 |
-| `TextInput` | 텍스트 입력 필드 |
-| `Select` | 드롭다운 선택 |
+| 컴포넌트      | 설명                            |
+| ------------- | ------------------------------- |
+| `Button`      | 버튼 (primary/secondary/accent) |
+| `ButtonGroup` | 버튼 그룹 레이아웃              |
+| `TextInput`   | 텍스트 입력 필드                |
+| `Select`      | 드롭다운 선택                   |
 
 ### Compound 컴포넌트
 
 네임스페이스 import로 사용하며, 여러 sub-component로 구성됩니다.
 
-| 컴포넌트 | Sub-components | 설명 |
-|----------|----------------|------|
-| `Card` | Root, Header, Body, Footer | 카드 컨테이너 |
-| `Section` | Root, Header, Title, Action, Content | 섹션 레이아웃 (접기/펼치기) |
-| `ToggleInput` | Root, Prefix, Toggle | 토글 스위치 |
-| `Popover` | Root, Trigger, Content | 팝오버 (clickOutside 닫힘) |
-| `Toast` | Provider, Root | 토스트 알림 (타이머) |
-| `CheckboxList` | Root, Item | 체크박스 리스트 (DnD 지원) |
-| `Dnd` | Zone, Row, Handle | 드래그앤드롭 |
+| 컴포넌트       | Sub-components                       | 설명                        |
+| -------------- | ------------------------------------ | --------------------------- |
+| `Card`         | Root, Header, Body, Footer           | 카드 컨테이너               |
+| `Section`      | Root, Header, Title, Action, Content | 섹션 레이아웃 (접기/펼치기) |
+| `ToggleInput`  | Root, Prefix, Toggle                 | 토글 스위치                 |
+| `Popover`      | Root, Trigger, Content               | 팝오버 (clickOutside 닫힘)  |
+| `Toast`        | Provider, Root                       | 토스트 알림 (타이머)        |
+| `CheckboxList` | Root, Item                           | 체크박스 리스트 (DnD 지원)  |
+| `Dnd`          | Zone, Row, Handle                    | 드래그앤드롭                |
 
 ## Import
 

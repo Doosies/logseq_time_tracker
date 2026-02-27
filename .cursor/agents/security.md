@@ -185,6 +185,7 @@ description: 보안 검증 및 취약점 탐지 전문 에이전트
 - [ ] CSRF 토큰 사용
 - [ ] eval(), exec() 사용 없음
 - [ ] 안전하지 않은 역직렬화 없음
+- [ ] **전역 Prototype 오염 없음** (Object.prototype, Array.prototype 수정 금지 - 테스트 setup 포함)
 
 ### 입력 검증
 - [ ] 모든 외부 입력 검증

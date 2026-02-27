@@ -28,10 +28,10 @@ import { describe, it, expect } from 'vitest';
 import App from '../App.svelte';
 
 describe('App', () => {
-  it('제목이 렌더링되어야 함', () => {
-    render(App);
-    expect(screen.getByText('설정')).toBeInTheDocument();
-  });
+    it('제목이 렌더링되어야 함', () => {
+        render(App);
+        expect(screen.getByText('설정')).toBeInTheDocument();
+    });
 });
 ```
 
@@ -41,18 +41,19 @@ describe('App', () => {
 import { fireEvent } from '@testing-library/svelte';
 
 it('Space 키로 체크박스가 토글되어야 함', async () => {
-  render(App);
-  const checkbox = screen.getByRole('checkbox');
-  await fireEvent.keyDown(checkbox, { key: ' ' });
-  expect(checkbox).toBeChecked();
+    render(App);
+    const checkbox = screen.getByRole('checkbox');
+    await fireEvent.keyDown(checkbox, { key: ' ' });
+    expect(checkbox).toBeChecked();
 });
 ```
 
 ::: warning HTML 요소별 키보드 동작
+
 - `<button>`: Enter, Space 모두 클릭
 - `<input type="checkbox">`: **Space**만 토글 (Enter 아님)
 - `<a>`: Enter만 클릭
-:::
+  :::
 
 ## Storybook Play Function
 
@@ -64,23 +65,23 @@ import type { Meta, StoryObj } from '@storybook/svelte';
 import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 
 const meta: Meta = {
-  title: 'Components/Button',
-  component: ButtonStoryWrapper,
+    title: 'Components/Button',
+    component: ButtonStoryWrapper,
 };
 export default meta;
 
 type Story = StoryObj;
 
 export const Primary: Story = {
-  args: { variant: 'primary' },
+    args: { variant: 'primary' },
 };
 
 export const ClickTest: Story = {
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    await userEvent.click(button);
-  },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button');
+        await userEvent.click(button);
+    },
 };
 ```
 
@@ -96,11 +97,11 @@ pnpm storybook
 import { parseEcountUrl } from '#services/url_service';
 
 describe('parseEcountUrl', () => {
-  it('zeus URL을 올바르게 파싱해야 함', () => {
-    const result = parseEcountUrl('https://zeus01ba1.ecount.com/ec5/view/erp');
-    expect(result?.environment).toBe('zeus');
-    expect(result?.v5_domain).toBe('zeus01');
-  });
+    it('zeus URL을 올바르게 파싱해야 함', () => {
+        const result = parseEcountUrl('https://zeus01ba1.ecount.com/ec5/view/erp');
+        expect(result?.environment).toBe('zeus');
+        expect(result?.v5_domain).toBe('zeus01');
+    });
 });
 ```
 

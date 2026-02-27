@@ -108,12 +108,15 @@ packages/docs/
 ## 주요 설정 파일
 
 ### turbo.json
+
 Turborepo 파이프라인: 빌드, 테스트, 린트 작업의 캐싱과 병렬 실행을 관리합니다.
 
 ### eslint.config.ts
+
 통합 ESLint 설정: Svelte, TypeScript 규칙을 중앙에서 관리하며 각 패키지에 `tsconfigRootDir`을 전달합니다.
 
 ### pnpm-workspace.yaml
+
 패키지 워크스페이스 정의와 의존성 catalog을 포함합니다.
 
 ## 다음 단계

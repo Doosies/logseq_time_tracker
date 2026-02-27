@@ -357,6 +357,43 @@ QA 에이전트를 위한 테스트 포인트:
 3. **관련 없는 코드 수정 금지**: 현재 목표에만 집중
 4. **추측 금지**: 코드를 직접 읽고 확인
 
+### 외부 라이브러리 API 사용 시 (필수)
+
+외부 라이브러리(`node_modules` 등)의 API를 사용할 때는 **반드시** 다음을 수행합니다:
+
+1. **타입 정의 파일(`*.d.ts`) 또는 소스 코드 직접 확인**
+   - property 이름, 메서드명, 파라미터 타입, 반환 타입을 **추측하지 말고** 실제 타입 정의 또는 소스에서 확인
+   - 예: `createSortable`의 반환 객체 → `.d.ts`에서 실제 property명(`attachHandle` vs `handleAttach`) 확인
+   - 예: `CreateSortableInput`의 `handle` 필드 → `Omit`으로 제외되었는지, 타입이 `HTMLElement`인지 확인
+
+2. **추측 금지 원칙**
+   - 라이브러리의 메서드명, 프로퍼티명, 파라미터 순서/타입을 유추하지 말 것
+   - 타입 체크(`pnpm type-check`)를 실행하면 발견되는 오류는 구현 전에 반드시 해결
+
+3. **검증 절차**
+   - 사용할 API의 `.d.ts` 파일 경로 확인 (예: `node_modules/@dnd-kit/svelte/dist/index.d.ts`)
+   - 해당 파일을 읽고 실제 시그니처 확인 후 코드 작성
+   - 작성 직후 `pnpm type-check` 실행하여 타입 오류 0개 확인
+
+### 라이브러리 마이그레이션 시 (필수)
+
+UI/UX 관련 라이브러리(예: DnD, 모달, 폼)를 교체할 때는 **기존 시각적/인터랙션 패턴을 보존**해야 합니다.
+
+1. **마이그레이션 전 기존 UI 분석**
+   - `git show` 또는 git history로 **마이그레이션 전** 기존 컴포넌트의 HTML 구조, CSS, variant(예: "bar", "default")를 확인
+   - 기존 시각적 모양(아이콘, 레이아웃, 그립 모양 등)을 문서화한 후 새 라이브러리로 **동일하게** 구현
+   - 추측하지 말고 실제 코드를 읽어 확인
+
+2. **래퍼 컴포넌트 추가 시 CSS 레이아웃 영향 확인**
+   - 새 `<div>` 래퍼가 추가되면 CSS Grid/Flexbox 레이아웃에 미치는 영향 확인
+   - 부모가 `display: grid` 또는 `display: flex`일 때, 래퍼가 `height: 100%`, `width: 100%` 등 크기 속성을 요구할 수 있음
+   - 마이그레이션 후 시각적 회귀(높이 깨짐, 정렬 변경 등)가 없는지 확인
+
+3. **컴포넌트 계층 전체 일관성**
+   - primitive → styled component → consumer 전체 계층을 검토
+   - prop 추가/제거 시 **모든 계층**에서 해당 prop 전달 여부 확인
+   - 예: primitive에서 `handle` prop 제거 시, styled 래퍼와 consumer에서도 제거해야 함
+
 ## ReadLints 사용 (필수 프로세스!)
 
 **중요**: 파일을 **작성하거나 수정한 직후** 반드시 ReadLints로 확인합니다!

@@ -430,6 +430,26 @@ describe('calculateTotal', () => {
 3. **성능 회귀 방지**: 기존 대비 10% 이상 느려지면 안 됨
 4. **보안 최우선**: 취약점 발견 시 즉시 보고
 
+### 테스트 환경 패치 금지 (필수)
+
+테스트 환경(jsdom, Vitest setup 등)에서 다음을 **절대 금지**합니다:
+
+1. **전역 prototype 오염 금지**
+   - `Object.prototype`, `Array.prototype` 등 built-in prototype에 속성 추가 **절대 금지**
+   - 예: `Object.defineProperty(Object.prototype, 'tagName', { ... })` 등
+   - 이유: `@testing-library`, `userEvent` 등 DOM 상호작용이 완전히 망가질 수 있음
+   - 대안: 문제가 되는 라이브러리를 모킹하거나, jsdom 호환 layer를 **해당 모듈에만** 적용
+
+2. **에러 억제 금지**
+   - `process.on('uncaughtException')`, `onUnhandledError` 등으로 에러를 숨기는 행위 **금지**
+   - 에러가 발생하면 **근본 원인을 분석**하고 수정
+   - workaround로 에러를 억제하면 추가 디버깅이 불가능해짐
+
+3. **workaround/패치 적용 후 전체 테스트 필수**
+   - 테스트 setup에 패치나 workaround를 적용한 경우 **반드시 전체 테스트 스위트 실행**
+   - 회귀 여부 확인: `pnpm test` (또는 해당 프로젝트 테스트 명령) 실행
+   - 특정 테스트만 통과하고 다른 테스트가 깨지는 경우를 놓치지 말 것
+
 ## 테스트 실패 시
 
 1. 실패 원인 분석

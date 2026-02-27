@@ -21,26 +21,26 @@ import type { Meta, StoryObj } from '@storybook/svelte';
 import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 
 const meta: Meta = {
-  title: 'Components/Button',
-  component: ButtonStoryWrapper,
-  parameters: {
-    docs: {
-      description: {
-        component: 'Primary action button',
-      },
+    title: 'Components/Button',
+    component: ButtonStoryWrapper,
+    parameters: {
+        docs: {
+            description: {
+                component: 'Primary action button',
+            },
+        },
     },
-  },
 };
 export default meta;
 
 type Story = StoryObj;
 
 export const Primary: Story = {
-  args: { variant: 'primary', label: '버튼' },
+    args: { variant: 'primary', label: '버튼' },
 };
 
 export const Secondary: Story = {
-  args: { variant: 'secondary', label: '버튼' },
+    args: { variant: 'secondary', label: '버튼' },
 };
 ```
 
@@ -50,13 +50,13 @@ export const Secondary: Story = {
 import { within, userEvent, expect } from 'storybook/test';
 
 export const ClickTest: Story = {
-  args: { variant: 'primary', label: '클릭' },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const button = canvas.getByRole('button');
-    await userEvent.click(button);
-    await expect(button).toBeInTheDocument();
-  },
+    args: { variant: 'primary', label: '클릭' },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        const button = canvas.getByRole('button');
+        await userEvent.click(button);
+        await expect(button).toBeInTheDocument();
+    },
 };
 ```
 
@@ -86,17 +86,17 @@ Svelte 컴포넌트에 children snippet이 필요한 경우 직접 스토리로 
 ```svelte
 <!-- CardStoryWrapper.svelte -->
 <script lang="ts">
-  import { Card } from '@personal/uikit';
+    import { Card } from '@personal/uikit';
 
-  let { header = 'Header', body = 'Body', footer = '' } = $props();
+    let { header = 'Header', body = 'Body', footer = '' } = $props();
 </script>
 
 <Card.Root>
-  <Card.Header>{header}</Card.Header>
-  <Card.Body>{body}</Card.Body>
-  {#if footer}
-    <Card.Footer>{footer}</Card.Footer>
-  {/if}
+    <Card.Header>{header}</Card.Header>
+    <Card.Body>{body}</Card.Body>
+    {#if footer}
+        <Card.Footer>{footer}</Card.Footer>
+    {/if}
 </Card.Root>
 ```
 

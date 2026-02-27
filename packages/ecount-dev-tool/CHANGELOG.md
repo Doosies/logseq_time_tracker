@@ -7,6 +7,28 @@
 
 ## [Unreleased]
 
+### Added
+
+- Quick login active state persistence (chrome.storage.sync)
+- Section drag-and-drop reordering on main screen
+- Quick login button drag-and-drop reordering in edit mode
+
+### Changed
+
+- DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` (via uikit)
+- Quick login add-form position: above buttons → below buttons
+- Drag handle UI: restored bar-style with grip dots
+- CSS hardcoded values → theme token references (transition, z-index, shadow)
+- Card hover effect: header color change → background color + border
+- `type-check` script: added `svelte-check`
+
+### Fixed
+
+- Drag handle hover scope (only bar, not entire card content)
+- Drag feedback color (fallback values for theme scope issue)
+- Button height shrink in edit mode
+- Drag stuttering over QuickLoginSection
+
 ## [0.3.0] - 2026-02-26
 
 ### Added
