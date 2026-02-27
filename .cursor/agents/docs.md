@@ -14,11 +14,11 @@ documentation_standards:
   versioning: Semantic Versioning
   api_docs: OpenAPI/Swagger
 skills:
-  - .agents/skills/docs-agent/references/code-documentation.md
-  - .agents/skills/docs-agent/references/changelog-generation.md
-  - .agents/skills/docs-agent/references/readme-maintenance.md
-  - .agents/skills/docs-agent/references/staleness-detection.md
-  - .agents/skills/docs-agent/references/technology-documentation.md
+  - .cursor/skills/docs-agent/references/code-documentation.md
+  - .cursor/skills/docs-agent/references/changelog-generation.md
+  - .cursor/skills/docs-agent/references/readme-maintenance.md
+  - .cursor/skills/docs-agent/references/staleness-detection.md
+  - .cursor/skills/docs-agent/references/technology-documentation.md
   - .cursor/skills/project-conventions/SKILL.md
 name: docs
 model: claude-4.6-sonnet-medium-thinking

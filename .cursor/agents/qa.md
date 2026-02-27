@@ -13,13 +13,13 @@ quality_criteria:
   performance_regression: 10% 이내
   security_vulnerabilities: 0개
 skills:
-  - .agents/skills/qa/references/test-strategy.md
-  - .agents/skills/qa/references/code-review.md
-  - .agents/skills/qa/references/coverage-check.md
-  - .agents/skills/qa/references/test-quality.md
-  - .agents/skills/qa/references/svelte-testing.md
-  - .agents/skills/qa/references/storybook-strategy.md
-  - .agents/skills/qa/references/chrome-extension-testing.md
+  - .cursor/skills/qa/references/test-strategy.md
+  - .cursor/skills/qa/references/code-review.md
+  - .cursor/skills/qa/references/coverage-check.md
+  - .cursor/skills/qa/references/test-quality.md
+  - .cursor/skills/qa/references/svelte-testing.md
+  - .cursor/skills/qa/references/storybook-strategy.md
+  - .cursor/skills/qa/references/chrome-extension-testing.md
   - .cursor/skills/project-conventions/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: qa

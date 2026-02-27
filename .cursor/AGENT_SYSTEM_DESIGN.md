@@ -351,7 +351,7 @@ graph TB
 
 **개선 액션:**
 - Rule 수정: `.cursor/rules/*.mdc`
-- Skill 추가/수정: `.agents/skills/*/references/*.md`
+- Skill 추가/수정: `.cursor/skills/*/references/*.md`
 - AGENTS.md 업데이트
 - 워크플로우 패턴 조정
 - 에이전트 역할 재정의
@@ -627,7 +627,7 @@ sequenceDiagram
 
 | 구분 | Rule (.mdc) | Skill (.md) | Agent 정의 (.md) | AGENTS.md |
 |------|-------------|-------------|------------------|-----------|
-| **위치** | `.cursor/rules/` | `.agents/skills/` + `.cursor/skills/` | `.cursor/agents/` | 프로젝트 루트 |
+| **위치** | `.cursor/rules/` | `.cursor/skills/` + `.cursor/skills/` | `.cursor/agents/` | 프로젝트 루트 |
 | **대상** | 각 에이전트 전용 | 특정 에이전트 전용 | 각 에이전트 전의 | 모든 에이전트 공통 |
 | **목적** | 항상 적용되는 규칙 | 선택적으로 사용하는 절차 | 에이전트 역할 및 책임 정의 | 공통 컨벤션 |
 | **내용** | 판단 기준, 정책, 프로세스 | 체크리스트, 방법론 | 역할, 입출력, 원칙 | 코딩 컨벤션 |

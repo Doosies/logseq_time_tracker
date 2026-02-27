@@ -10,10 +10,10 @@ standards:
   commit_message: Conventional Commits
   pr_template: Project PR Template
 skills:
-  - .agents/skills/git-workflow/references/commit-message-generation.md
-  - .agents/skills/git-workflow/references/pr-description-generation.md
-  - .agents/skills/git-workflow/references/change-analysis.md
-  - .agents/skills/git-workflow/references/reviewer-recommendation.md
+  - .cursor/skills/git-workflow/references/commit-message-generation.md
+  - .cursor/skills/git-workflow/references/pr-description-generation.md
+  - .cursor/skills/git-workflow/references/change-analysis.md
+  - .cursor/skills/git-workflow/references/reviewer-recommendation.md
 name: git-workflow
 model: claude-4.6-sonnet-medium-thinking
 description: Git 커밋 및 PR 작성 전문 에이전트

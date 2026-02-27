@@ -12,11 +12,11 @@ quality_criteria:
   prompt_injection_attempts: 차단율 100%
   unsafe_code_patterns: 0개
 skills:
-  - .agents/skills/security/references/prompt-injection-defense.md
-  - .agents/skills/security/references/sensitive-data-detection.md
-  - .agents/skills/security/references/code-vulnerability-scan.md
-  - .agents/skills/security/references/input-validation.md
-  - .agents/skills/security/references/api-security-check.md
+  - .cursor/skills/security/references/prompt-injection-defense.md
+  - .cursor/skills/security/references/sensitive-data-detection.md
+  - .cursor/skills/security/references/code-vulnerability-scan.md
+  - .cursor/skills/security/references/input-validation.md
+  - .cursor/skills/security/references/api-security-check.md
   - .cursor/skills/error-handling/SKILL.md
 name: security
 model: claude-4.6-opus-high-thinking

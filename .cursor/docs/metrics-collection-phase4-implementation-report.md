@@ -50,7 +50,7 @@
 
 ### ✅ 2. 자동 개선 제안 Skill 생성
 
-**파일**: `.agents/skills/system-improvement/references/automated-improvement.md` (신규 생성)
+**파일**: `.cursor/skills/system-improvement/references/automated-improvement.md` (신규 생성)
 
 **주요 기능**:
 
@@ -93,7 +93,7 @@
 
 ### ✅ 3. A/B 테스트 자동 실행 Skill 업데이트
 
-**파일**: `.agents/skills/system-improvement/references/ab-testing.md`
+**파일**: `.cursor/skills/system-improvement/references/ab-testing.md`
 
 **추가된 내용**:
 
@@ -283,7 +283,7 @@
    - System-Improvement 자동 호출 프로세스 추가
    - 개선 제안 적용 워크플로우 추가
 
-3. `.agents/skills/system-improvement/references/ab-testing.md`
+3. `.cursor/skills/system-improvement/references/ab-testing.md`
    - 메트릭 기반 테스트 설계 섹션 추가
    - 자동 테스트 실행 트리거 추가
    - 통계적 유의성 검증 로직 추가
@@ -291,7 +291,7 @@
 
 ### 생성된 파일
 
-1. `.agents/skills/system-improvement/references/automated-improvement.md` (신규)
+1. `.cursor/skills/system-improvement/references/automated-improvement.md` (신규)
    - 자동 개선 제안 생성 프로세스
    - 성능 저하 패턴 감지 로직
    - 개선 제안 생성 템플릿

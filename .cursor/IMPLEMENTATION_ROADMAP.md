@@ -197,10 +197,10 @@ gantt
 #### 2.1 디렉토리 구조 생성
 
 ```bash
-mkdir -p .agents/skills/developer/references
-mkdir -p .agents/skills/qa/references
-mkdir -p .agents/skills/docs-agent/references
-mkdir -p .agents/skills/planner/references
+mkdir -p .cursor/skills/developer/references
+mkdir -p .cursor/skills/qa/references
+mkdir -p .cursor/skills/docs-agent/references
+mkdir -p .cursor/skills/planner/references
 mkdir -p .cursor/skills
 ```
 
@@ -253,7 +253,7 @@ function calc(x) {
 ```
 ```
 
-**파일**: `.agents/skills/developer/references/code-implementation.md`
+**파일**: `.cursor/skills/developer/references/code-implementation.md`
 
 **2.2.2 refactoring-patterns.md**
 
@@ -437,7 +437,7 @@ RESTful API 설계 가이드
 
 ```bash
 mkdir -p .cursor/rules
-mkdir -p .agents/skills/orchestrator/references
+mkdir -p .cursor/skills/orchestrator/references
 ```
 
 #### 3.2 메인 에이전트 Rule 작성
@@ -559,7 +559,7 @@ description: 사용자 요청을 태스크 유형으로 분류
 - 명확하지 않음 → 사용자에게 질문
 ```
 
-**파일**: `.agents/skills/orchestrator/references/task-classifier.md`
+**파일**: `.cursor/skills/orchestrator/references/task-classifier.md`
 
 **3.3.2 workflow-selector.md**
 
@@ -635,7 +635,7 @@ description: 사용자 요청을 태스크 유형으로 분류
 #### 4.1 디렉토리 생성
 
 ```bash
-mkdir -p .agents/skills/orchestrator/references
+mkdir -p .cursor/skills/orchestrator/references
 ```
 
 #### 4.2 Skill 작성
@@ -852,7 +852,7 @@ Phase 1-4 완료 후 실제 태스크 5-10개 수행하고 메트릭 기록:
 #### 6.1 디렉토리 생성
 
 ```bash
-mkdir -p .agents/skills/system-improvement/references
+mkdir -p .cursor/skills/system-improvement/references
 ```
 
 #### 6.2 Skill 작성
@@ -989,7 +989,7 @@ Phase 5에서 수집한 5-10개 메트릭 분석:
 #### 7.1 디렉토리 생성
 
 ```bash
-mkdir -p .agents/skills/developer/references/mcp
+mkdir -p .cursor/skills/developer/references/mcp
 mkdir -p .cursor/mcp-servers
 ```
 
@@ -1146,22 +1146,22 @@ rm AGENTS.md
 
 ### Phase 2 롤백
 ```bash
-rm -rf .agents/skills/developer/references
-rm -rf .agents/skills/qa/references
-rm -rf .agents/skills/docs-agent/references
-rm -rf .agents/skills/planner/references
+rm -rf .cursor/skills/developer/references
+rm -rf .cursor/skills/qa/references
+rm -rf .cursor/skills/docs-agent/references
+rm -rf .cursor/skills/planner/references
 rm -rf .cursor/skills
 ```
 
 ### Phase 3 롤백
 ```bash
 rm -rf .cursor/rules
-rm -rf .agents/skills/orchestrator/references
+rm -rf .cursor/skills/orchestrator/references
 ```
 
 ### Phase 4 롤백
 ```bash
-rm -rf .agents/skills/orchestrator/references
+rm -rf .cursor/skills/orchestrator/references
 # main-orchestrator.mdc에서 관리자 호출 부분 제거
 ```
 
@@ -1172,13 +1172,13 @@ rm -rf .cursor/metrics
 
 ### Phase 6 롤백
 ```bash
-rm -rf .agents/skills/system-improvement/references
+rm -rf .cursor/skills/system-improvement/references
 rm -rf .cursor/metrics/improvements
 ```
 
 ### Phase 7 롤백
 ```bash
-rm -rf .agents/skills/developer/references/mcp
+rm -rf .cursor/skills/developer/references/mcp
 rm -rf .cursor/mcp-servers
 rm .cursor/mcp-servers.json
 ```

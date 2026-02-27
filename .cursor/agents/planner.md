@@ -7,9 +7,9 @@ responsibilities:
   - 데이터 모델 설계
   - 기술 스택 선정
 skills:
-  - .agents/skills/planner/references/requirement-analysis.md
-  - .agents/skills/planner/references/architecture-design.md
-  - .agents/skills/planner/references/api-design.md
+  - .cursor/skills/planner/references/requirement-analysis.md
+  - .cursor/skills/planner/references/architecture-design.md
+  - .cursor/skills/planner/references/api-design.md
   - .cursor/skills/project-conventions/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: planner

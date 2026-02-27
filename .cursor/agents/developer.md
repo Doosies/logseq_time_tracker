@@ -12,14 +12,14 @@ coding_conventions:
   classes: PascalCase
   constants: UPPER_SNAKE_CASE
 skills:
-  - .agents/skills/developer/references/code-implementation.md
-  - .agents/skills/developer/references/refactoring-patterns.md
-  - .agents/skills/developer/references/testable-code.md
-  - .agents/skills/developer/references/auto-formatting.md
-  - .agents/skills/developer/references/dependency-management.md
-  - .agents/skills/developer/references/config-optimization.md
-  - .agents/skills/developer/references/monorepo-patterns.md
-  - .agents/skills/developer/references/svelte-conventions.md
+  - .cursor/skills/developer/references/code-implementation.md
+  - .cursor/skills/developer/references/refactoring-patterns.md
+  - .cursor/skills/developer/references/testable-code.md
+  - .cursor/skills/developer/references/auto-formatting.md
+  - .cursor/skills/developer/references/dependency-management.md
+  - .cursor/skills/developer/references/config-optimization.md
+  - .cursor/skills/developer/references/monorepo-patterns.md
+  - .cursor/skills/developer/references/svelte-conventions.md
   - .cursor/skills/project-conventions/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: developer

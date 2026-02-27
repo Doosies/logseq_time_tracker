@@ -17,12 +17,12 @@ trigger_conditions:
   automatic: 패턴 감지 시 자동 제안
   manual: "@mcp-dev [작업 설명] MCP 서버 개발"
 skills:
-  - .agents/skills/developer/references/mcp/pattern-detection.md
-  - .agents/skills/developer/references/mcp/tool-gap-analysis.md
-  - .agents/skills/developer/references/mcp/mcp-design.md
-  - .agents/skills/developer/references/mcp/mcp-implementation.md
-  - .agents/skills/developer/references/mcp/mcp-testing.md
-  - .agents/skills/developer/references/mcp/mcp-deployment.md
+  - .cursor/skills/developer/references/mcp/pattern-detection.md
+  - .cursor/skills/developer/references/mcp/tool-gap-analysis.md
+  - .cursor/skills/developer/references/mcp/mcp-design.md
+  - .cursor/skills/developer/references/mcp/mcp-implementation.md
+  - .cursor/skills/developer/references/mcp/mcp-testing.md
+  - .cursor/skills/developer/references/mcp/mcp-deployment.md
 name: mcp-development
 model: claude-4.6-sonnet-medium-thinking
 description: 반복 작업 자동화를 위한 MCP 서버 자동 개발 전문 에이전트
@@ -250,7 +250,7 @@ describe('vitest-coverage MCP', () => {
 
 ### 6단계: Skill 업데이트
 ```markdown
-// .agents/skills/qa/references/coverage-check.md 업데이트
+// .cursor/skills/qa/references/coverage-check.md 업데이트
 
 ### MCP 도구 활용
 

@@ -484,8 +484,8 @@ async function generatePerformanceReport(date: string): Promise<void> {
 
 ### 참고 문서
 
-- Skill: `.agents/skills/system-improvement/references/metrics-collection.md` (Phase 3 섹션 참고)
-- 분석 Skill: `.agents/skills/system-improvement/references/metrics-analysis.md`
+- Skill: `.cursor/skills/system-improvement/references/metrics-collection.md` (Phase 3 섹션 참고)
+- 분석 Skill: `.cursor/skills/system-improvement/references/metrics-analysis.md`
 - 설계 문서: `.cursor/docs/metrics-collection-system-design.md`
 - 템플릿: `.cursor/metrics/cycle-template.json`
 

@@ -613,15 +613,15 @@ try {
 #### Skill 파일
 각 에이전트는 전문 영역의 Skill 파일을 참조합니다:
 
-- **기획**: `.agents/skills/planner/references/`
-- **구현**: `.agents/skills/developer/references/`
-- **QA**: `.agents/skills/qa/references/`
-- **보안**: `.agents/skills/security/references/`
-- **Git 워크플로우**: `.agents/skills/git-workflow/references/`
-- **문서화**: `.agents/skills/docs-agent/references/`
-- **MCP 개발**: `.agents/skills/developer/references/mcp/`
-- **시스템 개선**: `.agents/skills/system-improvement/references/`
-- **오케스트레이터**: `.agents/skills/orchestrator/references/`
+- **기획**: `.cursor/skills/planner/references/`
+- **구현**: `.cursor/skills/developer/references/`
+- **QA**: `.cursor/skills/qa/references/`
+- **보안**: `.cursor/skills/security/references/`
+- **Git 워크플로우**: `.cursor/skills/git-workflow/references/`
+- **문서화**: `.cursor/skills/docs-agent/references/`
+- **MCP 개발**: `.cursor/skills/developer/references/mcp/`
+- **시스템 개선**: `.cursor/skills/system-improvement/references/`
+- **오케스트레이터**: `.cursor/skills/orchestrator/references/`
 - **공용**: `.cursor/skills/` (cli-usage/, error-handling/, project-conventions/)
 
 ### 추가 문서

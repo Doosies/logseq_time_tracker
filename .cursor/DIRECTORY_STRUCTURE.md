@@ -31,8 +31,8 @@
 │   └── project-conventions/       # 프로젝트 컨벤션
 │       └── SKILL.md
 │
-│   # 참고: 에이전트별 Skill은 .agents/skills/ 에 있습니다.
-│   # 예: .agents/skills/developer/references/, .agents/skills/planner/references/ 등
+│   # 참고: 에이전트별 Skill은 .cursor/skills/ 에 있습니다.
+│   # 예: .cursor/skills/developer/references/, .cursor/skills/planner/references/ 등
 │
 ├── metrics/                        # 성능 메트릭 데이터
 │   ├── cycles/                     # 사이클별 기록
@@ -151,12 +151,12 @@ alwaysApply: true
 - CLI/터미널 명령어 실행 가이드
 - pnpm, git, turbo 등 사용 시 참조
 
-**에이전트별 Skill**: `.agents/skills/{agent}/references/` 에 위치합니다.
+**에이전트별 Skill**: `.cursor/skills/{agent}/references/` 에 위치합니다.
 - developer, planner, qa, docs-agent, git-workflow, security, orchestrator, system-improvement 등
 
 ---
 
-#### 3.2 main/ - 메인 에이전트 Skill (→ .agents/skills/orchestrator/references/)
+#### 3.2 main/ - 메인 에이전트 Skill (→ .cursor/skills/orchestrator/references/)
 
 **main/task-classifier.md**
 ```markdown
