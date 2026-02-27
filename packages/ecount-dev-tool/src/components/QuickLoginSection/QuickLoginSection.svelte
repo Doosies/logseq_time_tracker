@@ -44,6 +44,27 @@
         }));
     }
 
+    const CLICK_THRESHOLD_PX = 5;
+    const CLICK_TIME_LIMIT_MS = 300;
+    let pointer_start: { x: number; y: number; time: number } | null = null;
+
+    function handleCellPointerDown(event: PointerEvent): void {
+        const target = event.target as HTMLElement;
+        if (target.closest('.remove-btn')) return;
+        pointer_start = { x: event.clientX, y: event.clientY, time: Date.now() };
+    }
+
+    function handleCellPointerUp(event: PointerEvent, index: number, account: LoginAccount): void {
+        if (!pointer_start) return;
+        const dx = Math.abs(event.clientX - pointer_start.x);
+        const dy = Math.abs(event.clientY - pointer_start.y);
+        const dt = Date.now() - pointer_start.time;
+        pointer_start = null;
+        if (dx < CLICK_THRESHOLD_PX && dy < CLICK_THRESHOLD_PX && dt < CLICK_TIME_LIMIT_MS) {
+            handleAccountCellClick(index, account);
+        }
+    }
+
     const can_add = $derived(
         !is_submitting && new_company.trim() !== '' && new_id.trim() !== '' && new_password.trim() !== '',
     );
@@ -96,13 +117,22 @@
 
     async function handleUpdate(): Promise<void> {
         if (!can_add || editing_index === null) return;
+        const trimmed_account: LoginAccount = {
+            company: new_company.trim(),
+            id: new_id.trim(),
+            password: new_password.trim(),
+        };
+        const current = getAccounts();
+        const has_dup = current.some(
+            (a, i) => i !== editing_index && a.company === trimmed_account.company && a.id === trimmed_account.id,
+        );
+        if (has_dup) {
+            showError('이미 등록된 계정입니다.');
+            return;
+        }
         is_submitting = true;
         try {
-            const success = await updateAccount(editing_index, {
-                company: new_company.trim(),
-                id: new_id.trim(),
-                password: new_password.trim(),
-            });
+            const success = await updateAccount(editing_index, trimmed_account);
             if (success) {
                 resetForm();
                 syncDndItems();
@@ -115,6 +145,10 @@
     }
 
     function handleAccountCellClick(index: number, account: LoginAccount): void {
+        if (editing_index === index) {
+            resetForm();
+            return;
+        }
         editing_index = index;
         new_company = account.company;
         new_id = account.id;
@@ -196,7 +230,8 @@
                                     style="animation-delay: {(i % 5) * -0.15}s"
                                     role="button"
                                     tabindex="0"
-                                    onclick={() => handleAccountCellClick(i, item.account)}
+                                    onpointerdown={handleCellPointerDown}
+                                    onpointerup={(e) => handleCellPointerUp(e, i, item.account)}
                                     onkeydown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
                                             e.preventDefault();
