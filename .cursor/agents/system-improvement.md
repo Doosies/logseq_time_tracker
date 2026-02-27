@@ -74,7 +74,7 @@ description: 에이전트 시스템 성능 분석 및 자동 최적화 전문 �
 - **개선 제안**: 구체적인 수정 방안
 - **수정된 Rule/Skill**: 최적화된 파일
 - **A/B 테스트 결과**: 개선 효과 측정
-- **개선 이력**: `.cursor/metrics/improvements/` 에 기록
+- **개선 이력**: `.cursor/metrics/improvements/` 에 기록 (`YYYY-MM-DD-NNN-description.md` 형식)
 
 ## 측정 지표
 
