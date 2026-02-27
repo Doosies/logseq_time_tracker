@@ -19,8 +19,7 @@
    - 직렬/병렬 실행 순서 정의  
    - 사용자 승인 후 진행  
 
-2. **실행** ← developer, planner, explore 서브에이전트  
-   - 플랜에 따라 developer, planner, explore 서브에이전트 호출  
+2. **실행** ← 위에서 할당된 서브에이전트들을 통해 작업 진행
 
 3. **QA 검증** ← qa 서브에이전트  
    - `pnpm format` → `pnpm test` → `pnpm lint` → `pnpm type-check` → `pnpm build`  
