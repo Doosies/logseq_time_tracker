@@ -37,7 +37,7 @@ graph LR
 
 참고 문서:
 - AGENTS.md의 API 설계 섹션
-- .cursor/skills/planner/api-design.md
+- .agents/skills/planner/references/api-design.md
 
 완료 조건:
 - [ ] 요구사항 문서 작성
@@ -66,7 +66,7 @@ graph LR
 
 참고 문서:
 - AGENTS.md
-- .cursor/skills/developer/code-implementation.md
+- .agents/skills/developer/references/code-implementation.md
 
 완료 조건:
 - [ ] Linter 오류 0개
@@ -95,8 +95,8 @@ graph LR
 - 요구사항 문서
 
 참고 문서:
-- .cursor/skills/qa/test-strategy.md
-- .cursor/skills/qa/coverage-check.md
+- .agents/skills/qa/references/test-strategy.md
+- .agents/skills/qa/references/coverage-check.md
 
 완료 조건:
 - [ ] 단위 테스트 작성
@@ -125,8 +125,8 @@ graph LR
 - API 스펙
 
 참고 문서:
-- .cursor/skills/docs/code-documentation.md
-- .cursor/skills/docs/readme-maintenance.md
+- .agents/skills/docs-agent/references/code-documentation.md
+- .agents/skills/docs-agent/references/readme-maintenance.md
 
 완료 조건:
 - [ ] JSDoc/TSDoc 작성 (Public API)
@@ -244,7 +244,7 @@ graph LR
 작업: 리팩토링 실행
 
 참고 문서:
-- .cursor/skills/developer/refactoring-patterns.md
+- .agents/skills/developer/references/refactoring-patterns.md
 
 완료 조건:
 - [ ] 기능 변경 없음

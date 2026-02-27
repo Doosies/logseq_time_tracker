@@ -101,7 +101,7 @@ git diff --name-only <base>..HEAD
 
 #### 에이전트 스킬 파일 검증
 
-스킬 파일(`.cursor/skills/**/*.md`)은 코드 예제와 패턴이 포함되므로 코드 변경에 민감합니다.
+스킬 파일(`.agents/skills/**/references/*.md`, `.cursor/skills/**/SKILL.md`)은 코드 예제와 패턴이 포함되므로 코드 변경에 민감합니다.
 
 ```
 검증 방법:

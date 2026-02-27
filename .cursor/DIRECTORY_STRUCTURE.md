@@ -23,72 +23,16 @@
 │   ├── qa.mdc                      # QA 에이전트 Rule (신규 추가)
 │   └── docs.mdc                    # 문서화 에이전트 Rule (신규 추가)
 │
-├── skills/                         # Skill 파일 (에이전트별)
-│   ├── shared/                     # 공통 Skill
-│   │   ├── project-conventions.md  # 프로젝트 컨벤션
-│   │   └── error-handling.md       # 에러 처리 원칙
-│   │
-│   ├── main/                       # 메인 에이전트 Skill
-│   │   ├── task-classifier.md      # 태스크 분류
-│   │   ├── workflow-selector.md    # 워크플로우 선택
-│   │   ├── quality-gate.md         # 품질 게이트
-│   │   └── agent-orchestration.md  # 에이전트 조율
-│   │
-│   ├── orchestrator/               # 워크플로우 관리자 Skill
-│   │   ├── task-decomposition.md   # 작업 분해
-│   │   ├── agent-selection.md      # 에이전트 선택
-│   │   ├── workflow-orchestration.md  # 워크플로우 조율
-│   │   ├── dependency-management.md   # 의존성 관리
-│   │   ├── parallel-execution.md      # 병렬 실행
-│   │   └── progress-monitoring.md     # 진행 모니터링
-│   │
-│   ├── planner/                    # 기획 에이전트 Skill
-│   │   ├── requirement-analysis.md  # 요구사항 분석
-│   │   ├── architecture-design.md   # 아키텍처 설계
-│   │   ├── api-design.md           # API 설계
-│   │   ├── tech-stack-selection.md # 기술 스택 선정
-│   │   └── data-modeling.md        # 데이터 모델 설계
-│   │
-│   ├── developer/                  # 구현 에이전트 Skill
-│   │   ├── code-implementation.md  # 구현 체크리스트
-│   │   ├── refactoring-patterns.md # 리팩토링 패턴
-│   │   ├── dependency-management.md # 패키지 관리
-│   │   ├── testable-code.md        # 테스트 가능한 코드
-│   │   └── error-handling.md       # 에러 처리
-│   │
-│   ├── qa/                         # QA 에이전트 Skill
-│   │   ├── code-review.md          # 코드 리뷰
-│   │   ├── test-strategy.md        # 테스트 전략
-│   │   ├── unit-testing.md         # 단위 테스트
-│   │   ├── integration-testing.md  # 통합 테스트
-│   │   ├── e2e-testing.md          # E2E 테스트
-│   │   ├── coverage-check.md       # 커버리지 체크
-│   │   └── performance-validation.md # 성능 검증
-│   │
-│   ├── docs/                       # 문서화 에이전트 Skill
-│   │   ├── code-documentation.md   # 코드 문서
-│   │   ├── api-documentation.md    # API 문서
-│   │   ├── changelog-generation.md # CHANGELOG
-│   │   ├── readme-maintenance.md   # README
-│   │   ├── user-guide.md           # 사용자 가이드
-│   │   └── architecture-docs.md    # 아키텍처 문서
-│   │
-│   └── meta/                       # 메타 에이전트 Skill
-│       ├── system/                 # 시스템 개선 에이전트
-│       │   ├── performance-monitoring.md    # 성능 측정
-│       │   ├── bottleneck-analysis.md       # 병목 분석
-│       │   ├── rule-optimization.md         # Rule 개선
-│       │   ├── skill-generation.md          # Skill 생성/수정
-│       │   ├── workflow-optimization.md     # 워크플로우 최적화
-│       │   └── ab-testing.md                # A/B 테스트
-│       │
-│       └── mcp/                    # MCP 개발 에이전트
-│           ├── pattern-detection.md         # 패턴 감지
-│           ├── tool-gap-analysis.md         # 도구 부족 분석
-│           ├── mcp-design.md                # MCP 설계
-│           ├── mcp-implementation.md        # MCP 구현
-│           ├── mcp-testing.md               # MCP 테스트
-│           └── mcp-deployment.md            # MCP 배포
+├── skills/                         # 공통 Skill (SKILL.md 형식)
+│   ├── cli-usage/                  # CLI 사용 가이드
+│   │   └── SKILL.md
+│   ├── error-handling/             # 에러 처리 원칙
+│   │   └── SKILL.md
+│   └── project-conventions/       # 프로젝트 컨벤션
+│       └── SKILL.md
+│
+│   # 참고: 에이전트별 Skill은 .agents/skills/ 에 있습니다.
+│   # 예: .agents/skills/developer/references/, .agents/skills/planner/references/ 등
 │
 ├── metrics/                        # 성능 메트릭 데이터
 │   ├── cycles/                     # 사이클별 기록
@@ -187,25 +131,32 @@ alwaysApply: true
 
 ---
 
-### 3. Skills (에이전트별)
+### 3. Skills
 
-#### 3.1 shared/ - 공통 Skill
+#### 3.1 .cursor/skills/ - 공통 Skill (SKILL.md 형식)
 
-**shared/project-conventions.md**
+**.cursor/skills/project-conventions/SKILL.md**
 - 프로젝트 코딩 컨벤션
 - 네이밍 규칙 (snake_case, camelCase)
 - 파일 구조 규칙
 - 모든 에이전트가 참조
 
-**shared/error-handling.md**
+**.cursor/skills/error-handling/SKILL.md**
 - 에러 처리 패턴
 - try-catch 사용법
 - 에러 로깅 규칙
 - 구현 및 QA 에이전트가 주로 사용
 
+**.cursor/skills/cli-usage/SKILL.md**
+- CLI/터미널 명령어 실행 가이드
+- pnpm, git, turbo 등 사용 시 참조
+
+**에이전트별 Skill**: `.agents/skills/{agent}/references/` 에 위치합니다.
+- developer, planner, qa, docs-agent, git-workflow, security, orchestrator, system-improvement 등
+
 ---
 
-#### 3.2 main/ - 메인 에이전트 Skill
+#### 3.2 main/ - 메인 에이전트 Skill (→ .agents/skills/orchestrator/references/)
 
 **main/task-classifier.md**
 ```markdown

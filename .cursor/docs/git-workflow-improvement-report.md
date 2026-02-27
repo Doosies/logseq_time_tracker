@@ -199,7 +199,7 @@ git push -u origin feat/feature-name
 
 ### Skill 파일 (1개)
 
-3. **`.cursor/skills/git-workflow/change-analysis.md`**
+3. **`.agents/skills/git-workflow/references/change-analysis.md`**
    - 전제 조건 추가 (스테이징 영역 검증)
    - PowerShell 명령어 추가
    - 변경 정보 파일 구조 설명 추가
@@ -360,7 +360,7 @@ git push
 - [x] PowerShell 명령어 사용
 - [x] `.cursor/rules/git-workflow.mdc` 업데이트
 - [x] `.cursor/agents/git-workflow.md` 업데이트
-- [x] `.cursor/skills/git-workflow/change-analysis.md` 업데이트
+- [x] `.agents/skills/git-workflow/references/change-analysis.md` 업데이트
 - [x] GIT_COMMANDS.md 생성 로직 추가
 - [x] 품질 게이트 업데이트
 - [x] 예시 업데이트

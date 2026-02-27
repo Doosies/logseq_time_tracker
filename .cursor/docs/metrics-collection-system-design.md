@@ -911,7 +911,7 @@ await saveMetrics(`.cursor/metrics/cycles/${cycleId}.json`, metrics);
 - [AGENT_SYSTEM_DESIGN.md](../AGENT_SYSTEM_DESIGN.md): 전체 에이전트 시스템 설계
 - [cycle-template.json](../metrics/cycle-template.json): 메트릭 템플릿
 - [system-improvement.mdc](../rules/system-improvement.mdc): 시스템 개선 에이전트 규칙
-- [performance-monitoring.md](../skills/meta/system/performance-monitoring.md): 성능 모니터링 스킬
+- [performance-monitoring.md](../../.agents/skills/system-improvement/references/performance-monitoring.md): 성능 모니터링 스킬
 
 ---
 

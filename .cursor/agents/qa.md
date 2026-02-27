@@ -13,15 +13,15 @@ quality_criteria:
   performance_regression: 10% 이내
   security_vulnerabilities: 0개
 skills:
-  - qa/test-strategy.md
-  - qa/code-review.md
-  - qa/coverage-check.md
-  - qa/test-quality.md
-  - qa/svelte-testing.md
-  - qa/storybook-strategy.md
-  - qa/chrome-extension-testing.md
-  - shared/project-conventions.md
-  - shared/error-handling.md
+  - .agents/skills/qa/references/test-strategy.md
+  - .agents/skills/qa/references/code-review.md
+  - .agents/skills/qa/references/coverage-check.md
+  - .agents/skills/qa/references/test-quality.md
+  - .agents/skills/qa/references/svelte-testing.md
+  - .agents/skills/qa/references/storybook-strategy.md
+  - .agents/skills/qa/references/chrome-extension-testing.md
+  - .cursor/skills/project-conventions/SKILL.md
+  - .cursor/skills/error-handling/SKILL.md
 name: qa
 model: claude-4.6-sonnet-medium-thinking
 description: 테스트 및 품질 검증 전문 에이전트

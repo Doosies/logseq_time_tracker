@@ -16,7 +16,7 @@
 
 ### ✅ 1. Skill 파일 생성
 
-**파일**: `.cursor/skills/meta/system/metrics-collection.md`
+**파일**: `.agents/skills/system-improvement/references/metrics-collection.md`
 
 **내용**:
 - 메트릭 수집 방법 상세 설명

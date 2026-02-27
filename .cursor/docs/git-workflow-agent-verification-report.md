@@ -14,10 +14,10 @@ Git-Workflow 에이전트의 모든 구성 요소를 실제 시나리오로 테�
 - ✅ Rule: `.cursor/rules/git-workflow.mdc`
 - ✅ Agent: `.cursor/agents/git-workflow.md`
 - ✅ Skills:
-  - ✅ `.cursor/skills/git-workflow/commit-message-generation.md`
-  - ✅ `.cursor/skills/git-workflow/pr-description-generation.md`
-  - ✅ `.cursor/skills/git-workflow/change-analysis.md`
-  - ✅ `.cursor/skills/git-workflow/reviewer-recommendation.md`
+  - ✅ `.agents/skills/git-workflow/references/commit-message-generation.md`
+  - ✅ `.agents/skills/git-workflow/references/pr-description-generation.md`
+  - ✅ `.agents/skills/git-workflow/references/change-analysis.md`
+  - ✅ `.agents/skills/git-workflow/references/reviewer-recommendation.md`
 
 ---
 
@@ -29,10 +29,10 @@ Git-Workflow 에이전트의 모든 구성 요소를 실제 시나리오로 테�
 |------|------|------|------|
 | Rule | `.cursor/rules/git-workflow.mdc` | ✅ 존재 | 449줄, 완전한 구조 |
 | Agent | `.cursor/agents/git-workflow.md` | ✅ 존재 | 243줄, YAML front matter 포함 |
-| Skill: 커밋 메시지 | `.cursor/skills/git-workflow/commit-message-generation.md` | ✅ 존재 | 699줄, 상세한 가이드 |
-| Skill: PR 설명 | `.cursor/skills/git-workflow/pr-description-generation.md` | ✅ 존재 | 778줄, 템플릿 포함 |
-| Skill: 변경 분석 | `.cursor/skills/git-workflow/change-analysis.md` | ✅ 존재 | 947줄, 분석 로직 상세 |
-| Skill: 리뷰어 추천 | `.cursor/skills/git-workflow/reviewer-recommendation.md` | ✅ 존재 | 896줄, 추천 로직 완비 |
+| Skill: 커밋 메시지 | `.agents/skills/git-workflow/references/commit-message-generation.md` | ✅ 존재 | 699줄, 상세한 가이드 |
+| Skill: PR 설명 | `.agents/skills/git-workflow/references/pr-description-generation.md` | ✅ 존재 | 778줄, 템플릿 포함 |
+| Skill: 변경 분석 | `.agents/skills/git-workflow/references/change-analysis.md` | ✅ 존재 | 947줄, 분석 로직 상세 |
+| Skill: 리뷰어 추천 | `.agents/skills/git-workflow/references/reviewer-recommendation.md` | ✅ 존재 | 896줄, 추천 로직 완비 |
 
 **결과**: ✅ 모든 필수 파일 존재
 
@@ -699,7 +699,7 @@ function recommendReviewers(
 
 #### 1. 오타 수정
 
-**파일**: `.cursor/skills/git-workflow/commit-message-generation.md`  
+**파일**: `.agents/skills/git-workflow/references/commit-message-generation.md`  
 **위치**: 73줄  
 **수정 내용**:
 
@@ -715,7 +715,7 @@ const has_docs_files = changed_files.some(f =>
 
 #### 1. Type 결정 우선순위 개선
 
-**파일**: `.cursor/skills/git-workflow/commit-message-generation.md`  
+**파일**: `.agents/skills/git-workflow/references/commit-message-generation.md`  
 **위치**: 88-116줄  
 **개선 제안**:
 
@@ -739,7 +739,7 @@ if (has_test_files && !has_new_feature && !has_bug_fix) {
 
 #### 2. 설정 파일 분리 안내 추가
 
-**파일**: `.cursor/skills/git-workflow/reviewer-recommendation.md`  
+**파일**: `.agents/skills/git-workflow/references/reviewer-recommendation.md`  
 **위치**: 209줄 이후  
 **추가 내용**:
 

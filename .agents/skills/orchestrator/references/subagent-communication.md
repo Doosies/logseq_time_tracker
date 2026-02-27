@@ -57,8 +57,8 @@ description: 서브에이전트와의 효과적인 소통 방법
 
 **참고 문서**:
 - AGENTS.md (필수)
-- .cursor/skills/planner/requirement-analysis.md
-- .cursor/skills/planner/api-design.md
+- .agents/skills/planner/references/requirement-analysis.md
+- .agents/skills/planner/references/api-design.md
 
 **완료 조건**:
 - [ ] 요구사항 문서 작성
@@ -92,7 +92,7 @@ JWT 기반 사용자 인증 시스템 구축
 
 **참고 문서**:
 - AGENTS.md의 "API 설계" 섹션
-- .cursor/skills/planner/api-design.md
+- .agents/skills/planner/references/api-design.md
 
 **완료 조건**:
 - [ ] 요구사항 문서 (FR, NFR)
@@ -143,8 +143,8 @@ JWT 기반 사용자 인증 시스템 구축
 
 **참고 문서**:
 - AGENTS.md (필수)
-- .cursor/skills/developer/code-implementation.md
-- .cursor/skills/developer/testable-code.md
+- .agents/skills/developer/references/code-implementation.md
+- .agents/skills/developer/references/testable-code.md
 
 **완료 조건**:
 - [ ] Linter 오류 0개 (필수)
@@ -186,8 +186,8 @@ JWT 기반 사용자 인증 시스템 구축
 
 **참고 문서**:
 - AGENTS.md
-- .cursor/skills/developer/code-implementation.md
-- .cursor/skills/shared/error-handling.md
+- .agents/skills/developer/references/code-implementation.md
+- .cursor/skills/error-handling.md
 
 **완료 조건**:
 - [ ] Linter 오류 0개
@@ -227,8 +227,8 @@ JWT 기반 사용자 인증 시스템 구축
 
 **참고 문서**:
 - AGENTS.md
-- .cursor/skills/qa/test-strategy.md
-- .cursor/skills/qa/coverage-check.md
+- .agents/skills/qa/references/test-strategy.md
+- .agents/skills/qa/references/coverage-check.md
 
 **완료 조건**:
 - [ ] 모든 테스트 통과 (필수)
@@ -286,8 +286,8 @@ JWT 기반 사용자 인증 시스템 구축
 
 **참고 문서**:
 - AGENTS.md
-- .cursor/skills/docs/code-documentation.md
-- .cursor/skills/docs/readme-maintenance.md
+- .agents/skills/docs-agent/references/code-documentation.md
+- .agents/skills/docs-agent/references/readme-maintenance.md
 
 **완료 조건**:
 - [ ] Public API 100% 문서화
@@ -385,7 +385,7 @@ JWT 기반 사용자 인증 시스템 구축
 ✅ 좋은 예:
 참고 문서:
 - AGENTS.md의 "API 설계" 섹션 (RESTful 원칙)
-- .cursor/skills/developer/code-implementation.md (구현 체크리스트)
+- .agents/skills/developer/references/code-implementation.md (구현 체크리스트)
 
 ❌ 나쁜 예:
 "문서 참고해서 작업"

@@ -12,12 +12,12 @@ quality_criteria:
   prompt_injection_attempts: 차단율 100%
   unsafe_code_patterns: 0개
 skills:
-  - security/prompt-injection-defense.md
-  - security/sensitive-data-detection.md
-  - security/code-vulnerability-scan.md
-  - security/input-validation.md
-  - security/api-security-check.md
-  - shared/error-handling.md
+  - .agents/skills/security/references/prompt-injection-defense.md
+  - .agents/skills/security/references/sensitive-data-detection.md
+  - .agents/skills/security/references/code-vulnerability-scan.md
+  - .agents/skills/security/references/input-validation.md
+  - .agents/skills/security/references/api-security-check.md
+  - .cursor/skills/error-handling/SKILL.md
 name: security
 model: claude-4.6-opus-high-thinking
 description: 보안 검증 및 취약점 탐지 전문 에이전트

@@ -124,10 +124,10 @@ graph TB
 - `main-orchestrator.mdc`: 태스크 분류 기준, 워크플로우 선택 로직, 품질 게이트 기준
 
 **사용 Skill:**
-- `main/task-classifier.md`: 태스크 유형 분류 (새 기능/버그/리팩토링 등)
-- `main/workflow-selector.md`: 최적 워크플로우 선택
-- `main/quality-gate.md`: 최종 품질 검증 체크리스트
-- `main/agent-orchestration.md`: 단순 조율 vs 관리자 호출 판단
+- `orchestrator/references/task-classifier.md`: 태스크 유형 분류 (새 기능/버그/리팩토링 등)
+- `orchestrator/references/workflow-manager.md`: 최적 워크플로우 선택
+- `orchestrator/references/quality-gate.md`: 최종 품질 검증 체크리스트
+- `orchestrator/references/workflow-orchestration.md`: 단순 조율 vs 관리자 호출 판단
 
 **특징:**
 - 유일하게 Rule을 사용하는 에이전트
@@ -160,12 +160,12 @@ graph TB
 - 진행 상황 리포트
 
 **사용 Skill:**
-- `orchestrator/task-decomposition.md`: 작업 분해 전략
-- `orchestrator/agent-selection.md`: 에이전트 선택 기준
-- `orchestrator/workflow-orchestration.md`: 조율 프로토콜
-- `orchestrator/dependency-management.md`: 의존성 관리
-- `orchestrator/parallel-execution.md`: 병렬 실행 전략
-- `orchestrator/progress-monitoring.md`: 진행 추적
+- `orchestrator/references/task-decomposition.md`: 작업 분해 전략
+- `orchestrator/references/agent-selection.md`: 에이전트 선택 기준
+- `orchestrator/references/workflow-orchestration.md`: 조율 프로토콜
+- `orchestrator/references/dependency-management.md`: 의존성 관리
+- `orchestrator/references/parallel-execution.md`: 병렬 실행 전략
+- `orchestrator/references/progress-monitoring.md`: 진행 추적
 
 **특징:**
 - 조건부로만 호출됨
@@ -195,11 +195,11 @@ graph TB
 - 구현 가이드라인
 
 **사용 Skill:**
-- `planner/requirement-analysis.md`: 요구사항 추출 및 문서화
-- `planner/architecture-design.md`: 아키텍처 패턴 및 설계 원칙
-- `planner/api-design.md`: API 설계 가이드
-- `planner/tech-stack-selection.md`: 기술 선정 기준
-- `planner/data-modeling.md`: 데이터 모델 설계
+- `planner/references/requirement-analysis.md`: 요구사항 추출 및 문서화
+- `planner/references/architecture-design.md`: 아키텍처 패턴 및 설계 원칙
+- `planner/references/api-design.md`: API 설계 가이드
+- `planner/references/tech-stack-selection.md`: 기술 선정 기준
+- `planner/references/data-modeling.md`: 데이터 모델 설계
 
 **특징:**
 - 구현 전 설계 단계 담당
@@ -227,11 +227,11 @@ graph TB
 - 업데이트된 의존성
 
 **사용 Skill:**
-- `developer/code-implementation.md`: 구현 체크리스트
-- `developer/refactoring-patterns.md`: 리팩토링 패턴 카탈로그
-- `developer/dependency-management.md`: 패키지 관리 원칙
-- `developer/testable-code.md`: 테스트 가능한 코드 작성법
-- `developer/error-handling.md`: 에러 처리 패턴
+- `developer/references/code-implementation.md`: 구현 체크리스트
+- `developer/references/refactoring-patterns.md`: 리팩토링 패턴 카탈로그
+- `developer/references/dependency-management.md`: 패키지 관리 원칙
+- `developer/references/testable-code.md`: 테스트 가능한 코드 작성법
+- `developer/references/error-handling.md`: 에러 처리 패턴
 
 **컨벤션:**
 - 변수명: `snake_case`
@@ -268,13 +268,13 @@ graph TB
 - 성능 측정 결과
 
 **사용 Skill:**
-- `qa/code-review.md`: 리뷰 체크리스트 (보안, 성능, 가독성)
-- `qa/test-strategy.md`: 테스트 유형별 전략
-- `qa/unit-testing.md`: 단위 테스트 작성법
-- `qa/integration-testing.md`: 통합 테스트 설계
-- `qa/e2e-testing.md`: E2E 테스트 시나리오
-- `qa/coverage-check.md`: 커버리지 기준 (80%+)
-- `qa/performance-validation.md`: 성능 측정 및 기준
+- `qa/references/code-review.md`: 리뷰 체크리스트 (보안, 성능, 가독성)
+- `qa/references/test-strategy.md`: 테스트 유형별 전략
+- `qa/references/unit-testing.md`: 단위 테스트 작성법
+- `qa/references/integration-testing.md`: 통합 테스트 설계
+- `qa/references/e2e-testing.md`: E2E 테스트 시나리오
+- `qa/references/coverage-check.md`: 커버리지 기준 (80%+)
+- `qa/references/performance-validation.md`: 성능 측정 및 기준
 
 **품질 기준:**
 - Linter 오류: 0개
@@ -312,12 +312,12 @@ graph TB
 - 가이드 문서
 
 **사용 Skill:**
-- `docs/code-documentation.md`: JSDoc/TSDoc 작성 가이드
-- `docs/api-documentation.md`: OpenAPI 스펙 작성
-- `docs/changelog-generation.md`: CHANGELOG 형식 및 규칙
-- `docs/readme-maintenance.md`: README 구조 및 업데이트
-- `docs/user-guide.md`: 사용자 가이드 작성
-- `docs/architecture-docs.md`: 아키텍처 문서 작성
+- `docs-agent/references/code-documentation.md`: JSDoc/TSDoc 작성 가이드
+- `docs-agent/references/api-documentation.md`: OpenAPI 스펙 작성
+- `docs-agent/references/changelog-generation.md`: CHANGELOG 형식 및 규칙
+- `docs-agent/references/readme-maintenance.md`: README 구조 및 업데이트
+- `docs-agent/references/user-guide.md`: 사용자 가이드 작성
+- `docs-agent/references/architecture-docs.md`: 아키텍처 문서 작성
 
 **특징:**
 - 워크플로우의 마지막 단계
@@ -351,18 +351,18 @@ graph TB
 
 **개선 액션:**
 - Rule 수정: `.cursor/rules/*.mdc`
-- Skill 추가/수정: `.cursor/skills/*/*.md`
+- Skill 추가/수정: `.agents/skills/*/references/*.md`
 - AGENTS.md 업데이트
 - 워크플로우 패턴 조정
 - 에이전트 역할 재정의
 
 **사용 Skill:**
-- `meta/system/performance-monitoring.md`: 메트릭 수집 방법
-- `meta/system/bottleneck-analysis.md`: 병목 분석 기법
-- `meta/system/rule-optimization.md`: Rule 개선 전략
-- `meta/system/skill-generation.md`: Skill 생성 및 수정
-- `meta/system/workflow-optimization.md`: 워크플로우 최적화
-- `meta/system/ab-testing.md`: A/B 테스트 설계
+- `system-improvement/references/performance-monitoring.md`: 메트릭 수집 방법
+- `system-improvement/references/bottleneck-analysis.md`: 병목 분석 기법
+- `system-improvement/references/rule-optimization.md`: Rule 개선 전략
+- `system-improvement/references/skill-generation.md`: Skill 생성 및 수정
+- `system-improvement/references/workflow-optimization.md`: 워크플로우 최적화
+- `system-improvement/references/ab-testing.md`: A/B 테스트 설계
 
 **호출 시점:**
 - 자동: 20개 태스크마다
@@ -402,12 +402,12 @@ graph TB
 - 모니터링 도구
 
 **사용 Skill:**
-- `meta/mcp/pattern-detection.md`: 패턴 감지 알고리즘
-- `meta/mcp/tool-gap-analysis.md`: 도구 부족 분석
-- `meta/mcp/mcp-design.md`: MCP 서버 설계 원칙
-- `meta/mcp/mcp-implementation.md`: 구현 가이드
-- `meta/mcp/mcp-testing.md`: 테스트 전략
-- `meta/mcp/mcp-deployment.md`: 배포 및 등록
+- `developer/references/mcp/pattern-detection.md`: 패턴 감지 알고리즘
+- `developer/references/mcp/tool-gap-analysis.md`: 도구 부족 분석
+- `developer/references/mcp/mcp-design.md`: MCP 서버 설계 원칙
+- `developer/references/mcp/mcp-implementation.md`: 구현 가이드
+- `developer/references/mcp/mcp-testing.md`: 테스트 전략
+- `developer/references/mcp/mcp-deployment.md`: 배포 및 등록
 
 **출력:**
 ```
@@ -627,7 +627,7 @@ sequenceDiagram
 
 | 구분 | Rule (.mdc) | Skill (.md) | Agent 정의 (.md) | AGENTS.md |
 |------|-------------|-------------|------------------|-----------|
-| **위치** | `.cursor/rules/` | `.cursor/skills/` | `.cursor/agents/` | 프로젝트 루트 |
+| **위치** | `.cursor/rules/` | `.agents/skills/` + `.cursor/skills/` | `.cursor/agents/` | 프로젝트 루트 |
 | **대상** | 각 에이전트 전용 | 특정 에이전트 전용 | 각 에이전트 전의 | 모든 에이전트 공통 |
 | **목적** | 항상 적용되는 규칙 | 선택적으로 사용하는 절차 | 에이전트 역할 및 책임 정의 | 공통 컨벤션 |
 | **내용** | 판단 기준, 정책, 프로세스 | 체크리스트, 방법론 | 역할, 입출력, 원칙 | 코딩 컨벤션 |

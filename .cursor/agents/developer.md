@@ -12,16 +12,16 @@ coding_conventions:
   classes: PascalCase
   constants: UPPER_SNAKE_CASE
 skills:
-  - developer/code-implementation.md
-  - developer/refactoring-patterns.md
-  - developer/testable-code.md
-  - developer/auto-formatting.md
-  - developer/dependency-management.md
-  - developer/config-optimization.md
-  - developer/monorepo-patterns.md
-  - developer/svelte-conventions.md
-  - shared/project-conventions.md
-  - shared/error-handling.md
+  - .agents/skills/developer/references/code-implementation.md
+  - .agents/skills/developer/references/refactoring-patterns.md
+  - .agents/skills/developer/references/testable-code.md
+  - .agents/skills/developer/references/auto-formatting.md
+  - .agents/skills/developer/references/dependency-management.md
+  - .agents/skills/developer/references/config-optimization.md
+  - .agents/skills/developer/references/monorepo-patterns.md
+  - .agents/skills/developer/references/svelte-conventions.md
+  - .cursor/skills/project-conventions/SKILL.md
+  - .cursor/skills/error-handling/SKILL.md
 name: developer
 model: claude-4.6-sonnet-medium-thinking
 description: 코드 구현 및 리팩토링 전문 에이전트

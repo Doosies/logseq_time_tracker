@@ -16,15 +16,15 @@ trigger_conditions:
     - 재시도 평균 3회 이상
   manual: "@system-improve 최근 N개 태스크 분석"
 skills:
-  - meta/system/performance-monitoring.md
-  - meta/system/bottleneck-analysis.md
-  - meta/system/rule-optimization.md
-  - meta/system/skill-generation.md
-  - meta/system/workflow-optimization.md
-  - meta/system/ab-testing.md
-  - meta/system/metrics-collection.md
-  - meta/system/metrics-analysis.md
-  - meta/system/automated-improvement.md
+  - .agents/skills/system-improvement/references/performance-monitoring.md
+  - .agents/skills/system-improvement/references/bottleneck-analysis.md
+  - .agents/skills/system-improvement/references/rule-optimization.md
+  - .agents/skills/system-improvement/references/skill-generation.md
+  - .agents/skills/system-improvement/references/workflow-optimization.md
+  - .agents/skills/system-improvement/references/ab-testing.md
+  - .agents/skills/system-improvement/references/metrics-collection.md
+  - .agents/skills/system-improvement/references/metrics-analysis.md
+  - .agents/skills/system-improvement/references/automated-improvement.md
 name: system-improvement
 model: claude-4.6-opus-high-thinking
 description: 에이전트 시스템 성능 분석 및 자동 최적화 전문 에이전트

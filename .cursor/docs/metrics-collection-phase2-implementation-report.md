@@ -16,7 +16,7 @@
 
 ### ✅ 1. Skill 파일 업데이트
 
-**파일**: `.cursor/skills/meta/system/metrics-collection.md`
+**파일**: `.agents/skills/system-improvement/references/metrics-collection.md`
 
 **추가된 내용**:
 

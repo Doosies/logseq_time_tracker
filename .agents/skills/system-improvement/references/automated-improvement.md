@@ -172,7 +172,7 @@ function detectPerformanceDegradation(cycles: CycleMetrics[]): PerformancePatter
 
 **개선 방안**:
 1. Linter 자동 수정 가이드 Skill 추가
-   - 변경 사항: `.cursor/skills/developer/linter-fix-guide.md` 생성
+   - 변경 사항: `.agents/skills/developer/references/linter-fix-guide.md` 생성
      - 자주 발생하는 오류 10가지
      - 자동 수정 방법
      - 예방 체크리스트

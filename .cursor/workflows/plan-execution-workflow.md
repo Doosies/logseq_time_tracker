@@ -114,7 +114,7 @@
 **조건**: 8단계에서 에이전트 정의 파일을 수정한 경우
 
 1. **git-workflow** 서브에이전트 재호출
-2. `git add .cursor/agents/* .cursor/skills/*` 등
+2. `git add .cursor/agents/* .agents/skills/* .cursor/skills/*` 등
 3. 커밋 메시지: `chore(agents): improve subagent rules based on session analysis`
 
 ---

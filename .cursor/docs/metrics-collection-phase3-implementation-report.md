@@ -16,7 +16,7 @@
 
 ### ✅ 1. 일별/주별 리포트 자동 생성 로직 구현
 
-**파일**: `.cursor/skills/meta/system/metrics-collection.md` (Phase 3 섹션 추가)
+**파일**: `.agents/skills/system-improvement/references/metrics-collection.md` (Phase 3 섹션 추가)
 
 **구현 내용**:
 
@@ -61,7 +61,7 @@
 
 ### ✅ 2. 성능 트렌드 분석 Skill 생성
 
-**파일**: `.cursor/skills/meta/system/metrics-analysis.md` (신규 생성)
+**파일**: `.agents/skills/system-improvement/references/metrics-analysis.md` (신규 생성)
 
 **구현 내용**:
 
@@ -110,7 +110,7 @@
 
 ### ✅ 3. 병목 지점 시각화 Markdown 리포트 생성
 
-**파일**: `.cursor/skills/meta/system/metrics-collection.md` (성능 리포트 섹션 추가)
+**파일**: `.agents/skills/system-improvement/references/metrics-collection.md` (성능 리포트 섹션 추가)
 
 **구현 내용**:
 

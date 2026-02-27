@@ -568,7 +568,7 @@ function linkIssues(commit_message: string, changed_files: string[]): string[] {
 #### Skill 파일 구조
 
 ```
-.cursor/skills/git-workflow/
+.agents/skills/git-workflow/references/
 ├── commit-message-generation.md    # 커밋 메시지 생성 가이드
 ├── pr-description-generation.md    # PR 설명 생성 가이드
 ├── change-analysis.md               # 변경 사항 분석 가이드

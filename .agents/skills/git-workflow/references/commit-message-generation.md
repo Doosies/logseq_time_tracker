@@ -136,7 +136,7 @@ function determineScope(changed_files: string[]): string | null {
         scope = parts[1]; // plugin, mcp-server 등
       }
     }
-    // .cursor/rules/developer.mdc → rules
+    // .cursor/rules/main-orchestrator.mdc → rules
     else if (file.startsWith('.cursor/')) {
       const parts = file.split('/');
       if (parts.length >= 2) {
@@ -189,7 +189,7 @@ changed_files = ['packages/plugin/src/App.tsx', 'packages/mcp-server/src/index.t
 // → scope: null (여러 scope)
 
 // 예시 3: .cursor 디렉토리 변경
-changed_files = ['.cursor/rules/developer.mdc', '.cursor/skills/qa/test-strategy.md'];
+changed_files = ['.cursor/rules/main-orchestrator.mdc', '.agents/skills/qa/references/test-strategy.md'];
 // → scope: null (여러 scope)
 
 // 예시 4: 단일 모듈 변경

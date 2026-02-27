@@ -52,4 +52,4 @@ pnpm build --no-offline   # run 명령에 불필요한 옵션
 
 - `pnpm install/add/update`에만 `--no-offline` 옵션 필수
 - `pnpm run/exec/build/test` 등 스크립트 실행 명령에는 추가하지 않음
-- CLI 사용 상세 가이드: `.cursor/skills/shared/cli-usage.md` 참조
+- CLI 사용 상세 가이드: `.cursor/skills/cli-usage/SKILL.md` 참조

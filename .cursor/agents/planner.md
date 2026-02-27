@@ -7,11 +7,11 @@ responsibilities:
   - 데이터 모델 설계
   - 기술 스택 선정
 skills:
-  - planner/requirement-analysis.md
-  - planner/architecture-design.md
-  - planner/api-design.md
-  - shared/project-conventions.md
-  - shared/error-handling.md
+  - .agents/skills/planner/references/requirement-analysis.md
+  - .agents/skills/planner/references/architecture-design.md
+  - .agents/skills/planner/references/api-design.md
+  - .cursor/skills/project-conventions/SKILL.md
+  - .cursor/skills/error-handling/SKILL.md
 name: planner
 model: claude-4.6-opus-high-thinking
 description: 요구사항 분석 및 시스템 설계 전문 에이전트
