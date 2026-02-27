@@ -15,11 +15,7 @@
     setContext('checkbox-list', {});
 </script>
 
-<Provider
-    {items}
-    {...(onreorder != null && { onreorder })}
-    {...(extra_class != null && { class: extra_class })}
->
+<Provider {items} {...onreorder != null && { onreorder }} {...extra_class != null && { class: extra_class }}>
     {#each items as _item, index (_item.id)}
         <Sortable id={_item.id} {index}>
             {#snippet children({ handleAttach })}

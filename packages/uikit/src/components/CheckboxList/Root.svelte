@@ -39,9 +39,4 @@ Wraps Dnd.Provider to provide a sortable list of checkbox items.
     const class_name = $derived([checkbox_list_container, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveRoot
-    {items}
-    {...(onreorder != null && { onreorder })}
-    {item}
-    class={class_name}
-/>
+<PrimitiveRoot {items} {...onreorder != null && { onreorder }} {item} class={class_name} />
