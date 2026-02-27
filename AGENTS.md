@@ -130,7 +130,7 @@ function deleteUser(id: string) {
 
 | 교훈 | 적용 에이전트 | 핵심 규칙 |
 |------|----------------|-----------|
-| 외부 라이브러리 API 추측 금지 | Developer | `.d.ts` 파일 직접 확인, 메서드/프로퍼티명 추측 금지 |
+| 외부 라이브러리 API 추측 금지 | Developer | `.d.ts` 파일 직접 확인, **공식 문서 권장 패턴** 확인, 메서드/프로퍼티명 추측 금지 |
 | 라이브러리 마이그레이션 시 UI/UX 보존 | Developer, Planner | 기존 variant/시각 요소 문서화 후 동일 구현 |
 | 테스트 setup에서 prototype 오염 금지 | QA | `Object.prototype` 등 built-in 수정 절대 금지 |
 | 에러 억제 금지 | QA | `process.on('uncaughtException')` 등 에러 숨기기 금지, 근본 원인 분석 |

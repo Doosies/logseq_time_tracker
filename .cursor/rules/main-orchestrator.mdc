@@ -855,7 +855,7 @@ Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검
 
 **검증 절차**:
 1. **ReadLints** 실행 (변경된 파일 경로 지정)
-2. **`pnpm type-check`** 실행 (타입 오류 확인)
+2. **`pnpm type-check`** 실행 (워크스페이스 루트, Stories 포함 전체 타입 오류 확인)
 3. **위험 패턴 스캔**: 변경된 파일에서 다음 패턴 grep 검사
    - `Object.prototype` 수정: `Object.defineProperty(Object.prototype` 등
    - `Array.prototype` 수정
@@ -905,7 +905,7 @@ Task tool 사용:
 ### 구현 단계 후
 
 **체크리스트**:
-- [ ] **TypeScript 타입 검증 통과** (필수! `pnpm type-check` 실행)
+- [ ] **TypeScript 타입 검증 통과** (필수! 워크스페이스 루트 `pnpm type-check`, Stories 포함)
 - [ ] **ReadLints 실행하여 Linter 오류 0개 확인** (필수!)
 - [ ] **Prettier 포매팅 적용 확인** (필수!)
 - [ ] 설계 문서와 일치하는가?

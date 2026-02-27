@@ -244,7 +244,8 @@ qa.mdc 수정:
 - 가장 많은 토큰 사용 단계 찾기 (비용 병목)
 - Impact vs Effort 매트릭스 작성
 - **교훈 기반 에러 패턴 분석**: 에러 로그/메트릭에서 다음 패턴 식별 시 해당 에이전트 Rule 검토
-  - 외부 라이브러리 API 오사용 (메서드명/타입 추측) → developer.md 외부 라이브러리 규칙 강화
+  - 외부 라이브러리 API 오사용 (메서드명/타입 추측, **공식 문서 패턴 미준수**) → developer.md 외부 라이브러리 규칙 강화
+  - type-check 검증 누락 (Stories 포함 pre-existing 에러) → developer.md type-check 범위 명확화, main-orchestrator 검증 강화
   - 라이브러리 마이그레이션 시 UI/UX 회귀 → planner.md 마이그레이션 체크리스트, developer.md 마이그레이션 규칙
   - prototype 오염, 에러 억제 (테스트 setup) → qa.md 테스트 환경 패치 규칙 강화
   - 위험 패턴이 검증 없이 적용됨 → main-orchestrator 서브에이전트 결과 검증 규칙 강화

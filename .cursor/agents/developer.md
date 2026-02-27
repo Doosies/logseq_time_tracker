@@ -245,7 +245,7 @@ apiClient.ts      // camelCase는 hook만
 - [ ] 주석 최소화 (코드로 설명)
 
 ### 구현 후 체크
-- [ ] **TypeScript 타입 검증** (필수! `pnpm type-check` 실행)
+- [ ] **TypeScript 타입 검증** (필수! 워크스페이스 루트에서 `pnpm type-check` 실행 - Stories 포함 모든 패키지 검증)
 - [ ] **ReadLints 도구로 Linter 오류 확인** (필수! 파일 수정 후 즉시 실행)
 - [ ] **Linter 오류 0개** (필수! 오류 발견 시 `pnpm lint:fix` 실행 후 재확인)
 - [ ] **Prettier 포매팅 확인** (필수! `pnpm format` 실행)
@@ -257,7 +257,7 @@ apiClient.ts      // camelCase는 hook만
 
 코드 작성 완료 전 **반드시** 확인:
 
-- [ ] **TypeScript 타입 검증 통과** (필수! `pnpm type-check` 실행)
+- [ ] **TypeScript 타입 검증 통과** (필수! 워크스페이스 루트 `pnpm type-check` - Stories `.stories.ts` 포함 전체 검증)
 - [ ] **Linter 오류 0개** (필수! `pnpm lint` 실행)
 - [ ] 설계 문서와 100% 일치
 - [ ] 모든 함수에 에러 처리
@@ -394,13 +394,19 @@ QA 에이전트를 위한 테스트 포인트:
    - 예: `createSortable`의 반환 객체 → `.d.ts`에서 실제 property명(`attachHandle` vs `handleAttach`) 확인
    - 예: `CreateSortableInput`의 `handle` 필드 → `Omit`으로 제외되었는지, 타입이 `HTMLElement`인지 확인
 
-2. **추측 금지 원칙**
-   - 라이브러리의 메서드명, 프로퍼티명, 파라미터 순서/타입을 유추하지 말 것
+2. **공식 문서(README, 공식 가이드)의 권장 사용 패턴 확인**
+   - Svelte/Runes, React Hooks 등 반응형 프레임워크에서 라이브러리 사용 시 **공식 문서의 Usage 섹션** 확인
+   - `.d.ts`에는 시그니처만 있고, **올바른 사용 패턴**(예: getter 함수 vs `$derived.by`)은 문서에만 있을 수 있음
+   - 예: `@dnd-kit/svelte` → getter 함수 패턴(`get id() { return id; }`) 권장, `$derived.by(() => createSortable(...))`는 인스턴스 매번 재생성되어 부적절
+
+3. **추측 금지 원칙**
+   - 라이브러리의 메서드명, 프로퍼티명, 파라미터 순서/타입, 사용 패턴을 유추하지 말 것
    - 타입 체크(`pnpm type-check`)를 실행하면 발견되는 오류는 구현 전에 반드시 해결
 
-3. **검증 절차**
+4. **검증 절차**
    - 사용할 API의 `.d.ts` 파일 경로 확인 (예: `node_modules/@dnd-kit/svelte/dist/index.d.ts`)
    - 해당 파일을 읽고 실제 시그니처 확인 후 코드 작성
+   - 공식 문서에서 권장 패턴 확인 후 코드 작성
    - 작성 직후 `pnpm type-check` 실행하여 타입 오류 0개 확인
 
 ### 라이브러리 마이그레이션 시 (필수)
@@ -429,7 +435,7 @@ UI/UX 관련 라이브러리(예: DnD, 모달, 폼)를 교체할 때는 **기존
 ### 자동화 프로세스
 ```
 1. 파일 작성/수정
-2. pnpm type-check 실행 (타입 오류 우선 확인)
+2. 워크스페이스 루트에서 pnpm type-check 실행 (타입 오류 우선 확인, Stories 포함)
 3. 타입 오류 발견 시 즉시 수정
 4. ReadLints 실행 (편집한 파일 경로 지정)
 5. 오류 발견 시:
