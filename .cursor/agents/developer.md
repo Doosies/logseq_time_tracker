@@ -214,6 +214,14 @@ apiClient.ts      // camelCase는 hook만
 > (props, 로컬 변수, $state/$derived 변수 모두 camelCase - TypeScript/Svelte 생태계 표준)
 > 일반 .ts 파일의 `snake_case` 규칙과 다름
 
+### 모듈 레벨 상태 스토어 (Svelte 5 $state)
+
+Svelte 5의 모듈 레벨 `$state()` 또는 `let _is_initialized` 패턴을 사용하는 스토어는:
+
+1. **reset 함수 필수 제공**: `export function resetXxx(): void` 형태로 초기화/리셋 함수 노출
+2. **Storybook 호환**: 해당 스토어를 사용하는 컴포넌트의 StoryWrapper에서 **onMount 시점에 reset() 호출**하여 스토리 간 격리 보장
+3. **이유**: Storybook test runner는 스토리를 순차 실행할 때 동일 모듈 인스턴스를 재사용. reset 없으면 이전 스토리 상태가 유지됨
+
 ### React 프로젝트 (time-tracker)
 - `verbatimModuleSyntax: true` 사용 가능
 - `jsx: "react-jsx"` 설정

@@ -267,6 +267,11 @@ describe('calculateTotal', () => {
 - [ ] 성능 저하 10% 이내
 - [ ] 보안 취약점 없음
 
+### Story 품질 검증 (스토리 존재 시)
+- [ ] **모든 Story에 play function 존재** (storybook-strategy.md 참조)
+- [ ] play function에서 최소 1개 이상 assertion (렌더링/역할/텍스트 검증)
+- [ ] 모듈 레벨 상태 사용하는 컴포넌트: StoryWrapper onMount에서 reset 함수 호출 여부 확인
+
 **Skill 사용**: `qa/test-quality.md` - 상세 체크리스트 참조
 
 ## 테스트 작성 원칙

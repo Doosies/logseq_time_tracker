@@ -277,7 +277,13 @@ export const ZeusEnvironment: Story = {
 
 ---
 
-## Play Function (인터랙션 테스트)
+## Play Function (인터랙션 테스트) - **필수**
+
+**모든 Story에는 play function이 있어야 합니다.** 회귀 테스트가 없으면 UI 변경 시 검증이 불가합니다.
+
+- **필수**: 각 `export const Xxx: Story`에 `play: async ({ canvasElement, ... }) => { ... }` 포함
+- **최소 검증**: `expect(canvas.getByRole(...)).toBeInTheDocument()` 또는 해당 스토리 특성에 맞는 assertion
+- **예외**: 정적 시각 확인만 필요한 경우에도 최소한 `toBeInTheDocument()` 수준 검증 포함
 
 UI 컴포넌트의 렌더링/인터랙션 테스트는 Storybook play function으로 수행합니다.
 별도 `.test.ts` 파일 대신 Story의 `play`에서 처리합니다.
@@ -483,6 +489,7 @@ const meta = {
 - [ ] 모든 props 변형에 대한 Story
 - [ ] argTypes로 Controls 패널 설정
 - [ ] 콜백 props에 `fn()` 등록
+- [ ] **모든 Story에 play function 포함** (필수!)
 - [ ] play function으로 렌더링/인터랙션 검증
 - [ ] disabled/error 등 특수 상태 Story
 - [ ] Chrome API 의존 컴포넌트는 StoryWrapper에서 스토어 초기화
