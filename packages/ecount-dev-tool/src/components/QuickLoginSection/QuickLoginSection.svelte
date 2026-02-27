@@ -44,33 +44,7 @@
         }));
     }
 
-    const CLICK_THRESHOLD_PX = 5;
-    const CLICK_TIME_LIMIT_MS = 300;
-
-    function handleCellPointerDown(event: PointerEvent, index: number, account: LoginAccount): void {
-        const target = event.target as HTMLElement;
-        if (target.closest('.remove-btn')) return;
-
-        const start_x = event.clientX;
-        const start_y = event.clientY;
-        const start_time = Date.now();
-        const pointer_id = event.pointerId;
-
-        function onPointerUp(e: PointerEvent): void {
-            if (e.pointerId !== pointer_id) return;
-            document.removeEventListener('pointerup', onPointerUp, true);
-
-            const dx = Math.abs(e.clientX - start_x);
-            const dy = Math.abs(e.clientY - start_y);
-            const dt = Date.now() - start_time;
-
-            if (dx < CLICK_THRESHOLD_PX && dy < CLICK_THRESHOLD_PX && dt < CLICK_TIME_LIMIT_MS) {
-                handleAccountCellClick(index, account);
-            }
-        }
-
-        document.addEventListener('pointerup', onPointerUp, true);
-    }
+    const DRAG_ACTIVATION_DISTANCE = 5;
 
     const can_add = $derived(
         !is_submitting && new_company.trim() !== '' && new_id.trim() !== '' && new_password.trim() !== '',
@@ -228,7 +202,12 @@
             {/if}
 
             {#if is_editing}
-                <Dnd.Provider items={dnd_items} onreorder={handleDndReorder} class="account-grid editing">
+                <Dnd.Provider
+                    items={dnd_items}
+                    onreorder={handleDndReorder}
+                    class="account-grid editing"
+                    activation_distance={DRAG_ACTIVATION_DISTANCE}
+                >
                     {#each dnd_items as item, i (item.id)}
                         <Dnd.Sortable id={item.id} index={i}>
                             {#snippet children({ handleAttach })}
@@ -237,7 +216,7 @@
                                     style="animation-delay: {(i % 5) * -0.15}s"
                                     role="button"
                                     tabindex="0"
-                                    onpointerdown={(e) => handleCellPointerDown(e, i, item.account)}
+                                    onclick={() => handleAccountCellClick(i, item.account)}
                                     onkeydown={(e) => {
                                         if (e.key === 'Enter' || e.key === ' ') {
                                             e.preventDefault();

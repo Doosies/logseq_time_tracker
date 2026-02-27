@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@dnd-kit/dom':
+      specifier: ^0.3.2
+      version: 0.3.2
     '@dnd-kit/helpers':
       specifier: ^0.3.2
       version: 0.3.2
@@ -407,6 +410,9 @@ importers:
 
   packages/uikit:
     dependencies:
+      '@dnd-kit/dom':
+        specifier: 'catalog:'
+        version: 0.3.2
       '@dnd-kit/helpers':
         specifier: 'catalog:'
         version: 0.3.2

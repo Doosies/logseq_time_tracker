@@ -6,6 +6,7 @@ catalog:
     svelte: ^5.50.0
     '@sveltejs/vite-plugin-svelte': ^6.2.4
     '@dnd-kit/svelte': ^0.3.2
+    '@dnd-kit/dom': ^0.3.2
     '@dnd-kit/helpers': ^0.3.2
     svelte-check: ^4.4.4
 
