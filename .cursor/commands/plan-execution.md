@@ -16,7 +16,7 @@
 
 1. **플랜 모드 (planner)** ← planner 서브에이전트  
    - 요구사항 분석, 작업 분해, TODO/플랜 파일 생성  
-   - 각 작업에 서브에이전트 할당 (developer, planner, explore 등)  
+   - 각 작업에 서브에이전트 할당 (developer, planner, generalPurpose 등)  
    - 직렬/병렬 실행 순서 정의  
    - 사용자 승인 후 진행  
 

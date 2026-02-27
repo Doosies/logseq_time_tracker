@@ -61,7 +61,7 @@ UI 컴포넌트의 인터랙션 테스트는 Storybook play function으로 수�
 
 ```typescript
 import { within, userEvent } from 'storybook/test';
-import type { Meta, StoryObj } from '@storybook/svelte';
+import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 
 const meta: Meta = {

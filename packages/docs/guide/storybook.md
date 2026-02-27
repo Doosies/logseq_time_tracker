@@ -17,7 +17,7 @@ CSF3 (Component Story Format 3) 형식으로 작성합니다. Svelte 컴포넌�
 ### 기본 스토리
 
 ```typescript
-import type { Meta, StoryObj } from '@storybook/svelte';
+import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 
 const meta: Meta = {

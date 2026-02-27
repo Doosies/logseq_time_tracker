@@ -29,11 +29,9 @@ Read from `references/` directory as needed:
 
 ### Subagent Coordination
 - `references/subagent-communication.md` - Subagent communication protocol
-- `references/agent-selection.md` - Agent selection criteria
 - `references/task-decomposition.md` - Task decomposition methodology
 
 ### Execution Management
 - `references/parallel-execution.md` - Parallel execution strategies
 - `references/workflow-orchestration.md` - Workflow orchestration patterns
-- `references/dependency-management.md` - Task dependency management
 - `references/progress-monitoring.md` - Progress monitoring and reporting
