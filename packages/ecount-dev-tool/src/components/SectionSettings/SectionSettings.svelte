@@ -94,6 +94,8 @@
         display: flex;
         justify-content: flex-end;
         margin-bottom: var(--space-xs);
+        margin-left: auto;
+        width: fit-content;
     }
 
     .panel-title {

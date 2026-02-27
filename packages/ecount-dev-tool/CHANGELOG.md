@@ -24,6 +24,7 @@
 
 ### Fixed
 
+- 섹션 설정 팝업이 App 영역 클릭 시 닫히지 않던 버그 수정 (`SectionSettings`)
 - Drag handle hover scope (only bar, not entire card content)
 - Drag feedback color (fallback values for theme scope issue)
 - Button height shrink in edit mode
