@@ -359,6 +359,16 @@
             opacity var(--transition-normal);
     }
 
+    .remove-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+    }
+
     .remove-btn:hover {
         opacity: 0.85;
         transform: scale(1.2);
