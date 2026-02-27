@@ -1,5 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import { resetServerUi } from '#stores/server_ui.svelte';
     import { initializeTabState } from '#stores/current_tab.svelte';
     import ServerManager from '../ServerManager.svelte';
 
@@ -12,6 +13,7 @@
     let ready = $state(false);
 
     onMount(async () => {
+        resetServerUi();
         const set_url = (globalThis as unknown as { __storybook_set_tab_url?: (u: string) => void })
             .__storybook_set_tab_url;
         if (set_url) {

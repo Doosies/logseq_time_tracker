@@ -58,3 +58,11 @@ export function initializeServerUi(parsed: ParsedUrl): void {
         _v3_value = parsed.v3_domain;
     }
 }
+
+export function resetServerUi(): void {
+    _v5_value = '';
+    _v3_value = '';
+    _v5_text_mode = false;
+    _v3_text_mode = false;
+    _is_initialized = false;
+}

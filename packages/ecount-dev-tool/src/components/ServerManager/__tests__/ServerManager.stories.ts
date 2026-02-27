@@ -29,6 +29,8 @@ export const ZeusEnvironment: Story = {
         await expect(canvas.getByText('V5')).toBeInTheDocument();
         await expect(canvas.getByText('V3')).toBeInTheDocument();
         await expect(canvas.getByRole('button', { name: '서버 적용' })).toBeInTheDocument();
+        const comboboxes = canvas.getAllByRole('combobox');
+        await expect(comboboxes).toHaveLength(2);
     },
 };
 
@@ -36,10 +38,26 @@ export const TestEnvironment: Story = {
     args: {
         url: 'https://onetestba1.ecount.com/ec5/view/erp?__v3domains=test',
     },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('V5')).toBeInTheDocument();
+        await expect(canvas.getByText('V3')).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '서버 적용' })).toBeInTheDocument();
+        const textboxes = canvas.getAllByRole('textbox');
+        await expect(textboxes).toHaveLength(2);
+        const comboboxes = canvas.queryAllByRole('combobox');
+        await expect(comboboxes).toHaveLength(0);
+    },
 };
 
 export const UnsupportedEnvironment: Story = {
     args: {
         url: 'https://other.ecount.com/some/path',
+    },
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await expect(canvas.getByText('V5')).toBeInTheDocument();
+        await expect(canvas.getByText('V3')).toBeInTheDocument();
+        await expect(canvas.getByRole('button', { name: '서버 적용' })).toBeInTheDocument();
     },
 };
