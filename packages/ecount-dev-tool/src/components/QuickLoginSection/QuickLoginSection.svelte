@@ -7,8 +7,11 @@
     import {
         getAccounts,
         addAccount,
+        updateAccount,
         removeAccount,
         reorderAccounts,
+        restoreAccounts,
+        getAccountsSnapshot,
         isDuplicate,
         getAccountKey,
     } from '#stores/accounts.svelte';
@@ -26,6 +29,8 @@
     let new_company = $state('');
     let new_id = $state('');
     let new_password = $state('');
+    let editing_index: number | null = $state(null);
+    let accounts_snapshot = $state<LoginAccount[]>([]);
 
     const accounts = $derived(getAccounts());
     const tab = $derived(getTabState());
@@ -42,6 +47,13 @@
     const can_add = $derived(
         !is_submitting && new_company.trim() !== '' && new_id.trim() !== '' && new_password.trim() !== '',
     );
+
+    function resetForm(): void {
+        editing_index = null;
+        new_company = '';
+        new_id = '';
+        new_password = '';
+    }
 
     function handleLogin(account: LoginAccount): void {
         if (is_editing) return;
@@ -72,9 +84,7 @@
                 password: new_password.trim(),
             });
             if (success) {
-                new_company = '';
-                new_id = '';
-                new_password = '';
+                resetForm();
                 syncDndItems();
             } else {
                 showError('저장에 실패했습니다.');
@@ -84,21 +94,75 @@
         }
     }
 
+    async function handleUpdate(): Promise<void> {
+        if (!can_add || editing_index === null) return;
+        is_submitting = true;
+        try {
+            const success = await updateAccount(editing_index, {
+                company: new_company.trim(),
+                id: new_id.trim(),
+                password: new_password.trim(),
+            });
+            if (success) {
+                resetForm();
+                syncDndItems();
+            } else {
+                showError('수정에 실패했습니다.');
+            }
+        } finally {
+            is_submitting = false;
+        }
+    }
+
+    function handleAccountCellClick(index: number, account: LoginAccount): void {
+        editing_index = index;
+        new_company = account.company;
+        new_id = account.id;
+        new_password = account.password;
+    }
+
     async function handleRemove(index: number): Promise<void> {
         await removeAccount(index);
         syncDndItems();
+        if (editing_index === index) {
+            resetForm();
+        } else if (editing_index !== null && editing_index > index) {
+            editing_index = editing_index - 1;
+        }
     }
 
     async function handleDndReorder(new_items: DndAccountItem[]): Promise<void> {
         dnd_items = new_items;
         await reorderAccounts(new_items.map((i) => i.account));
+        if (editing_index !== null) {
+            resetForm();
+        }
     }
 
     function toggleEdit(): void {
         is_editing = !is_editing;
         if (is_editing) {
+            accounts_snapshot = getAccountsSnapshot();
             syncDndItems();
+        } else {
+            resetForm();
         }
+    }
+
+    async function handleCancel(): Promise<void> {
+        const ok = await restoreAccounts(accounts_snapshot);
+        if (ok) {
+            syncDndItems();
+        } else {
+            showError('복원에 실패했습니다.');
+        }
+        is_editing = false;
+        resetForm();
+    }
+
+    function handleApply(): void {
+        is_editing = false;
+        resetForm();
     }
 </script>
 
@@ -106,9 +170,14 @@
     <Section.Header>
         <Section.Title>빠른 로그인</Section.Title>
         <Section.Action>
-            <button class="edit-toggle" onclick={toggleEdit}>
-                {is_editing ? '완료' : '편집'}
-            </button>
+            {#if is_editing}
+                <div class="edit-actions">
+                    <button class="cancel-btn" type="button" onclick={handleCancel}>취소</button>
+                    <button class="apply-btn" type="button" onclick={handleApply}>적용</button>
+                </div>
+            {:else}
+                <button class="edit-toggle" type="button" onclick={toggleEdit}>편집</button>
+            {/if}
         </Section.Action>
     </Section.Header>
     <Section.Content>
@@ -122,7 +191,19 @@
                     {#each dnd_items as item, i (item.id)}
                         <Dnd.Sortable id={item.id} index={i}>
                             {#snippet children({ handleAttach })}
-                                <div class="account-cell-wrap jiggle" style="animation-delay: {(i % 5) * -0.15}s">
+                                <div
+                                    class="account-cell-wrap jiggle {editing_index === i ? 'editing' : ''}"
+                                    style="animation-delay: {(i % 5) * -0.15}s"
+                                    role="button"
+                                    tabindex="0"
+                                    onclick={() => handleAccountCellClick(i, item.account)}
+                                    onkeydown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            e.preventDefault();
+                                            handleAccountCellClick(i, item.account);
+                                        }
+                                    }}
+                                >
                                     <span
                                         data-drag-handle
                                         aria-label="드래그하여 계정 순서 변경"
@@ -167,7 +248,14 @@
                 <TextInput bind:value={new_company} placeholder="회사코드" />
                 <TextInput bind:value={new_id} placeholder="아이디" />
                 <TextInput bind:value={new_password} placeholder="비밀번호" />
-                <Button variant="primary" size="sm" disabled={!can_add} onclick={handleAdd}>추가</Button>
+                <Button
+                    variant="primary"
+                    size="sm"
+                    disabled={!can_add}
+                    onclick={editing_index !== null ? handleUpdate : handleAdd}
+                >
+                    {editing_index !== null ? '수정' : '추가'}
+                </Button>
             </div>
             {#if error_message}
                 <p class="error-msg">{error_message}</p>
@@ -197,6 +285,54 @@
     }
 
     .edit-toggle:active {
+        background-color: var(--color-border);
+    }
+
+    .edit-actions {
+        display: flex;
+        gap: var(--space-xs);
+        align-items: center;
+    }
+
+    .cancel-btn {
+        background: none;
+        border: none;
+        border-radius: var(--radius-sm);
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        cursor: pointer;
+        padding: var(--space-xs) var(--space-sm);
+        transition:
+            background-color var(--transition-normal),
+            color var(--transition-normal);
+    }
+
+    .cancel-btn:hover {
+        background-color: var(--color-surface);
+        color: var(--color-text);
+    }
+
+    .apply-btn {
+        background: none;
+        border: none;
+        border-radius: var(--radius-sm);
+        color: var(--color-primary);
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-bold);
+        cursor: pointer;
+        padding: var(--space-xs) var(--space-sm);
+        transition:
+            background-color var(--transition-normal),
+            color var(--transition-normal);
+    }
+
+    .apply-btn:hover {
+        background-color: var(--color-surface);
+        color: var(--color-primary-hover);
+    }
+
+    .apply-btn:active {
         background-color: var(--color-border);
     }
 
@@ -334,6 +470,12 @@
 
     :global(.account-cell-wrap) :global([data-drag-handle]:active) {
         cursor: grabbing;
+    }
+
+    :global(.account-cell-wrap.editing) {
+        outline: 2px solid var(--color-background);
+        outline-offset: 2px;
+        box-shadow: 0 0 0 2px var(--color-primary);
     }
 
     .remove-btn {

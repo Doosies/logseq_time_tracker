@@ -128,4 +128,32 @@ export async function reorderAccounts(new_list: LoginAccount[]): Promise<boolean
     }, '계정 순서 변경 실패:');
 }
 
+export async function updateAccount(index: number, account: LoginAccount): Promise<boolean> {
+    if (!is_loaded) return false;
+    if (index < 0 || index >= accounts.length) return false;
+
+    const key = getAccountKey(account);
+    const is_dup = accounts.some((a, i) => i !== index && getAccountKey(a) === key);
+    if (is_dup) return false;
+
+    return withSync(() => {
+        const next = [...accounts];
+        next[index] = account;
+        accounts = next;
+    }, '계정 수정 실패:');
+}
+
+export async function restoreAccounts(snapshot: LoginAccount[]): Promise<boolean> {
+    if (!is_loaded) return false;
+    if (!isValidAccountArray(snapshot)) return false;
+
+    return withSync(() => {
+        accounts = deduplicateAccounts(snapshot);
+    }, '계정 복원 실패:');
+}
+
+export function getAccountsSnapshot(): LoginAccount[] {
+    return $state.snapshot(accounts);
+}
+
 export { getAccountKey };
