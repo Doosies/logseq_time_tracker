@@ -174,6 +174,10 @@ export const Primary: Story = {
 
 스토어 초기화가 필요한 컴포넌트는 StoryWrapper에서 `onMount`로 처리합니다.
 
+#### A. chrome.tabs 의존 (tab URL 기반)
+
+`__storybook_set_tab_url` 헬퍼로 탭 URL을 설정한 뒤 스토어를 초기화합니다.
+
 ```svelte
 <!-- __tests__/ServerManagerStoryWrapper.svelte -->
 <script lang="ts">
@@ -208,6 +212,67 @@ type Story = StoryObj<typeof meta>;
 export const ZeusEnvironment: Story = {
     args: { url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1' },
 };
+```
+
+#### B. chrome.storage.sync 의존 (영속 데이터 기반)
+
+`__storybook_reset_storage` / `__storybook_set_storage` 헬퍼로 storage 데이터를 관리합니다.
+
+**헬퍼 API** (`.storybook/preview.ts`에서 제공):
+- `__storybook_reset_storage()`: storage를 빈 객체로 초기화
+- `__storybook_set_storage(data)`: storage에 초기 데이터 주입
+
+**해당 스토어**: `accounts`, `active_account`, `section_order`, `section_visibility`
+
+```svelte
+<!-- __tests__/SectionSettingsStoryWrapper.svelte -->
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { initializeVisibility } from '#stores/section_visibility.svelte';
+    import { initializeSectionOrder } from '#stores/section_order.svelte';
+    import SectionSettings from '../SectionSettings.svelte';
+
+    interface Props {
+        sections?: Array<{ id: string; label: string }>;
+    }
+
+    let {
+        sections = [
+            { id: 'quick-login', label: '빠른 로그인' },
+            { id: 'server-manager', label: '서버 관리' },
+            { id: 'action-bar', label: '액션 바' },
+        ],
+    }: Props = $props();
+
+    let ready = $state(false);
+
+    onMount(async () => {
+        (globalThis as any).__storybook_reset_storage?.();
+        await initializeVisibility();
+        await initializeSectionOrder();
+        ready = true;
+    });
+</script>
+
+{#if ready}
+    <SectionSettings {sections} />
+{/if}
+```
+
+**초기 데이터가 필요한 경우** (예: 특정 섹션이 숨겨진 상태):
+
+```svelte
+<script lang="ts">
+    onMount(async () => {
+        (globalThis as any).__storybook_set_storage?.({
+            section_visibility_state: { 'quick-login': false },
+            section_order_state: ['server-manager', 'action-bar', 'quick-login'],
+        });
+        await initializeVisibility();
+        await initializeSectionOrder();
+        ready = true;
+    });
+</script>
 ```
 
 ---

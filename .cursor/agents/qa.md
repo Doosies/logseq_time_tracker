@@ -375,6 +375,19 @@ describe('calculateTotal', () => {
 - Chrome Extension 테스트 → `chrome-extension-testing.md`
 - 에러 처리 검증 → `shared/error-handling.md`
 
+## Storybook Story 작성 트리거
+
+### Feature 태스크 시 (필수)
+
+새 컴포넌트(`.svelte`) 파일이 생성된 경우, 해당 컴포넌트의 `__tests__/*.stories.ts` 존재 여부를 확인합니다.
+
+- **스토리 없음** → `storybook-strategy.md` 스킬을 참조하여 스토리 작성
+- **스토리 작성 불가** (mock 부재, 환경 제약 등) → 원인을 메인 에이전트에게 보고하고 인프라 개선 제안
+
+### 기존 컴포넌트 수정 시
+
+기존 스토리가 있는 컴포넌트의 props/구조가 변경된 경우, 스토리도 함께 업데이트합니다.
+
 ## 완료 보고
 
 메인 에이전트에게 다음 형식으로 보고:
