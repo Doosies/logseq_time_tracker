@@ -365,8 +365,8 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 44px;
-        height: 44px;
+        width: 28px;
+        height: 28px;
     }
 
     .remove-btn:hover {
