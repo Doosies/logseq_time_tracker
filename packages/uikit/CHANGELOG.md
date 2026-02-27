@@ -25,6 +25,13 @@
 - DnD primitives/components: `Zone`, `Row`, `Handle` (svelte-dnd-action 기반)
 - `DndEvent` type export
 
+## [0.2.1] - 2026-02-27
+
+### Fixed
+
+- Sortable: `createSortable` 호출을 getter 함수 패턴으로 변경하여 DnD displacement 애니메이션 안정화
+- Popover, Toast, ActionBar stories: 존재하지 않는 scenario argTypes 제거
+
 ## [0.2.0] - 2026-02-26
 
 ### Added

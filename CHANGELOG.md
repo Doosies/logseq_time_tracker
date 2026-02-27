@@ -9,6 +9,14 @@
 > [uikit](./packages/uikit/CHANGELOG.md), [ecount-dev-tool](./packages/ecount-dev-tool/CHANGELOG.md),
 > [mcp-server](./packages/mcp-server/CHANGELOG.md), [time-tracker](./packages/time-tracker/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
 
+## [0.3.1] - 2026-02-27
+
+### Fixed
+
+- QuickLoginSection: 로그인 후 섹션 헤더가 항상 파란색으로 표시되던 문제 수정 (ecount-dev-tool)
+- Sortable: DnD 시 빠른로그인 섹션 버벅거림 수정 (uikit)
+- Storybook stories: Popover, Toast, ActionBar에서 존재하지 않는 scenario argTypes 제거 (uikit)
+
 ## [0.3.0] - 2026-02-26
 
 ### Added (프로젝트 전역)

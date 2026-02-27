@@ -27,7 +27,13 @@
 - Drag handle hover scope (only bar, not entire card content)
 - Drag feedback color (fallback values for theme scope issue)
 - Button height shrink in edit mode
-- Drag stuttering over QuickLoginSection
+
+## [0.3.1] - 2026-02-27
+
+### Fixed
+
+- QuickLoginSection: section-active 클래스 제거로 로그인 후 섹션 헤더가 항상 파란색으로 표시되던 문제 수정
+- DnD 시 빠른로그인 섹션 버벅거림 수정 (uikit Sortable getter 패턴 개선)
 
 ## [0.3.0] - 2026-02-26
 
