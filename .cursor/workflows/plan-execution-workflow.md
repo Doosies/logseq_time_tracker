@@ -22,6 +22,7 @@
    - 의존성이 있는 작업 → 직렬
    - 독립적인 작업 → 병렬
 5. 사용자에게 플랜 확인 요청 후 승인 시 진행
+6. **설계 결정사항 기록**: planner가 보고한 주요 의사결정(결정 + 근거 + 대안)을 사이클 메트릭의 `decisions[]`에 수집
 
 ---
 
@@ -33,6 +34,10 @@
 - `developer`: 코드 구현, 리팩토링
 - `planner`: 설계/계획 (필요 시)
 - `explore`: 코드베이스 탐색 (필요 시)
+
+**결정/이슈 수집**:
+- 각 서브에이전트 완료 시 보고된 결정사항(decisions)과 이슈(issues)를 사이클 메트릭에 누적
+- 방향 전환/재시도 발생 시 해당 내용도 `issues_encountered[]`에 기록
 
 ---
 
@@ -50,6 +55,7 @@
    - `pnpm build`
 2. 실패 시 해당 서브에이전트가 **원인 분석 + 수정 + 재검증**
 3. 검증 통과 후 다음 단계로 진행
+4. QA에서 발견된 이슈를 사이클 메트릭의 `issues_encountered[]`에 수집
 
 ---
 
@@ -121,8 +127,12 @@
 
 ## 10. 최종 보고서 제출
 
-사용자에게 보고서를 제출합니다.  
-템플릿은 [`.cursor/workflows/final-report-template.md`](final-report-template.md) 참조.
+1. 사이클 메트릭의 `decisions[]`와 `issues_encountered[]`를 보고서에 반영
+2. `.cursor/workflows/final-report-template.md` 형식으로 보고서 작성
+3. **파일 저장**: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`로 저장
+   - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스
+   - description: 작업 내용 요약 (한글 가능)
+4. 사용자에게 보고서 출력
 
 ---
 
@@ -147,7 +157,7 @@ QA 검증 (qa)
     ↓
 개선 시 → 커밋 (git-workflow)
     ↓
-최종 보고서 제출
+최종 보고서 제출 + 파일 저장 (metrics/reports/)
 ```
 
 ---

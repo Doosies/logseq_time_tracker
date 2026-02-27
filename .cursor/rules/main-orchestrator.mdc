@@ -16,6 +16,7 @@ alwaysApply: true
 5. **품질 게이트**: 각 단계 검증 및 승인/거부
 6. **최종 승인**: 전체 작업 완료 확인
 7. **메트릭 수집**: 작업 사이클의 성능 메트릭 자동 수집 및 저장
+8. **결정/이슈 추적**: 각 단계의 결정사항과 이슈를 사이클 메트릭에 기록
 
 ---
 
@@ -84,11 +85,12 @@ alwaysApply: true
 
 ### 수집 프로세스
 
-1. **사이클 시작**: `.cursor/metrics/cycles/YYYY-MM-DD-NNN.json` 생성 (템플릿: `cycle-template.json`)
-2. **에이전트 호출 시**: `workflow` 배열에 에이전트명 추가, `agents` 객체에 결과 기록
+1. **사이클 시작**: `.cursor/metrics/cycles/YYYY-MM-DD-NNN.json` 생성 (템플릿: `cycle-template.json`), `context`에 사용자 요청/배경/제약사항 기록
+2. **에이전트 호출 시**: `workflow` 배열에 에이전트명 추가, `agents` 객체에 결과 기록, 서브에이전트가 보고한 결정사항을 `decisions[]`에, 이슈를 `issues_encountered[]`에 추가
 3. **품질 게이트 후**: `quality_gates` 결과 기록
 4. **사이클 완료**: `git diff --name-status`로 `files_changed` 수집, `completed_at`/`success` 기록
 5. **일별 요약**: 사이클 완료 시 `.cursor/metrics/summaries/daily-YYYY-MM-DD.json` 업데이트
+6. **최종 보고서 저장**: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`로 보고서 파일 저장
 
 ### 실패 시에도 저장
 
@@ -99,6 +101,13 @@ alwaysApply: true
 `.cursor/metrics/improvements/` 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
 - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스 번호
 - 기존 파일의 시퀀스를 확인하여 다음 번호 할당
+
+### Report 파일 네이밍
+
+`.cursor/metrics/reports/` 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
+- NNN: 동일 날짜 내 3자리 제로패딩 시퀀스 번호
+- 기존 파일의 시퀀스를 확인하여 다음 번호 할당
+- description: 작업 내용 요약 slug (한글 가능)
 
 > **상세 지침**: `.cursor/skills/system-improvement/references/metrics-collection.md` 참조
 > **템플릿**: `.cursor/metrics/cycle-template.json` 참조
@@ -666,6 +675,26 @@ Public API는 반드시 문서화해야 합니다."
 - 테스트 커버리지: 85% 이상
 - 성능: 응답 시간 200ms 이하
 ```
+
+### 결정/이슈 보고 요청
+
+서브에이전트 호출 시 다음을 **반드시 포함**합니다:
+
+```markdown
+보고 시 다음을 포함해주세요:
+
+## 결정사항 (Decisions)
+| 결정 | 근거 | 검토한 대안 |
+|------|------|-------------|
+
+## 발견된 이슈 (Issues)
+| 이슈 | 해결 방법 | 영향도 |
+|------|-----------|--------|
+```
+
+서브에이전트 결과 수신 후:
+1. 보고된 결정사항을 사이클 메트릭의 `decisions[]`에 추가 (phase 값 기입)
+2. 보고된 이슈를 `issues_encountered[]`에 추가 (phase 값 기입)
 
 ### Git-Workflow 에이전트 호출 조건
 
