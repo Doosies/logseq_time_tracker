@@ -134,6 +134,14 @@
         background-color: transparent;
     }
 
+    :global(.settings-item) :global([data-drag-handle]) {
+        cursor: grab;
+    }
+
+    :global(.settings-item) :global([data-drag-handle]:active) {
+        cursor: grabbing;
+    }
+
     :global(.settings-item:hover) :global([data-drag-handle]) {
         opacity: 0.8;
     }
