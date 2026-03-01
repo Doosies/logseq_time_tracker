@@ -9,6 +9,12 @@
 > [uikit](./packages/uikit/CHANGELOG.md), [ecount-dev-tool](./packages/ecount-dev-tool/CHANGELOG.md),
 > [mcp-server](./packages/mcp-server/CHANGELOG.md), [time-tracker](./packages/time-tracker/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
 
+## [Unreleased]
+
+### Changed (프로젝트 전역)
+
+- 플랜 실행 워크플로우에 테스트 필요성 판단 단계를 반영하고 관련 커맨드/문서 기준(10단계/11단계)을 동기화
+
 ## [0.3.1] - 2026-02-27
 
 ### Changed

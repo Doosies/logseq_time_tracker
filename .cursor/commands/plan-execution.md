@@ -3,47 +3,54 @@
 아래 내용들을 꼼꼼하게 읽은후, 사용자가 입력한 할 일을 플랜 모드로 시작해, 서브에이전트에게 작업을 위임한다. 그 후 최종 결과를 사용자에게 보고한다.
 
 **원칙**:
-- 진입 시점부터 9단계까지 순차 실행. 단계 생략 금지.
-- **진입 가능 단계**: 1, 3, 5, 6, 7 (해당 단계부터 진행)
-- **진입 ≠ 종료**: 진입 단계는 시작점일 뿐. 해당 단계 완료 후 반드시 다음 단계부터 9단계(최종 보고서)까지 이어서 진행. 예: "커밋 진행해줘" → 6단계 수행 후 7→8→9 필수 진행. "6만 하고 끝"은 금지.
+
+- 진입 시점부터 10단계까지 순차 실행. 단계 생략 금지.
+- **진입 가능 단계**: 1, 3, 4, 5, 6, 7, 8, 9 (해당 단계부터 진행)
+- **진입 ≠ 종료**: 진입 단계는 시작점일 뿐. 해당 단계 완료 후 반드시 다음 단계부터 10단계(최종 보고서)까지 이어서 진행. 예: "커밋 진행해줘" → 7단계 수행 후 8→9→10 필수 진행. "7만 하고 끝"은 금지.
 - **메인 에이전트 역할**: 방향결정, 판단, 작업 분배만. 실제 작업은 서브에이전트에 위임.
-- **1~8단계**: 각 단계별 서브에이전트 활용. 9단계(최종 보고서)만 메인 에이전트가 직접 제출.
-- **메인 에이전트 금지**: 1~8단계의 실제 작업(코드 작성, 커밋, 테스트 실행 등) 직접 수행 금지. 반드시 해당 서브에이전트 호출.
+- **1~9단계**: 각 단계별 서브에이전트 활용. 10단계(최종 보고서)만 메인 에이전트가 직접 제출.
+- **메인 에이전트 금지**: 1~9단계의 실제 작업(코드 작성, 커밋, 테스트 실행 등) 직접 수행 금지. 반드시 해당 서브에이전트 호출.
 
 ---
 
 ## 실행 순서
 
-1. **플랜 모드 (planner)** ← planner 서브에이전트  
-   - 요구사항 분석, 작업 분해, TODO/플랜 파일 생성  
-   - 각 작업에 서브에이전트 할당 (developer, planner, generalPurpose 등)  
-   - 직렬/병렬 실행 순서 정의  
-   - 사용자 승인 후 진행  
+1. **플랜 모드 (planner)** ← planner 서브에이전트
+    - 요구사항 분석, 작업 분해, TODO/플랜 파일 생성
+    - 각 작업에 서브에이전트 할당 (developer, planner, generalPurpose 등)
+    - 직렬/병렬 실행 순서 정의
+    - 사용자 승인 후 진행
 
 2. **실행** ← 위에서 할당된 서브에이전트들을 통해 작업 진행
 
-3. **QA 검증** ← qa 서브에이전트  
-   - `pnpm format` → `pnpm test` → `pnpm lint` → `pnpm type-check` → `pnpm build`  
-   - 실패 시 원인 분석·수정·재검증  
+3. **테스트 필요성 판단** ← qa 서브에이전트 또는 `/test-when-needed` 커맨드
+    - 변경 영향 분석 후 테스트 작성/미작성 결정
+    - 기준: `.cursor/commands/test-when-needed.md`, `.cursor/skills/qa/references/test-necessity-evaluation.md`
+    - 테스트 미작성 시 근거를 `decisions[]`에 필수 기록
 
-4. **보안 검증** (Feature/Refactor 시) ← security 서브에이전트  
+4. **QA 검증** ← qa 서브에이전트
+    - `pnpm format` → `pnpm test` → `pnpm lint` → `pnpm type-check` → `pnpm build`
+    - 실패 시 원인 분석·수정·재검증
 
-5. **문서화** ← docs 서브에이전트  
-   - CHANGELOG, API 문서, design-tokens 등 업데이트  
+5. **보안 검증** (Feature/Refactor 시) ← security 서브에이전트
 
-6. **커밋** ← git-workflow 서브에이전트  
-   - Conventional Commits 형식, 논리적 단위로 분할  
-   - `git push`는 사용자에게 요청  
+6. **문서화** ← docs 서브에이전트
+    - CHANGELOG, API 문서, design-tokens 등 업데이트
 
-7. **시스템 개선** ← system-improvement 서브에이전트  
-   - 패턴/이슈 분석, 에이전트 규칙 개선 여부 판단  
-   - 개선 시 `.cursor/metrics/improvements/` 에 리포트 저장  
+7. **커밋** ← git-workflow 서브에이전트
+    - Conventional Commits 형식, 논리적 단위로 분할
+    - `git push`는 사용자에게 요청
 
-8. **개선 후 커밋** (선택) ← git-workflow 서브에이전트  
-   - 에이전트 정의 파일 수정 시 git-workflow로 추가 커밋  
+8. **시스템 개선** ← system-improvement 서브에이전트
+    - 패턴/이슈 분석, 에이전트 규칙 개선 여부 판단
+    - 개선 시 `.cursor/metrics/improvements/` 에 리포트 저장
 
-9. **최종 보고서** (메인 에이전트 직접 제출)  
-   - `.cursor/workflows/final-report-template.md` 형식으로 사용자에게 제출  
+9. **개선 후 커밋** (선택) ← git-workflow 서브에이전트
+    - 에이전트 정의 파일 수정 시 git-workflow로 추가 커밋
+
+10. **최종 보고서** (메인 에이전트 직접 제출)
+
+- `.cursor/workflows/final-report-template.md` 형식으로 사용자에게 제출
 
 ---
 
