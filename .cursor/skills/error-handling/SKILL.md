@@ -1,6 +1,6 @@
 ---
 name: error-handling
-description: "Error handling patterns for TypeScript/Node.js. Use when implementing try-catch, creating custom error classes (ValidationError, NotFoundError, AuthError), writing Express error middleware, handling async/Promise errors, or setting up structured error logging. Includes error response formats and unhandled rejection handling."
+description: "TypeScript/Node.js 에러 처리 패턴 스킬. try-catch 구현, 커스텀 에러 클래스 작성, Express 에러 미들웨어, 비동기/Promise 에러 처리, 구조화 로깅 설정 시 사용합니다."
 ---
 
 # 에러 처리 가이드

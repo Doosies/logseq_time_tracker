@@ -1,31 +1,32 @@
 ---
 name: git-workflow
-description: "Git commit and PR workflow skill using Conventional Commits format. Use when generating commit messages (feat/fix/refactor/chore), creating PR descriptions, splitting changes into logical commits, analyzing git diffs, or recommending reviewers. Supports Korean PR descriptions with English commit messages."
+description: "Conventional Commits 기반 커밋/PR 작성 스킬. 커밋 메시지 생성, PR 설명 작성, 변경사항 분석, 커밋 분할, 리뷰어 추천 시 사용합니다. 커밋 subject/body는 한글로 작성합니다."
 ---
 
-# Git Workflow Skill
+# Git 워크플로우 스킬
 
-Specialized skill for git commit messages and PR management.
+Git 커밋 메시지와 PR 관리를 위한 전문 스킬입니다.
 
-## When to Use
+## 사용 시점
 
-- Generating commit messages (Conventional Commits format)
-- Creating PR descriptions
-- Analyzing code changes for commit splitting
-- Recommending reviewers
+- 커밋 메시지 생성 (Conventional Commits 형식)
+- PR 설명 작성
+- 변경사항 분석 및 논리적 커밋 분할
+- 리뷰어 추천
 
-## Key Rules
+## 핵심 규칙
 
-- Conventional Commits format: `type(scope): description`
-- Types: feat, fix, refactor, docs, chore, test, style, perf
-- Logical commit splitting per feature/fix
-- Korean PR descriptions with English commit messages
+- Conventional Commits 형식: `type(scope): description`
+- Type 목록: feat, fix, refactor, docs, chore, test, style, perf
+- 기능/수정 단위로 논리적 커밋 분할
+- PR 설명은 한글 작성
+- 커밋 메시지는 `type/scope`는 영어 키워드 유지, `subject/body`는 한글 작성
 
-## Detailed References
+## 상세 레퍼런스
 
-Read from `references/` directory as needed:
+필요 시 아래 문서를 참조합니다.
 
-- `references/commit-message-generation.md` - Commit message generation rules
-- `references/change-analysis.md` - Code change analysis methodology
-- `references/pr-description-generation.md` - PR description template
-- `references/reviewer-recommendation.md` - Reviewer selection criteria
+- `references/commit-message-generation.md` - 커밋 메시지 생성 규칙
+- `references/change-analysis.md` - 변경사항 분석 방법론
+- `references/pr-description-generation.md` - PR 설명 템플릿
+- `references/reviewer-recommendation.md` - 리뷰어 선정 기준

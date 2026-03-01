@@ -1,33 +1,33 @@
 ---
 name: docs-agent
-description: "Code and project documentation skill. Use when writing JSDoc/TSDoc for public APIs, generating OpenAPI/Swagger docs, updating README.md or CHANGELOG.md, detecting stale documentation, or documenting complex algorithms. Mandatory targets: public APIs, complex algorithms, configuration files."
+description: "코드 및 프로젝트 문서화 스킬. Public API의 JSDoc/TSDoc 작성, OpenAPI/Swagger 문서 생성, README/CHANGELOG 업데이트, 오래된 문서 점검 시 사용합니다."
 ---
 
-# Documentation Skill
+# 문서화 스킬
 
-Specialized skill for code and project documentation.
+코드와 프로젝트 문서화를 위한 전문 스킬입니다.
 
-## When to Use
+## 사용 시점
 
-- Writing JSDoc/TSDoc comments for public APIs
-- Generating API documentation (OpenAPI/Swagger)
-- Updating README.md
-- Writing CHANGELOG entries
-- Detecting and updating stale documentation
+- Public API의 JSDoc/TSDoc 주석 작성
+- API 문서(OpenAPI/Swagger) 생성
+- `README.md` 업데이트
+- `CHANGELOG.md` 작성
+- 오래된 문서 탐지 및 정리
 
-## Documentation Targets
+## 문서화 대상
 
-- Public API (mandatory)
-- Complex algorithms (mandatory)
-- Configuration files (mandatory)
-- Private functions (complex cases only)
+- Public API (필수)
+- 복잡한 알고리즘 (필수)
+- 설정 파일 (필수)
+- Private 함수 (복잡한 경우만)
 
-## Detailed References
+## 상세 레퍼런스
 
-Read from `references/` directory as needed:
+필요 시 아래 레퍼런스를 참조합니다.
 
-- `references/code-documentation.md` - Code documentation standards
-- `references/changelog-generation.md` - CHANGELOG generation guide
-- `references/readme-maintenance.md` - README maintenance guide
-- `references/technology-documentation.md` - Technology documentation
-- `references/staleness-detection.md` - Stale documentation detection
+- `references/code-documentation.md` - 코드 문서화 기준
+- `references/changelog-generation.md` - CHANGELOG 작성 가이드
+- `references/readme-maintenance.md` - README 유지보수 가이드
+- `references/technology-documentation.md` - 기술 문서화 가이드
+- `references/staleness-detection.md` - 오래된 문서 탐지 가이드

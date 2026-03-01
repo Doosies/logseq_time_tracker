@@ -66,6 +66,12 @@ alwaysApply: true
 2. 사용자 승인 후 Agent Mode로 전환
 3. 서브에이전트에게 위임하여 실행
 
+### Plan-execution 기준 메타
+
+- `/.cursor/commands/plan-execution.md` 기준: **10단계**
+- `/.cursor/workflows/plan-execution-workflow.md` 기준: **11단계** (사용자 요청 수신 단계 포함)
+- 단계 번호를 수정할 때는 위 두 문서의 단계 수/진입 가능 단계/예시 문구를 함께 동기화합니다.
+
 ---
 
 ## 메트릭 수집
@@ -85,12 +91,51 @@ alwaysApply: true
 
 ### 수집 프로세스
 
-1. **사이클 시작**: `.cursor/metrics/cycles/YYYY-MM-DD-NNN.json` 생성 (템플릿: `cycle-template.json`), `context`에 사용자 요청/배경/제약사항 기록
+1. **사이클 시작**: [`.cursor/metrics/cycles/YYYY-MM-DD-NNN.json`](../metrics/cycles/) 생성 (템플릿: `cycle-template.json`), `context`에 사용자 요청/배경/제약사항 기록
 2. **에이전트 호출 시**: `workflow` 배열에 에이전트명 추가, `agents` 객체에 결과 기록, 서브에이전트가 보고한 결정사항을 `decisions[]`에, 이슈를 `issues_encountered[]`에 추가
 3. **품질 게이트 후**: `quality_gates` 결과 기록
 4. **사이클 완료**: `git diff --name-status`로 `files_changed` 수집, `completed_at`/`success` 기록
-5. **일별 요약**: 사이클 완료 시 `.cursor/metrics/summaries/daily-YYYY-MM-DD.json` 업데이트
-6. **최종 보고서 저장**: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`로 보고서 파일 저장
+5. **일별 요약**: 사이클 완료 시 [`.cursor/metrics/summaries/daily-YYYY-MM-DD.json`](../metrics/summaries/) 업데이트
+6. **최종 보고서 저장**: [`.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`](../metrics/reports/)로 보고서 파일 저장
+
+### 수집 게이트 운영 정책 (Soft → Hard)
+
+결정/이슈/맥락 수집 누락을 줄이기 위해 아래 게이트 정책을 적용합니다.
+
+#### 기본 정책: Soft Gate
+
+- 적용 기간: 신규 규칙 적용 후 초기 2~3사이클
+- 누락 발생 시:
+  - 단계 진행은 허용
+  - 누락 항목을 즉시 TODO로 추가
+  - 다음 단계 진입 전에 보완 계획을 명시
+- 누락 항목:
+  - `context.user_request/background/constraints`
+  - 단계별 `decisions[]`
+  - 단계별 `issues_encountered[]` (또는 `none` 근거)
+
+#### Hard Gate 전환 조건
+
+아래 중 하나 충족 시 Hard Gate 적용:
+- 최근 3사이클 연속 누락 0건
+- 최근 5사이클 누락률 10% 이하
+
+#### Hard Gate 동작
+
+- `context` 누락: 플랜 단계 완료 불가, 1단계 재진입
+- `decisions/issues` 누락: 해당 단계 승인 불가, 보완 후 재검증
+- 누락 상태에서 다음 단계 진행 금지
+
+### 누락률 운영 지표
+
+사이클 종료 시 다음 지표를 `notes` 또는 별도 리포트에 기록해 추적합니다:
+
+- `missing_context_count`: context 누락 건수
+- `missing_decisions_count`: decisions 누락 건수
+- `missing_issues_count`: issues 누락 건수
+- `phase_completion_rate`: 단계별 수집 완료율
+- `final_report_reflection_rate`: 최종 보고서 반영률
+- `gate_mode`: `soft|hard`
 
 ### 실패 시에도 저장
 
@@ -98,19 +143,19 @@ alwaysApply: true
 
 ### Improvement 파일 네이밍
 
-`.cursor/metrics/improvements/` 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
+[`.cursor/metrics/improvements/`](../metrics/improvements/) 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
 - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스 번호
 - 기존 파일의 시퀀스를 확인하여 다음 번호 할당
 
 ### Report 파일 네이밍
 
-`.cursor/metrics/reports/` 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
+[`.cursor/metrics/reports/`](../metrics/reports/) 내 파일은 `YYYY-MM-DD-NNN-description.md` 형식을 따릅니다.
 - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스 번호
 - 기존 파일의 시퀀스를 확인하여 다음 번호 할당
 - description: 작업 내용 요약 slug (한글 가능)
 
-> **상세 지침**: `.cursor/skills/system-improvement/references/metrics-collection.md` 참조
-> **템플릿**: `.cursor/metrics/cycle-template.json` 참조
+> **상세 지침**: [metrics-collection](../skills/system-improvement/references/metrics-collection.md) 참조
+> **템플릿**: [cycle-template](../metrics/cycle-template.json) 참조
 
 ---
 
@@ -452,6 +497,8 @@ Critical 취약점 1건:
 - [ ] **모든 테스트 통과** (필수)
 - [ ] 커버리지 80% 이상?
 - [ ] **테스트 설명이 한글로 작성되었는가?** (필수!)
+- [ ] E2E 테스트코드가 기존 단위/통합 테스트와 동일한 품질 기준을 따르는가?
+- [ ] E2E 테스트 실행은 사용자 명시 요청이 있을 때만 수행했는가?
 - [ ] 회귀 테스트 통과? (리팩토링인 경우)
 - [ ] 에지 케이스 테스트 포함?
 - [ ] 성능 저하 10% 이내?
@@ -463,6 +510,8 @@ Critical 취약점 1건:
 - 모든 테스트 통과 (필수)
 - 커버리지 목표 달성
 - 테스트 설명 한글 작성
+- E2E 코드는 동일 품질 기준 충족
+- E2E 실행은 사용자 요청 시에만 수행
 - 회귀 없음
 - Security 에이전트 최종 검증 통과 (Feature 시)
 
@@ -510,6 +559,8 @@ Task tool 사용:
 **체크리스트**:
 - [ ] 커밋 메시지가 Conventional Commits 형식을 따르는가?
 - [ ] 커밋 메시지 Type이 올바르게 선택되었는가?
+- [ ] 커밋 메시지 Subject가 한글로 작성되었는가?
+- [ ] [commit-message-generation](../skills/git-workflow/references/commit-message-generation.md) 체크리스트를 충족했는가?
 - [ ] PR 설명이 충분히 상세한가?
 - [ ] 변경 사항 요약이 정확한가?
 - [ ] QA 결과가 PR 설명에 포함되었는가?
@@ -518,13 +569,15 @@ Task tool 사용:
 
 **승인 기준**:
 - Conventional Commits 형식 준수
+- Subject 한글 작성 규칙 준수
+- commit-message-generation 레퍼런스 체크리스트 충족
 - 커밋 메시지와 PR 설명 일관성 유지
 - 변경 사항 정확히 반영
 
 **거부 예시**:
 ```
 "커밋 메시지 형식이 Conventional Commits를 따르지 않습니다.
-'feat(plugin): add dark mode toggle' 형식으로 수정해주세요."
+'feat(plugin): 다크 모드 토글 추가' 형식으로 수정해주세요."
 ```
 
 ---
@@ -588,28 +641,28 @@ Public API는 반드시 문서화해야 합니다."
 - **호출 시점**: Feature, Refactor 작업 시작 시
 - **입력**: 사용자 요청, 기존 코드베이스
 - **출력**: 설계 문서, API 명세, 아키텍처 다이어그램
-- **정의 파일**: `.cursor/agents/planner.md`
+- **정의 파일**: [planner](../agents/planner.md)
 
 ### 구현 에이전트 (Developer)
 - **역할**: 설계 문서를 고품질 코드로 변환
 - **호출 시점**: 설계 완료 후, 버그 수정 시
 - **입력**: 설계 문서, 구현 가이드라인
 - **출력**: 작성된 코드, 리팩토링된 코드
-- **정의 파일**: `.cursor/agents/developer.md`
+- **정의 파일**: [developer](../agents/developer.md)
 
 ### QA 에이전트
 - **역할**: 테스트 작성 및 품질 검증
 - **호출 시점**: 구현 완료 후, 버그 재현 시
 - **입력**: 구현된 코드, 테스트 요구사항
 - **출력**: 테스트 코드, 테스트 결과, 커버리지 리포트
-- **정의 파일**: `.cursor/agents/qa.md`
+- **정의 파일**: [qa](../agents/qa.md)
 
 ### Security 에이전트
 - **역할**: 보안 검증 및 취약점 탐지
 - **호출 시점**: 설계 후, 구현 후, 배포 전
 - **입력**: 설계 문서, 구현된 코드, 외부 리소스
 - **출력**: 보안 검증 결과, 취약점 목록, 권장 사항
-- **정의 파일**: `.cursor/agents/security.md`
+- **정의 파일**: [security](../agents/security.md)
 
 ### Git 워크플로우 에이전트
 - **역할**: 커밋 메시지 및 PR 설명 자동 생성
@@ -618,28 +671,28 @@ Public API는 반드시 문서화해야 합니다."
   - 코드 변경이 있는 모든 작업
 - **입력**: git diff, 변경 파일 목록, QA 결과
 - **출력**: 커밋 메시지, PR 설명, 리뷰어 추천
-- **정의 파일**: `.cursor/agents/git-workflow.md`
+- **정의 파일**: [git-workflow](../agents/git-workflow.md)
 
 ### 문서화 에이전트 (Docs)
 - **역할**: 코드 문서화 및 CHANGELOG 작성
 - **호출 시점**: 기능 완료 후, 문서 작업 시
 - **입력**: 구현된 코드, 변경 사항
 - **출력**: API 문서, README, CHANGELOG
-- **정의 파일**: `.cursor/agents/docs.md`
+- **정의 파일**: [docs](../agents/docs.md)
 
 ### MCP 개발 에이전트
 - **역할**: 반복 작업 자동화 도구(MCP 서버) 개발
 - **호출 시점**: 반복 패턴 감지 시, 사용자 요청 시
 - **입력**: 메트릭 데이터, 반복 패턴
 - **출력**: MCP 서버, 테스트, 효과 측정 리포트
-- **정의 파일**: `.cursor/agents/mcp-development.md`
+- **정의 파일**: [mcp-development](../agents/mcp-development.md)
 
 ### 시스템 개선 에이전트
 - **역할**: 에이전트 시스템 성능 분석 및 자동 최적화
 - **호출 시점**: 20개 태스크마다, 성능 저하 감지 시
 - **입력**: 메트릭 데이터, 에이전트 통계
 - **출력**: 성능 분석 리포트, 개선 제안, 최적화된 파일
-- **정의 파일**: `.cursor/agents/system-improvement.md`
+- **정의 파일**: [system-improvement](../agents/system-improvement.md)
 
 ---
 

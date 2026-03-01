@@ -1,6 +1,6 @@
 ---
 name: cli-usage
-description: "CLI/terminal command guide for pnpm monorepo on Windows/PowerShell. Use when running pnpm install/add (--no-offline required), pnpm build/test/lint/type-check, turbo commands, git operations, or troubleshooting ERR_PNPM_NO_OFFLINE_META/ENOENT errors. Includes command chaining rules and verification order."
+description: "Windows/PowerShell 기반 pnpm 모노레포 CLI 사용 가이드. pnpm install/add/update(--no-offline), 빌드/테스트/타입체크, turbo, git 작업 및 ERR_PNPM_NO_OFFLINE_META/ENOENT 대응 시 사용합니다."
 ---
 
 # CLI 사용 가이드

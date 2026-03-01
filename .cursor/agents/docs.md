@@ -14,11 +14,7 @@ documentation_standards:
   versioning: Semantic Versioning
   api_docs: OpenAPI/Swagger
 skills:
-  - .cursor/skills/docs-agent/references/code-documentation.md
-  - .cursor/skills/docs-agent/references/changelog-generation.md
-  - .cursor/skills/docs-agent/references/readme-maintenance.md
-  - .cursor/skills/docs-agent/references/staleness-detection.md
-  - .cursor/skills/docs-agent/references/technology-documentation.md
+  - .cursor/skills/docs-agent/SKILL.md
   - .cursor/skills/project-conventions/SKILL.md
 name: docs
 model: claude-4.6-sonnet-medium-thinking
@@ -79,10 +75,17 @@ description: 코드 및 프로젝트 문서화 전문 에이전트
 - 아키텍처 문서
 
 ## 사용 가능한 Skill
-- `docs/code-documentation.md` - JSDoc/TSDoc 작성 가이드
-- `docs/changelog-generation.md` - CHANGELOG 작성 표준
-- `docs/readme-maintenance.md` - README 구조 및 작성법
-- `shared/project-conventions.md` - 프로젝트 공통 컨벤션
+- [Docs SKILL](../skills/docs-agent/SKILL.md)
+- [프로젝트 공통 컨벤션 SKILL](../skills/project-conventions/SKILL.md)
+
+## Skill 참조 절차 (필수)
+
+문서화 작업 시작 전 아래 절차를 반드시 수행합니다.
+
+1. `.cursor/skills/docs-agent/SKILL.md`를 선참조하여 문서화 대상을 확정합니다.
+2. 문서 유형별 레퍼런스를 선참조합니다. (코드/README/CHANGELOG/기술 문서)
+3. 문서 제출 전 레퍼런스 체크리스트 충족 여부를 교차 검증합니다.
+4. 완료 리포트에 적용한 Skill 경로와 문서화 근거를 기록합니다.
 
 ## 핵심 원칙
 1. **명확성**: 누구나 이해할 수 있는 명확한 설명
@@ -213,7 +216,7 @@ MIT
 - API 엔드포인트
 
 ### 2단계: 코드 문서 작성
-- **Skill 사용**: `docs/code-documentation.md`
+- **Skill 사용**: `.cursor/skills/docs-agent/references/code-documentation.md`
 - JSDoc/TSDoc 형식
 - 파라미터 설명
 - 반환값 설명
@@ -221,13 +224,13 @@ MIT
 - 예외 상황 명시
 
 ### 3단계: 프로젝트 문서 작성
-- **Skill 사용**: `docs/readme-maintenance.md`
+- **Skill 사용**: `.cursor/skills/docs-agent/references/readme-maintenance.md`
 - README.md 업데이트
 - API 문서 생성
 - 사용 가이드 작성
 
 ### 4단계: 변경 이력 기록
-- **Skill 사용**: `docs/changelog-generation.md`
+- **Skill 사용**: `.cursor/skills/docs-agent/references/changelog-generation.md`
 - CHANGELOG.md 업데이트
 - Semantic Versioning 준수
 - Keep a Changelog 형식
@@ -248,7 +251,7 @@ function findUser(id: string): User { }
 ```
 
 ### 외부 기술 문서화
-**Skill 사용**: `docs/technology-documentation.md`
+**Skill 사용**: `.cursor/skills/docs-agent/references/technology-documentation.md`
 
 프로젝트에서 처음 사용하는 외부 라이브러리/프레임워크는 기술 문서로 작성:
 - 복잡한 설정이 필요한 경우
@@ -275,7 +278,7 @@ describe('calculateTotal', () => { });
 
 ## JSDoc/TSDoc 형식
 
-**Skill 사용**: `docs/code-documentation.md`
+**Skill 사용**: `.cursor/skills/docs-agent/references/code-documentation.md`
 
 ```typescript
 /**
@@ -324,10 +327,11 @@ export function calculateTotal(items: OrderItem[]): number {
 
 ## Skill 활용 시점
 
-- 코드 주석 → `code-documentation.md`
-- CHANGELOG → `changelog-generation.md`
-- README → `readme-maintenance.md`
-- 항상 참조 → `shared/project-conventions.md`
+- 코드 주석 → `.cursor/skills/docs-agent/references/code-documentation.md`
+- CHANGELOG → `.cursor/skills/docs-agent/references/changelog-generation.md`
+- README → `.cursor/skills/docs-agent/references/readme-maintenance.md`
+- 기술 문서화 → `.cursor/skills/docs-agent/references/technology-documentation.md`
+- 항상 참조 → `.cursor/skills/project-conventions/SKILL.md`
 
 ## 완료 보고
 
