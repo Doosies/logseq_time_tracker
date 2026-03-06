@@ -44,6 +44,7 @@ catalog:
     eslint-plugin-svelte: ^3.14.0
 
     # Testing
+    axe-core: ^4.11.1
     vitest: ^4.0.18
     '@vitest/coverage-v8': ^4.0.18
     '@vitest/ui': ^4.0.18

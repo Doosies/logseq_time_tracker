@@ -35,6 +35,7 @@
         "@eslint/js": "catalog:",
         "@sveltejs/vite-plugin-svelte": "catalog:",
         "@testing-library/jest-dom": "catalog:",
+        "axe-core": "catalog:",
         "@testing-library/svelte": "catalog:",
         "@testing-library/user-event": "catalog:",
         "@vanilla-extract/vite-plugin": "catalog:",

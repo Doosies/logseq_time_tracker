@@ -3,7 +3,7 @@
     import type { Snippet } from 'svelte';
     import type { HTMLAttributes } from 'svelte/elements';
 
-    interface Props extends HTMLAttributes<HTMLDivElement> {
+    interface Props extends HTMLAttributes<HTMLElement> {
         children: Snippet;
         class?: string;
     }
@@ -12,6 +12,6 @@
     setContext('section', {});
 </script>
 
-<div class={extra_class} role="region" {...rest}>
+<section class={extra_class} {...rest}>
     {@render children()}
-</div>
+</section>

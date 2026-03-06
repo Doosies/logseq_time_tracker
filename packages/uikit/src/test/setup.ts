@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom/vitest';
+import './axe_helper';
 import { setProjectAnnotations } from '@storybook/svelte-vite';
 
 // @dnd-kit/dom jsdom compatibility: ResizeObserver polyfill

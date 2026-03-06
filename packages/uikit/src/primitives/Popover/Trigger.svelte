@@ -18,6 +18,13 @@
     const ctx = getContext<PopoverContext>('popover');
 </script>
 
-<button type="button" class={extra_class} onclick={ctx.toggle} aria-expanded={ctx.is_open} {...rest}>
+<button
+    type="button"
+    class={extra_class}
+    onclick={ctx.toggle}
+    aria-haspopup="true"
+    aria-expanded={ctx.is_open}
+    {...rest}
+>
     {@render children()}
 </button>

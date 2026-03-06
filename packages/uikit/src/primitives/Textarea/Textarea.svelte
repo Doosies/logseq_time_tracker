@@ -1,5 +1,7 @@
 <script lang="ts">
-    interface Props {
+    import type { HTMLAttributes } from 'svelte/elements';
+
+    interface Props extends Omit<HTMLAttributes<HTMLTextAreaElement>, 'oninput'> {
         value?: string | undefined;
         placeholder?: string | undefined;
         disabled?: boolean | undefined;
@@ -15,6 +17,7 @@
         rows = 3,
         class: extra_class,
         oninput,
+        ...rest
     }: Props = $props();
 
     const handleInput = (e: Event) => {
@@ -24,4 +27,4 @@
     };
 </script>
 
-<textarea class={extra_class} {disabled} {placeholder} {rows} bind:value oninput={handleInput}></textarea>
+<textarea class={extra_class} {disabled} {placeholder} {rows} bind:value oninput={handleInput} {...rest}></textarea>
