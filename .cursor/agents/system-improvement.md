@@ -249,6 +249,7 @@ qa.mdc 수정:
   - 라이브러리 마이그레이션 시 UI/UX 회귀 → planner.md 마이그레이션 체크리스트, developer.md 마이그레이션 규칙
   - prototype 오염, 에러 억제 (테스트 setup) → qa.md 테스트 환경 패치 규칙 강화
   - 위험 패턴이 검증 없이 적용됨 → main-orchestrator 서브에이전트 결과 검증 규칙 강화
+  - 마이그레이션 후 테스트 보강 누락 (옛날 분기 미커버, 새 스토어 테스트 부재) → developer.md 코드 이관 규칙, qa.md 마이그레이션 검증 규칙
 
 ### 3단계: 개선안 작성
 - **Skill 사용**: 
