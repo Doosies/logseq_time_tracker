@@ -480,6 +480,49 @@ const meta = {
 
 ---
 
+## 브라우저에서 Storybook 확인
+
+에이전트가 browser-use로 Storybook 스토리를 확인할 때는 **iframe URL + viewMode=story** 형식을 사용합니다.
+
+### URL 패턴
+
+```
+http://localhost:6008/iframe.html?id={story-id}&viewMode=story
+```
+
+- **`iframe.html`**: Storybook UI 크롬 없이 스토리만 렌더링 (accessibility snapshot 호환)
+- **`viewMode=story`**: 스토리 뷰 모드 지정 (docs 모드가 아닌 개별 스토리)
+
+### Story ID 구성 규칙
+
+Story ID는 `meta.title`과 Story export 이름으로 결정됩니다:
+
+| 요소 | 변환 규칙 | 예시 |
+|------|-----------|------|
+| `meta.title` | 소문자 + `/` → `-` + 공백 → `-` | `ecount-dev-tool/ServerManager` → `ecount-dev-tool-servermanager` |
+| Story export | 소문자 + PascalCase → kebab-case | `ZeusEnvironment` → `zeus-environment` |
+| 구분자 | `--` (더블 하이픈) | |
+
+### URL 구성 예시
+
+| title | export | URL |
+|-------|--------|-----|
+| `ecount-dev-tool/ServerManager` | `ZeusEnvironment` | `http://localhost:6008/iframe.html?id=ecount-dev-tool-servermanager--zeus-environment&viewMode=story` |
+| `uikit/Button` | `Primary` | `http://localhost:6008/iframe.html?id=uikit-button--primary&viewMode=story` |
+| `uikit/Select` | `Default` | `http://localhost:6008/iframe.html?id=uikit-select--default&viewMode=story` |
+
+### 일반 URL과의 차이
+
+```
+❌ http://localhost:6008/?path=/story/ecount-dev-tool-servermanager--zeus-environment
+   → Storybook UI 크롬 포함, accessibility snapshot에서 불필요한 요소 다수 포함
+
+✅ http://localhost:6008/iframe.html?id=ecount-dev-tool-servermanager--zeus-environment&viewMode=story
+   → 스토리만 렌더링, 깔끔한 snapshot
+```
+
+---
+
 ## Story 작성 체크리스트
 
 - [ ] `.stories.ts` CSF3 포맷 사용
