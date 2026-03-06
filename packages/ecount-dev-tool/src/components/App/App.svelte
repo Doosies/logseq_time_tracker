@@ -5,6 +5,7 @@
     import { ServerManager } from '#components/ServerManager';
     import { StageManager } from '#components/StageManager';
     import { ActionBar } from '#components/ActionBar';
+    import { Calculator } from '#components/Calculator';
     import { SectionSettings } from '#components/SectionSettings';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
     import { initializeAccounts } from '#stores/accounts.svelte';
@@ -21,6 +22,7 @@
         { id: 'quick-login', label: '빠른 로그인' },
         { id: 'server-manager', label: '서버 관리' },
         { id: 'action-bar', label: '빠른 실행' },
+        { id: 'calculator', label: '1+1 계산기' },
     ];
 
     const tab = $derived(getTabState());
@@ -94,6 +96,8 @@
                                     <ServerManager />
                                 {:else if item.section_type === 'action-bar'}
                                     <ActionBar />
+                                {:else if item.section_type === 'calculator'}
+                                    <Calculator />
                                 {/if}
                             </div>
                         {/snippet}
@@ -110,6 +114,8 @@
                             <ServerManager />
                         {:else if item.section_type === 'action-bar'}
                             <ActionBar />
+                        {:else if item.section_type === 'calculator'}
+                            <Calculator />
                         {/if}
                     </div>
                 {/each}

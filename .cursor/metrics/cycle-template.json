@@ -2,6 +2,27 @@
     "cycle_id": "YYYY-MM-DD-NNN",
     "task_type": "feature|bugfix|refactor|docs|hotfix|chore",
     "task_description": "",
+    "context": {
+        "user_request": "",
+        "background": "",
+        "constraints": []
+    },
+    "decisions": [
+        {
+            "phase": "planning|implementation|qa|security|docs|git_workflow|system_improvement",
+            "decision": "",
+            "rationale": "",
+            "alternatives_considered": []
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "planning|implementation|qa|security|docs|git_workflow|system_improvement",
+            "description": "",
+            "resolution": "",
+            "impact": "none|minor|major|critical"
+        }
+    ],
     "started_at": "ISO-8601",
     "completed_at": "ISO-8601",
     "success": true,

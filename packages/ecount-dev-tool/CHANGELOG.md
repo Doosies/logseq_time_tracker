@@ -9,6 +9,8 @@
 
 ### Added
 
+- 1+1 계산기 섹션 추가 (버튼 클릭 시 "1 + 1 = 2" 표시)
+- App 섹션 목록/렌더링 분기에 calculator 등록, section_order 기본 순서에 추가
 - Quick login active state persistence (chrome.storage.sync)
 - Section drag-and-drop reordering on main screen
 - Quick login button drag-and-drop reordering in edit mode

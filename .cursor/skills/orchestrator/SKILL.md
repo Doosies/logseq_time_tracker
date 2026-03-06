@@ -1,37 +1,37 @@
 ---
 name: orchestrator
-description: Agent orchestration and workflow management skill. Use for task classification, quality gate management, subagent coordination, parallel execution, and progress monitoring.
+description: 에이전트 오케스트레이션 및 워크플로우 관리 스킬. 태스크 분류, 품질 게이트 운영, 서브에이전트 조율, 병렬 실행, 진행률 모니터링에 사용합니다.
 disable-model-invocation: true
 ---
 
-# Orchestrator Skill
+# 오케스트레이터 스킬
 
-Meta skill for main agent orchestration and workflow management.
+메인 에이전트의 조율과 워크플로우 관리를 위한 메타 스킬입니다.
 
-## When to Use
+## 사용 시점
 
-- Classifying incoming tasks (feature, bugfix, refactor, docs, hotfix, chore)
-- Managing quality gates between workflow stages
-- Coordinating subagent communication
-- Decomposing complex tasks into subtasks
-- Selecting appropriate agents for each subtask
-- Managing parallel execution strategies
-- Monitoring workflow progress
+- 입력 태스크를 분류할 때(feature, bugfix, refactor, docs, hotfix, chore)
+- 단계 간 품질 게이트를 관리할 때
+- 서브에이전트 간 커뮤니케이션을 조율할 때
+- 복잡한 작업을 하위 작업으로 분해할 때
+- 하위 작업별 적절한 에이전트를 선택할 때
+- 병렬 실행 전략을 설계할 때
+- 워크플로우 진행 상황을 모니터링할 때
 
-## Detailed References
+## 상세 레퍼런스
 
-Read from `references/` directory as needed:
+필요 시 아래 레퍼런스를 참조합니다.
 
-### Task Management
-- `references/task-classifier.md` - Task type classification rules
-- `references/quality-gate.md` - Quality gate criteria and validation
-- `references/workflow-manager.md` - Workflow pattern selection
+### 태스크 관리
+- `references/task-classifier.md` - 태스크 유형 분류 규칙
+- `references/quality-gate.md` - 품질 게이트 기준 및 검증
+- `references/workflow-manager.md` - 워크플로우 패턴 선택
 
-### Subagent Coordination
-- `references/subagent-communication.md` - Subagent communication protocol
-- `references/task-decomposition.md` - Task decomposition methodology
+### 서브에이전트 조율
+- `references/subagent-communication.md` - 서브에이전트 커뮤니케이션 프로토콜
+- `references/task-decomposition.md` - 태스크 분해 방법론
 
-### Execution Management
-- `references/parallel-execution.md` - Parallel execution strategies
-- `references/workflow-orchestration.md` - Workflow orchestration patterns
-- `references/progress-monitoring.md` - Progress monitoring and reporting
+### 실행 관리
+- `references/parallel-execution.md` - 병렬 실행 전략
+- `references/workflow-orchestration.md` - 워크플로우 오케스트레이션 패턴
+- `references/progress-monitoring.md` - 진행률 모니터링 및 보고

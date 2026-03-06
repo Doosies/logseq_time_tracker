@@ -1,6 +1,6 @@
 ---
 name: project-conventions
-description: "Project-wide coding conventions and style guide. Use when checking naming rules (snake_case variables, camelCase functions, PascalCase components), file naming patterns (.svelte, .css.ts, .test.ts), import/export ordering, Svelte 5 component structure, Vanilla Extract CSS naming, Git commit format, or environment variable setup. Detailed reference for AGENTS.md."
+description: "프로젝트 전반 코딩 컨벤션 및 스타일 가이드. 네이밍 규칙, 파일명 패턴, import/export 순서, Svelte 5 구조, Git 커밋 형식, 환경 변수 설정 점검 시 사용합니다."
 ---
 
 # 프로젝트 컨벤션
@@ -405,7 +405,7 @@ describe('calculateTotal', () => {
 
 **예시:**
 ```
-feat: add user authentication
+feat: 사용자 인증 추가
 
 - Add login/logout endpoints
 - Implement JWT token generation

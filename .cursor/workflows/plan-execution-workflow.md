@@ -3,6 +3,8 @@
 이 문서는 사용자 요청 → 플랜 수립 → 실행 → 검증 → 커밋 → 개선까지의 전체 워크플로우를 정의합니다.  
 다음에 같은 방식으로 작업할 때 사용할 수 있는 템플릿입니다.
 
+**기본 단계 수**: 11단계 (테스트 필요성 판단 단계 포함)
+
 ---
 
 ## 1. 사용자 요청 수신
@@ -19,8 +21,8 @@
 2. 작업을 잘게 쪼개서 **TODO** 또는 **플랜 파일**로 생성
 3. 각 작업에 **서브에이전트 할당** 명시
 4. **직렬/병렬** 실행 순서 정의
-   - 의존성이 있는 작업 → 직렬
-   - 독립적인 작업 → 병렬
+    - 의존성이 있는 작업 → 직렬
+    - 독립적인 작업 → 병렬
 5. 사용자에게 플랜 확인 요청 후 승인 시 진행
 6. **설계 결정사항 기록**: planner가 보고한 주요 의사결정(결정 + 근거 + 대안)을 사이클 메트릭의 `decisions[]`에 수집
 
@@ -31,35 +33,53 @@
 플랜에 따라 서브에이전트를 호출합니다.
 
 **주요 서브에이전트**:
+
 - `developer`: 코드 구현, 리팩토링
 - `planner`: 설계/계획 (필요 시)
 - `explore`: 코드베이스 탐색 (필요 시)
 
 **결정/이슈 수집**:
+
 - 각 서브에이전트 완료 시 보고된 결정사항(decisions)과 이슈(issues)를 사이클 메트릭에 누적
 - 방향 전환/재시도 발생 시 해당 내용도 `issues_encountered[]`에 기록
 
 ---
 
-## 4. 품질 보증 (QA) 단계
+## 4. 테스트 필요성 판단 단계
+
+**참조**:
+
+- [`.cursor/commands/test-when-needed.md`](../commands/test-when-needed.md)
+- [`.cursor/skills/qa/references/test-necessity-evaluation.md`](../skills/qa/references/test-necessity-evaluation.md)
+
+모든 구현 작업 완료 후 QA 전에 수행:
+
+1. 변경 영향 분석 (회귀 위험, 복잡도, 외부 의존성, UI 상호작용)
+2. 테스트 필요성 점수표 기반으로 작성/미작성 결정
+3. **미작성 시 근거를 decisions에 필수 기록**
+4. 필요 시 최소 유효 테스트(핵심 성공 1 + 실패/엣지 1) 범위 확정
+
+---
+
+## 5. 품질 보증 (QA) 단계
 
 **참조**: [`.cursor/agents/qa.md`](../agents/qa.md)
 
 모든 구현 작업 완료 후:
 
 1. **검증 명령 실행**
-   - `pnpm format`
-   - `pnpm test`
-   - `pnpm lint`
-   - `pnpm type-check`
-   - `pnpm build`
+    - `pnpm format`
+    - `pnpm test`
+    - `pnpm lint`
+    - `pnpm type-check`
+    - `pnpm build`
 2. 실패 시 해당 서브에이전트가 **원인 분석 + 수정 + 재검증**
 3. 검증 통과 후 다음 단계로 진행
 4. QA에서 발견된 이슈를 사이클 메트릭의 `issues_encountered[]`에 수집
 
 ---
 
-## 5. 보안 검증 (Security) 단계
+## 6. 보안 검증 (Security) 단계
 
 **참조**: [`.cursor/agents/security.md`](../agents/security.md)
 
@@ -72,23 +92,23 @@
 
 ---
 
-## 6. 문서화 (Docs) 단계
+## 7. 문서화 (Docs) 단계
 
 **참조**: [`.cursor/agents/docs.md`](../agents/docs.md)
 
 모든 작업 완료 후:
 
 1. **CHANGELOG** 업데이트
-   - `packages/*/CHANGELOG.md`: 변경된 패키지별
+    - `packages/*/CHANGELOG.md`: 변경된 패키지별
 2. **API 문서** 업데이트 (필요 시)
-   - `packages/docs/api/*.md`
+    - `packages/docs/api/*.md`
 3. **설계 토큰** 문서 업데이트 (디자인 관련 변경 시)
-   - `packages/docs/api/design-tokens.md`
+    - `packages/docs/api/design-tokens.md`
 4. **README** 업데이트 (필요 시)
 
 ---
 
-## 7. 커밋 (Git-Workflow) 단계
+## 8. 커밋 (Git-Workflow) 단계
 
 **참조**: [`.cursor/agents/git-workflow.md`](../agents/git-workflow.md)
 
@@ -102,7 +122,7 @@
 
 ---
 
-## 8. 시스템 개선 (System-Improvement) 단계
+## 9. 시스템 개선 (System-Improvement) 단계
 
 **참조**: [`.cursor/agents/system-improvement.md`](../agents/system-improvement.md)
 
@@ -115,9 +135,9 @@
 
 ---
 
-## 9. 개선 후 커밋 (선택)
+## 10. 개선 후 커밋 (선택)
 
-**조건**: 8단계에서 에이전트 정의 파일을 수정한 경우
+**조건**: 9단계에서 에이전트 정의 파일을 수정한 경우
 
 1. **git-workflow** 서브에이전트 재호출
 2. `git add .cursor/agents/* .cursor/skills/*` 등
@@ -125,13 +145,13 @@
 
 ---
 
-## 10. 최종 보고서 제출
+## 11. 최종 보고서 제출
 
 1. 사이클 메트릭의 `decisions[]`와 `issues_encountered[]`를 보고서에 반영
 2. `.cursor/workflows/final-report-template.md` 형식으로 보고서 작성
 3. **파일 저장**: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`로 저장
-   - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스
-   - description: 작업 내용 요약 (한글 가능)
+    - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스
+    - description: 작업 내용 요약 (한글 가능)
 4. 사용자에게 보고서 출력
 
 ---
@@ -144,6 +164,8 @@
 플랜 모드 (planner)
     ↓
 실행 (developer / planner / explore)
+    ↓
+테스트 필요성 판단 (qa or /test-when-needed)
     ↓
 QA 검증 (qa)
     ↓
@@ -174,7 +196,7 @@ QA 검증 (qa)
 
 예: `/plan-execution CSS 공통화`, `/plan-execution DnD 마이그레이션`
 
-**위치**: `.cursor/commands/plan-execution/COMMAND.md`
+**위치**: `.cursor/commands/plan-execution.md`
 
 ### 2. 프롬프트로 요청
 

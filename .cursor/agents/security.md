@@ -12,11 +12,7 @@ quality_criteria:
   prompt_injection_attempts: 차단율 100%
   unsafe_code_patterns: 0개
 skills:
-  - .cursor/skills/security/references/prompt-injection-defense.md
-  - .cursor/skills/security/references/sensitive-data-detection.md
-  - .cursor/skills/security/references/code-vulnerability-scan.md
-  - .cursor/skills/security/references/input-validation.md
-  - .cursor/skills/security/references/api-security-check.md
+  - .cursor/skills/security/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: security
 model: claude-4.6-opus-high-thinking
@@ -77,12 +73,17 @@ description: 보안 검증 및 취약점 탐지 전문 에이전트
 - 민감 정보 탐지 리포트
 
 ## 사용 가능한 Skill
-- `security/prompt-injection-defense.md` - 프롬프트 인젝션 방어
-- `security/sensitive-data-detection.md` - 민감 정보 탐지
-- `security/code-vulnerability-scan.md` - 코드 취약점 스캔
-- `security/input-validation.md` - 입력 검증
-- `security/api-security-check.md` - API 보안 체크
-- `shared/error-handling.md` - 에러 처리 검증
+- [Security SKILL](../skills/security/SKILL.md)
+- [에러 처리 SKILL](../skills/error-handling/SKILL.md)
+
+## Skill 참조 절차 (필수)
+
+보안 검증 시작 전 아래 절차를 반드시 수행합니다.
+
+1. `.cursor/skills/security/SKILL.md`를 선참조하여 검증 범위를 확정합니다.
+2. 검증 대상(인젝션/민감정보/취약점/API)에 맞는 레퍼런스를 선참조합니다.
+3. 검증 완료 전 레퍼런스 체크리스트 충족 여부를 교차 검증합니다.
+4. 보안 리포트에 적용한 Skill 경로와 차단/허용 근거를 기록합니다.
 
 ## 핵심 원칙
 1. **예방 우선**: 문제가 발생하기 전에 차단
@@ -319,21 +320,21 @@ async function getUser(email: string) {
 - 파일 접근 요청
 
 ### 2단계: 프롬프트 인젝션 검사
-- **Skill 사용**: `security/prompt-injection-defense.md`
+- **Skill 사용**: `.cursor/skills/security/references/prompt-injection-defense.md`
 - 외부 입력 샌드박싱
 - 악의적 지시사항 패턴 탐지
 - 시스템 프롬프트 격리
 - 컨텍스트 오염 방지
 
 ### 3단계: 민감 정보 탐지
-- **Skill 사용**: `security/sensitive-data-detection.md`
+- **Skill 사용**: `.cursor/skills/security/references/sensitive-data-detection.md`
 - API 키 하드코딩 검사
 - 비밀번호 하드코딩 검사
 - 토큰 노출 검사
 - 환경 변수 사용 확인
 
 ### 4단계: 코드 보안 취약점 스캔
-- **Skill 사용**: `security/code-vulnerability-scan.md`
+- **Skill 사용**: `.cursor/skills/security/references/code-vulnerability-scan.md`
 - SQL Injection 패턴 검사
 - XSS 취약점 탐지
 - CSRF 토큰 검증
@@ -341,14 +342,14 @@ async function getUser(email: string) {
 - 안전하지 않은 역직렬화
 
 ### 5단계: 입력 검증
-- **Skill 사용**: `security/input-validation.md`
+- **Skill 사용**: `.cursor/skills/security/references/input-validation.md`
 - 타입 검증
 - 길이 제한
 - 형식 검증 (이메일, URL 등)
 - 허용 목록 사용 (가능 시)
 
 ### 6단계: API 보안 체크
-- **Skill 사용**: `security/api-security-check.md`
+- **Skill 사용**: `.cursor/skills/security/references/api-security-check.md`
 - 인증/인가 체크
 - Rate Limiting 확인
 - HTTPS 사용 확인
@@ -479,12 +480,12 @@ function createUser(email: string, password: string) {
 
 ## Skill 활용 시점
 
-- 프롬프트 인젝션 방어 → `prompt-injection-defense.md`
-- 민감 정보 탐지 → `sensitive-data-detection.md`
-- 코드 취약점 스캔 → `code-vulnerability-scan.md`
-- 입력 검증 → `input-validation.md`
-- API 보안 체크 → `api-security-check.md`
-- 에러 처리 검증 → `shared/error-handling.md`
+- 프롬프트 인젝션 방어 → `.cursor/skills/security/references/prompt-injection-defense.md`
+- 민감 정보 탐지 → `.cursor/skills/security/references/sensitive-data-detection.md`
+- 코드 취약점 스캔 → `.cursor/skills/security/references/code-vulnerability-scan.md`
+- 입력 검증 → `.cursor/skills/security/references/input-validation.md`
+- API 보안 체크 → `.cursor/skills/security/references/api-security-check.md`
+- 에러 처리 검증 → `.cursor/skills/error-handling/SKILL.md`
 
 ## 완료 보고
 

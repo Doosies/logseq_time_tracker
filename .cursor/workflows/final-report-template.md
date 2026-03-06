@@ -17,6 +17,26 @@
 
 ---
 
+## 1.5 배경 및 맥락
+
+| 항목 | 내용 |
+|------|------|
+| 사용자 요청 배경 | (왜 이 작업을 시작했는지) |
+| 현재 문제/이슈 | (작업 전 상태) |
+| 제약사항 | (기술/일정/운영 제약) |
+
+---
+
+## 1.7 주요 결정사항
+
+| 단계 | 결정 | 근거 | 검토한 대안 |
+|------|------|------|-------------|
+| planning | (결정 내용) | (결정 근거) | (대안) |
+| implementation | (결정 내용) | (결정 근거) | (대안) |
+| qa/security | (결정 내용) | (결정 근거) | (대안) |
+
+---
+
 ## 2. 수행한 작업
 
 ### Phase 0 (예시)
@@ -42,6 +62,14 @@
 - **담당**: docs → git-workflow 서브에이전트 (직렬)
 - **내용**: git changes 포함 전체 변경사항 반영
 - **결과**: 완료
+
+### 2.x 발견된 이슈 및 해결
+
+| 단계 | 이슈 | 해결 방법 | 영향도 |
+|------|------|-----------|--------|
+| planning | (이슈) | (해결) | none/minor/major/critical |
+| implementation | (이슈) | (해결) | none/minor/major/critical |
+| qa/security | (이슈) | (해결) | none/minor/major/critical |
 
 ---
 
@@ -98,3 +126,4 @@ packages/*/CHANGELOG.md
 
 - 플랜 파일: `.cursor/plans/xxx.plan.md`
 - 워크플로우: `.cursor/workflows/plan-execution-workflow.md`
+- 보고서 저장: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`

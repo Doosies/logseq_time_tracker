@@ -65,8 +65,6 @@ logs/
 *.tsbuildinfo
 
 # Cursor Agent System
-.cursor/metrics/cycles/*.json
-.cursor/metrics/improvements/
 .cursor/mcp-servers/*/node_modules/
 .cursor/mcp-servers/*/dist/
 .cursor/mcp-servers/*/build/

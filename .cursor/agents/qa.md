@@ -13,13 +13,7 @@ quality_criteria:
   performance_regression: 10% 이내
   security_vulnerabilities: 0개
 skills:
-  - .cursor/skills/qa/references/test-strategy.md
-  - .cursor/skills/qa/references/code-review.md
-  - .cursor/skills/qa/references/coverage-check.md
-  - .cursor/skills/qa/references/test-quality.md
-  - .cursor/skills/qa/references/svelte-testing.md
-  - .cursor/skills/qa/references/storybook-strategy.md
-  - .cursor/skills/qa/references/chrome-extension-testing.md
+  - .cursor/skills/qa/SKILL.md
   - .cursor/skills/project-conventions/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: qa
@@ -75,15 +69,18 @@ description: 테스트 및 품질 검증 전문 에이전트
 - 성능 측정 결과
 
 ## 사용 가능한 Skill
-- `qa/test-strategy.md` - 테스트 유형별 전략
-- `qa/code-review.md` - 코드 리뷰 체크리스트
-- `qa/coverage-check.md` - 커버리지 측정 및 개선
-- `qa/test-quality.md` - 테스트 코드 품질 검증
-- `qa/svelte-testing.md` - Svelte 5 컴포넌트 테스트 (@testing-library/svelte)
-- `qa/storybook-strategy.md` - Svelte Storybook Story 작성 (addon-svelte-csf v5)
-- `qa/chrome-extension-testing.md` - Chrome Extension API 모킹 패턴
-- `shared/project-conventions.md` - 프로젝트 공통 컨벤션
-- `shared/error-handling.md` - 에러 처리 검증
+- [QA SKILL](../skills/qa/SKILL.md)
+- [프로젝트 공통 컨벤션 SKILL](../skills/project-conventions/SKILL.md)
+- [에러 처리 SKILL](../skills/error-handling/SKILL.md)
+
+## Skill 참조 절차 (필수)
+
+QA 작업 시작 전 아래 절차를 반드시 수행합니다.
+
+1. [QA SKILL](../skills/qa/SKILL.md)를 선참조하여 검증 범위를 확정합니다.
+2. 코드 리뷰/전략/품질/커버리지 레퍼런스를 단계별로 선참조합니다.
+3. 테스트 완료 전 레퍼런스 체크리스트 충족 여부를 교차 검증합니다.
+4. QA 리포트에 적용한 Skill 경로와 검증 근거를 기록합니다.
 
 ## 핵심 원칙
 1. **완전성**: 모든 경로와 엣지 케이스 테스트
@@ -187,7 +184,7 @@ describe('calculateTotal', () => {
 ## 작업 프로세스
 
 ### 1단계: 코드 리뷰
-- **Skill 사용**: `qa/code-review.md`
+- **Skill 사용**: [코드 리뷰 체크리스트](../skills/qa/references/code-review.md)
 - 기능성 검증
 - 가독성 확인
 - 성능 체크
@@ -196,10 +193,11 @@ describe('calculateTotal', () => {
 - **테스트 작성 필요 여부 판단** (필수!)
 
 ### 2단계: 테스트 전략 수립
-- **Skill 사용**: `qa/test-strategy.md`
+- **Skill 사용**: [테스트 전략](../skills/qa/references/test-strategy.md)
 - 단위 테스트 대상 식별
 - 통합 테스트 시나리오 작성
-- E2E 테스트 필요 여부 판단
+- E2E 테스트코드 작성 필요 여부 판단
+- E2E **실행 요청 여부** 확인 (사용자 명시 요청 시에만 실행)
 
 **마이그레이션/코드 이관 태스크 시 (필수)**:
 - 옛날 버전에서 새 버전으로 코드가 이관된 경우:
@@ -212,11 +210,15 @@ describe('calculateTotal', () => {
 - 단위 테스트 작성 (Vitest)
 - 통합 테스트 작성 (Vitest + Mock)
 - E2E 테스트 작성 (Playwright/Cypress) - 필요 시
-- 모든 테스트 실행
+- E2E 테스트코드는 단위/통합 테스트와 동일한 네이밍/품질 기준 적용
+- 테스트 실행:
+  - 기본: 단위/통합 테스트 실행
+  - E2E: 사용자 명시 요청 시에만 실행
+- `browser-use` 기반 수동 브라우저 검증은 본 에이전트 기본 프로세스에서 제외
 - **테스트 설명은 한글로 작성** (예: `it('올바른 스타일로 logseq.setMainUIInlineStyle을 호출해야 함')`)
 
 ### 4단계: 커버리지 측정
-- **Skill 사용**: `qa/coverage-check.md`
+- **Skill 사용**: [커버리지 측정](../skills/qa/references/coverage-check.md)
 - Line Coverage 측정
 - Branch Coverage 측정
 - 80% 미만 시 추가 테스트
@@ -240,7 +242,7 @@ describe('calculateTotal', () => {
 **직접 수정한 경우**: 완료 보고에 "수정한 이슈" 항목으로 명시
 
 ### 5단계: 테스트 코드 품질 검증 (필수!)
-- **Skill 사용**: `qa/test-quality.md`
+- **Skill 사용**: [테스트 품질 검증](../skills/qa/references/test-quality.md)
 - 테스트 코드 가독성 확인
 - 테스트 코드 유지보수성 확인
 - 테스트 독립성 확인
@@ -259,6 +261,8 @@ describe('calculateTotal', () => {
 - [ ] **커버리지 80% 이상** (Line Coverage)
 - [ ] **테스트 설명이 한글로 작성되었는가?** (필수!)
 - [ ] **Linter 오류 0개** (테스트 코드도!) (필수!)
+- [ ] E2E 테스트코드가 기존 테스트와 동일한 품질 기준을 따르는가?
+- [ ] E2E 실행은 사용자 요청이 있을 때만 수행했는가?
 
 ### 테스트 코드 품질 (필수!)
 - [ ] **테스트 코드 가독성**: 테스트명 명확, AAA 패턴 준수
@@ -278,7 +282,7 @@ describe('calculateTotal', () => {
 - [ ] play function에서 최소 1개 이상 assertion (렌더링/역할/텍스트 검증)
 - [ ] 모듈 레벨 상태 사용하는 컴포넌트: StoryWrapper onMount에서 reset 함수 호출 여부 확인
 
-**Skill 사용**: `qa/test-quality.md` - 상세 체크리스트 참조
+**Skill 사용**: [테스트 품질 검증](../skills/qa/references/test-quality.md) - 상세 체크리스트 참조
 
 ## 테스트 작성 원칙
 
@@ -345,7 +349,7 @@ describe('calculateTotal', () => {
 
 ## 코드 리뷰 체크리스트
 
-**Skill 사용**: `qa/code-review.md`
+**Skill 사용**: [코드 리뷰 체크리스트](../skills/qa/references/code-review.md)
 
 - [ ] **기능성**: 요구사항 충족
 - [ ] **가독성**: 명확하고 이해하기 쉬움
@@ -377,14 +381,14 @@ describe('calculateTotal', () => {
 
 ## Skill 활용 시점
 
-- 테스트 전략 → `test-strategy.md`
-- 코드 리뷰 → `code-review.md`
-- 커버리지 측정 → `coverage-check.md`
-- **테스트 코드 품질 검증 → `test-quality.md`** (필수!)
-- Svelte 5 컴포넌트 테스트 → `svelte-testing.md`
-- Storybook Story 작성 → `storybook-strategy.md`
-- Chrome Extension 테스트 → `chrome-extension-testing.md`
-- 에러 처리 검증 → `shared/error-handling.md`
+- 테스트 전략 → [테스트 전략](../skills/qa/references/test-strategy.md)
+- 코드 리뷰 → [코드 리뷰](../skills/qa/references/code-review.md)
+- 커버리지 측정 → [커버리지 체크](../skills/qa/references/coverage-check.md)
+- **테스트 코드 품질 검증 → [테스트 품질](../skills/qa/references/test-quality.md)** (필수!)
+- Svelte 5 컴포넌트 테스트 → [Svelte 테스트](../skills/qa/references/svelte-testing.md)
+- Storybook Story 작성 → [Storybook 전략](../skills/qa/references/storybook-strategy.md)
+- Chrome Extension 테스트 → [Chrome Extension 테스트](../skills/qa/references/chrome-extension-testing.md)
+- 에러 처리 검증 → [에러 처리 SKILL](../skills/error-handling/SKILL.md)
 
 ## Storybook Story 작성 트리거
 
@@ -392,7 +396,7 @@ describe('calculateTotal', () => {
 
 새 컴포넌트(`.svelte`) 파일이 생성된 경우, 해당 컴포넌트의 `__tests__/*.stories.ts` 존재 여부를 확인합니다.
 
-- **스토리 없음** → `storybook-strategy.md` 스킬을 참조하여 스토리 작성
+- **스토리 없음** → [Storybook 전략](../skills/qa/references/storybook-strategy.md)을 참조하여 스토리 작성
 - **스토리 작성 불가** (mock 부재, 환경 제약 등) → 원인을 메인 에이전트에게 보고하고 인프라 개선 제안
 
 ### 기존 컴포넌트 수정 시

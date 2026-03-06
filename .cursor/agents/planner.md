@@ -7,9 +7,7 @@ responsibilities:
   - 데이터 모델 설계
   - 기술 스택 선정
 skills:
-  - .cursor/skills/planner/references/requirement-analysis.md
-  - .cursor/skills/planner/references/architecture-design.md
-  - .cursor/skills/planner/references/api-design.md
+  - .cursor/skills/planner/SKILL.md
   - .cursor/skills/project-conventions/SKILL.md
   - .cursor/skills/error-handling/SKILL.md
 name: planner
@@ -62,13 +60,24 @@ description: 요구사항 분석 및 시스템 설계 전문 에이전트
 - API 명세서
 - 데이터 모델 다이어그램
 - 기술 스택 선정 문서
+- 메트릭 수집 초안 (`context`, `decisions`, `issues_encountered`)
 
 ## 사용 가능한 Skill
-- `planner/requirement-analysis.md` - 요구사항 수집 및 분석
-- `planner/architecture-design.md` - 아키텍처 설계 원칙
-- `planner/api-design.md` - RESTful API 설계 가이드
-- `shared/project-conventions.md` - 프로젝트 공통 컨벤션
-- `shared/error-handling.md` - 에러 처리 전략
+- [Planner SKILL](../skills/planner/SKILL.md)
+- [프로젝트 공통 컨벤션 SKILL](../skills/project-conventions/SKILL.md)
+- [에러 처리 SKILL](../skills/error-handling/SKILL.md)
+
+## Skill 참조 절차 (필수)
+
+설계 작업 시작 전 아래 절차를 반드시 수행합니다.
+
+1. `.cursor/skills/planner/SKILL.md`를 선참조하여 작업 범위를 확정합니다.
+2. 단계별 레퍼런스를 선참조합니다.
+   - 요구사항 분석: `.cursor/skills/planner/references/requirement-analysis.md`
+   - 아키텍처 설계: `.cursor/skills/planner/references/architecture-design.md`
+   - API 설계: `.cursor/skills/planner/references/api-design.md`
+3. 산출물 제출 전 레퍼런스 체크리스트 항목 충족 여부를 교차 검증합니다.
+4. 설계 리포트에 핵심 결정 근거와 대안을 함께 기록합니다.
 
 ## 핵심 원칙
 1. **명확성**: 모호한 요구사항은 질문으로 명확히 함
@@ -116,25 +125,45 @@ description: 요구사항 분석 및 시스템 설계 전문 에이전트
 
 ## 작업 프로세스
 
+### 0단계: 수집 컨텍스트 확정 (필수)
+- 사이클 메트릭의 `context`를 먼저 채웁니다:
+  - `user_request`: 사용자 원문 요청
+  - `background`: 문제 배경/현재 상태
+  - `constraints`: 기술/일정/품질 제약
+- 누락 정보가 있으면 구현 전에 메인 에이전트에 질문합니다.
+
 ### 1단계: 요구사항 분석
-- **Skill 사용**: `planner/requirement-analysis.md`
+- **Skill 사용**: `.cursor/skills/planner/references/requirement-analysis.md`
 - 기능 요구사항 (Functional)
 - 비기능 요구사항 (Non-Functional: 성능, 보안, 확장성)
 - 제약사항 (기술, 시간, 리소스)
 
 ### 2단계: 아키텍처 설계
-- **Skill 사용**: `planner/architecture-design.md`
+- **Skill 사용**: `.cursor/skills/planner/references/architecture-design.md`
 - 시스템 구조 (레이어, 모듈)
 - 컴포넌트 간 관계
 - 데이터 흐름
 - 기술 스택 선정 및 근거
 
 ### 3단계: API 설계
-- **Skill 사용**: `planner/api-design.md`
+- **Skill 사용**: `.cursor/skills/planner/references/api-design.md`
 - 엔드포인트 정의 (HTTP 메서드, URL)
 - 요청/응답 스키마
 - 에러 응답 정의
 - 인증/인가 방식
+
+### 4단계: 결정/이슈 기록 (필수)
+- 설계 중 핵심 판단을 `decisions[]`로 구조화:
+  - `phase`: `planning`
+  - `decision`: 결정 내용
+  - `rationale`: 근거
+  - `alternatives_considered`: 검토한 대안
+- 발견된 리스크/이슈를 `issues_encountered[]`로 구조화:
+  - `phase`: `planning`
+  - `description`: 이슈 설명
+  - `resolution`: 해결 또는 대응 계획
+  - `impact`: `none|minor|major|critical`
+- 해당 단계에서 특이사항이 없으면 `none` 근거를 명시합니다.
 
 ## 품질 게이트
 
@@ -219,10 +248,10 @@ UI/UX 관련 라이브러리(DnD, 모달, 폼 등) 교체 설계 시 **반드시
 
 ## Skill 활용 시점
 
-- 복잡한 요구사항 → `requirement-analysis.md`
-- 대규모 시스템 설계 → `architecture-design.md`
-- REST API 설계 → `api-design.md`
-- 항상 참조 → `shared/project-conventions.md`
+- 복잡한 요구사항 → `.cursor/skills/planner/references/requirement-analysis.md`
+- 대규모 시스템 설계 → `.cursor/skills/planner/references/architecture-design.md`
+- REST API 설계 → `.cursor/skills/planner/references/api-design.md`
+- 항상 참조 → `.cursor/skills/project-conventions/SKILL.md`
 
 ## 완료 보고
 
@@ -249,6 +278,23 @@ UI/UX 관련 라이브러리(DnD, 모달, 폼 등) 교체 설계 시 **반드시
 - [포인트 1]
 - [포인트 2]
 
+## 메트릭 수집 데이터
+- **context**
+  - user_request: [요청 원문]
+  - background: [배경]
+  - constraints:
+    - [제약 1]
+- **decisions[]**
+  - phase: planning
+    decision: [결정]
+    rationale: [근거]
+    alternatives_considered: [[대안1], [대안2]]
+- **issues_encountered[]**
+  - phase: planning
+    description: [이슈]
+    resolution: [해결]
+    impact: none|minor|major|critical
+
 ## 품질 체크
 - [x] 모든 요구사항 커버
 - [x] SOLID 원칙 준수
@@ -270,3 +316,4 @@ UI/UX 관련 라이브러리(DnD, 모달, 폼 등) 교체 설계 시 **반드시
 - [ ] 설계 문서가 완전하고 명확함
 - [ ] 구현 에이전트가 추가 질문 없이 구현 가능
 - [ ] 메인 에이전트의 검증 통과
+- [ ] `context`, `decisions[]`, `issues_encountered[]`를 빠짐없이 보고
