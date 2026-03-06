@@ -7,6 +7,13 @@
 
 ## [Unreleased]
 
+### Fixed
+
+- ToggleInput 스위칭 버튼(⇄)이 보이지 않는 문제 수정 (ServerManager 섹션에서 발생)
+  - flex 레이아웃에서 `flexShrink: 0` 누락으로 스위칭 버튼 너비가 0으로 축소되던 문제 해결
+  - 버튼 기본 브라우저 스타일 리셋 및 명시적 크기(28x28) 적용
+  - 유니코드 `⇄`에서 SVG 화살표 교환 아이콘으로 교체하여 폰트 의존성 제거
+
 ### Added
 
 - DnD primitives/components: `Provider`, `Sortable` (`@dnd-kit/svelte` 기반)
