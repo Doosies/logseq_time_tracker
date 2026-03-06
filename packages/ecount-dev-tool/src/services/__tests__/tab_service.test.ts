@@ -3,6 +3,16 @@ import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } fr
 import { asMock } from '#test/mock_helpers';
 
 describe('getCurrentTab', () => {
+    it('여러 탭이 반환되어도 첫 번째만 사용해야 함', async () => {
+        const mock_tab1 = { id: 1, url: 'https://example.com' };
+        const mock_tab2 = { id: 2, url: 'https://other.com' };
+        asMock(chrome.tabs.query).mockResolvedValue([mock_tab1, mock_tab2]);
+
+        const tab = await getCurrentTab();
+
+        expect(tab).toEqual(mock_tab1);
+    });
+
     it('현재 활성 탭을 반환해야 함', async () => {
         const mock_tab = {
             id: 1,
@@ -58,6 +68,17 @@ describe('updateTabUrl', () => {
         await expect(updateTabUrl(1, 'https://new-url.com/')).rejects.toThrow('Permission denied');
         expect(window.close).not.toHaveBeenCalled();
     });
+
+    it('정상 동작 시 chrome.tabs.update가 올바른 인자로 호출되고 window.close 호출됨 (다른 tab_id)', async () => {
+        asMock(chrome.tabs.update).mockResolvedValue({});
+
+        await updateTabUrl(999, 'https://zeus01lxba2.ecount.com/ec5/view/erp');
+
+        expect(chrome.tabs.update).toHaveBeenCalledWith(999, {
+            url: 'https://zeus01lxba2.ecount.com/ec5/view/erp',
+        });
+        expect(window.close).toHaveBeenCalled();
+    });
 });
 
 describe('executeScript', () => {
@@ -104,6 +125,20 @@ describe('executeScript', () => {
 
         expect(result).toBeNull();
     });
+
+    it('chrome.scripting.executeScript가 reject 시 에러 전파해야 함', async () => {
+        asMock(chrome.scripting.executeScript).mockRejectedValue(new Error('Cannot inject script'));
+
+        await expect(executeScript(1, vi.fn())).rejects.toThrow('Cannot inject script');
+    });
+
+    it('결과 results가 null일 때 null을 반환해야 함', async () => {
+        asMock(chrome.scripting.executeScript).mockResolvedValue(null as unknown as chrome.scripting.InjectionResult[]);
+
+        const result = await executeScript(1, vi.fn());
+
+        expect(result).toBeNull();
+    });
 });
 
 describe('executeMainWorldScript', () => {
@@ -133,5 +168,13 @@ describe('executeMainWorldScript', () => {
         asMock(chrome.scripting.executeScript).mockRejectedValue(new Error('Cannot access contents'));
 
         await expect(executeMainWorldScript(1, vi.fn())).rejects.toThrow('Cannot access contents');
+    });
+
+    it('결과 result가 undefined일 때 null을 반환해야 함', async () => {
+        asMock(chrome.scripting.executeScript).mockResolvedValue([{ result: undefined }]);
+
+        const result = await executeMainWorldScript(1, vi.fn());
+
+        expect(result).toBeNull();
     });
 });

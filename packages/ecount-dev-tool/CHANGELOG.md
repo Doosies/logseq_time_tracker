@@ -31,6 +31,16 @@
 - Drag feedback color (fallback values for theme scope issue)
 - Button height shrink in edit mode
 
+### Tests
+
+- 서버 관리 관련 테스트 전면 보강 (EC Server Manager 2.2.0 `serverChange.js` 로직 기준, 총 175개 → 259개)
+  - url_service.test.ts: 31개 → 70개 (parseEcountUrl stage/test/zeus/ec3/unknown·-dev URL·쿼리/hash 복합; buildEc5Url/buildEc3Url/buildStageUrl/buildDevUrl 분기·엣지케이스; inputLogin·switchV3/V5TestServer 다양한 패턴)
+  - page_actions.test.ts: 13개 → 30개 (debugAndGetPageInfo 12개 mock 시나리오, top undefined/null 포함)
+  - server_ui.svelte.test.ts: 신규 13개 (initializeServerUi, resetServerUi 스토어 단위 테스트)
+  - tab_service.test.ts: 12개 → 17개 (엣지케이스 추가)
+  - server_change_flow.test.ts: 4개 → 10개 (test/zeus/-dev/EC3 환경 서버 변경 플로우)
+  - dev_mode_flow.test.ts: 3개 → 7개 (devMode 레거시 분기)
+
 ## [0.3.1] - 2026-02-27
 
 ### Fixed
