@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'section_order_state';
 
-export const DEFAULT_ORDER = ['quick-login', 'server-manager', 'action-bar', 'calculator'] as const;
+export const DEFAULT_ORDER = ['quick-login', 'server-manager', 'action-bar', 'calculator', 'user-script'] as const;
 
 let order = $state<string[]>([...DEFAULT_ORDER]);
 let is_loaded = $state(false);

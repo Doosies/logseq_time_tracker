@@ -47,7 +47,7 @@ describe('section_order 스토어', () => {
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual(stored);
+            expect(getSectionOrder()).toEqual([...stored, 'user-script']);
         });
 
         it('잘못된 데이터가 저장되어 있으면 기본 순서를 사용해야 함', async () => {
@@ -76,7 +76,13 @@ describe('section_order 스토어', () => {
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual(['server-manager', 'action-bar', 'quick-login', 'calculator']);
+            expect(getSectionOrder()).toEqual([
+                'server-manager',
+                'action-bar',
+                'quick-login',
+                'calculator',
+                'user-script',
+            ]);
         });
 
         it('알 수 없는 ID는 필터링해야 함', async () => {
@@ -87,7 +93,13 @@ describe('section_order 스토어', () => {
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual(['quick-login', 'server-manager', 'action-bar', 'calculator']);
+            expect(getSectionOrder()).toEqual([
+                'quick-login',
+                'server-manager',
+                'action-bar',
+                'calculator',
+                'user-script',
+            ]);
         });
     });
 
@@ -105,7 +117,13 @@ describe('section_order 스토어', () => {
             const result = await moveSectionUp('server-manager');
 
             expect(result).toBe(true);
-            expect(getSectionOrder()).toEqual(['server-manager', 'quick-login', 'action-bar', 'calculator']);
+            expect(getSectionOrder()).toEqual([
+                'server-manager',
+                'quick-login',
+                'action-bar',
+                'calculator',
+                'user-script',
+            ]);
         });
 
         it('첫 번째 섹션은 위로 이동할 수 없어야 함', async () => {
@@ -119,11 +137,17 @@ describe('section_order 스토어', () => {
             const result = await moveSectionDown('quick-login');
 
             expect(result).toBe(true);
-            expect(getSectionOrder()).toEqual(['server-manager', 'quick-login', 'action-bar', 'calculator']);
+            expect(getSectionOrder()).toEqual([
+                'server-manager',
+                'quick-login',
+                'action-bar',
+                'calculator',
+                'user-script',
+            ]);
         });
 
         it('마지막 섹션은 아래로 이동할 수 없어야 함', async () => {
-            const result = await moveSectionDown('calculator');
+            const result = await moveSectionDown('user-script');
 
             expect(result).toBe(false);
             expect(getSectionOrder()).toEqual([...DEFAULT_ORDER]);
@@ -133,7 +157,7 @@ describe('section_order 스토어', () => {
             await moveSectionUp('server-manager');
 
             expect(chrome.storage.sync.set).toHaveBeenCalledWith({
-                section_order_state: ['server-manager', 'quick-login', 'action-bar', 'calculator'],
+                section_order_state: ['server-manager', 'quick-login', 'action-bar', 'calculator', 'user-script'],
             });
         });
 

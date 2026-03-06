@@ -19,7 +19,7 @@ const meta = {
         onclick: { description: '버튼 클릭 이벤트 핸들러', action: 'clicked' },
         variant: {
             control: 'select',
-            options: ['primary', 'secondary', 'accent'],
+            options: ['primary', 'secondary', 'accent', 'ghost'],
             description: '버튼 스타일 변형',
         },
         size: {
@@ -51,6 +51,14 @@ export const Secondary: Story = {
 
 export const Accent: Story = {
     args: { variant: 'accent', label: 'Accent' },
+};
+
+export const Ghost: Story = {
+    args: { variant: 'ghost', label: 'Ghost' },
+};
+
+export const GhostDisabled: Story = {
+    args: { variant: 'ghost', disabled: true, label: 'Ghost Disabled' },
 };
 
 export const Small: Story = {

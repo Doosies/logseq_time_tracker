@@ -31,6 +31,7 @@ vi.stubEnv(
 );
 
 const storage_data: Record<string, unknown> = {};
+const local_storage_data: Record<string, unknown> = {};
 
 const chrome_mock = {
     tabs: {
@@ -51,9 +52,13 @@ const chrome_mock = {
             }),
         },
         local: {
-            get: vi.fn().mockResolvedValue({}),
-            set: vi.fn().mockResolvedValue(undefined),
+            get: vi.fn().mockImplementation((key: string) => Promise.resolve({ [key]: local_storage_data[key] })),
+            set: vi.fn().mockImplementation((items: Record<string, unknown>) => {
+                Object.assign(local_storage_data, items);
+                return Promise.resolve();
+            }),
         },
+        onChanged: { addListener: vi.fn(), removeListener: vi.fn() },
     },
 };
 
@@ -63,4 +68,5 @@ vi.stubGlobal('close', vi.fn());
 beforeEach(() => {
     vi.clearAllMocks();
     Object.keys(storage_data).forEach((key) => delete storage_data[key]);
+    Object.keys(local_storage_data).forEach((key) => delete local_storage_data[key]);
 });

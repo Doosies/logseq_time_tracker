@@ -1,6 +1,7 @@
 export { Button } from './Button';
 export { Select } from './Select';
 export { TextInput } from './TextInput';
+export { Textarea } from './Textarea';
 export * as ToggleInput from './ToggleInput';
 export * as Section from './Section';
 export { ButtonGroup } from './ButtonGroup';

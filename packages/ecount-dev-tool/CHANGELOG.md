@@ -9,6 +9,16 @@
 
 ### Added
 
+- 사용자 스크립트 실행기 (User Script Runner) 기능 추가
+  - 사용자 작성 JavaScript를 ecount.com 페이지에서 실행
+  - 자동 실행: URL 패턴 매칭(`@include` glob) 시 페이지 로드 완료 후 자동 주입
+  - 수동 실행: 팝업에서 버튼 클릭으로 현재 탭에 즉시 실행
+  - MAIN world 실행 (페이지 전역 변수 접근 가능)
+  - Background Service Worker로 `chrome.tabs.onUpdated` 감지 및 자동 주입
+  - `chrome.storage.local` 기반 스크립트 CRUD (100KB 이상 지원)
+  - ScriptList: 토글 활성/비활성, 실행, 편집, 삭제 UI
+  - ScriptEditor: 이름/URL패턴/코드 입력 폼
+  - UserScriptSection: 리스트 ↔ 편집 뷰 전환
 - 1+1 계산기 섹션 추가 (버튼 클릭 시 "1 + 1 = 2" 표시)
 - App 섹션 목록/렌더링 분기에 calculator 등록, section_order 기본 순서에 추가
 - Quick login active state persistence (chrome.storage.sync)

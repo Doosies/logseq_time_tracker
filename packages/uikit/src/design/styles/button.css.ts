@@ -51,6 +51,23 @@ export const button_variant = styleVariants({
             color: '#ffffff',
         },
     ],
+    ghost: [
+        base_button,
+        {
+            backgroundColor: 'transparent',
+            color: theme_vars.color.text_secondary,
+            padding: '4px 6px',
+            margin: 0,
+            selectors: {
+                '&:hover:not(:disabled)': {
+                    backgroundColor: theme_vars.color.surface,
+                    color: theme_vars.color.text,
+                    filter: 'none',
+                    boxShadow: 'none',
+                },
+            },
+        },
+    ],
 });
 
 export const button_size = styleVariants({

@@ -7,6 +7,13 @@
 
 ## [Unreleased]
 
+### Added
+
+- Textarea 컴포넌트 (primitive + design + component): 멀티라인 텍스트 입력, `monospace` 모드 지원
+- Button `ghost` variant: 투명 배경 아이콘 전용 버튼 스타일
+- Textarea Storybook 스토리 7개 (Default, WithPlaceholder, WithValue, Disabled, Monospace, CustomRows, WithInputHandler)
+- Button Ghost/GhostDisabled Storybook 스토리 추가
+
 ### Fixed
 
 - ToggleInput 스위칭 버튼(⇄)이 보이지 않는 문제 수정 (ServerManager 섹션에서 발생)
@@ -14,7 +21,7 @@
   - 버튼 기본 브라우저 스타일 리셋 및 명시적 크기(28x28) 적용
   - 유니코드 `⇄`에서 SVG 화살표 교환 아이콘으로 교체하여 폰트 의존성 제거
 
-### Added
+### Changed
 
 - DnD primitives/components: `Provider`, `Sortable` (`@dnd-kit/svelte` 기반)
 - Design tokens: `transition` (fast, normal, slow), `z_index` (base, above, popover), `shadow` (sm, md, lg)

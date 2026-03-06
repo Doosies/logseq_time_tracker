@@ -3,3 +3,4 @@ export * from './accounts.svelte';
 export * from './section_visibility.svelte';
 export * from './section_order.svelte';
 export * from './server_ui.svelte';
+export * from './user_scripts.svelte';
