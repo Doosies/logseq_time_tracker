@@ -19,8 +19,10 @@
     const ctx = getContext<ToastContext>('toast');
 </script>
 
-{#each ctx.toasts as toast (toast.id)}
-    <div class={extra_class} role="alert">
-        {toast.message}
-    </div>
-{/each}
+<div aria-live="polite" aria-relevant="additions">
+    {#each ctx.toasts as toast (toast.id)}
+        <div class={extra_class} role="status">
+            {toast.message}
+        </div>
+    {/each}
+</div>

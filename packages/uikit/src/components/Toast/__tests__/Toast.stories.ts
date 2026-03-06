@@ -25,7 +25,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        await expect(canvas.queryByRole('alert')).not.toBeInTheDocument();
+        await expect(canvas.queryByRole('status')).not.toBeInTheDocument();
     },
 };
 
@@ -34,7 +34,7 @@ export const ShowToast: Story = {
         const canvas = within(canvasElement);
         const trigger = canvas.getByRole('button', { name: '토스트 표시' });
         await userEvent.click(trigger);
-        await expect(canvas.getByRole('alert')).toBeInTheDocument();
+        await expect(canvas.getByRole('status')).toBeInTheDocument();
         await expect(canvas.getByText('에러 메시지입니다.')).toBeInTheDocument();
     },
 };
@@ -46,8 +46,8 @@ export const MultipleToasts: Story = {
         await userEvent.click(trigger);
         await userEvent.click(trigger);
         await userEvent.click(trigger);
-        const alerts = canvas.getAllByRole('alert');
-        await expect(alerts.length).toBeGreaterThanOrEqual(2);
+        const statuses = canvas.getAllByRole('status');
+        await expect(statuses.length).toBeGreaterThanOrEqual(2);
     },
 };
 
@@ -56,7 +56,7 @@ export const ToastHasContent: Story = {
         const canvas = within(canvasElement);
         const trigger = canvas.getByRole('button', { name: '토스트 표시' });
         await userEvent.click(trigger);
-        const alert = canvas.getByRole('alert');
-        await expect(alert).toHaveTextContent('에러 메시지입니다.');
+        const status = canvas.getByRole('status');
+        await expect(status).toHaveTextContent('에러 메시지입니다.');
     },
 };

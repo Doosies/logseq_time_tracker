@@ -1,7 +1,7 @@
 <!--
 @component Toast.Root - Toast message renderer
 
-Renders all active toast messages as `role="alert"` elements.
+Renders all active toast messages as `role="status"` elements inside an `aria-live` region.
 Place inside a `Toast.Provider`.
 -->
 <script lang="ts">

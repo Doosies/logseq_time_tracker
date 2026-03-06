@@ -9,6 +9,6 @@
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<div class={extra_class}>
+<header class={extra_class}>
     {@render children()}
-</div>
+</header>
