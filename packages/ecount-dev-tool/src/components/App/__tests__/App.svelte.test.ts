@@ -240,6 +240,7 @@ describe('App', () => {
                         section_visibility_state: {
                             'quick-login': false,
                             'server-manager': false,
+                            'action-bar': false,
                         },
                     });
                 }
@@ -267,7 +268,7 @@ describe('App', () => {
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
             const checkboxes = screen.getAllByRole('checkbox');
-            const last_checkbox = checkboxes[2];
+            const last_checkbox = checkboxes[3];
 
             expect(last_checkbox).toBeDisabled();
         });
@@ -311,7 +312,7 @@ describe('App', () => {
             asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
                 if (key === 'section_order_state') {
                     return Promise.resolve({
-                        section_order_state: ['action-bar', 'quick-login', 'server-manager'],
+                        section_order_state: ['action-bar', 'quick-login', 'server-manager', 'calculator'],
                     });
                 }
                 return Promise.resolve({ [key]: undefined });
@@ -361,7 +362,7 @@ describe('App', () => {
             const option_elements = screen.getAllByRole('option', {
                 name: /드래그하여 순서 변경/,
             });
-            expect(option_elements.length).toBe(3);
+            expect(option_elements.length).toBe(4);
         });
 
         it('메인 화면에서 드래그 핸들이 렌더링되어야 함', async () => {
@@ -382,7 +383,7 @@ describe('App', () => {
             );
 
             const drag_handle_elements = screen.getAllByLabelText('드래그하여 섹션 순서 변경');
-            expect(drag_handle_elements.length).toBe(3);
+            expect(drag_handle_elements.length).toBe(4);
         });
     });
 
