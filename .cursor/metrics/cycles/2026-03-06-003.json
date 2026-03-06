@@ -1,0 +1,30 @@
+{
+    "cycle_id": "2026-03-06-003",
+    "task_type": "feature",
+    "task_description": "시스템 개선: cycle 메트릭 수정, cycle-metrics MCP 도구 개발, a11y 후속 작업",
+    "started_at": "2026-03-06T13:00:00.000Z",
+    "completed_at": null,
+    "success": null,
+    "failure_reason": null,
+    "workflow": [],
+    "agents": {
+        "planner": { "outcome": "pending", "retries": 0, "errors": [] },
+        "developer": { "outcome": "pending", "retries": 0, "errors": [] },
+        "qa": { "outcome": "pending", "retries": 0, "errors": [] },
+        "security": { "outcome": "pending", "retries": 0, "errors": [] },
+        "docs": { "outcome": "pending", "retries": 0, "errors": [] },
+        "system-improvement": { "outcome": "pending", "retries": 0, "errors": [] }
+    },
+    "files_changed": { "created": [], "modified": [], "deleted": [] },
+    "quality_gates": {
+        "readlints": null,
+        "type_check": null,
+        "lint": null,
+        "test": null,
+        "build": null,
+        "security": null
+    },
+    "decisions": [],
+    "issues_encountered": [],
+    "notes": ""
+}
