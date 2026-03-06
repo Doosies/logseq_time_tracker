@@ -11,17 +11,28 @@ export const toggle_input_container = style({
 });
 
 export const toggle_icon = style({
+    flexShrink: 0,
+    display: 'inline-flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '28px',
+    height: '28px',
+    padding: 0,
+    border: `1px solid ${theme_vars.color.border}`,
+    borderRadius: theme_vars.radius.sm,
+    backgroundColor: theme_vars.color.background,
     cursor: 'pointer',
-    fontSize: theme_vars.font.size.sm,
-    marginLeft: theme_vars.space.xs,
+    fontSize: '16px',
+    lineHeight: 1,
     color: theme_vars.color.text_secondary,
-    transition: `color ${theme_vars.transition.normal}, transform ${theme_vars.transition.fast}`,
+    transition: `color ${theme_vars.transition.normal}, border-color ${theme_vars.transition.normal}, transform ${theme_vars.transition.fast}`,
     ':hover': {
         color: theme_vars.color.primary,
-        transform: 'scale(1.15)',
+        borderColor: theme_vars.color.primary,
+        transform: 'scale(1.05)',
     },
     ':active': {
-        transform: 'scale(0.9)',
+        transform: 'scale(0.95)',
     },
 });
 
