@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
@@ -9,6 +10,19 @@ import {
 import { evaluate } from 'mathjs';
 import { registerTools } from './tools/index.js';
 import { registerResources } from './resources/index.js';
+import {
+    CYCLE_TOOL_DEFINITIONS,
+    handleCycleInit,
+    handleCycleGet,
+    handleCycleUpdate,
+    handleCycleComplete,
+    handleCycleList,
+    handleCycleSummary,
+} from './tools/cycle_metrics.js';
+
+const workspace_root =
+    process.argv.find((_, i, a) => a[i - 1] === '--workspace') || process.env['WORKSPACE_ROOT'] || process.cwd();
+const cycles_dir = path.join(workspace_root, '.cursor', 'metrics', 'cycles');
 
 // MCP 서버 인스턴스 생성
 const server = new Server(
@@ -61,6 +75,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
                     required: ['expression'],
                 },
             },
+            ...CYCLE_TOOL_DEFINITIONS,
         ],
     };
 });
@@ -120,6 +135,19 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
             }
         }
 
+        case 'cycle_init':
+            return handleCycleInit(args as Record<string, unknown>, cycles_dir);
+        case 'cycle_get':
+            return handleCycleGet(args as Record<string, unknown>, cycles_dir);
+        case 'cycle_update':
+            return handleCycleUpdate(args as Record<string, unknown>, cycles_dir);
+        case 'cycle_complete':
+            return handleCycleComplete(args as Record<string, unknown>, cycles_dir);
+        case 'cycle_list':
+            return handleCycleList(args as Record<string, unknown>, cycles_dir);
+        case 'cycle_summary':
+            return handleCycleSummary(args as Record<string, unknown>, cycles_dir);
+
         default:
             throw new Error(`알 수 없는 도구: ${name}`);
     }
@@ -149,7 +177,21 @@ server.setRequestHandler(ReadResourceRequestSchema, async (request) => {
                 {
                     uri,
                     mimeType: 'text/plain',
-                    text: `Personal MCP Server v0.1.0\n\n사용 가능한 도구:\n- get_current_time: 현재 시간 조회\n- calculate: 수학 계산\n\n이 서버는 Cursor에서 사용할 수 있습니다.`,
+                    text: [
+                        'Personal MCP Server v0.1.0',
+                        '',
+                        '사용 가능한 도구:',
+                        '- get_current_time: 현재 시간 조회',
+                        '- calculate: 수학 계산',
+                        '- cycle_init: 작업 사이클 초기화',
+                        '- cycle_get: 사이클 데이터 조회',
+                        '- cycle_update: 사이클 부분 업데이트',
+                        '- cycle_complete: 사이클 완료 처리',
+                        '- cycle_list: 날짜별 사이클 목록',
+                        '- cycle_summary: 날짜별 사이클 통계',
+                        '',
+                        '이 서버는 Cursor에서 사용할 수 있습니다.',
+                    ].join('\n'),
                 },
             ],
         };
