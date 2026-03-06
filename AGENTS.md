@@ -629,8 +629,8 @@ try {
 - [AGENT_SYSTEM_DESIGN.md](.cursor/AGENT_SYSTEM_DESIGN.md): 전체 시스템 설계
 - [DIRECTORY_STRUCTURE.md](.cursor/DIRECTORY_STRUCTURE.md): 디렉토리 구조
 - [IMPLEMENTATION_ROADMAP.md](.cursor/IMPLEMENTATION_ROADMAP.md): 구현 로드맵
-- [plan-execution-workflow.md](.cursor/workflows/plan-execution-workflow.md): 플랜 실행 워크플로우 (사용자 요청 수신 포함 11단계, 테스트 필요성 판단 단계 포함)
-- [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (10단계, 테스트 필요성 판단 단계 포함)
+- [plan-execution-workflow.md](.cursor/workflows/plan-execution-workflow.md): 플랜 실행 워크플로우 (0~10단계, 0단계 사이클 메트릭 초기화 포함)
+- [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~9단계)
 - [final-report-template.md](.cursor/workflows/final-report-template.md): 작업 완료 보고서 템플릿
 - **명령어**: 에이전트 입력창에 `/plan-execution [할 일]` 로 위 워크플로우 실행 가능
 

@@ -1,7 +1,7 @@
 # 작업 완료 보고서
 
-**작업 일자**: YYYY-MM-DD  
-**작업 ID**: (플랜 파일명 또는 cycle_id)  
+**작업 일자**: YYYY-MM-DD
+**작업 ID**: (플랜 파일명 또는 cycle_id)
 **요청 내용**: (사용자가 요청한 할 일 요약)
 
 ---
@@ -12,28 +12,8 @@
 |------|------|
 | 작업 유형 | Feature / Bugfix / Refactor / Chore / Docs |
 | 소요 시간 | (예상 또는 실제) |
-| 주요 변경 패키지 | packages/xxx, packages/yyy |
+| 주요 변경 영역 | (변경된 모듈/패키지) |
 | 커밋 수 | N개 |
-
----
-
-## 1.5 배경 및 맥락
-
-| 항목 | 내용 |
-|------|------|
-| 사용자 요청 배경 | (왜 이 작업을 시작했는지) |
-| 현재 문제/이슈 | (작업 전 상태) |
-| 제약사항 | (기술/일정/운영 제약) |
-
----
-
-## 1.7 주요 결정사항
-
-| 단계 | 결정 | 근거 | 검토한 대안 |
-|------|------|------|-------------|
-| planning | (결정 내용) | (결정 근거) | (대안) |
-| implementation | (결정 내용) | (결정 근거) | (대안) |
-| qa/security | (결정 내용) | (결정 근거) | (대안) |
 
 ---
 
@@ -54,76 +34,81 @@
 ### 검증
 
 - **담당**: qa 서브에이전트 x1
-- **내용**: pnpm format + test + lint + type-check → build
+- **내용**: ReadLints + pnpm format + test + lint + type-check → build
 - **결과**: PASS / FAIL (이슈 N건 제외)
 
-### 문서화/CHANGELOG:
+### 문서화/CHANGELOG
 
 - **담당**: docs → git-workflow 서브에이전트 (직렬)
 - **내용**: git changes 포함 전체 변경사항 반영
 - **결과**: 완료
 
-### 2.x 발견된 이슈 및 해결
+---
 
-| 단계 | 이슈 | 해결 방법 | 영향도 |
-|------|------|-----------|--------|
-| planning | (이슈) | (해결) | none/minor/major/critical |
-| implementation | (이슈) | (해결) | none/minor/major/critical |
-| qa/security | (이슈) | (해결) | none/minor/major/critical |
+## 3. 주요 결정사항
+
+| 단계 | 결정 | 근거 | 검토한 대안 |
+|------|------|------|-------------|
+| planning | (결정 내용) | (결정 근거) | (대안) |
+| implementation | (결정 내용) | (결정 근거) | (대안) |
 
 ---
 
-## 3. 품질 지표
+## 4. 발견된 이슈 및 해결
+
+| 단계 | 이슈 | 해결 방법 | 영향도 |
+|------|------|-----------|--------|
+| implementation | (이슈) | (해결) | none/minor/major/critical |
+
+---
+
+## 5. 품질 지표
 
 | 지표 | 결과 |
 |------|------|
-| Linter 오류 | 0개 |
+| Linter 오류 (ReadLints) | 0개 |
 | 테스트 통과 | 100% (N/N) |
-| 커버리지 | N% |
+| 테스트 커버리지 | N% |
 | type-check | PASS |
 | build | PASS |
 
 ---
 
-## 4. 커밋 내역
+## 6. 커밋 내역
 
 | # | 커밋 해시 | 메시지 |
 |---|-----------|--------|
-| 1 | abc1234 | feat(uikit): add design tokens for transition |
-| 2 | def5678 | refactor(ecount-dev-tool): apply new tokens |
-| 3 | ghi9012 | docs: update CHANGELOG and design-tokens.md |
+| 1 | abc1234 | feat(module): add feature description |
+| 2 | def5678 | refactor(module): refactor description |
 
 ---
 
-## 5. 시스템 개선 (선택)
+## 7. 시스템 개선 (선택)
 
 - **분석**: system-improvement 에이전트 실행 여부
 - **개선 사항**: (있으면) 에이전트 규칙 추가/수정 내용
-- **리포트 경로**: `.cursor/metrics/improvements/YYYY-MM-DD-xxx.md`
+- **리포트 경로**: `.cursor/metrics/improvements/YYYY-MM-DD-NNN-description.md`
 - **추가 커밋**: (있으면) chore(agents): improve subagent rules
 
 ---
 
-## 6. 변경된 파일 목록
+## 8. 변경된 파일 목록
 
 ```
-packages/uikit/src/xxx
-packages/ecount-dev-tool/src/yyy
-packages/docs/api/design-tokens.md
-packages/*/CHANGELOG.md
-...
+(git diff --name-status 결과)
 ```
 
 ---
 
-## 7. 후속 작업 (선택)
+## 9. 후속 작업 (선택)
 
 - (사용자에게 제안할 추가 작업이 있으면 기재)
 
 ---
 
-## 8. 참고
+## 10. 참고
 
 - 플랜 파일: `.cursor/plans/xxx.plan.md`
 - 워크플로우: `.cursor/workflows/plan-execution-workflow.md`
+- 사이클 메트릭: `.cursor/metrics/cycles/YYYY-MM-DD-NNN.json`
 - 보고서 저장: `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md`

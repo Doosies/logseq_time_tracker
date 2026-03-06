@@ -1,51 +1,58 @@
 {
-    "cycle_id": "YYYY-MM-DD-NNN",
-    "task_type": "feature|bugfix|refactor|docs|hotfix|chore",
-    "task_description": "",
-    "context": {
-        "user_request": "",
-        "background": "",
-        "constraints": []
+  "cycle_id": "YYYY-MM-DD-NNN",
+  "task_type": "feature|bugfix|refactor|docs|hotfix|chore",
+  "task_description": "",
+  "started_at": "ISO-8601",
+  "completed_at": "ISO-8601",
+  "success": true,
+  "failure_reason": null,
+  "workflow": [],
+  "agents": {
+    "planner": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
     },
-    "decisions": [
-        {
-            "phase": "planning|implementation|qa|security|docs|git_workflow|system_improvement",
-            "decision": "",
-            "rationale": "",
-            "alternatives_considered": []
-        }
-    ],
-    "issues_encountered": [
-        {
-            "phase": "planning|implementation|qa|security|docs|git_workflow|system_improvement",
-            "description": "",
-            "resolution": "",
-            "impact": "none|minor|major|critical"
-        }
-    ],
-    "started_at": "ISO-8601",
-    "completed_at": "ISO-8601",
-    "success": true,
-    "failure_reason": null,
-    "workflow": [],
-    "agents": {
-        "agent_name": {
-            "outcome": "success|failure|skipped",
-            "retries": 0,
-            "errors": []
-        }
+    "developer": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
     },
-    "files_changed": {
-        "created": [],
-        "modified": [],
-        "deleted": []
+    "qa": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
     },
-    "quality_gates": {
-        "type_check": null,
-        "lint": null,
-        "test": null,
-        "security": null
+    "security": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
     },
-    "errors": [],
-    "notes": ""
+    "docs": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
+    },
+    "system-improvement": {
+      "outcome": "success|failure|skipped",
+      "retries": 0,
+      "errors": []
+    }
+  },
+  "files_changed": {
+    "created": [],
+    "modified": [],
+    "deleted": []
+  },
+  "quality_gates": {
+    "readlints": null,
+    "type_check": null,
+    "lint": null,
+    "test": null,
+    "build": null,
+    "security": null
+  },
+  "decisions": [],
+  "issues_encountered": [],
+  "notes": ""
 }
