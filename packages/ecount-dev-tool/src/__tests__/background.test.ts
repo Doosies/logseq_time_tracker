@@ -23,6 +23,14 @@ const DISABLED_SCRIPT: UserScript = {
     enabled: false,
 };
 
+const DOCUMENT_START_SCRIPT: UserScript = {
+    ...MOCK_SCRIPT,
+    id: 'test-document-start',
+    name: 'document-start 스크립트',
+    run_at: 'document_start',
+    code: 'console.log("document_start")',
+};
+
 describe('background service worker', () => {
     let on_updated_callback: (tab_id: number, info: { status?: string }, tab: { url?: string }) => void;
     let on_changed_callback: (changes: Record<string, { newValue?: unknown }>, area: string) => void;
@@ -64,8 +72,53 @@ describe('background service worker', () => {
         expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
     });
 
-    it('status가 complete이 아니면 무시한다', () => {
+    it('status가 complete이 아니면 document_idle 스크립트는 실행하지 않는다', () => {
         on_updated_callback(42, { status: 'loading' }, { url: 'https://zeus01.ecount.com/' });
+        expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
+    });
+
+    it('document_start 스크립트는 status loading일 때만 실행한다', async () => {
+        vi.resetModules();
+
+        asMock(chrome.storage.local.get).mockResolvedValue({
+            [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
+        });
+
+        asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
+            on_updated_callback = cb;
+        });
+        asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
+            on_changed_callback = cb;
+        });
+
+        await import('../background');
+
+        on_updated_callback(42, { status: 'loading' }, { url: 'https://zeus01.ecount.com/' });
+
+        expect(chrome.scripting.executeScript).toHaveBeenCalled();
+        const calls = asMock(chrome.scripting.executeScript).mock.calls;
+        const executed_code = (calls[0] as unknown[])?.[0] as { args?: string[] };
+        expect(executed_code?.args?.[0]).toBe(DOCUMENT_START_SCRIPT.code);
+    });
+
+    it('document_start 스크립트는 status complete일 때는 실행하지 않는다', async () => {
+        vi.resetModules();
+
+        asMock(chrome.storage.local.get).mockResolvedValue({
+            [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
+        });
+
+        asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
+            on_updated_callback = cb;
+        });
+        asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
+            on_changed_callback = cb;
+        });
+
+        await import('../background');
+
+        on_updated_callback(42, { status: 'complete' }, { url: 'https://zeus01.ecount.com/' });
+
         expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
     });
 

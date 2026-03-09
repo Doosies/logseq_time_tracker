@@ -1,7 +1,7 @@
 <script lang="ts">
     import { untrack } from 'svelte';
-    import type { UserScript } from '#types/user_script';
-    import { Button, TextInput, Textarea } from '@personal/uikit';
+    import type { RunAt, UserScript } from '#types/user_script';
+    import { Button, Select, TextInput, Textarea } from '@personal/uikit';
     import { addScript, updateScript } from '#stores/user_scripts.svelte';
 
     interface Props {
@@ -18,9 +18,15 @@
     let name = $state(untrack(() => script?.name ?? ''));
     let url_patterns_text = $state(untrack(() => script?.url_patterns.join('\n') ?? ''));
     let code = $state(untrack(() => script?.code ?? ''));
+    let run_at = $state<RunAt>(untrack(() => script?.run_at ?? 'document_idle'));
     let error_message = $state('');
 
     const can_save = $derived(name.trim() !== '' && code.trim() !== '');
+
+    const run_at_options = [
+        { value: 'document_start', label: '페이지 로드 전 (document-start)' },
+        { value: 'document_idle', label: '페이지 로드 후 (document-idle)' },
+    ];
 
     async function handleSave(): Promise<void> {
         if (!can_save) return;
@@ -37,6 +43,7 @@
                 name: name.trim(),
                 url_patterns: patterns,
                 code: code,
+                run_at,
             });
             if (!result) {
                 error_message = '저장에 실패했습니다.';
@@ -48,7 +55,7 @@
                 enabled: true,
                 url_patterns: patterns,
                 code: code,
-                run_at: 'document_idle',
+                run_at,
             });
             if (!id) {
                 error_message = '추가에 실패했습니다.';
@@ -69,6 +76,11 @@
     <div class="form-field">
         <span class="form-label">URL 패턴 (한 줄에 하나씩)</span>
         <Textarea bind:value={url_patterns_text} placeholder="*://zeus*.ecount.com/*" rows={3} />
+    </div>
+
+    <div class="form-field">
+        <span class="form-label">실행 시점</span>
+        <Select bind:value={run_at} options={run_at_options} />
     </div>
 
     <div class="form-field">

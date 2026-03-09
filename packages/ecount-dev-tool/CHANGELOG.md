@@ -54,6 +54,25 @@
   - server_change_flow.test.ts: 4개 → 10개 (test/zeus/-dev/EC3 환경 서버 변경 플로우)
   - dev_mode_flow.test.ts: 3개 → 7개 (devMode 레거시 분기)
 
+## [2.2.2] - 2026-03-09
+
+### Added
+
+- 사용자 스크립트 실행 시점 선택 기능 추가
+  - `document_start` (페이지 로드 전): Tampermonkey의 `@run-at document-start`와 동일
+  - `document_idle` (페이지 로드 후, 기본값): 기존 동작과 동일
+- 스크립트 편집 UI에 "실행 시점" 선택 드롭다운 추가
+
+### Changed
+
+- `UserScript` 타입의 `run_at` 필드가 `'document_start' | 'document_idle'` union 타입으로 변경
+- Background script의 스크립트 실행 로직이 `run_at` 설정에 따라 분기 처리되도록 개선
+
+### Technical Details
+
+- Chrome Extension의 `tabs.onUpdated` 이벤트의 `status` 값(`loading`/`complete`)으로 실행 시점 제어
+- 기존 스크립트는 자동으로 `document_idle`로 처리되어 호환성 유지
+
 ## [0.3.1] - 2026-02-27
 
 ### Fixed

@@ -1,22 +1,36 @@
-import type { UserScript } from '#types/user_script';
+import type { RunAt, UserScript } from '#types/user_script';
 
 const STORAGE_KEY = 'user_scripts_data';
 
 let scripts = $state<UserScript[]>([]);
 let is_loaded = $state(false);
 
-function isValidScripts(value: unknown): value is UserScript[] {
-    return (
-        Array.isArray(value) &&
-        value.every(
-            (item) =>
-                typeof item === 'object' &&
-                item !== null &&
-                typeof item.id === 'string' &&
-                typeof item.name === 'string' &&
-                typeof item.code === 'string',
-        )
-    );
+function canMigrateItem(item: unknown): item is Record<string, unknown> {
+    if (typeof item !== 'object' || item === null) return false;
+    const raw = item as Record<string, unknown>;
+    return typeof raw['id'] === 'string' && typeof raw['name'] === 'string' && typeof raw['code'] === 'string';
+}
+
+function migrateScript(raw: Record<string, unknown>): UserScript {
+    const item = raw as Partial<UserScript>;
+    const run_at: RunAt = item.run_at === 'document_start' ? 'document_start' : 'document_idle';
+    return {
+        id: item.id!,
+        name: item.name!,
+        enabled: typeof item.enabled === 'boolean' ? item.enabled : true,
+        url_patterns: Array.isArray(item.url_patterns)
+            ? item.url_patterns.filter((p): p is string => typeof p === 'string')
+            : [],
+        code: item.code!,
+        run_at,
+        created_at: typeof item.created_at === 'number' ? item.created_at : Date.now(),
+        updated_at: typeof item.updated_at === 'number' ? item.updated_at : Date.now(),
+    };
+}
+
+function loadAndMigrateScripts(value: unknown): UserScript[] {
+    if (!Array.isArray(value)) return [];
+    return value.filter(canMigrateItem).map((item) => migrateScript(item));
 }
 
 async function syncToStorage(): Promise<void> {
@@ -41,7 +55,7 @@ export async function initializeUserScripts(): Promise<void> {
     try {
         const result = await chrome.storage.local.get(STORAGE_KEY);
         const stored = result[STORAGE_KEY];
-        scripts = isValidScripts(stored) ? stored : [];
+        scripts = loadAndMigrateScripts(stored);
     } catch {
         scripts = [];
     } finally {

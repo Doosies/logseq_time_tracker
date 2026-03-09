@@ -26,7 +26,20 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 - ecount.com URL 자동 분석
 - 서버 전환 시 올바른 URL 생성
 
-### 4. 섹션 관리
+### 4. 사용자 스크립트 실행 시점
+
+스크립트 추가/수정 시 실행 시점을 선택할 수 있습니다:
+
+- **페이지 로드 전 (document-start)**:
+  - 페이지 DOM이 로딩되기 전에 스크립트 실행
+  - `history.pushState`, `history.replaceState` 등을 래핑할 때 유용
+  - Tampermonkey의 `@run-at document-start`와 동일
+
+- **페이지 로드 후 (document-idle, 기본값)**:
+  - 페이지가 완전히 로드된 후 스크립트 실행
+  - DOM 요소 조작 시 사용
+
+### 5. 섹션 관리
 - **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, StageManager, ActionBar) 순서 변경
 - **섹션 숨기기/보이기**: 설정 버튼(SectionSettings)으로 불필요한 섹션 숨기기
 - **섹션 접기/펼치기**: 각 섹션 헤더 클릭으로 접기/펼치기 (섹션 1개일 때 비활성화)

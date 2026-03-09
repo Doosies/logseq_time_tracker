@@ -26,11 +26,21 @@ function isEcountDomain(url: string): boolean {
 }
 
 function handleTabUpdated(tab_id: number, change_info: { status?: string }, tab: chrome.tabs.Tab): void {
-    if (change_info.status !== 'complete') return;
+    const status = change_info.status;
+    if (!status) return;
     if (!tab.url || !isEcountDomain(tab.url)) return;
 
     const url = tab.url;
-    const matching_scripts = cached_scripts.filter((script) => script.enabled && matchesUrl(url, script.url_patterns));
+
+    const matching_scripts = cached_scripts.filter((script) => {
+        if (!script.enabled) return false;
+        if (!matchesUrl(url, script.url_patterns)) return false;
+
+        if (script.run_at === 'document_start' && status !== 'loading') return false;
+        if (script.run_at === 'document_idle' && status !== 'complete') return false;
+
+        return true;
+    });
 
     for (const script of matching_scripts) {
         chrome.scripting.executeScript({
