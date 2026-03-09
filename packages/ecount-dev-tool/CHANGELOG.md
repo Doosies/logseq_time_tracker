@@ -64,6 +64,7 @@
 
 ### Fixed
 
+- Chrome Extension 팝업에서 중첩 스크롤바가 생기는 버그 수정 (`.app-content`에서 `max-height: 600px`, `overflow-y: auto` 제거)
 - QuickLoginSection: 편집 모드에서 팝업 닫힘 시 미저장 변경사항이 스토리지에 유지되던 버그 수정 (batch mode 도입)
 - 섹션 설정 팝업이 App 영역 클릭 시 닫히지 않던 버그 수정 (`SectionSettings`)
 - Drag handle hover scope (only bar, not entire card content)

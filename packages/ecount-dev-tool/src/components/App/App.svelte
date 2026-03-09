@@ -155,8 +155,6 @@
         display: flex;
         flex-direction: column;
         width: 100%;
-        max-height: 600px;
-        overflow-y: auto;
     }
 
     .app-content > :global(*) {
