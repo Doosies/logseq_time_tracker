@@ -23,13 +23,25 @@ const DISABLED_SCRIPT: UserScript = {
     enabled: false,
 };
 
-const DOCUMENT_START_SCRIPT: UserScript = {
-    ...MOCK_SCRIPT,
-    id: 'test-document-start',
-    name: 'document-start 스크립트',
-    run_at: 'document_start',
-    code: 'console.log("document_start")',
-};
+/**
+ * [FEATURE_TOGGLE] document_start 옵션 비활성화됨 (2026-03-09)
+ *
+ * 복원 방법:
+ * 1. 아래 주석 해제
+ * 2. 이 스크립트를 사용하는 테스트 케이스들도 활성화
+ * 3. ScriptEditor.svelte와 user_scripts.svelte.ts 복원 완료 후 실행
+ *
+ * 관련 파일:
+ * - src/components/UserScriptSection/ScriptEditor.svelte
+ * - src/stores/user_scripts.svelte.ts (line 16, migrateScript)
+ */
+// const DOCUMENT_START_SCRIPT: UserScript = {
+//     ...MOCK_SCRIPT,
+//     id: 'test-document-start',
+//     name: 'document-start 스크립트',
+//     run_at: 'document_start',
+//     code: 'console.log("document_start")',
+// };
 
 describe('background service worker', () => {
     let on_updated_callback: (tab_id: number, info: { status?: string }, tab: { url?: string }) => void;
@@ -77,50 +89,58 @@ describe('background service worker', () => {
         expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
     });
 
-    it('document_start 스크립트는 status loading일 때만 실행한다', async () => {
-        vi.resetModules();
+    /**
+     * [FEATURE_TOGGLE] document_start 옵션 비활성화됨 (2026-03-09)
+     * DOCUMENT_START_SCRIPT 상수 주석 해제 후 아래 테스트 활성화
+     */
+    // it('document_start 스크립트는 status loading일 때만 실행한다', async () => {
+    //     vi.resetModules();
+    //
+    //     asMock(chrome.storage.local.get).mockResolvedValue({
+    //         [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
+    //     });
+    //
+    //     asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
+    //         on_updated_callback = cb;
+    //     });
+    //     asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
+    //         on_changed_callback = cb;
+    //     });
+    //
+    //     await import('../background');
+    //
+    //     on_updated_callback(42, { status: 'loading' }, { url: 'https://zeus01.ecount.com/' });
+    //
+    //     expect(chrome.scripting.executeScript).toHaveBeenCalled();
+    //     const calls = asMock(chrome.scripting.executeScript).mock.calls;
+    //     const executed_code = (calls[0] as unknown[])?.[0] as { args?: string[] };
+    //     expect(executed_code?.args?.[0]).toBe(DOCUMENT_START_SCRIPT.code);
+    // });
 
-        asMock(chrome.storage.local.get).mockResolvedValue({
-            [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
-        });
-
-        asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
-            on_updated_callback = cb;
-        });
-        asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
-            on_changed_callback = cb;
-        });
-
-        await import('../background');
-
-        on_updated_callback(42, { status: 'loading' }, { url: 'https://zeus01.ecount.com/' });
-
-        expect(chrome.scripting.executeScript).toHaveBeenCalled();
-        const calls = asMock(chrome.scripting.executeScript).mock.calls;
-        const executed_code = (calls[0] as unknown[])?.[0] as { args?: string[] };
-        expect(executed_code?.args?.[0]).toBe(DOCUMENT_START_SCRIPT.code);
-    });
-
-    it('document_start 스크립트는 status complete일 때는 실행하지 않는다', async () => {
-        vi.resetModules();
-
-        asMock(chrome.storage.local.get).mockResolvedValue({
-            [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
-        });
-
-        asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
-            on_updated_callback = cb;
-        });
-        asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
-            on_changed_callback = cb;
-        });
-
-        await import('../background');
-
-        on_updated_callback(42, { status: 'complete' }, { url: 'https://zeus01.ecount.com/' });
-
-        expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
-    });
+    /**
+     * [FEATURE_TOGGLE] document_start 옵션 비활성화됨 (2026-03-09)
+     * DOCUMENT_START_SCRIPT 상수 주석 해제 후 아래 테스트 활성화
+     */
+    // it('document_start 스크립트는 status complete일 때는 실행하지 않는다', async () => {
+    //     vi.resetModules();
+    //
+    //     asMock(chrome.storage.local.get).mockResolvedValue({
+    //         [STORAGE_KEY]: [DOCUMENT_START_SCRIPT],
+    //     });
+    //
+    //     asMock(chrome.tabs.onUpdated.addListener).mockImplementation((cb: typeof on_updated_callback) => {
+    //         on_updated_callback = cb;
+    //     });
+    //     asMock(chrome.storage.onChanged.addListener).mockImplementation((cb: typeof on_changed_callback) => {
+    //         on_changed_callback = cb;
+    //     });
+    //
+    //     await import('../background');
+    //
+    //     on_updated_callback(42, { status: 'complete' }, { url: 'https://zeus01.ecount.com/' });
+    //
+    //     expect(chrome.scripting.executeScript).not.toHaveBeenCalled();
+    // });
 
     it('enabled가 false인 스크립트는 실행하지 않는다', async () => {
         vi.resetModules();

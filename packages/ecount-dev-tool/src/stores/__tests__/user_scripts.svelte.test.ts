@@ -1,4 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+/**
+ * [FEATURE_TOGGLE] document_start 옵션 비활성화됨 (2026-03-09)
+ * 현재 모든 테스트는 run_at: 'document_idle'만 사용.
+ * 복원 시: run_at: 'document_start' 케이스 추가 시 background.test.ts DOCUMENT_START_SCRIPT도 활성화 필요.
+ */
 import {
     getScripts,
     getEnabledScripts,

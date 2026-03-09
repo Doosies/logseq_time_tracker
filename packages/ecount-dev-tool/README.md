@@ -28,16 +28,10 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 
 ### 4. 사용자 스크립트 실행 시점
 
-스크립트 추가/수정 시 실행 시점을 선택할 수 있습니다:
+모든 스크립트는 **페이지 로드 후 (document-idle)** 실행됩니다.
 
-- **페이지 로드 전 (document-start)**:
-  - 페이지 DOM이 로딩되기 전에 스크립트 실행
-  - `history.pushState`, `history.replaceState` 등을 래핑할 때 유용
-  - Tampermonkey의 `@run-at document-start`와 동일
-
-- **페이지 로드 후 (document-idle, 기본값)**:
-  - 페이지가 완전히 로드된 후 스크립트 실행
-  - DOM 요소 조작 시 사용
+> **참고**: 이전 버전에서는 실행 시점을 선택할 수 있었으나, 사용성 개선을 위해 기본값으로 고정되었습니다.
+> 실행 시점 옵션 복원이 필요한 경우 소스 코드의 `[FEATURE_TOGGLE]` 주석을 참조하세요.
 
 ### 5. 섹션 관리
 - **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, ActionBar, UserScriptSection) 순서 변경

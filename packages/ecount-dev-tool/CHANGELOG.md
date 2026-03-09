@@ -7,6 +7,25 @@
 
 ## [Unreleased]
 
+### Changed
+
+- 사용자 스크립트 실행 시점을 `document_idle` (페이지 로드 후)로 고정
+  - UI에서 실행 시점 선택 필드 제거
+  - 모든 신규 및 기존 스크립트가 `document_idle`로 실행됨
+  - 이유: 대부분의 사용 사례에서 `document_idle`이 적합하며, UI 단순화로 사용성 개선
+
+### Technical
+
+- `ScriptEditor.svelte`: 실행 시점 Select UI 주석 처리 (복원 가이드 포함)
+- `user_scripts.svelte.ts`: 마이그레이션 로직에서 모든 스크립트를 `document_idle`로 변환
+- `background.test.ts`: `document_start` 관련 테스트 주석 처리
+- 복원 방법: 소스 코드의 `[FEATURE_TOGGLE]` 주석 참조
+
+### Migration
+
+- 기존 `document_start` 스크립트는 자동으로 `document_idle`로 변경됨
+- 동작 차이: 페이지 로드 전 → 페이지 로드 후 실행으로 변경
+
 ### Added
 
 - 사용자 스크립트 실행기 (User Script Runner) 기능 추가

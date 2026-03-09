@@ -3,6 +3,11 @@ import { expect, within, userEvent } from 'storybook/test';
 import type { UserScript } from '#types/user_script';
 import ScriptEditorStoryWrapper from './ScriptEditorStoryWrapper.svelte';
 
+/**
+ * [FEATURE_TOGGLE] run_at 옵션 비활성화됨 (2026-03-09)
+ * 모든 mock은 run_at: 'document_idle' 사용.
+ * 복원 시: ScriptEditor.svelte의 run_at Select UI 복원 후 document_start 스토리 추가 가능.
+ */
 const MOCK_SCRIPT: UserScript = {
     id: 'script-1',
     name: '편집할 스크립트',
