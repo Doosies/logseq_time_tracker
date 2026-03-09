@@ -40,9 +40,10 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
   - DOM 요소 조작 시 사용
 
 ### 5. 섹션 관리
-- **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, StageManager, ActionBar) 순서 변경
+- **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, ActionBar, UserScriptSection) 순서 변경
 - **섹션 숨기기/보이기**: 설정 버튼(SectionSettings)으로 불필요한 섹션 숨기기
 - **섹션 접기/펼치기**: 각 섹션 헤더 클릭으로 접기/펼치기 (섹션 1개일 때 비활성화)
+- **확장성**: 섹션 레지스트리 패턴으로 새 섹션 추가 시 `src/sections/registry.ts` 한 곳만 수정
 
 ## 개발
 
@@ -80,7 +81,12 @@ src/
 │   ├── ServerManager/
 │   ├── StageManager/
 │   ├── ActionBar/
+│   ├── UserScriptSection/
 │   └── SectionSettings/   # 섹션 표시/숨기기 설정
+├── sections/           # 섹션 레지스트리 (확장 가능한 섹션 정의)
+│   ├── types.ts        # SectionId, SectionDefinition 타입
+│   ├── registry.ts     # SECTION_REGISTRY (중앙 집중식 정의)
+│   └── index.ts        # getSectionById, getAllSections 유틸
 ├── services/           # 비즈니스 로직
 │   ├── url_service.ts  # URL 파싱/빌드
 │   ├── tab_service.ts  # Chrome Tab API
@@ -137,6 +143,46 @@ import type { ParsedUrl } from '#types/server';
 - 상태 관리: Svelte 5 Runes (`stores/current_tab.svelte.ts`)
 
 ## API 문서
+
+### Sections
+
+섹션 레지스트리 패턴으로 팝업 내 섹션을 중앙 집중식으로 관리합니다.
+
+#### `sections/`
+
+##### `getSectionById(id: string): SectionDefinition | undefined`
+
+ID로 섹션 정의를 조회합니다.
+
+```typescript
+import { getSectionById } from '#sections';
+
+const section = getSectionById('quick-login');
+if (section) {
+  // section.component: Svelte 컴포넌트
+  // section.label: '빠른 로그인'
+}
+```
+
+##### `getAllSections(): SectionDefinition[]`
+
+등록된 모든 섹션 정의를 반환합니다.
+
+##### `SECTION_REGISTRY`
+
+모든 섹션 정의 배열. 새 섹션 추가 시 `registry.ts`에 항목을 추가하면 됩니다.
+
+##### `SectionDefinition`
+
+```typescript
+interface SectionDefinition {
+  id: SectionId;       // 'quick-login' | 'server-manager' | 'action-bar' | 'user-script'
+  label: string;       // UI에 표시할 라벨
+  component: Component; // Svelte 컴포넌트
+}
+```
+
+---
 
 ### Services
 

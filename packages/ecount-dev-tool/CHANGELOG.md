@@ -19,14 +19,17 @@
   - ScriptList: 토글 활성/비활성, 실행, 편집, 삭제 UI
   - ScriptEditor: 이름/URL패턴/코드 입력 폼
   - UserScriptSection: 리스트 ↔ 편집 뷰 전환
-- 1+1 계산기 섹션 추가 (버튼 클릭 시 "1 + 1 = 2" 표시)
-- App 섹션 목록/렌더링 분기에 calculator 등록, section_order 기본 순서에 추가
 - Quick login active state persistence (chrome.storage.sync)
 - Section drag-and-drop reordering on main screen
 - Quick login button drag-and-drop reordering in edit mode
 
 ### Changed
 
+- 섹션 레지스트리 패턴 도입으로 확장성 개선
+  - `sections/` 디렉터리: `registry.ts`에서 중앙 집중식 섹션 정의
+  - 새 섹션 추가 시 registry.ts 한 곳만 수정
+  - App.svelte: 동적 컴포넌트 렌더링으로 단순화
+  - section_order: SECTION_REGISTRY 기반 DEFAULT_ORDER
 - UserScriptSection: 헤더 취소 버튼 제거, 폼 내 취소 버튼만 유지 (취소 버튼 중복 UX 개선)
 - QuickLoginSection: 계정 편집 폼 버튼 순서 "수정 → 취소"에서 "취소 → 수정"으로 변경
 - DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` (via uikit)
@@ -35,6 +38,10 @@
 - CSS hardcoded values → theme token references (transition, z-index, shadow)
 - Card hover effect: header color change → background color + border
 - `type-check` script: added `svelte-check`
+
+### Removed
+
+- Calculator 컴포넌트 제거 (테스트용 섹션)
 
 ### Fixed
 
