@@ -9,6 +9,10 @@
 
 ### Changed
 
+- ScriptList 수정/삭제 버튼 아이콘 개선
+  - 수정 버튼: `✏` 이모지 → Heroicons solid pencil SVG (fill="currentColor")
+  - 삭제 버튼: `🗑` 이모지 → Heroicons trash SVG (stroke="currentColor")
+  - 플랫폼별 렌더링 일관성 향상, 기존 aria-label 유지
 - 사용자 스크립트 실행 시점을 `document_idle` (페이지 로드 후)로 고정
   - UI에서 실행 시점 선택 필드 제거
   - 모든 신규 및 기존 스크립트가 `document_idle`로 실행됨
