@@ -46,6 +46,8 @@ alwaysApply: true
 
 그 외 모든 코드 작업은 서브에이전트에게 위임합니다.
 
+- **QA 검증 실행 위임**: QA 검증(ReadLints, format, test, lint, type-check, build) 실행은 **qa 서브에이전트에게 위임**. 메인 에이전트 직접 실행 금지.
+
 ### 위임 판단 기준
 
 | 작업 유형 | 위임 대상 | 비고 |
@@ -429,6 +431,23 @@ Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검
 **작업 완료 선언 전**:
 - Q: "9단계(최종 보고서)를 완료했는가?"
 - A: NO → **작업 미완료, 보고서 작성 필수**
+
+### 작업 완료 선언 전 필수 확인 (CRITICAL)
+
+**"작업 완료"라고 사용자에게 말하기 전**, 아래를 반드시 확인:
+
+| # | 확인 항목 | Feature/Bugfix/Refactor | Chore |
+|---|-----------|:-----------------------:|:-----:|
+| 0 | 사이클 JSON 존재 및 초기화됨 | ✓ | 선택 |
+| 3 | qa 서브에이전트 호출, format→test→lint→type-check→build 전체 실행 | ✓ | type-check+test |
+| 4 | Security(코드) 호출 (Bugfix/Feature/Refactor) | ✓ | - |
+| 5 | docs 서브에이전트 호출 (Chore 단순 제외) | ✓ | 스킵가능 |
+| 6 | git-workflow 서브에이전트 호출 (코드 변경 시) | ✓ | 선택 |
+| 7 | system-improvement 호출 (Chore 단순 제외) | ✓ | 스킵가능 |
+| 9 | 최종 보고서 저장 (reports/), completed_at/success 기록 | ✓ | ✓ |
+
+- 하나라도 미충족 → **작업 미완료**, 해당 단계 수행 후 재확인
+- "단순해 보이는" 수정이라도 위 단계 생략 금지 (명시적 스킵 조건 제외)
 
 ### 워크플로우 체크리스트 참조
 

@@ -12,6 +12,10 @@
 - **0~8단계**: 각 단계별 서브에이전트 활용. 9단계(최종 보고서)만 메인 에이전트가 직접 제출.
 - **메인 에이전트 금지**: 0~8단계의 실제 작업(코드 작성, 커밋, 테스트 실행 등) 직접 수행 금지. 반드시 해당 서브에이전트 호출.
 
+**완료 전 필수**:
+- 9단계(최종 보고서) 완료 전까지 "작업 완료" 선언 금지
+- 9단계: 사이클 JSON에 completed_at/success 기록 + reports/ 파일 저장
+
 ---
 
 ## 실행 순서
@@ -43,7 +47,7 @@
     - ReadLints (변경 파일) → `pnpm format` → `pnpm test` → `pnpm lint` → `pnpm type-check` → `pnpm build`
     - 실패 시 원인 분석·수정·재검증
 
-4. **보안 검증** (Feature/Refactor 시) ← security 서브에이전트
+4. **보안 검증** (Feature, Refactor, **Bugfix** 시) ← security 서브에이전트
 
 5. **문서화** ← docs 서브에이전트
     - CHANGELOG, API 문서, design-tokens 등 업데이트
