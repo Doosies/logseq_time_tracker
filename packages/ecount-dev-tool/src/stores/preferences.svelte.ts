@@ -27,3 +27,8 @@ export async function setEnableAnimations(enabled: boolean): Promise<void> {
     preferences = { ...preferences, enable_animations: enabled };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
 }
+
+export function resetPreferences(): void {
+    preferences = { enable_animations: true };
+    localStorage.removeItem(STORAGE_KEY);
+}
