@@ -6,6 +6,5 @@ export * from './section.css';
 export * from './button_group.css';
 export * from './card.css';
 export * from './popover.css';
-export * from './dialog.css';
 export * from './toast.css';
 export * from './checkbox_list.css';

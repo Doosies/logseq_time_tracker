@@ -9,12 +9,6 @@
 
 ### Added
 
-- Dialog 컴포넌트 추가 (오버레이 모달)
-  - Dialog.Root, Trigger, Portal, Overlay, Content, Title, Description, Close
-  - Portal action 구현 (body 렌더링)
-  - Focus Trap 및 ESC 키 처리
-  - 접근성 완비 (aria-modal, aria-labelledby, aria-describedby)
-  - Fade in/out 애니메이션
 - Textarea 컴포넌트 (primitive + design + component): 멀티라인 텍스트 입력, `monospace` 모드 지원
 - Button `ghost` variant: 투명 배경 아이콘 전용 버튼 스타일
 - Textarea Storybook 스토리 7개 (Default, WithPlaceholder, WithValue, Disabled, Monospace, CustomRows, WithInputHandler)

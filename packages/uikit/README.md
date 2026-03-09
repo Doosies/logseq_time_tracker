@@ -165,7 +165,7 @@ interface SelectOption {
 
 ### Compound 컴포넌트
 
-Card, Section, ToggleInput, Popover, Toast, CheckboxList, Dnd, Dialog는 namespace export로 sub-component를 가집니다.
+Card, Section, ToggleInput, Popover, Toast, CheckboxList, Dnd는 namespace export로 sub-component를 가집니다.
 
 ---
 
@@ -454,49 +454,6 @@ type DndEvent<T> = { ... };
 
 ---
 
-### Dialog (Compound)
-
-모달 대화상자 컴포넌트입니다. 오버레이 배경과 포커스 트랩을 제공합니다.
-
-| Sub-component | 용도 |
-|---------------|------|
-| `Dialog.Root` | 컨텍스트 제공 (필수) |
-| `Dialog.Trigger` | 모달 열기 버튼 |
-| `Dialog.Portal` | body에 렌더링 |
-| `Dialog.Overlay` | 반투명 배경 |
-| `Dialog.Content` | 모달 콘텐츠 영역 |
-| `Dialog.Title` | 제목 (aria-labelledby) |
-| `Dialog.Description` | 설명 (aria-describedby) |
-| `Dialog.Close` | 닫기 버튼 |
-
-**Props:**
-- `Dialog.Root`: `open` (양방향 바인딩), `onOpenChange?: (open: boolean) => void`
-- `Dialog.Content`: `closeOnEscape?: boolean` (기본: true), `closeOnOverlayClick?: boolean` (기본: true)
-
-**예제:**
-```svelte
-<script>
-  import * as Dialog from '@personal/uikit';
-
-  let is_open = $state(false);
-</script>
-
-<Dialog.Root bind:open={is_open}>
-  <Dialog.Trigger>열기</Dialog.Trigger>
-  <Dialog.Portal>
-    <Dialog.Overlay />
-    <Dialog.Content>
-      <Dialog.Close>×</Dialog.Close>
-      <Dialog.Title>스크립트 추가</Dialog.Title>
-      <Dialog.Description>새 스크립트를 등록합니다.</Dialog.Description>
-      <form>...</form>
-    </Dialog.Content>
-  </Dialog.Portal>
-</Dialog.Root>
-```
-
----
-
 ## 🎯 Actions
 
 Svelte `use:` 액션으로 재사용 가능한 동작을 제공합니다.
@@ -626,7 +583,6 @@ src/
 │   ├── Toast/
 │   ├── CheckboxList/
 │   ├── Dnd/
-│   ├── Dialog/
 │   └── index.ts         # 컴포넌트 export
 ├── primitives/          # Headless primitive (스타일 없는 기본 구현)
 │   ├── Button/
@@ -638,8 +594,7 @@ src/
 │   ├── Popover/
 │   ├── Toast/
 │   ├── CheckboxList/
-│   ├── Dnd/
-│   └── Dialog/
+│   └── Dnd/
 ├── actions/             # Svelte actions
 │   ├── click_outside.ts
 │   ├── block_drag_from_interactive.ts
@@ -683,7 +638,6 @@ export * as Popover from './components/Popover';
 export * as Toast from './components/Toast';
 export * as CheckboxList from './components/CheckboxList';
 export * as Dnd from './components/Dnd';
-export * as Dialog from './primitives/Dialog';
 export type { DndEvent } from './components/Dnd';
 
 // Actions
