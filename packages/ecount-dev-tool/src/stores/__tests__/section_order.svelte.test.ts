@@ -13,7 +13,7 @@ describe('section_order 스토어', () => {
     it('초기화 전에는 이동이 불가능해야 함', async () => {
         const up_result = await moveSectionUp('server-manager');
         const down_result = await moveSectionDown('server-manager');
-        const set_result = await setSectionOrder(['action-bar', 'quick-login', 'server-manager', 'calculator']);
+        const set_result = await setSectionOrder(['action-bar', 'quick-login', 'server-manager', 'user-script']);
 
         expect(up_result).toBe(false);
         expect(down_result).toBe(false);
@@ -40,14 +40,14 @@ describe('section_order 스토어', () => {
         });
 
         it('유효한 저장 데이터가 있으면 해당 순서를 사용해야 함', async () => {
-            const stored = ['action-bar', 'quick-login', 'server-manager', 'calculator'];
+            const stored = ['action-bar', 'quick-login', 'server-manager', 'user-script'];
             asMock(chrome.storage.sync.get).mockResolvedValue({
                 section_order_state: stored,
             });
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual([...stored, 'user-script']);
+            expect(getSectionOrder()).toEqual(stored);
         });
 
         it('잘못된 데이터가 저장되어 있으면 기본 순서를 사용해야 함', async () => {
@@ -76,13 +76,7 @@ describe('section_order 스토어', () => {
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual([
-                'server-manager',
-                'action-bar',
-                'quick-login',
-                'calculator',
-                'user-script',
-            ]);
+            expect(getSectionOrder()).toEqual(['server-manager', 'action-bar', 'quick-login', 'user-script']);
         });
 
         it('알 수 없는 ID는 필터링해야 함', async () => {
@@ -93,13 +87,7 @@ describe('section_order 스토어', () => {
 
             await initializeSectionOrder();
 
-            expect(getSectionOrder()).toEqual([
-                'quick-login',
-                'server-manager',
-                'action-bar',
-                'calculator',
-                'user-script',
-            ]);
+            expect(getSectionOrder()).toEqual(['quick-login', 'server-manager', 'action-bar', 'user-script']);
         });
     });
 
@@ -117,13 +105,7 @@ describe('section_order 스토어', () => {
             const result = await moveSectionUp('server-manager');
 
             expect(result).toBe(true);
-            expect(getSectionOrder()).toEqual([
-                'server-manager',
-                'quick-login',
-                'action-bar',
-                'calculator',
-                'user-script',
-            ]);
+            expect(getSectionOrder()).toEqual(['server-manager', 'quick-login', 'action-bar', 'user-script']);
         });
 
         it('첫 번째 섹션은 위로 이동할 수 없어야 함', async () => {
@@ -137,13 +119,7 @@ describe('section_order 스토어', () => {
             const result = await moveSectionDown('quick-login');
 
             expect(result).toBe(true);
-            expect(getSectionOrder()).toEqual([
-                'server-manager',
-                'quick-login',
-                'action-bar',
-                'calculator',
-                'user-script',
-            ]);
+            expect(getSectionOrder()).toEqual(['server-manager', 'quick-login', 'action-bar', 'user-script']);
         });
 
         it('마지막 섹션은 아래로 이동할 수 없어야 함', async () => {
@@ -157,7 +133,7 @@ describe('section_order 스토어', () => {
             await moveSectionUp('server-manager');
 
             expect(chrome.storage.sync.set).toHaveBeenCalledWith({
-                section_order_state: ['server-manager', 'quick-login', 'action-bar', 'calculator', 'user-script'],
+                section_order_state: ['server-manager', 'quick-login', 'action-bar', 'user-script'],
             });
         });
 
@@ -171,7 +147,7 @@ describe('section_order 스토어', () => {
         });
 
         it('setSectionOrder로 전체 순서를 변경할 수 있어야 함', async () => {
-            const new_order = ['action-bar', 'server-manager', 'quick-login', 'calculator'];
+            const new_order = ['action-bar', 'server-manager', 'quick-login', 'user-script'];
             const result = await setSectionOrder(new_order);
 
             expect(result).toBe(true);
@@ -179,7 +155,7 @@ describe('section_order 스토어', () => {
         });
 
         it('setSectionOrder 변경 결과가 storage에 저장되어야 함', async () => {
-            const new_order = ['action-bar', 'server-manager', 'quick-login', 'calculator'];
+            const new_order = ['action-bar', 'server-manager', 'quick-login', 'user-script'];
             await setSectionOrder(new_order);
 
             expect(chrome.storage.sync.set).toHaveBeenCalledWith({
@@ -190,7 +166,7 @@ describe('section_order 스토어', () => {
         it('setSectionOrder storage 저장 실패 시 이전 순서로 롤백해야 함', async () => {
             asMock(chrome.storage.sync.set).mockRejectedValueOnce(new Error('Storage error'));
 
-            const new_order = ['action-bar', 'server-manager', 'quick-login', 'calculator'];
+            const new_order = ['action-bar', 'server-manager', 'quick-login', 'user-script'];
             const result = await setSectionOrder(new_order);
 
             expect(result).toBe(false);

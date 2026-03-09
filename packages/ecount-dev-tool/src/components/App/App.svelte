@@ -1,13 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
     import { Card, Dnd, Toast } from '@personal/uikit';
-    import { QuickLoginSection } from '#components/QuickLoginSection';
-    import { ServerManager } from '#components/ServerManager';
     import { StageManager } from '#components/StageManager';
-    import { ActionBar } from '#components/ActionBar';
-    import { Calculator } from '#components/Calculator';
-    import { UserScriptSection } from '#components/UserScriptSection';
     import { SectionSettings } from '#components/SectionSettings';
+    import { SECTION_REGISTRY, getSectionById } from '#sections';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
     import { initializeAccounts } from '#stores/accounts.svelte';
     import { initializeActiveAccount } from '#stores/active_account.svelte';
@@ -22,13 +18,7 @@
         section_type: string;
     }
 
-    const SECTION_LIST = [
-        { id: 'quick-login', label: '빠른 로그인' },
-        { id: 'server-manager', label: '서버 관리' },
-        { id: 'action-bar', label: '빠른 실행' },
-        { id: 'calculator', label: '1+1 계산기' },
-        { id: 'user-script', label: '사용자 스크립트' },
-    ];
+    const SECTION_LIST = $derived(SECTION_REGISTRY.map((s) => ({ id: s.id, label: s.label })));
 
     const tab = $derived(getTabState());
     const section_order = $derived(getSectionOrder());
@@ -80,8 +70,9 @@
                 </div>
             {:else if tab.is_stage}
                 {#each sections_to_render as section_id (section_id)}
-                    {#if section_id === 'quick-login'}
-                        <QuickLoginSection />
+                    {@const section = getSectionById(section_id)}
+                    {#if section}
+                        <section.component />
                     {/if}
                 {/each}
                 <div class="section-divider"></div>
@@ -91,6 +82,7 @@
                     {#each dnd_sections as item, index (item.id)}
                         <Dnd.Sortable id={item.id} {index}>
                             {#snippet children({ handleAttach }: { handleAttach: (node: HTMLElement) => () => void })}
+                                {@const section = getSectionById(item.section_type)}
                                 <div class="section-wrapper">
                                     <div
                                         class="drag-handle-bar"
@@ -103,16 +95,8 @@
                                     >
                                         <span class="grip-dots"></span>
                                     </div>
-                                    {#if item.section_type === 'quick-login'}
-                                        <QuickLoginSection />
-                                    {:else if item.section_type === 'server-manager'}
-                                        <ServerManager />
-                                    {:else if item.section_type === 'action-bar'}
-                                        <ActionBar />
-                                    {:else if item.section_type === 'calculator'}
-                                        <Calculator />
-                                    {:else if item.section_type === 'user-script'}
-                                        <UserScriptSection />
+                                    {#if section}
+                                        <section.component />
                                     {/if}
                                 </div>
                             {/snippet}
@@ -122,17 +106,10 @@
             {:else}
                 <div class="sections-dnd-container">
                     {#each dnd_sections as item (item.id)}
+                        {@const section = getSectionById(item.section_type)}
                         <div class="section-wrapper">
-                            {#if item.section_type === 'quick-login'}
-                                <QuickLoginSection />
-                            {:else if item.section_type === 'server-manager'}
-                                <ServerManager />
-                            {:else if item.section_type === 'action-bar'}
-                                <ActionBar />
-                            {:else if item.section_type === 'calculator'}
-                                <Calculator />
-                            {:else if item.section_type === 'user-script'}
-                                <UserScriptSection />
+                            {#if section}
+                                <section.component />
                             {/if}
                         </div>
                     {/each}

@@ -42,7 +42,7 @@ export const WithHiddenSection: Story = {
         await userEvent.click(trigger);
 
         const checkboxes = await canvas.findAllByRole('checkbox');
-        await expect(checkboxes.length).toBe(5);
+        await expect(checkboxes.length).toBe(4);
 
         await userEvent.click(checkboxes[0]!);
 

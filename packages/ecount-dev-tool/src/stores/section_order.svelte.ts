@@ -1,6 +1,8 @@
+import { SECTION_REGISTRY } from '#sections';
+
 const STORAGE_KEY = 'section_order_state';
 
-export const DEFAULT_ORDER = ['quick-login', 'server-manager', 'action-bar', 'calculator', 'user-script'] as const;
+export const DEFAULT_ORDER = SECTION_REGISTRY.map((s) => s.id);
 
 let order = $state<string[]>([...DEFAULT_ORDER]);
 let is_loaded = $state(false);

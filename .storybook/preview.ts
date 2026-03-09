@@ -27,6 +27,17 @@ if (typeof globalThis.chrome === 'undefined') {
                     Object.assign(storybook_storage, items);
                 },
             },
+            local: {
+                get: async (key: string) => {
+                    if (typeof key === 'string') {
+                        return { [key]: storybook_storage[key] };
+                    }
+                    return { ...storybook_storage };
+                },
+                set: async (items: Record<string, unknown>) => {
+                    Object.assign(storybook_storage, items);
+                },
+            },
         },
     };
 }

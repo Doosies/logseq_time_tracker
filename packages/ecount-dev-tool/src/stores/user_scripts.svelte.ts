@@ -133,3 +133,12 @@ export async function toggleScript(id: string): Promise<boolean> {
 
     return updateScript(id, { enabled: !script.enabled });
 }
+
+/**
+ * Storybook용 초기화: 스토어 상태를 초기화합니다.
+ * StoryWrapper onMount 시점에 호출하여 스토리 간 격리를 보장합니다.
+ */
+export function resetUserScripts(): void {
+    scripts = [];
+    is_loaded = false;
+}

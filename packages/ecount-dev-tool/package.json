@@ -9,6 +9,7 @@
         "#stores/*": "./src/stores/*",
         "#constants/*": "./src/constants/*",
         "#types/*": "./src/types/*",
+        "#sections": "./src/sections/index.ts",
         "#test/*": "./src/test/*"
     },
     "scripts": {

@@ -241,7 +241,7 @@ describe('App', () => {
                             'quick-login': false,
                             'server-manager': false,
                             'action-bar': false,
-                            'user-script': false,
+                            'user-script': true,
                         },
                     });
                 }
@@ -269,12 +269,12 @@ describe('App', () => {
             await user.click(screen.getByRole('button', { name: '섹션 설정' }));
 
             const checkboxes = screen.getAllByRole('checkbox');
-            const calculator_checkbox = checkboxes.find((cb) => {
+            const user_script_checkbox = checkboxes.find((cb) => {
                 const label = cb.closest('label')?.textContent;
-                return label?.includes('1+1 계산기');
+                return label?.includes('사용자 스크립트');
             });
 
-            expect(calculator_checkbox).toBeDisabled();
+            expect(user_script_checkbox).toBeDisabled();
         });
     });
 
@@ -316,7 +316,7 @@ describe('App', () => {
             asMock(chrome.storage.sync.get).mockImplementation((key: string) => {
                 if (key === 'section_order_state') {
                     return Promise.resolve({
-                        section_order_state: ['action-bar', 'quick-login', 'server-manager', 'calculator'],
+                        section_order_state: ['action-bar', 'quick-login', 'server-manager', 'user-script'],
                     });
                 }
                 return Promise.resolve({ [key]: undefined });
@@ -366,7 +366,7 @@ describe('App', () => {
             const option_elements = screen.getAllByRole('option', {
                 name: /드래그하여 순서 변경/,
             });
-            expect(option_elements.length).toBe(5);
+            expect(option_elements.length).toBe(4);
         });
 
         it('메인 화면에서 드래그 핸들이 렌더링되어야 함', async () => {
@@ -387,8 +387,8 @@ describe('App', () => {
             );
 
             const drag_handle_elements = screen.getAllByLabelText('드래그하여 섹션 순서 변경');
-            // App drag-handle-bar(5) + Section.Title(5) = 10
-            expect(drag_handle_elements.length).toBeGreaterThanOrEqual(5);
+            // App drag-handle-bar(4) + Section.Title(4) = 8
+            expect(drag_handle_elements.length).toBeGreaterThanOrEqual(4);
         });
     });
 

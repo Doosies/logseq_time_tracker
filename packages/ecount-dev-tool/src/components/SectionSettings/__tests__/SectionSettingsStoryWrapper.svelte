@@ -13,7 +13,6 @@
             { id: 'quick-login', label: '빠른 로그인' },
             { id: 'server-manager', label: '서버 관리' },
             { id: 'action-bar', label: '빠른 실행' },
-            { id: 'calculator', label: '1+1 계산기' },
             { id: 'user-script', label: '사용자 스크립트' },
         ],
     }: Props = $props();

@@ -82,6 +82,10 @@ const chrome_mock = {
 vi.stubGlobal('chrome', chrome_mock);
 vi.stubGlobal('close', vi.fn());
 
+(globalThis as Record<string, unknown>)['__storybook_set_local_storage'] = (key: string, value: unknown) => {
+    local_storage_data[key] = value;
+};
+
 beforeEach(() => {
     vi.clearAllMocks();
     Object.keys(storage_data).forEach((key) => delete storage_data[key]);
