@@ -27,6 +27,7 @@
 
 ### Changed
 
+- UserScriptSection: 헤더 취소 버튼 제거, 폼 내 취소 버튼만 유지 (취소 버튼 중복 UX 개선)
 - QuickLoginSection: 계정 편집 폼 버튼 순서 "수정 → 취소"에서 "취소 → 수정"으로 변경
 - DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` (via uikit)
 - Quick login add-form position: above buttons → below buttons
