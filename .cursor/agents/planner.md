@@ -152,6 +152,23 @@ description: 요구사항 분석 및 시스템 설계 전문 에이전트
 - 에러 응답 정의
 - 인증/인가 방식
 
+### TODO 작성 규칙 (필수)
+
+플랜/TODO 작성 시 각 항목에 **반드시** 포함:
+
+- **실행 순서**: `[병렬-N]` 또는 `[직렬-N]` (N: 1, 2, 3... 동일 N은 병렬)
+- **담당 서브에이전트**: developer, qa, docs, security, planner, git-workflow
+- **선행 조건**: 의존 관계 있을 시 `선행: task-id` 명시
+
+**형식 예시**:
+```markdown
+- id: task-id
+  content: "[직렬-1] 작업 설명 (담당: developer, 선행: design)"
+  status: pending
+```
+
+**참조**: `.cursor/skills/planner/references/plan-todo-format.md`
+
 ### 4단계: 결정/이슈 기록 (필수)
 - 설계 중 핵심 판단을 `decisions[]`로 구조화:
   - `phase`: `planning`

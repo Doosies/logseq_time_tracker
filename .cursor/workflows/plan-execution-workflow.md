@@ -38,16 +38,33 @@
 
 ## 2. 플랜 모드 시작 (Planner 개입)
 
-**참조**: [`.cursor/agents/planner.md`](../agents/planner.md)
+**참조**: [`.cursor/agents/planner.md`](../agents/planner.md), [`.cursor/skills/planner/references/plan-todo-format.md`](../skills/planner/references/plan-todo-format.md)
 
 1. 요구사항 분석 및 목표 정의
 2. 작업을 잘게 쪼개서 **TODO** 또는 **플랜 파일**로 생성
-3. 각 작업에 **서브에이전트 할당** 명시
-4. **직렬/병렬** 실행 순서 정의
+3. **각 TODO에 반드시 포함** (plan-todo-format.md 참조):
+   - **실행 순서**: `[병렬-N]` 또는 `[직렬-N]` (동일 N = 병렬, 다른 N = 직렬-낮은 N 우선)
+   - **담당 서브에이전트**: developer, qa, docs, security, planner, git-workflow
+   - **선행 조건**: 의존 관계 있을 시 `선행: task-id` 명시
+4. 직렬/병렬 결정 기준:
    - 의존성이 있는 작업 → 직렬
-   - 독립적인 작업 → 병렬
+   - 독립적인 작업(서로 다른 파일) → 병렬
 5. 사용자에게 플랜 확인 요청 후 승인 시 진행
 6. **설계 결정사항 기록**: planner가 보고한 주요 의사결정(결정 + 근거 + 대안)을 사이클 메트릭의 `decisions[]`에 수집
+
+**TODO 형식 예시**:
+```yaml
+todos:
+  - id: impl-api
+    content: "[직렬-1] 회원가입 API 구현 (담당: developer)"
+    status: pending
+  - id: test-api
+    content: "[직렬-2] API 테스트 작성 (담당: qa, 선행: impl-api)"
+    status: pending
+  - id: doc-api
+    content: "[병렬-1] API 문서 업데이트 (담당: docs, 선행: impl-api)"
+    status: pending
+```
 
 ---
 

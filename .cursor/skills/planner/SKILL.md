@@ -29,3 +29,12 @@ description: "요구사항 분석 및 시스템 아키텍처 설계 스킬. 새 
 - `references/requirement-analysis.md` - 요구사항 분석 방법론
 - `references/architecture-design.md` - 아키텍처 설계 패턴
 - `references/api-design.md` - RESTful API 설계 가이드
+- `references/plan-todo-format.md` - **플랜/TODO 작성 형식** (서브에이전트 할당, 직렬/병렬 순서, 선행 조건)
+
+## 플랜/TODO 작성 시 (필수)
+
+플랜 모드에서 TODO 또는 플랜 파일을 작성할 때 **반드시** `references/plan-todo-format.md`를 참조합니다.
+
+- 각 TODO에 `[병렬-N]` 또는 `[직렬-N]` 포함
+- 각 TODO에 `담당: agent-name` 포함
+- 의존 관계가 있으면 `선행: task-id` 포함

@@ -24,8 +24,17 @@
 
 1. **플랜 모드 (planner)** ← planner 서브에이전트
     - 요구사항 분석, 작업 분해, TODO/플랜 파일 생성
-    - 각 작업에 서브에이전트 할당 (developer, planner, generalPurpose 등)
-    - 직렬/병렬 실행 순서 정의
+    - **각 TODO에 필수 포함**: `[병렬-N]`/`[직렬-N]` + `담당: agent-name` + `선행: task-id` (의존 시)
+    - 참조: `.cursor/skills/planner/references/plan-todo-format.md`
+    - 예시:
+      ```yaml
+      - id: impl-api
+        content: "[직렬-1] 회원가입 API 구현 (담당: developer)"
+      - id: test-api
+        content: "[직렬-2] API 테스트 작성 (담당: qa, 선행: impl-api)"
+      - id: doc-api
+        content: "[병렬-1] API 문서 업데이트 (담당: docs, 선행: impl-api)"
+      ```
     - 사용자 승인 후 진행
 
 2. **실행** ← 위에서 할당된 서브에이전트들을 통해 작업 진행
