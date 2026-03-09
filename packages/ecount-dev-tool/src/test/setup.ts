@@ -51,9 +51,15 @@ const storage_data: Record<string, unknown> = {};
 const local_storage_data: Record<string, unknown> = {};
 
 const chrome_mock = {
+    runtime: {
+        getURL: vi.fn((path: string) => `chrome-extension://mock-id/${path}`),
+    },
     tabs: {
         query: vi.fn().mockResolvedValue([]),
         update: vi.fn().mockResolvedValue({}),
+        create: vi.fn().mockResolvedValue({ id: 999 }),
+        getCurrent: vi.fn().mockResolvedValue({ id: 999 }),
+        remove: vi.fn().mockResolvedValue(undefined),
         onActivated: { addListener: vi.fn() },
         onUpdated: { addListener: vi.fn() },
     },

@@ -43,12 +43,13 @@ export const Default: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.getByText('사용자 스크립트')).toBeInTheDocument();
         await expect(canvas.getByText('테스트 스크립트')).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: '+ 추가' })).toBeInTheDocument();
-
         const add_btn = canvas.getByRole('button', { name: '+ 추가' });
+        await expect(add_btn).toBeInTheDocument();
+
         await userEvent.click(add_btn);
-        await expect(canvas.getByPlaceholderText('스크립트 이름')).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: '취소' })).toBeInTheDocument();
+        expect(chrome.tabs.create).toHaveBeenCalledWith(
+            expect.objectContaining({ url: expect.stringContaining('editor.html#new') }),
+        );
     },
 };
 
@@ -72,7 +73,9 @@ export const WithScripts: Story = {
         const edit_btns = canvas.getAllByLabelText('스크립트 수정');
         await expect(edit_btns.length).toBeGreaterThan(0);
         await userEvent.click(edit_btns[0]!);
-        await expect(canvas.getByDisplayValue('테스트 스크립트')).toBeInTheDocument();
+        expect(chrome.tabs.create).toHaveBeenCalledWith(
+            expect.objectContaining({ url: expect.stringContaining('editor.html#script-1') }),
+        );
     },
 };
 
@@ -84,9 +87,12 @@ export const Empty: Story = {
         const canvas = within(canvasElement);
         await expect(canvas.getByText('사용자 스크립트')).toBeInTheDocument();
         await expect(canvas.getByText('스크립트가 없습니다. 추가 버튼을 눌러 등록하세요.')).toBeInTheDocument();
-        await expect(canvas.getByRole('button', { name: '+ 추가' })).toBeInTheDocument();
+        const add_btn = canvas.getByRole('button', { name: '+ 추가' });
+        await expect(add_btn).toBeInTheDocument();
 
-        await userEvent.click(canvas.getByRole('button', { name: '+ 추가' }));
-        await expect(canvas.getByPlaceholderText('스크립트 이름')).toBeInTheDocument();
+        await userEvent.click(add_btn);
+        expect(chrome.tabs.create).toHaveBeenCalledWith(
+            expect.objectContaining({ url: expect.stringContaining('editor.html#new') }),
+        );
     },
 };

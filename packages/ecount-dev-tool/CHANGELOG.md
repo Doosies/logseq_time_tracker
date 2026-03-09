@@ -28,6 +28,11 @@
 
 ### Added
 
+- 스크립트 편집을 위한 별도 페이지(editor.html) 추가
+- URL hash 기반 라우팅 구현 (`#new`, `#script-id`)
+- 2단 레이아웃 편집 화면 (메타데이터 360px | 코드 에디터 가변)
+- 키보드 단축키 지원 (Ctrl+S 저장, Esc 취소)
+- 반응형 레이아웃 (< 900px: 1단 레이아웃)
 - 사용자 스크립트 실행기 (User Script Runner) 기능 추가
   - 사용자 작성 JavaScript를 ecount.com 페이지에서 실행
   - 자동 실행: URL 패턴 매칭(`@include` glob) 시 페이지 로드 완료 후 자동 주입
@@ -44,6 +49,8 @@
 
 ### Changed
 
+- 스크립트 추가/수정 시 새 탭에서 `editor.html` 열림
+- `UserScriptSection`에서 view_mode 전환 방식 제거
 - 섹션 레지스트리 패턴 도입으로 확장성 개선
   - `sections/` 디렉터리: `registry.ts`에서 중앙 집중식 섹션 정의
   - 새 섹션 추가 시 registry.ts 한 곳만 수정

@@ -26,12 +26,23 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 - ecount.com URL 자동 분석
 - 서버 전환 시 올바른 URL 생성
 
-### 4. 사용자 스크립트 실행 시점
+### 4. 사용자 스크립트
+
+#### 실행 시점
 
 모든 스크립트는 **페이지 로드 후 (document-idle)** 실행됩니다.
 
 > **참고**: 이전 버전에서는 실행 시점을 선택할 수 있었으나, 사용성 개선을 위해 기본값으로 고정되었습니다.
 > 실행 시점 옵션 복원이 필요한 경우 소스 코드의 `[FEATURE_TOGGLE]` 주석을 참조하세요.
+
+#### 스크립트 편집
+
+스크립트를 추가하거나 수정하면 별도 탭(editor.html)에서 전체 화면 편집 환경이 제공됩니다:
+
+- 2단 레이아웃: 좌측 메타데이터, 우측 코드 에디터
+- 키보드 단축키: Ctrl+S (저장), Esc (취소)
+- URL 직접 접근: `chrome-extension://[id]/src/editor.html#script-id`
+- 반응형: 작은 화면에서 1단 레이아웃으로 자동 전환
 
 ### 5. 섹션 관리
 - **섹션 DnD 순서 변경**: 드래그앤드롭으로 섹션(QuickLogin, ServerManager, ActionBar, UserScriptSection) 순서 변경

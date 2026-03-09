@@ -4,7 +4,13 @@ import webExtension from 'vite-plugin-web-extension';
 
 export default defineConfig(({ mode }) =>
     createSvelteViteConfig({
-        plugins: [webExtension({ manifest: './src/manifest.json', browser: 'chrome' })],
+        plugins: [
+        webExtension({
+            manifest: './src/manifest.json',
+            browser: 'chrome',
+            additionalInputs: ['src/editor.html'],
+        }),
+    ],
         build: {
             outDir: 'dist',
             emptyOutDir: true,

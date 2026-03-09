@@ -2,31 +2,14 @@
     import type { UserScript } from '#types/user_script';
     import { Section, Button } from '@personal/uikit';
     import ScriptList from './ScriptList.svelte';
-    import ScriptEditor from './ScriptEditor.svelte';
+    import { openEditor } from '#utils/router';
 
-    type ViewMode = 'list' | 'editor';
-
-    let view_mode = $state<ViewMode>('list');
-    let editing_script = $state<UserScript | undefined>(undefined);
-
-    function handleAdd(): void {
-        editing_script = undefined;
-        view_mode = 'editor';
+    async function handleAdd(): Promise<void> {
+        await openEditor();
     }
 
-    function handleEdit(script: UserScript): void {
-        editing_script = script;
-        view_mode = 'editor';
-    }
-
-    function handleCancel(): void {
-        view_mode = 'list';
-        editing_script = undefined;
-    }
-
-    function handleSave(): void {
-        view_mode = 'list';
-        editing_script = undefined;
+    async function handleEdit(script: UserScript): Promise<void> {
+        await openEditor(script.id);
     }
 </script>
 
@@ -34,16 +17,10 @@
     <Section.Header>
         <Section.Title>사용자 스크립트</Section.Title>
         <Section.Action>
-            {#if view_mode === 'list'}
-                <Button variant="ghost" size="sm" onclick={handleAdd}>+ 추가</Button>
-            {/if}
+            <Button variant="ghost" size="sm" onclick={handleAdd}>+ 추가</Button>
         </Section.Action>
     </Section.Header>
     <Section.Content>
-        {#if view_mode === 'list'}
-            <ScriptList onedit={handleEdit} />
-        {:else}
-            <ScriptEditor script={editing_script} oncancel={handleCancel} onsave={handleSave} />
-        {/if}
+        <ScriptList onedit={handleEdit} />
     </Section.Content>
 </Section.Root>
