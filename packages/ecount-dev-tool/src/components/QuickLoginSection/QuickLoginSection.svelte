@@ -18,6 +18,7 @@
         discardBatch,
     } from '#stores/accounts.svelte';
     import { isActiveAccount, setActiveAccount } from '#stores/active_account.svelte';
+    import { getPreferences } from '#stores/preferences.svelte';
 
     interface DndAccountItem {
         id: string;
@@ -36,6 +37,7 @@
 
     const accounts = $derived(getAccounts());
     const tab = $derived(getTabState());
+    const preferences = $derived(getPreferences());
 
     let dnd_items = $state<DndAccountItem[]>([]);
 
@@ -139,6 +141,11 @@
     }
 
     async function handleRemove(index: number): Promise<void> {
+        const account = getAccounts()[index];
+        if (!account) return;
+        if (!confirm(`"${account.company} - ${account.id}" 계정을 삭제하시겠습니까?`)) {
+            return;
+        }
         await removeAccount(index);
         syncDndItems();
         if (editing_index === index) {
@@ -193,18 +200,18 @@
         <Section.Action>
             {#if is_editing}
                 <div class="edit-actions">
-                    <button class="cancel-btn" type="button" onclick={handleCancel}>취소</button>
-                    <button class="apply-btn" type="button" onclick={handleApply}>적용</button>
+                    <Button variant="ghost" size="sm" onclick={handleCancel}>취소</Button>
+                    <Button variant="ghost" size="sm" class="apply-btn" onclick={handleApply}>적용</Button>
                 </div>
             {:else}
-                <button class="edit-toggle" type="button" onclick={toggleEdit}>편집</button>
+                <Button variant="ghost" size="sm" class="edit-toggle" onclick={toggleEdit}>편집</Button>
             {/if}
         </Section.Action>
     </Section.Header>
     <Section.Content>
         <div class="account-scroll {is_editing ? 'editing' : ''}">
             {#if accounts.length === 0 && !is_editing}
-                <p class="empty-msg">편집 버튼을 눌러 계정을 추가하세요</p>
+                <p class="empty-msg">계정이 없습니다. 편집 버튼을 눌러 추가하세요.</p>
             {/if}
 
             {#if is_editing}
@@ -218,7 +225,9 @@
                         <Dnd.Sortable id={item.id} index={i}>
                             {#snippet children({ handleAttach }: { handleAttach: (node: HTMLElement) => () => void })}
                                 <div
-                                    class="account-cell-wrap jiggle {editing_index === i ? 'editing' : ''}"
+                                    class="account-cell-wrap {preferences.enable_animations
+                                        ? 'jiggle'
+                                        : ''} {editing_index === i ? 'editing' : ''}"
                                     style="animation-delay: {(i % 5) * -0.15}s"
                                     role="button"
                                     tabindex="0"
@@ -239,6 +248,7 @@
                                     </span>
                                     <button
                                         class="remove-btn"
+                                        aria-label="계정 삭제"
                                         onclick={(e) => {
                                             e.stopPropagation();
                                             handleRemove(i);
@@ -294,75 +304,21 @@
 </Section.Root>
 
 <style>
-    .edit-toggle {
-        background: none;
-        border: none;
-        border-radius: var(--radius-sm);
-        color: var(--color-primary);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-        cursor: pointer;
-        padding: var(--space-xs) var(--space-sm);
-        transition:
-            background-color var(--transition-normal),
-            color var(--transition-normal);
-    }
-
-    .edit-toggle:hover {
-        background-color: var(--color-surface);
-        color: var(--color-primary-hover);
-    }
-
-    .edit-toggle:active {
-        background-color: var(--color-border);
-    }
-
     .edit-actions {
         display: flex;
         gap: var(--space-xs);
         align-items: center;
     }
 
-    .cancel-btn {
-        background: none;
-        border: none;
-        border-radius: var(--radius-sm);
-        color: var(--color-text-secondary);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-        cursor: pointer;
-        padding: var(--space-xs) var(--space-sm);
-        transition:
-            background-color var(--transition-normal),
-            color var(--transition-normal);
-    }
-
-    .cancel-btn:hover {
-        background-color: var(--color-surface);
-        color: var(--color-text);
-    }
-
-    .apply-btn {
-        background: none;
-        border: none;
-        border-radius: var(--radius-sm);
+    /* ghost variant + primary color for edit/apply buttons (class passed to Button) */
+    :global(.edit-toggle),
+    :global(.apply-btn) {
         color: var(--color-primary);
-        font-size: var(--font-size-sm);
-        font-weight: var(--font-weight-bold);
-        cursor: pointer;
-        padding: var(--space-xs) var(--space-sm);
-        transition:
-            background-color var(--transition-normal),
-            color var(--transition-normal);
     }
 
-    .apply-btn:hover {
-        background-color: var(--color-surface);
+    :global(.edit-toggle:hover:not(:disabled)),
+    :global(.apply-btn:hover:not(:disabled)) {
         color: var(--color-primary-hover);
-    }
-
-    .apply-btn:active {
-        background-color: var(--color-border);
     }
 
     .account-scroll {
@@ -385,7 +341,9 @@
         color: var(--color-text-secondary);
         font-size: var(--font-size-sm);
         text-align: center;
-        padding: var(--space-lg) 0;
+        padding: var(--space-lg) var(--space-md);
+        margin: 0;
+        line-height: 1.5;
     }
 
     /* --- Grid (shared normal + edit) --- */

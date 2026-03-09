@@ -1,10 +1,10 @@
 import { mount } from 'svelte';
-import { light_theme } from '@personal/uikit/design';
 import '@personal/uikit/design';
+import { initializeTheme } from './stores/theme.svelte';
 import App from './components/App';
 
-// Apply theme to body
-document.body.className = light_theme;
+// Apply theme before mount (reads localStorage, system preference)
+initializeTheme();
 
 // Mount Svelte app
 const app = mount(App, {

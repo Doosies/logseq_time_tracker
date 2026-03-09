@@ -32,14 +32,10 @@
 
 <Section.Root>
     <Section.Header>
-        <Section.Title>
-            {view_mode === 'list' ? '사용자 스크립트' : '스크립트 편집'}
-        </Section.Title>
+        <Section.Title>사용자 스크립트</Section.Title>
         <Section.Action>
             {#if view_mode === 'list'}
                 <Button variant="ghost" size="sm" onclick={handleAdd}>+ 추가</Button>
-            {:else}
-                <Button variant="ghost" size="sm" onclick={handleCancel}>취소</Button>
             {/if}
         </Section.Action>
     </Section.Header>

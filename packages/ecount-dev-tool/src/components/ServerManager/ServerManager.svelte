@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { getContext } from 'svelte';
     import type { ParsedUrl } from '#types/server';
     import { Section, Button, ToggleInput, TextInput, Select } from '@personal/uikit';
     import { V5_SERVERS, V3_SERVERS } from '#constants/servers';
@@ -7,6 +8,7 @@
     import { getTabState } from '#stores/current_tab.svelte';
     import { server_ui, initializeServerUi } from '#stores/server_ui.svelte';
 
+    const toast = getContext<{ show: (message: string) => void }>('toast');
     const tab = $derived(getTabState());
     const parsed = $derived(tab.parsed as ParsedUrl);
 
@@ -41,20 +43,27 @@
         }
     }
 
-    function handleChangeServer(): void {
-        if (!parsed) return;
+    async function handleChangeServer(): Promise<void> {
+        try {
+            if (!parsed) {
+                toast?.show('ecount.com 페이지에서 실행해주세요.');
+                return;
+            }
 
-        const to_v5 = server_ui.v5_text_mode ? server_ui.v5_value : parsed.current_server + server_ui.v5_value;
-        const to_v3 = server_ui.v3_text_mode ? server_ui.v3_value : parsed.current_server + server_ui.v3_value;
+            const to_v5 = server_ui.v5_text_mode ? server_ui.v5_value : parsed.current_server + server_ui.v5_value;
+            const to_v3 = server_ui.v3_text_mode ? server_ui.v3_value : parsed.current_server + server_ui.v3_value;
 
-        let new_url: string;
-        if (parsed.page_type === 'ec3') {
-            new_url = buildEc3Url(parsed.url, to_v3, to_v5);
-        } else {
-            new_url = buildEc5Url(parsed.url, to_v5, to_v3);
+            let new_url: string;
+            if (parsed.page_type === 'ec3') {
+                new_url = buildEc3Url(parsed.url, to_v3, to_v5);
+            } else {
+                new_url = buildEc5Url(parsed.url, to_v5, to_v3);
+            }
+
+            await updateTabUrl(tab.tab_id, new_url);
+        } catch {
+            toast?.show('서버 적용에 실패했습니다.');
         }
-
-        updateTabUrl(tab.tab_id, new_url);
     }
 </script>
 

@@ -11,6 +11,23 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
     };
 }
 
+// theme store: matchMedia polyfill for jsdom
+if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
+    Object.defineProperty(window, 'matchMedia', {
+        writable: true,
+        value: (query: string) => ({
+            matches: false,
+            media: query,
+            onchange: null,
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+        }),
+    });
+}
+
 setProjectAnnotations({
     parameters: {
         controls: {

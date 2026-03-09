@@ -23,26 +23,26 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const trigger = canvas.getByLabelText('섹션 설정');
+        const trigger = await canvas.findByLabelText('섹션 설정');
         await userEvent.click(trigger);
 
-        const panel = canvas.getByText('섹션 설정');
+        const panel = await canvas.findByText('섹션 설정');
         await expect(panel).toBeInTheDocument();
 
         await expect(canvas.getByText('빠른 로그인')).toBeInTheDocument();
         await expect(canvas.getByText('서버 관리')).toBeInTheDocument();
-        await expect(canvas.getByText('액션 바')).toBeInTheDocument();
+        await expect(canvas.getByText('빠른 실행')).toBeInTheDocument();
     },
 };
 
 export const WithHiddenSection: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
-        const trigger = canvas.getByLabelText('섹션 설정');
+        const trigger = await canvas.findByLabelText('섹션 설정');
         await userEvent.click(trigger);
 
-        const checkboxes = canvas.getAllByRole('checkbox');
-        await expect(checkboxes.length).toBe(3);
+        const checkboxes = await canvas.findAllByRole('checkbox');
+        await expect(checkboxes.length).toBe(5);
 
         await userEvent.click(checkboxes[0]!);
 

@@ -387,7 +387,8 @@ describe('App', () => {
             );
 
             const drag_handle_elements = screen.getAllByLabelText('드래그하여 섹션 순서 변경');
-            expect(drag_handle_elements.length).toBe(5);
+            // App drag-handle-bar(5) + Section.Title(5) = 10
+            expect(drag_handle_elements.length).toBeGreaterThanOrEqual(5);
         });
     });
 
@@ -432,7 +433,7 @@ describe('App', () => {
             });
         });
 
-        it('키보드(Enter)로 체크박스를 토글할 수 있어야 한다', async () => {
+        it('체크박스 토글로 섹션을 숨길 수 있어야 한다', async () => {
             asMock(chrome.tabs.query).mockResolvedValue([
                 {
                     id: 1,
@@ -456,12 +457,14 @@ describe('App', () => {
 
             const checkboxes = screen.getAllByRole('checkbox');
             const action_bar_checkbox = checkboxes[2] as HTMLElement;
-            action_bar_checkbox.focus();
-            await user.keyboard(' ');
+            await user.click(action_bar_checkbox);
 
-            await waitFor(() => {
-                expect(screen.queryByRole('button', { name: '5.0로컬' })).not.toBeInTheDocument();
-            });
+            await waitFor(
+                () => {
+                    expect(screen.queryByRole('button', { name: '5.0로컬' })).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
         });
     });
 

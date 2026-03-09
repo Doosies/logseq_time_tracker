@@ -1,9 +1,12 @@
 <script lang="ts">
+    import { getContext } from 'svelte';
     import type { UserScript } from '#types/user_script';
     import { Button } from '@personal/uikit';
     import { getScripts, toggleScript, deleteScript } from '#stores/user_scripts.svelte';
     import { executeUserScript } from '#services/script_executor';
     import { getTabState } from '#stores/current_tab.svelte';
+
+    const toast_ctx = getContext<{ show: (message: string) => void }>('toast');
 
     interface Props {
         onedit: (script: UserScript) => void;
@@ -19,12 +22,20 @@
     async function handleRun(script: UserScript): Promise<void> {
         const result = await executeUserScript(tab.tab_id, script.code);
         run_status = { ...run_status, [script.id]: result.success ? 'success' : 'error' };
+
+        if (!result.success && result.error) {
+            toast_ctx?.show(`스크립트 실행 실패: ${result.error}`);
+        }
+
         setTimeout(() => {
             run_status = { ...run_status, [script.id]: null };
         }, 2000);
     }
 
     async function handleDelete(script: UserScript): Promise<void> {
+        if (!confirm(`"${script.name}" 스크립트를 삭제하시겠습니까?`)) {
+            return;
+        }
         await deleteScript(script.id);
     }
 
@@ -41,7 +52,7 @@
 </script>
 
 {#if scripts.length === 0}
-    <p class="empty-msg">등록된 스크립트가 없습니다.</p>
+    <p class="empty-msg">스크립트가 없습니다. 추가 버튼을 눌러 등록하세요.</p>
 {:else}
     <div class="script-list">
         {#each scripts as script (script.id)}
@@ -59,7 +70,7 @@
                     <span class="script-patterns">{truncatePatterns(script.url_patterns)}</span>
                 </div>
                 <div class="script-actions">
-                    <Button variant="ghost" size="sm" onclick={() => handleRun(script)}>
+                    <Button variant="ghost" size="sm" aria-label="스크립트 실행" onclick={() => handleRun(script)}>
                         {#if run_status[script.id] === 'success'}
                             ✓
                         {:else if run_status[script.id] === 'error'}
@@ -68,8 +79,12 @@
                             ▶
                         {/if}
                     </Button>
-                    <Button variant="ghost" size="sm" onclick={() => onedit(script)}>✏</Button>
-                    <Button variant="ghost" size="sm" onclick={() => handleDelete(script)}>🗑</Button>
+                    <Button variant="ghost" size="sm" aria-label="스크립트 수정" onclick={() => onedit(script)}
+                        >✏</Button
+                    >
+                    <Button variant="ghost" size="sm" aria-label="스크립트 삭제" onclick={() => handleDelete(script)}
+                        >🗑</Button
+                    >
                 </div>
             </div>
         {/each}
@@ -81,8 +96,9 @@
         color: var(--color-text-secondary);
         font-size: var(--font-size-sm);
         text-align: center;
-        padding: var(--space-lg) 0;
+        padding: var(--space-lg) var(--space-md);
         margin: 0;
+        line-height: 1.5;
     }
 
     .script-list {

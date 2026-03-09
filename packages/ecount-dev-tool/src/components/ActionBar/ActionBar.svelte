@@ -1,41 +1,72 @@
 <script lang="ts">
+    import { getContext } from 'svelte';
     import { Button, Section } from '@personal/uikit';
     import { getCurrentTab, updateTabUrl, executeScript, executeMainWorldScript } from '#services/tab_service';
     import { switchV3TestServer, switchV5TestServer, debugAndGetPageInfo } from '#services/page_actions';
     import { buildDevUrl } from '#services/url_service.js';
+    import { keyboardShortcut } from '../../actions/keyboard_shortcut';
+
+    const toast = getContext<{ show: (message: string) => void }>('toast');
 
     async function handleV5Local(): Promise<void> {
-        const tab = await getCurrentTab();
-        if (tab?.url?.includes('ecount') && tab.id) {
+        try {
+            const tab = await getCurrentTab();
+            if (!tab?.url?.includes('ecount') || !tab.id) {
+                toast?.show('ecount.com 페이지에서 실행해주세요.');
+                return;
+            }
             await executeScript(tab.id, switchV5TestServer as (...args: never[]) => void);
             window.close();
+        } catch {
+            toast?.show('5.0 로컬 전환에 실패했습니다.');
         }
     }
 
     async function handleV3Local(): Promise<void> {
-        const tab = await getCurrentTab();
-        if (tab?.url?.includes('ecount') && tab.id) {
+        try {
+            const tab = await getCurrentTab();
+            if (!tab?.url?.includes('ecount') || !tab.id) {
+                toast?.show('ecount.com 페이지에서 실행해주세요.');
+                return;
+            }
             await executeScript(tab.id, switchV3TestServer as (...args: never[]) => void);
             window.close();
+        } catch {
+            toast?.show('3.0 로컬 전환에 실패했습니다.');
         }
     }
 
     async function handleDevMode(): Promise<void> {
-        const tab = await getCurrentTab();
-        if (!tab?.url?.includes('ecount') || !tab.id) return;
+        try {
+            const tab = await getCurrentTab();
+            if (!tab?.url?.includes('ecount') || !tab.id) {
+                toast?.show('ecount.com 페이지에서 실행해주세요.');
+                return;
+            }
 
-        const page_info = await executeMainWorldScript(tab.id, debugAndGetPageInfo);
+            const page_info = await executeMainWorldScript(tab.id, debugAndGetPageInfo);
 
-        if (!page_info) {
-            alert('페이지에서 정보를 가져오는데 실패했습니다.');
-            return;
+            if (!page_info) {
+                toast?.show('페이지에서 정보를 가져오는데 실패했습니다.');
+                return;
+            }
+
+            const current_url = new URL(tab.url);
+            const new_url = buildDevUrl(current_url, page_info);
+            await updateTabUrl(tab.id, new_url.href);
+        } catch {
+            toast?.show('disableMin 적용에 실패했습니다.');
         }
-
-        const current_url = new URL(tab.url);
-        const new_url = buildDevUrl(current_url, page_info);
-        await updateTabUrl(tab.id, new_url.href);
     }
 </script>
+
+<svelte:window
+    use:keyboardShortcut={[
+        { key: '5', ctrl: true, handler: handleV5Local },
+        { key: '3', ctrl: true, handler: handleV3Local },
+        { key: 'd', ctrl: true, handler: handleDevMode },
+    ]}
+/>
 
 <Section.Root>
     <Section.Header>

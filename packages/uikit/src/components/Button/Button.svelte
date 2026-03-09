@@ -1,10 +1,11 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
+    import type { HTMLAttributes } from 'svelte/elements';
     import type { ButtonVariant, ButtonSize } from '../../design/types';
     import { Button as PrimitiveButton } from '../../primitives/Button';
     import * as styles from '../../design/styles/button.css';
 
-    interface ButtonProps {
+    interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
         variant?: ButtonVariant | undefined;
         size?: ButtonSize | undefined;
         disabled?: boolean | undefined;
@@ -22,6 +23,7 @@
         class: extra_class,
         onclick,
         children,
+        ...rest
     }: ButtonProps = $props();
 
     const getClassNames = () => {
@@ -36,6 +38,6 @@
     };
 </script>
 
-<PrimitiveButton class={getClassNames()} {disabled} {onclick}>
+<PrimitiveButton class={getClassNames()} {disabled} {onclick} {...rest}>
     {@render children()}
 </PrimitiveButton>

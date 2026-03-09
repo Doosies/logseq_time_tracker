@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import { Card, Dnd } from '@personal/uikit';
+    import { Card, Dnd, Toast } from '@personal/uikit';
     import { QuickLoginSection } from '#components/QuickLoginSection';
     import { ServerManager } from '#components/ServerManager';
     import { StageManager } from '#components/StageManager';
@@ -14,6 +14,8 @@
     import { initializeVisibility, isSectionVisible } from '#stores/section_visibility.svelte';
     import { initializeSectionOrder, getSectionOrder, setSectionOrder } from '#stores/section_order.svelte';
     import { initializeUserScripts } from '#stores/user_scripts.svelte';
+    import { initializePreferences } from '#stores/preferences.svelte';
+    import { initializeTheme } from '#stores/theme.svelte';
 
     interface DndSectionItem {
         id: string;
@@ -55,88 +57,129 @@
     }
 
     onMount(() => {
+        initializeTheme();
         initializeTabState();
         initializeAccounts();
         initializeActiveAccount();
         initializeVisibility();
         initializeSectionOrder();
         initializeUserScripts();
+        initializePreferences();
     });
 </script>
 
-<Card.Root>
-    <div class="app-content">
-        <SectionSettings sections={SECTION_LIST} />
+<Toast.Provider duration={2500}>
+    <Card.Root>
+        <div class="app-content">
+            <SectionSettings sections={SECTION_LIST} />
 
-        {#if tab.is_loading}
-            <p>로딩 중...</p>
-        {:else if tab.is_stage}
-            {#each sections_to_render as section_id (section_id)}
-                {#if section_id === 'quick-login'}
-                    <QuickLoginSection />
-                {/if}
-            {/each}
-            <div class="section-divider"></div>
-            <StageManager />
-        {:else if is_dnd_available}
-            <Dnd.Provider items={dnd_sections} onreorder={handleReorder} class="sections-dnd-container">
-                {#each dnd_sections as item, index (item.id)}
-                    <Dnd.Sortable id={item.id} {index}>
-                        {#snippet children({ handleAttach })}
-                            <div class="section-wrapper">
-                                <div
-                                    class="drag-handle-bar"
-                                    data-drag-handle
-                                    role="button"
-                                    tabindex="-1"
-                                    aria-label="드래그하여 섹션 순서 변경"
-                                    {@attach handleAttach}
-                                >
-                                    <span class="grip-dots"></span>
+            {#if tab.is_loading}
+                <div class="loading-container">
+                    <div class="spinner"></div>
+                    <p>로딩 중...</p>
+                </div>
+            {:else if tab.is_stage}
+                {#each sections_to_render as section_id (section_id)}
+                    {#if section_id === 'quick-login'}
+                        <QuickLoginSection />
+                    {/if}
+                {/each}
+                <div class="section-divider"></div>
+                <StageManager />
+            {:else if is_dnd_available}
+                <Dnd.Provider items={dnd_sections} onreorder={handleReorder} class="sections-dnd-container">
+                    {#each dnd_sections as item, index (item.id)}
+                        <Dnd.Sortable id={item.id} {index}>
+                            {#snippet children({ handleAttach }: { handleAttach: (node: HTMLElement) => () => void })}
+                                <div class="section-wrapper">
+                                    <div
+                                        class="drag-handle-bar"
+                                        data-drag-handle
+                                        role="button"
+                                        tabindex="-1"
+                                        aria-label="드래그하여 섹션 순서 변경"
+                                        title="드래그하여 순서 변경"
+                                        {@attach handleAttach}
+                                    >
+                                        <span class="grip-dots"></span>
+                                    </div>
+                                    {#if item.section_type === 'quick-login'}
+                                        <QuickLoginSection />
+                                    {:else if item.section_type === 'server-manager'}
+                                        <ServerManager />
+                                    {:else if item.section_type === 'action-bar'}
+                                        <ActionBar />
+                                    {:else if item.section_type === 'calculator'}
+                                        <Calculator />
+                                    {:else if item.section_type === 'user-script'}
+                                        <UserScriptSection />
+                                    {/if}
                                 </div>
-                                {#if item.section_type === 'quick-login'}
-                                    <QuickLoginSection />
-                                {:else if item.section_type === 'server-manager'}
-                                    <ServerManager />
-                                {:else if item.section_type === 'action-bar'}
-                                    <ActionBar />
-                                {:else if item.section_type === 'calculator'}
-                                    <Calculator />
-                                {:else if item.section_type === 'user-script'}
-                                    <UserScriptSection />
-                                {/if}
-                            </div>
-                        {/snippet}
-                    </Dnd.Sortable>
-                {/each}
-            </Dnd.Provider>
-        {:else}
-            <div class="sections-dnd-container">
-                {#each dnd_sections as item (item.id)}
-                    <div class="section-wrapper">
-                        {#if item.section_type === 'quick-login'}
-                            <QuickLoginSection />
-                        {:else if item.section_type === 'server-manager'}
-                            <ServerManager />
-                        {:else if item.section_type === 'action-bar'}
-                            <ActionBar />
-                        {:else if item.section_type === 'calculator'}
-                            <Calculator />
-                        {:else if item.section_type === 'user-script'}
-                            <UserScriptSection />
-                        {/if}
-                    </div>
-                {/each}
-            </div>
-        {/if}
-    </div>
-</Card.Root>
+                            {/snippet}
+                        </Dnd.Sortable>
+                    {/each}
+                </Dnd.Provider>
+            {:else}
+                <div class="sections-dnd-container">
+                    {#each dnd_sections as item (item.id)}
+                        <div class="section-wrapper">
+                            {#if item.section_type === 'quick-login'}
+                                <QuickLoginSection />
+                            {:else if item.section_type === 'server-manager'}
+                                <ServerManager />
+                            {:else if item.section_type === 'action-bar'}
+                                <ActionBar />
+                            {:else if item.section_type === 'calculator'}
+                                <Calculator />
+                            {:else if item.section_type === 'user-script'}
+                                <UserScriptSection />
+                            {/if}
+                        </div>
+                    {/each}
+                </div>
+            {/if}
+        </div>
+    </Card.Root>
+    <Toast.Root />
+</Toast.Provider>
 
 <style>
+    .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: var(--space-lg);
+        gap: var(--space-sm);
+    }
+
+    .spinner {
+        width: 24px;
+        height: 24px;
+        border: 3px solid var(--color-border);
+        border-top-color: var(--color-primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading-container p {
+        color: var(--color-text-secondary);
+        font-size: var(--font-size-sm);
+        margin: 0;
+    }
+
     .app-content {
         display: flex;
         flex-direction: column;
         width: 100%;
+        max-height: 600px;
+        overflow-y: auto;
     }
 
     .app-content > :global(*) {
@@ -190,7 +233,7 @@
         background: none;
         border: none;
         border-radius: var(--radius-sm, 6px);
-        opacity: 0.3;
+        opacity: 0.5;
         transition:
             opacity var(--transition-normal, 0.15s ease),
             background-color var(--transition-normal, 0.15s ease),
