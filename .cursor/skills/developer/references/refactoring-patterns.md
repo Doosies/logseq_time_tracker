@@ -249,6 +249,118 @@ function getPayAmount() {
 
 ---
 
+### 패턴 8: 레지스트리 패턴 (Registry Pattern)
+
+**언제 사용**: 확장 가능한 섹션/컴포넌트 관리, 플러그인 시스템
+
+**목적**:
+
+- 새 항목 추가 시 한 곳(레지스트리)만 수정
+- 타입 안정성 보장
+- 중복 정의 제거
+
+**Before (하드코딩 분산 관리)**:
+
+`App.svelte`:
+
+```svelte
+<script>
+  const SECTION_LIST = [
+    { id: 'quick-login', label: '빠른 로그인' },
+    { id: 'server-manager', label: '서버 관리' },
+  ];
+</script>
+
+{#if section_type === 'quick-login'}
+  <QuickLoginSection />
+{:else if section_type === 'server-manager'}
+  <ServerManager />
+{/if}
+```
+
+`section_order.svelte.ts`:
+
+```typescript
+const DEFAULT_ORDER = ['quick-login', 'server-manager'];
+```
+
+**After (레지스트리 패턴)**:
+
+**1. 타입 정의** (`sections/types.ts`):
+
+```typescript
+import type { Component } from 'svelte';
+
+export type SectionId = 'quick-login' | 'server-manager' | 'action-bar';
+
+export interface SectionDefinition {
+  id: SectionId;
+  label: string;
+  component: Component;
+}
+```
+
+**2. 레지스트리** (`sections/registry.ts`):
+
+```typescript
+import { QuickLoginSection } from '#components/QuickLoginSection';
+import { ServerManager } from '#components/ServerManager';
+import type { SectionDefinition } from './types';
+
+export const SECTION_REGISTRY: SectionDefinition[] = [
+  { id: 'quick-login', label: '빠른 로그인', component: QuickLoginSection },
+  { id: 'server-manager', label: '서버 관리', component: ServerManager },
+];
+```
+
+**3. 유틸 함수** (`sections/index.ts`):
+
+```typescript
+import type { SectionDefinition } from './types';
+import { SECTION_REGISTRY } from './registry';
+
+export { SECTION_REGISTRY } from './registry';
+export { type SectionDefinition, type SectionId } from './types';
+
+export function getSectionById(id: string): SectionDefinition | undefined {
+  return SECTION_REGISTRY.find((s) => s.id === id);
+}
+```
+
+**4. 사용** (`App.svelte`):
+
+```svelte
+<script>
+  import { SECTION_REGISTRY, getSectionById } from '#sections';
+
+  const SECTION_LIST = $derived(
+    SECTION_REGISTRY.map(s => ({ id: s.id, label: s.label }))
+  );
+</script>
+
+<!-- 렌더링 -->
+{#each dnd_sections as item}
+  {@const section = getSectionById(item.section_type)}
+  {#if section}
+    <section.component />
+  {/if}
+{/each}
+```
+
+**이점**:
+
+- ✅ 새 섹션 추가 시 `registry.ts`에 1줄만 추가
+- ✅ `SectionId` 타입으로 오타 방지
+- ✅ 동적 컴포넌트 렌더링으로 분기문 제거
+- ✅ 순서/목록 정의가 자동으로 동기화
+
+**주의사항**:
+
+- path alias 설정 필요 (`#sections`)
+- `Object.freeze(SECTION_REGISTRY)`로 불변성 보장 권장 (보안)
+
+---
+
 ## 안전한 리팩토링 절차
 
 ### 1. 준비 단계

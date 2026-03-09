@@ -208,6 +208,78 @@ class={styles.buttonContainer}  // .css.ts 파일은 snake_case
 | 클래스명 | PascalCase | PascalCase (동일) |
 | CSS/스타일 | - | snake_case 유지 |
 
+## Svelte 5 동적 컴포넌트 및 {@const}
+
+### Svelte 5 동적 컴포넌트 렌더링
+
+Svelte 5 Runes 모드에서는 `<svelte:component>`가 deprecated되었습니다.
+동적 컴포넌트 렌더링 시 **dot notation**을 사용합니다.
+
+**올바른 예**:
+
+```svelte
+{#each dnd_sections as item}
+  {@const section = getSectionById(item.section_type)}
+  {#if section}
+    <section.component />
+  {/if}
+{/each}
+```
+
+**잘못된 예** (deprecated, 경고 발생):
+
+```svelte
+<svelte:component this={component} />
+```
+
+**이유**: Svelte 5 Runes 모드는 `svelte:component`를 지원하지 않으며, dot notation이 공식 권장 방법입니다.
+
+### {@const} 배치 규칙
+
+`{@const}`는 **snippet, #if, #each, #await 등의 직접 자식**에만 배치할 수 있습니다.
+`<div>` 등 중첩 요소 내부에 배치하면 컴파일 오류가 발생합니다.
+
+**올바른 예** (#each 직접 자식):
+
+```svelte
+{#each items as item}
+  {@const section = getSectionById(item.id)}
+  {#if section}
+    <section.component />
+  {/if}
+{/each}
+```
+
+**올바른 예** (snippet 직접 자식, `{#each}` 내부 컴포넌트에 전달):
+
+```svelte
+{#each items as item (item.id)}
+  <SortableWrapper>
+    {#snippet children({ handleAttach })}
+      {@const section = getSectionById(item.id)}
+      <div>
+        {#if section}
+          <section.component />
+        {/if}
+      </div>
+    {/snippet}
+  </SortableWrapper>
+{/each}
+```
+
+**잘못된 예** (div 내부 → 컴파일 오류):
+
+```svelte
+{#each items as item}
+  <div>
+    {@const section = getSectionById(item.id)}
+    ...
+  </div>
+{/each}
+```
+
+**해결 방법**: `{@const}`를 `{#each}`, `{#snippet}`, `{#if}` 등의 직접 자식으로 이동합니다.
+
 ## 체크리스트
 
 Svelte 컴포넌트 작성 시 확인할 항목:
@@ -221,3 +293,5 @@ Svelte 컴포넌트 작성 시 확인할 항목:
 - [ ] 이벤트 핸들러: `handle` + PascalCase
 - [ ] Vanilla Extract 클래스: snake_case (`button_container` 등)
 - [ ] 일반 .ts 파일: AGENTS.md 규칙 준수 (변수 snake_case)
+- [ ] Svelte 5 동적 컴포넌트: dot notation 사용 (`<section.component />`)
+- [ ] `{@const}`: snippet/#if/#each의 직접 자식에만 배치
