@@ -16,9 +16,15 @@ description: Chrome Extension API 모킹 - Vitest에서 chrome.tabs, chrome.scri
 import { vi, beforeEach } from 'vitest';
 
 const chrome_mock = {
+  runtime: {
+    getURL: vi.fn((path: string) => `chrome-extension://mock-id/${path}`),
+  },
   tabs: {
     query: vi.fn().mockResolvedValue([]),
     update: vi.fn().mockResolvedValue({}),
+    create: vi.fn().mockResolvedValue({ id: 999 }),
+    getCurrent: vi.fn().mockResolvedValue({ id: 999 }),
+    remove: vi.fn().mockResolvedValue(undefined),
     onActivated: { addListener: vi.fn() },
     onUpdated: { addListener: vi.fn() },
   },
@@ -104,6 +110,82 @@ describe('updateTabUrl', () => {
   });
 });
 ```
+
+### tabs.create (새 탭 열기)
+
+편집 페이지 등 extension URL로 새 탭을 열 때:
+
+```typescript
+// router.ts
+export async function openEditor(script_id?: string): Promise<void> {
+  const url = chrome.runtime.getURL(`src/editor.html#${script_id || 'new'}`);
+  await chrome.tabs.create({ url });
+}
+```
+
+```typescript
+// 테스트
+it('editor.html#new URL로 새 탭을 열어야 함', async () => {
+  await openEditor();
+  expect(chrome.tabs.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      url: expect.stringContaining('editor.html#new'),
+    })
+  );
+});
+
+it('스크립트 ID가 있으면 editor.html#script-id로 열어야 함', async () => {
+  await openEditor('abc-123');
+  expect(chrome.tabs.create).toHaveBeenCalledWith(
+    expect.objectContaining({
+      url: expect.stringContaining('editor.html#abc-123'),
+    })
+  );
+});
+```
+
+### tabs.getCurrent / tabs.remove (탭 닫기)
+
+extension 페이지(editor.html)에서 현재 탭 닫기:
+
+```typescript
+// router.ts
+export async function closeEditor(): Promise<void> {
+  const tab = await chrome.tabs.getCurrent();
+  if (tab?.id) {
+    await chrome.tabs.remove(tab.id);
+  }
+}
+```
+
+```typescript
+// 테스트
+it('현재 탭 ID로 remove를 호출해야 함', async () => {
+  vi.mocked(chrome.tabs.getCurrent).mockResolvedValue({ id: 123 } as chrome.tabs.Tab);
+  await closeEditor();
+  expect(chrome.tabs.remove).toHaveBeenCalledWith(123);
+});
+```
+
+### Storybook play에서 tabs.create 검증
+
+Storybook 스토리에서 버튼 클릭 후 `chrome.tabs.create` 호출 검증:
+
+```typescript
+// UserScriptSection.stories.ts
+export const Default: Story = {
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const add_btn = canvas.getByRole('button', { name: '+ 추가' });
+    await userEvent.click(add_btn);
+    expect(chrome.tabs.create).toHaveBeenCalledWith(
+      expect.objectContaining({ url: expect.stringContaining('editor.html#new') }),
+    );
+  },
+};
+```
+
+**setup.ts 체크**: chrome mock에 `tabs.create`가 있어야 함. `vi.clearAllMocks()` 사용 시 mock 구현은 유지되므로 `toHaveBeenCalledWith` 검증 가능.
 
 ---
 
@@ -351,13 +433,34 @@ it('API 에러를 처리해야 함', async () => {
 
 ---
 
+## asMock 헬퍼 (@types/chrome 콜백 오버로드 우회)
+
+`vi.mocked()`가 `@types/chrome`의 콜백 오버로드로 잘못된 타입을 선택하는 경우:
+
+```typescript
+// src/test/mock_helpers.ts
+import type { Mock } from 'vitest';
+
+export function asMock(fn: unknown): Mock {
+  return fn as Mock;
+}
+
+// 사용
+asMock(chrome.tabs.query).mockResolvedValue([mock_tab]);
+asMock(chrome.tabs.create).mockResolvedValue({ id: 999 });
+```
+
+---
+
 ## 체크리스트
 
 테스트 작성 완료 후:
 
-- [ ] setup.ts에 chrome mock이 올바르게 설정됨
+- [ ] setup.ts에 chrome mock이 올바르게 설정됨 (runtime.getURL, tabs.create, getCurrent, remove 포함)
 - [ ] beforeEach에서 mock 초기화 (vi.clearAllMocks)
 - [ ] chrome.tabs API 호출 검증 (인자 포함)
+- [ ] chrome.tabs.create URL 검증 시 `expect.stringContaining('editor.html#...')` 활용
+- [ ] Storybook play에서 tabs.create 검증 시 mock이 setup에 포함되어 있는지 확인
 - [ ] chrome.scripting API 호출 검증 (world 옵션 포함)
 - [ ] window/top 글로벌이 올바르게 모킹됨
 - [ ] window.close 호출 검증

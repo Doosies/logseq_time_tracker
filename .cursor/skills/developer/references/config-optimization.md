@@ -130,6 +130,13 @@ build: {
 
 ### 웹 확장 프로그램 (ecount-dev-tool)
 ```typescript
+// vite-plugin-web-extension
+webExtension({
+  manifest: './src/manifest.json',
+  browser: 'chrome',
+  additionalInputs: ['src/editor.html'],  // popup 외 별도 HTML 진입점
+}),
+
 build: {
   target: 'esnext',
   minify: 'esbuild',
@@ -142,6 +149,8 @@ build: {
   }
 }
 ```
+
+**다중 HTML 진입점**: popup.html 외 editor.html 등 별도 페이지가 필요하면 `additionalInputs`에 등록. 상세는 [chrome-extension-routing](chrome-extension-routing.md) 참조.
 
 ### 앱 패키지 (time-tracker)
 ```typescript
