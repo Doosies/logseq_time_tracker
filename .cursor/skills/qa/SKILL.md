@@ -38,3 +38,4 @@ description: "Vitest/Testing Library 기반 테스트 및 품질 보증 스킬. 
 - [테스트 품질 기준](references/test-quality.md)
 - [Chrome Extension 테스트](references/chrome-extension-testing.md)
 - [TDD 게이트 기반 Red-Green-Refactor 워크플로우](references/tdd-gate-workflow.md)
+- [절대 금지사항](../developer/references/prohibited-practices.md)
