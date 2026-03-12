@@ -1,0 +1,263 @@
+---
+rule_id: 'diagram-rule'
+trigger_state: 'CREATING_DIAGRAM'
+description: 'Mermaid 다이어그램 작성 규칙'
+---
+
+# Mermaid 다이어그램 작성 규칙
+
+이 문서는 AI가 Mermaid 다이어그램을 생성할 때 일관성, 가독성, 접근성을 유지하기 위해 준수해야 하는 규칙을 정의합니다. Cursor의 Mermaid 지원 및 프로젝트 컨벤션에 맞게 조정되었습니다.
+
+---
+
+## 1. 코드 블록 규칙
+
+- **펜스 코드 블록**: 모든 다이어그램은 ` ```mermaid ` 와 ` ``` ` 로 감쌉니다.
+- **독립 블록**: 다이어그램은 별도의 코드 블록에만 포함하며, 다른 코드와 혼합하지 않습니다.
+
+---
+
+## 2. 핵심 문법 원칙
+
+### 2.1 노드 ID
+
+- **공백 금지**: 노드 ID에는 공백을 사용하지 않습니다.
+- **허용 형식**: `camelCase`, `PascalCase`, `snake_case` 중 일관되게 선택하여 사용합니다.
+- **특수문자**: 영문, 숫자, `-`, `_`만 사용합니다.
+- **예약어 회피**: `end`, `subgraph`, `class`, `style` 등 Mermaid 예약어를 ID로 사용하지 않습니다.
+
+| ✅ 좋은 예 | ❌ 나쁜 예 |
+|-----------|-----------|
+| `user_service` | `user service` (공백) |
+| `AuthService` | `"Auth Service"` (ID에 따옴표) |
+| `api_gateway` | `end` (예약어) |
+
+### 2.2 레이블(텍스트)
+
+- **공백/특수문자 포함 시**: 반드시 큰따옴표(`"`)로 감쌉니다.
+- **특수문자 이스케이프**:
+  - `<` → `&lt;`
+  - `>` → `&gt;`
+  - `` ` `` → `\``
+  - 숫자 목록의 점(`.`) → `\.`
+
+```mermaid
+%% ✅ 좋은 예
+graph TD
+    UserService["User Service"]
+    AuthService["Auth Service"]
+    UserService -->|"validate()"| AuthService
+```
+
+```mermaid
+%% ❌ 나쁜 예
+graph TD
+    User Service["User Service"]   %% ID에 공백
+    UserService --> validate()    %% 레이블에 따옴표 없음
+```
+
+### 2.3 서브그래프
+
+- **명시적 ID와 레이블 분리**: `subgraph id["레이블"]` 형식을 사용합니다.
+- **레이블**: 한글/영문 표시 텍스트는 따옴표로 감쌉니다.
+
+```mermaid
+%% ✅ 좋은 예
+graph TD
+    subgraph serviceLayer["서비스 레이어"]
+        A["API Gateway"]
+        B["User Service"]
+    end
+    subgraph dataLayer["데이터 레이어"]
+        C[("Database")]
+    end
+    A --> B
+    B --> C
+```
+
+### 2.4 시퀀스 다이어그램 특수 규칙
+
+- **Note 내 특수문자**: `<`, `>` 등 HTML 특수문자는 Note 내부에서 일관되게 동작하지 않으므로 **사용하지 않습니다**.
+- **복잡한 코드 표현 지양**: JSX, 제네릭 등은 Note에 직접 쓰지 않고, 의미를 전달하는 일반 텍스트로 설명합니다.
+
+```mermaid
+%% ❌ 나쁜 예
+sequenceDiagram
+    A->>B: 호출
+    Note over B: <Component handler={fn} />
+
+%% ✅ 좋은 예
+sequenceDiagram
+    A->>B: 호출
+    Note over B: Component 렌더링<br/>handler prop 전달
+```
+
+### 2.5 주석
+
+- `%%`를 사용하여 **독립된 줄에** 주석을 작성합니다.
+- 예: `%% 이 다이어그램은 인증 흐름을 표현합니다.`
+
+---
+
+## 3. 스타일 규칙
+
+### 3.1 명시적 색상/스타일 금지
+
+- **금지 항목**: `style`, `classDef`, `fill`, `stroke`, `color` 등 명시적 색상/스타일 지정을 사용하지 않습니다.
+- **이유**: 시스템 테마(다크/라이트)에 자동 대응하여 가독성을 보장합니다.
+- **대안**: 노드 모양(사각형, 원형, 다이아몬드 등)과 텍스트로 역할을 구분합니다.
+
+```mermaid
+%% ✅ 좋은 예 - 테마 자동 적용
+graph TD
+    Start(["시작"])
+    Process["처리 로직"]
+    DB[("데이터베이스")]
+    End(["종료"])
+    Start --> Process
+    Process --> DB
+    DB --> End
+```
+
+```mermaid
+%% ❌ 나쁜 예 - 명시적 색상 사용
+graph TD
+    A["노드"]
+    style A fill:#fff,stroke:#000
+    classDef primary fill:#2E6E9E
+```
+
+### 3.2 다크/라이트 모드
+
+- 렌더링 환경의 테마에 따라 색상이 자동 적용되므로, 별도 설정 없이 대비가 유지됩니다.
+
+### 3.3 접근성
+
+- **색상만으로 정보 전달 금지**: 색맹 사용자를 고려하여, 색상에만 의존하지 않습니다.
+- **노드 모양 + 텍스트**: 사각형 `[]`, 원형 `()`, 다이아몬드 `{}` 등 모양과 레이블을 함께 사용합니다.
+- **역할 명시**: `"인증 서비스 (Core)"`, `"외부 API (External)"`처럼 텍스트로 역할을 표시합니다.
+
+---
+
+## 4. 구조화 원칙
+
+### 4.1 선언과 연결 분리 (Flowchart/Graph)
+
+- **노드와 서브그래프 선언**을 먼저 하고, **관계 연결**은 코드 블록 하단에 모아 작성합니다.
+- 구조 파악과 유지보수가 용이해집니다.
+
+```mermaid
+graph TD
+    %% 1. 노드 선언
+    subgraph services["서비스"]
+        ApiGw["API Gateway"]
+        UserSvc["User Service"]
+    end
+    Db[("Database")]
+
+    %% 2. 관계 연결
+    ApiGw --> UserSvc
+    UserSvc --> Db
+```
+
+---
+
+## 5. 다이어그램 유형별 가이드
+
+### 5.1 플로우차트 (Flowchart)
+
+- **용도**: 작업 흐름, 의사결정, 로직 구조
+- **키워드**: `graph TD` (위→아래), `graph LR` (왼쪽→오른쪽)
+- **의사결정**: 다이아몬드 `{}` 사용
+- **시작/종료**: 스타디움 `([])` 사용
+
+```mermaid
+graph TD
+    Start(["시작"])
+    Input[/"사용자 입력"/]
+    Check{"유효성 검사"}
+    Process["데이터 처리"]
+    End(["종료"])
+    Start --> Input
+    Input --> Check
+    Check -->|"통과"| Process
+    Check -->|"실패"| End
+    Process --> End
+```
+
+### 5.2 시퀀스 다이어그램 (Sequence Diagram)
+
+- **용도**: 객체/컴포넌트 간 상호작용, 메시지 순서
+- **participant**: `participant A as "표시명"` 형식으로 별칭 지정
+- **화살표**: `->>` (실선), `-->>` (점선)
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant Main as 메인 에이전트
+    participant Dev as 구현 에이전트
+    User->>Main: 요청
+    Main->>Dev: 구현 위임
+    Dev->>Main: 완료
+    Main->>User: 결과
+```
+
+### 5.3 클래스 다이어그램 (Class Diagram)
+
+- **용도**: 객체 지향 구조, 속성, 관계
+- **관계**: `--|>` (상속), `--*` (1:N), `--o` (선택)
+
+```mermaid
+classDiagram
+    class UserService {
+        +getUser(id)
+        +createUser(data)
+    }
+    class AuthService {
+        +validate(token)
+    }
+    UserService --> AuthService : uses
+```
+
+### 5.4 ER 다이어그램 (Entity Relationship)
+
+- **용도**: 데이터베이스 엔티티, 관계, 카디널리티
+- **관계**: `||--o{`, `||--||`, `}o--o{` 등
+
+```mermaid
+erDiagram
+    USER ||--o{ ORDER : places
+    ORDER ||--|{ ORDER_ITEM : contains
+    PRODUCT ||--o{ ORDER_ITEM : "ordered in"
+    USER {
+        string id
+        string name
+    }
+    ORDER {
+        string id
+        date created_at
+    }
+```
+
+---
+
+## 6. 연결선 규칙
+
+- **실선 화살표** `-->`: 일반적인 데이터/제어 흐름
+- **점선 화살표** `-.->`: 비동기, 선택적 흐름
+- **굵은 화살표** `==>`: 주요 데이터 흐름 (필요 시)
+- **라벨 있는 연결** `-- "라벨" -->`: 조건부 흐름, 상태 전환
+
+---
+
+## 7. 검증 체크리스트
+
+다이어그램 작성 완료 전 아래 항목을 확인합니다:
+
+- [ ] 노드 ID에 공백 없음
+- [ ] 공백/특수문자 포함 레이블은 따옴표로 감쌈
+- [ ] `style`, `classDef`, `fill` 등 명시적 색상/스타일 없음
+- [ ] `end`, `subgraph` 등 예약어를 ID로 사용하지 않음
+- [ ] 서브그래프에 명시적 ID와 레이블 분리
+- [ ] 시퀀스 다이어그램 Note에 `<`, `>` 등 특수문자 없음
+- [ ] 펜스 코드 블록 ` ```mermaid ` 사용

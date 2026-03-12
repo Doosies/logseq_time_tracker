@@ -325,6 +325,25 @@ export function calculateTotal(items: OrderItem[]): number {
 - [ ] 링크 모두 유효
 - [ ] 코드와 문서 일치
 
+## 최종 보고서 생성 (plan-execution 워크플로우)
+
+plan-execution 워크플로우 10단계에서 최종 보고서를 작성할 때, user-ai MCP 서버의 `initialize_report_file` 도구로 보고서 템플릿을 자동 생성할 수 있습니다:
+
+```javascript
+call_mcp_tool({
+  server: "user-ai",
+  toolName: "initialize_report_file",
+  arguments: {
+    cycle_id: "2026-03-12-001",
+    report_name: "작업-설명"
+  }
+});
+```
+
+생성된 템플릿 파일을 열어 실제 내용을 작성합니다. 실패 시 수동으로 `.cursor/workflows/final-report-template.md`를 복사하여 사용합니다.
+
+---
+
 ## Skill 활용 시점
 
 - 코드 주석 → `.cursor/skills/docs-agent/references/code-documentation.md`
