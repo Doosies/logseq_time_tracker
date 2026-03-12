@@ -41,7 +41,7 @@ pnpm add @personal/uikit
 
 ### Simple 컴포넌트
 
-Button, ButtonGroup, TextInput, Select는 단일 export로 사용합니다.
+Button, ButtonGroup, TextInput, Select, Tooltip는 단일 export로 사용합니다.
 
 ---
 
@@ -160,6 +160,64 @@ interface SelectOption {
   onchange={(value) => console.log('선택:', value)}
 />
 ```
+
+---
+
+### Tooltip
+
+호버 시 추가 정보를 표시하는 툴팁 컴포넌트입니다.
+
+**기본 사용법**
+
+```svelte
+<script>
+  import { Tooltip, Button } from '@personal/uikit';
+</script>
+
+<Tooltip content="도움말 텍스트">
+  <Button>버튼</Button>
+</Tooltip>
+```
+
+**Props**
+
+| Prop | 타입 | 기본값 | 설명 |
+|------|------|--------|------|
+| `content` | `string` | - | 툴팁에 표시될 텍스트 (필수) |
+| `position` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | 툴팁 위치 (viewport 경계 시 자동 조정) |
+| `disabled` | `boolean` | `false` | 툴팁 비활성화 여부 |
+| `delay` | `number` | `0` | 툴팁 표시 지연 시간 (ms) |
+| `children` | `Snippet` | - | 트리거 요소 (필수) |
+
+**사용 예시**
+
+```svelte
+<!-- 위치 지정 -->
+<Tooltip content="아래에 표시" position="bottom">
+  <Button>하단 툴팁</Button>
+</Tooltip>
+
+<!-- 비활성화 -->
+<Tooltip content="표시 안 됨" disabled>
+  <Button>툴팁 없음</Button>
+</Tooltip>
+
+<!-- 지연 시간 -->
+<Tooltip content="0.5초 후 표시" delay={500}>
+  <Button>지연 툴팁</Button>
+</Tooltip>
+```
+
+**접근성**
+
+- `role="tooltip"` 자동 적용
+- `aria-describedby`로 트리거와 연결
+- 호버 전용 (키보드는 트리거의 `aria-label` 사용)
+
+**주의사항**
+
+- `content`는 일반 텍스트로 렌더링됨 (HTML 미지원)
+- 툴팁은 `document.body`에 Portal로 렌더링됨
 
 ---
 
@@ -579,6 +637,7 @@ src/
 │   ├── TextInput/
 │   ├── ToggleInput/
 │   ├── Select/
+│   ├── Tooltip/
 │   ├── Popover/
 │   ├── Toast/
 │   ├── CheckboxList/
@@ -591,6 +650,7 @@ src/
 │   ├── TextInput/
 │   ├── ToggleInput/
 │   ├── Select/
+│   ├── Tooltip/
 │   ├── Popover/
 │   ├── Toast/
 │   ├── CheckboxList/
@@ -628,7 +688,7 @@ src/
 
 ```typescript
 // Simple 컴포넌트
-export { Button, ButtonGroup, TextInput, Select } from './components';
+export { Button, ButtonGroup, TextInput, Select, Tooltip } from './components';
 
 // Compound 컴포넌트 (namespace)
 export * as Card from './components/Card';
@@ -645,7 +705,7 @@ export { clickOutside, blockDragFromInteractive } from './actions';
 export type { ClickOutsideCallback, BlockDragOptions } from './actions';
 
 // 타입
-export type { ButtonVariant, ButtonSize, SelectOption } from './design/types';
+export type { ButtonVariant, ButtonSize, SelectOption, TooltipPosition } from './design/types';
 ```
 
 ### 디자인 시스템 Export (`@personal/uikit/design`)

@@ -5,6 +5,7 @@ export { Textarea } from './Textarea';
 export * as ToggleInput from './ToggleInput';
 export * as Section from './Section';
 export { ButtonGroup } from './ButtonGroup';
+export { Tooltip } from './Tooltip';
 export * as Card from './Card';
 export * as Dnd from './Dnd';
 export * as Popover from './Popover';

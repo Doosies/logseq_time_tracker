@@ -9,6 +9,10 @@
 
 ### Added
 
+- Tooltip 컴포넌트 추가 (호버 시 설명 표시)
+  - Props: content, position, disabled, delay, children
+  - 자동 위치 조정 (viewport 경계 감지)
+  - 접근성: role="tooltip", aria-describedby
 - Textarea 컴포넌트 (primitive + design + component): 멀티라인 텍스트 입력, `monospace` 모드 지원
 - Button `ghost` variant: 투명 배경 아이콘 전용 버튼 스타일
 - Textarea Storybook 스토리 7개 (Default, WithPlaceholder, WithValue, Disabled, Monospace, CustomRows, WithInputHandler)
