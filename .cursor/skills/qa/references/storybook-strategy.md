@@ -338,6 +338,28 @@ play: async ({ canvasElement, args }) => {
 },
 ```
 
+### Portal 컴포넌트 (document.body 렌더링)
+
+Tooltip, Dialog, Popover 등 **document.body에 Portal로 렌더되는 콘텐츠**는 `within(canvasElement)`로 검색할 수 없습니다.
+
+- **트리거(버튼 등)**: canvas 내에 있으므로 `within(canvasElement)` 사용
+- **Portal 콘텐츠(툴팁, 모달 등)**: `screen` 사용 (전역 document 검색)
+
+**import**: `screen`은 `@testing-library/svelte`에서 import. (`@testing-library/dom` 미설치 시)
+
+```typescript
+import { expect, within, userEvent } from 'storybook/test';
+import { screen } from '@testing-library/svelte';
+
+play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByRole('button', { name: '호버 대상' });
+    await userEvent.hover(trigger);
+    const tooltip = screen.getByRole('tooltip');  // document.body에 있음
+    await expect(tooltip).toBeInTheDocument();
+},
+```
+
 ---
 
 ## argTypes Control 타입
