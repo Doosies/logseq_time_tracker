@@ -28,6 +28,43 @@
 - 이슈/결정 발생 시: `issues_encountered[]`, `decisions[]` 추가
 - 사이클 완료 (10단계): `completed_at`, `success`, `files_changed` 기록
 
+### MCP 자동화 (선택)
+
+수동 방식 대신 user-ai MCP 도구로 자동화 가능:
+
+```javascript
+// 1. cycle_id 자동 생성
+const cycle_result = call_mcp_tool({
+  server: "user-ai",
+  toolName: "get_next_cycle_id",
+  arguments: { increment: true }
+});
+// 결과: { cycle_id: "2026-03-12-001", date: "2026-03-12", sequence: 1 }
+
+// 2. started_at용 타임스탬프 (선택)
+const time_result = call_mcp_tool({
+  server: "user-ai",
+  toolName: "get_current_time",
+  arguments: {}
+});
+// 결과: { timestamp: "...", iso: "2026-03-12T...", format: "datetime" }
+
+// 3. cycle metric 파일 자동 생성
+call_mcp_tool({
+  server: "user-ai",
+  toolName: "initialize_cycle_metric",
+  arguments: {
+    cycle_id: cycle_result.cycle_id,
+    task_type: "feature",
+    task_description: "사용자 인증 구현",
+    started_at: time_result.iso  // 또는 new Date().toISOString()
+  }
+});
+// 결과: { file_path: ".cursor/metrics/cycles/2026-03-12-001.json", success: true }
+```
+
+실패 시 수동 방식(cycle-template.json 복사)으로 진행합니다.
+
 ---
 
 ## 1. 사용자 요청 수신
@@ -39,6 +76,12 @@
 ## 2. 플랜 모드 시작 (Planner 개입)
 
 **참조**: [`.cursor/agents/planner.md`](../agents/planner.md), [`.cursor/skills/planner/references/plan-todo-format.md`](../skills/planner/references/plan-todo-format.md)
+
+**참조 skill/reference** (필요한 것만 로드):
+- `planner/references/requirement-analysis.md`
+- `planner/references/plan-todo-format.md`
+- `planner/references/api-design.md`
+- `planner/references/architecture-design.md`
 
 1. 요구사항 분석 및 목표 정의
 2. 작업을 잘게 쪼개서 **TODO** 또는 **플랜 파일**로 생성
@@ -72,6 +115,14 @@ todos:
 
 플랜에 따라 서브에이전트를 호출합니다.
 
+**참조 skill/reference** (해당 작업에 필요한 것만 로드):
+- `developer/references/code-implementation.md`
+- `developer/references/refactoring-patterns.md`
+- `developer/references/svelte-conventions.md` (Svelte 작업 시)
+- `developer/references/headless-components.md` (Compound Component 전환 시)
+- `developer/references/chrome-extension-routing.md` (Chrome Extension 작업 시)
+- `developer/references/mcp/*` (MCP 서버 개발 시)
+
 **주요 서브에이전트**:
 - `developer`: 코드 구현, 리팩토링
 - `planner`: 설계/계획 (필요 시)
@@ -86,6 +137,14 @@ todos:
 ## 4. 품질 보증 (QA) 단계
 
 **참조**: [`.cursor/agents/qa.md`](../agents/qa.md)
+
+**참조 skill/reference** (필요한 것만 로드):
+- `qa/references/test-strategy.md`
+- `qa/references/test-quality.md`
+- `qa/references/coverage-check.md`
+- `qa/references/svelte-testing.md` (Svelte 컴포넌트 테스트 시)
+- `qa/references/storybook-strategy.md` (Storybook 검증 시)
+- `qa/references/code-review.md`
 
 모든 구현 작업 완료 후:
 
@@ -106,6 +165,13 @@ todos:
 
 **참조**: [`.cursor/agents/security.md`](../agents/security.md)
 
+**참조 skill/reference** (필요한 것만 로드):
+- `security/references/code-vulnerability-scan.md`
+- `security/references/sensitive-data-detection.md`
+- `security/references/input-validation.md`
+- `security/references/api-security-check.md` (API 설계/구현 시)
+- `security/references/prompt-injection-defense.md` (AI/LLM 연동 시)
+
 **호출 시점**: Feature, Refactor 워크플로우의 설계 후 / 구현 후 / 배포 전
 
 - 코드 보안 취약점 스캔
@@ -118,6 +184,12 @@ todos:
 ## 6. 문서화 (Docs) 단계
 
 **참조**: [`.cursor/agents/docs.md`](../agents/docs.md)
+
+**참조 skill/reference** (필요한 것만 로드):
+- `docs-agent/references/changelog-generation.md`
+- `docs-agent/references/code-documentation.md`
+- `docs-agent/references/readme-maintenance.md`
+- `docs-agent/references/technology-documentation.md` (기술 문서 시)
 
 **스킵 가능**: Chore 단순 작업(스크립트 1줄 수정, 설정 변경 등) 시 스킵.
 
@@ -134,6 +206,12 @@ todos:
 ## 7. 커밋 (Git-Workflow) 단계
 
 **참조**: [`.cursor/agents/git-workflow.md`](../agents/git-workflow.md)
+
+**참조 skill/reference** (필요한 것만 로드):
+- `git-workflow/references/commit-message-generation.md`
+- `git-workflow/references/change-analysis.md`
+- `git-workflow/references/pr-description-generation.md` (PR 작성 시)
+- `git-workflow/references/reviewer-recommendation.md` (PR 작성 시)
 
 **호출 시점**: QA + Docs + Security 검증 통과 후
 
@@ -177,6 +255,26 @@ todos:
    - NNN: 동일 날짜 내 3자리 제로패딩 시퀀스
    - description: 작업 내용 요약 (한글 가능)
 5. 사용자에게 보고서 출력
+
+### MCP 자동화 (선택)
+
+보고서 템플릿 자동 생성:
+
+```javascript
+call_mcp_tool({
+  server: "user-ai",
+  toolName: "initialize_report_file",
+  arguments: {
+    cycle_id: "2026-03-12-001",
+    report_name: "사용자-인증-구현"
+  }
+});
+// 결과: { file_path: ".cursor/metrics/reports/2026-03-12-001-사용자-인증-구현.md", success: true }
+```
+
+**이후 작업**:
+1. 생성된 템플릿 파일 내용 작성
+2. cycle JSON에 `completed_at`, `success` 기록
 
 ---
 
