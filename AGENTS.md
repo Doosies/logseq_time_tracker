@@ -632,14 +632,34 @@ try {
 - [plan-execution-workflow.md](.cursor/workflows/plan-execution-workflow.md): 플랜 실행 워크플로우 (0~10단계, 0단계 사이클 메트릭 초기화 포함)
 - [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~9단계)
 - [final-report-template.md](.cursor/workflows/final-report-template.md): 작업 완료 보고서 템플릿
+- **도메인 특화 워크플로우** (`.cursor/workflows/domain-specific/`):
+  - [add-svelte-component.md](.cursor/workflows/domain-specific/add-svelte-component.md): Svelte 5 컴포넌트 추가 절차
+  - [add-api-endpoint.md](.cursor/workflows/domain-specific/add-api-endpoint.md): RESTful API 엔드포인트 추가 절차
 - **명령어**: 에이전트 입력창에 `/plan-execution [할 일]` 로 위 워크플로우 실행 가능
 
 ---
 
-**마지막 업데이트**: 2026-02-09
-**버전**: 1.3.0
+**마지막 업데이트**: 2026-03-12
+**버전**: 1.4.0
 
 ## 변경 이력
+
+### v1.4.0 (2026-03-12)
+- **Flexion 시스템 통합**: 7가지 에이전트 개선사항 적용
+  - verification_checklist frontmatter: 품질 게이트 자동화
+  - 단계별 규칙 로드: 컨텍스트 크기 감소
+  - LLM 특성 대응 체크리스트: 추측·과신 방지
+  - 금지사항 문서화: 반복 실수 방지
+  - 파일 상태 결정 가이드: 리팩토링 시 변경 범위 명확화
+  - 도메인 특화 워크플로우: Svelte 컴포넌트, API 엔드포인트 추가 절차
+  - diagram-rule: Mermaid 다이어그램 작성 규칙
+- **MCP 도구 활용**: user-ai MCP 서버로 cycle/report 파일 자동 생성
+  - `get_next_cycle_id`: cycle_id 자동 생성
+  - `initialize_cycle_metric`: cycle metric JSON 파일 생성
+  - `initialize_report_file`: 최종 보고서 템플릿 생성
+- **skill 참조 추가**:
+  - developer: prohibited-practices, file-status-guide
+  - qa: prohibited-practices
 
 ### v1.3.0 (2026-02-09)
 - **파일명 컨벤션 수정**: `kebab-case.ts` → `snake_case.ts` (프로젝트 실제 패턴과 일치)
