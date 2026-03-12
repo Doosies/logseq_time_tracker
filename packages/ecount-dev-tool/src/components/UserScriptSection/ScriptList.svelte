@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getContext } from 'svelte';
     import type { UserScript } from '#types/user_script';
-    import { Button } from '@personal/uikit';
+    import { Button, Tooltip } from '@personal/uikit';
     import { getScripts, toggleScript, deleteScript } from '#stores/user_scripts.svelte';
     import { executeUserScript } from '#services/script_executor';
     import { getTabState } from '#stores/current_tab.svelte';
@@ -70,39 +70,52 @@
                     <span class="script-patterns">{truncatePatterns(script.url_patterns)}</span>
                 </div>
                 <div class="script-actions">
-                    <Button variant="ghost" size="sm" aria-label="스크립트 실행" onclick={() => handleRun(script)}>
-                        {#if run_status[script.id] === 'success'}
-                            ✓
-                        {:else if run_status[script.id] === 'error'}
-                            ✗
-                        {:else}
-                            ▶
-                        {/if}
-                    </Button>
-                    <Button variant="ghost" size="sm" aria-label="스크립트 수정" onclick={() => onedit(script)}>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                            <path
-                                d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"
-                            />
-                        </svg>
-                    </Button>
-                    <Button variant="ghost" size="sm" aria-label="스크립트 삭제" onclick={() => handleDelete(script)}>
-                        <svg
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            aria-hidden="true"
+                    <Tooltip content="스크립트 실행">
+                        <Button variant="ghost" size="sm" aria-label="스크립트 실행" onclick={() => handleRun(script)}>
+                            {#if run_status[script.id] === 'success'}
+                                ✓
+                            {:else if run_status[script.id] === 'error'}
+                                ✗
+                            {:else}
+                                ▶
+                            {/if}
+                        </Button>
+                    </Tooltip>
+                    <Tooltip content="스크립트 수정">
+                        <Button variant="ghost" size="sm" aria-label="스크립트 수정" onclick={() => onedit(script)}>
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M21.731 2.269a2.625 2.625 0 0 0-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 0 0 0-3.712ZM19.513 8.199l-3.712-3.712-12.15 12.15a5.25 5.25 0 0 0-1.32 2.214l-.8 2.685a.75.75 0 0 0 .933.933l2.685-.8a5.25 5.25 0 0 0 2.214-1.32L19.513 8.2Z"
+                                />
+                            </svg>
+                        </Button>
+                    </Tooltip>
+                    <Tooltip content="스크립트 삭제">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            aria-label="스크립트 삭제"
+                            onclick={() => handleDelete(script)}
                         >
-                            <path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
-                            <line x1="10" y1="11" x2="10" y2="17" />
-                            <line x1="14" y1="11" x2="14" y2="17" />
-                        </svg>
-                    </Button>
+                            <svg
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                aria-hidden="true"
+                            >
+                                <path
+                                    d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
+                                />
+                                <line x1="10" y1="11" x2="10" y2="17" />
+                                <line x1="14" y1="11" x2="14" y2="17" />
+                            </svg>
+                        </Button>
+                    </Tooltip>
                 </div>
             </div>
         {/each}
