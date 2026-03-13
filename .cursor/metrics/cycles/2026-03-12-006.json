@@ -1,0 +1,227 @@
+{
+    "cycle_id": "2026-03-12-006",
+    "task_type": "feature",
+    "task_description": "사용자 스크립트 버튼에 호버 툴팁 기능 추가 (uikit Tooltip 컴포넌트 구현 및 ScriptList 적용)",
+    "started_at": "2026-03-12T17:48:55+09:00",
+    "completed_at": "2026-03-13T08:47:04+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "qa", "security", "docs", "git-workflow", "system-improvement"],
+    "agents": {
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "security": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "system-improvement": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        }
+    },
+    "files_changed": {
+        "created": [
+            "packages/uikit/src/design/styles/tooltip.css.ts",
+            "packages/uikit/src/primitives/Tooltip/Tooltip.svelte",
+            "packages/uikit/src/primitives/Tooltip/index.ts",
+            "packages/uikit/src/components/Tooltip/Tooltip.svelte",
+            "packages/uikit/src/components/Tooltip/index.ts",
+            "packages/uikit/src/components/Tooltip/Tooltip.test.ts",
+            "packages/uikit/src/components/Tooltip/__tests__/Tooltip.test.svelte",
+            "packages/uikit/src/components/Tooltip/__tests__/Tooltip.stories.ts",
+            "packages/uikit/src/components/Tooltip/__tests__/TooltipStoryWrapper.svelte"
+        ],
+        "modified": [
+            "packages/uikit/src/design/types/index.ts",
+            "packages/uikit/src/components/index.ts",
+            "packages/uikit/src/index.ts",
+            "packages/ecount-dev-tool/src/components/UserScriptSection/ScriptList.svelte",
+            "packages/uikit/README.md",
+            "packages/uikit/CHANGELOG.md"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass",
+        "lint": "pass",
+        "test": "pass",
+        "build": "pass",
+        "security": "pass"
+    },
+    "decisions": [
+        {
+            "phase": "design",
+            "decision": "Wrapper 방식 채택",
+            "rationale": "사용 패턴 단순, 직관적",
+            "alternatives": "Compound (Root/Trigger/Content)"
+        },
+        {
+            "phase": "design",
+            "decision": "document.body Portal",
+            "rationale": "position: fixed가 조상 영향 없음",
+            "alternatives": "상대 위치 유지"
+        },
+        {
+            "phase": "design",
+            "decision": "surface 배경",
+            "rationale": "Popover와 일관, 테마 대응",
+            "alternatives": "별도 tooltip 배경 토큰"
+        },
+        {
+            "phase": "design",
+            "decision": "font.size.xs",
+            "rationale": "보조 정보, 컴팩트",
+            "alternatives": "font.size.sm"
+        },
+        {
+            "phase": "design",
+            "decision": "delay 기본 0ms",
+            "rationale": "즉시 피드백",
+            "alternatives": "200~300ms"
+        },
+        {
+            "phase": "design",
+            "decision": "호버 전용",
+            "rationale": "요구사항 명시",
+            "alternatives": "포커스 시 툴팁 표시"
+        },
+        {
+            "phase": "implementation",
+            "decision": "Portal에 createElement/appendChild 사용",
+            "rationale": "Svelte 5 기본 portal 없음, 의존성 추가 없음",
+            "alternatives": "svelte-portal 라이브러리"
+        },
+        {
+            "phase": "implementation",
+            "decision": "role=\"group\" on wrapper",
+            "rationale": "a11y 규칙 충족, 트리거+툴팁 그룹 표현",
+            "alternatives": "role=\"presentation\""
+        },
+        {
+            "phase": "implementation",
+            "decision": "coords, resolved_position 미사용 상태 제거",
+            "rationale": "DOM에 직접 top/left 설정, 상태 중복 제거",
+            "alternatives": "상태 유지"
+        },
+        {
+            "phase": "testing",
+            "decision": "position 테스트에 waitFor 사용",
+            "rationale": "requestAnimationFrame 이후 data-position 설정",
+            "alternatives": "즉시 assertion (실패)"
+        },
+        {
+            "phase": "testing",
+            "decision": "Storybook play에서 screen 사용",
+            "rationale": "툴팁이 document.body 포털에 렌더됨",
+            "alternatives": "within(canvasElement) (툴팁 미검색)"
+        },
+        {
+            "phase": "testing",
+            "decision": "@testing-library/svelte에서 screen import",
+            "rationale": "@testing-library/dom 미설치",
+            "alternatives": "@testing-library/dom 직접 import (실패)"
+        },
+        {
+            "phase": "security",
+            "decision": "textContent 사용 유지",
+            "rationale": "XSS 방어에 적합, HTML 툴팁 불필요",
+            "alternatives": "{@html} 사용 시 XSS 위험"
+        },
+        {
+            "phase": "security",
+            "decision": "id 자동 생성 형식 유지",
+            "rationale": "DOM Clobbering 위험 ID와 충돌 없음",
+            "alternatives": "UUID 사용 가능하나 현재 방식으로 충분"
+        },
+        {
+            "phase": "security",
+            "decision": "PrimitiveTooltip id prop 미노출",
+            "rationale": "Public API 단순화 및 보안 강화",
+            "alternatives": "id 노출 시 검증 로직 추가 필요"
+        },
+        {
+            "phase": "documentation",
+            "decision": "Tooltip을 Simple 컴포넌트로 분류",
+            "rationale": "단일 export, Compound 패턴 미사용",
+            "alternatives": "Compound 컴포넌트: Popover와 유사하나 Tooltip은 단순"
+        },
+        {
+            "phase": "documentation",
+            "decision": "프로젝트 구조에 primitives/Tooltip 추가",
+            "rationale": "구현이 primitive 기반",
+            "alternatives": "생략: 구조 문서와 실제 구조 불일치"
+        },
+        {
+            "phase": "documentation",
+            "decision": "TooltipPosition 타입을 Export 구조에 추가",
+            "rationale": "index.ts에서 export 중",
+            "alternatives": "생략: 사용 빈도 낮음"
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "design",
+            "issue": "Svelte 5 built-in portal 없음",
+            "resolution": "$effect + createElement/appendChild로 body에 툴팁 컨테이너 추가/제거",
+            "impact": "minor"
+        },
+        {
+            "phase": "design",
+            "issue": "툴팁↔트리거 마우스 이동 시 깜빡임",
+            "resolution": "mouseleave 시 50ms hide_timeout, 툴팁/트리거 mouseenter 시 취소",
+            "impact": "minor"
+        },
+        {
+            "phase": "design",
+            "issue": "transform 조상이 있는 경우 fixed 동작",
+            "resolution": "Portal로 body에 렌더하여 회피",
+            "impact": "none"
+        },
+        {
+            "phase": "implementation",
+            "issue": "a11y_no_static_element_interactions",
+            "resolution": "wrapper에 role=\"group\" 추가",
+            "impact": "none"
+        },
+        {
+            "phase": "implementation",
+            "issue": "@typescript-eslint/no-unused-vars",
+            "resolution": "coords, resolved_position 제거",
+            "impact": "none"
+        },
+        {
+            "phase": "testing",
+            "issue": "@vitest/coverage-v8 미설치",
+            "resolution": "pnpm add -D @vitest/coverage-v8 (선택)",
+            "impact": "minor"
+        },
+        {
+            "phase": "testing",
+            "issue": "build-storybook은 루트에서 실행",
+            "resolution": "pnpm build-storybook (루트)",
+            "impact": "none"
+        }
+    ],
+    "notes": ""
+}
