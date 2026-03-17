@@ -33,7 +33,8 @@
 
 ### 6단계: 커밋
 - [ ] **git-workflow 서브에이전트 호출**
-- [ ] ❌ 메인 에이전트 직접 커밋 금지
+- [ ] ❌ 메인 에이전트 직접 커밋 금지 (직접 = git-workflow bypass)
+- [ ] git-workflow 준비 후 `GIT_COMMANDS.md` 명령 실행 (메인 에이전트 또는 사용자)
 - [ ] Conventional Commits 형식 준수
 - [ ] `git push`는 사용자에게 요청
 

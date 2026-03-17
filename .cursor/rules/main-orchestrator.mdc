@@ -259,6 +259,8 @@ Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검
 
 **승인 기준**: Conventional Commits 형식 준수, Subject 한글 작성, commit-message-generation 체크리스트 충족
 
+**핸드오프**: git-workflow가 준비한 `GIT_COMMANDS.md`의 명령 실행은 메인 에이전트 또는 사용자가 수행. "직접 커밋" = git-workflow bypass(메시지 직접 작성). 준비된 명령 실행은 허용.
+
 ### 문서화 단계 후
 
 **체크리스트**:
