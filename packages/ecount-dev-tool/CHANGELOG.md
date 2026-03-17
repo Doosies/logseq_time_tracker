@@ -32,6 +32,10 @@
 
 ### Added
 
+- CodeMirror 6 기반 코드 에디터 통합
+  - `CodeEditor.svelte`: CodeMirror 6 Svelte 5 래퍼 컴포넌트 신규 추가
+  - `ScriptEditor.svelte`, `EditorPage.svelte`: Textarea → CodeEditor 교체
+  - 기능: JS 문법 하이라이팅, 자동완성, 괄호 매칭/자동 닫기, 검색(Ctrl+F), Undo/Redo, 줄 번호, 줄 바꿈, 읽기 전용 모드, placeholder 지원
 - 스크립트 편집을 위한 별도 페이지(editor.html) 추가
 - URL hash 기반 라우팅 구현 (`#new`, `#script-id`)
 - 2단 레이아웃 편집 화면 (메타데이터 360px | 코드 에디터 가변)

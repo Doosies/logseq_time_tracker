@@ -3,6 +3,7 @@
     import { untrack } from 'svelte';
     import type { RunAt, UserScript } from '#types/user_script';
     import { Button, TextInput, Textarea } from '@personal/uikit';
+    import CodeEditor from '#components/CodeEditor/CodeEditor.svelte';
     import { addScript, updateScript, getScriptById } from '#stores/user_scripts.svelte';
     import { parseHash, closeEditor } from '#utils/router';
 
@@ -118,7 +119,7 @@
             </aside>
             <section class="code-panel">
                 <span class="form-label">스크립트 코드</span>
-                <Textarea bind:value={code} placeholder="document.querySelector(...).click();" rows={20} monospace />
+                <CodeEditor bind:value={code} placeholder="document.querySelector(...).click();" />
                 {#if error_message}
                     <p class="error-msg">{error_message}</p>
                 {/if}

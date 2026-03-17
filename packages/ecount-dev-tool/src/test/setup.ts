@@ -11,6 +11,32 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
     };
 }
 
+// CodeMirror jsdom compatibility: Range.getClientRects / getBoundingClientRect polyfill
+if (typeof document !== 'undefined' && document.createRange) {
+    const original_create_range = document.createRange.bind(document);
+    const empty_rect = () => ({
+        x: 0,
+        y: 0,
+        bottom: 0,
+        height: 0,
+        left: 0,
+        right: 0,
+        top: 0,
+        width: 0,
+        toJSON: () => ({}),
+    });
+    const empty_rect_list = (): DOMRectList =>
+        ({ item: () => null, length: 0, [Symbol.iterator]: function* () {} }) as unknown as DOMRectList;
+    document.createRange = () => {
+        const range = original_create_range();
+        if (typeof range.getClientRects !== 'function') {
+            range.getBoundingClientRect = empty_rect;
+            range.getClientRects = empty_rect_list;
+        }
+        return range;
+    };
+}
+
 // theme store: matchMedia polyfill for jsdom
 if (typeof window !== 'undefined' && typeof window.matchMedia === 'undefined') {
     Object.defineProperty(window, 'matchMedia', {

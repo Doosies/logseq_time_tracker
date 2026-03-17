@@ -2,6 +2,7 @@
     import { untrack } from 'svelte';
     import type { RunAt, UserScript } from '#types/user_script';
     import { Button, Select, TextInput, Textarea } from '@personal/uikit'; // eslint-disable-line @typescript-eslint/no-unused-vars -- FEATURE_TOGGLE: run_at UI 복원 시 사용
+    import CodeEditor from '#components/CodeEditor/CodeEditor.svelte';
     import { addScript, updateScript } from '#stores/user_scripts.svelte';
 
     interface Props {
@@ -103,7 +104,7 @@
 
     <div class="form-field">
         <span class="form-label">스크립트 코드</span>
-        <Textarea bind:value={code} placeholder="document.querySelector(...).click();" rows={8} monospace />
+        <CodeEditor bind:value={code} placeholder="document.querySelector(...).click();" />
     </div>
 
     {#if error_message}

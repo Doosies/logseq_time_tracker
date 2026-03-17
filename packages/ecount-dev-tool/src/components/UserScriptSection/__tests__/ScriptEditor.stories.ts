@@ -66,7 +66,8 @@ export const EditMode: Story = {
     play: async ({ canvasElement }) => {
         const canvas = within(canvasElement);
         await expect(canvas.getByDisplayValue('편집할 스크립트')).toBeInTheDocument();
-        await expect(canvas.getByDisplayValue("console.log('edit me');")).toBeInTheDocument();
+        const code_editor = canvas.getByTestId('code-editor');
+        await expect(code_editor).toHaveTextContent("console.log('edit me');");
 
         const name_input = canvas.getByPlaceholderText('스크립트 이름');
         await userEvent.clear(name_input);
@@ -85,8 +86,12 @@ export const CreateMode: Story = {
         const name_input = canvas.getByPlaceholderText('스크립트 이름');
         await userEvent.type(name_input, '새 스크립트');
 
-        const code_area = canvas.getByPlaceholderText('document.querySelector(...).click();');
-        await userEvent.type(code_area, "alert('hello');");
+        const code_editor = canvas.getByTestId('code-editor');
+        const code_textbox = code_editor.querySelector('[contenteditable="true"]');
+        if (code_textbox) {
+            await userEvent.click(code_textbox as HTMLElement);
+            await userEvent.keyboard("alert('hello');");
+        }
 
         await expect(canvas.getByRole('button', { name: '저장' })).not.toBeDisabled();
         await expect(canvas.getByRole('button', { name: '취소' })).toBeInTheDocument();
