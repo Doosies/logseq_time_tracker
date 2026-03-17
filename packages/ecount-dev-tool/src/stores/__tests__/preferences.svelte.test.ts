@@ -1,5 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { initializePreferences, getPreferences, setEnableAnimations, resetPreferences } from '../preferences.svelte';
+import {
+    initializePreferences,
+    getPreferences,
+    setEnableAnimations,
+    resetPreferences,
+    restorePreferences,
+} from '../preferences.svelte';
 
 const STORAGE_KEY = 'user_preferences';
 
@@ -87,6 +93,29 @@ describe('preferences store', () => {
         it('false 설정 시 localStorage에 반영한다', async () => {
             await setEnableAnimations(false);
             expect(localStorage.getItem(STORAGE_KEY)).toBe('{"enable_animations":false}');
+        });
+    });
+
+    describe('restorePreferences', () => {
+        it('기본값과 merge하여 복원해야 함', async () => {
+            const result = await restorePreferences({ enable_animations: false });
+
+            expect(result).toBe(true);
+            expect(getPreferences()).toEqual({ enable_animations: false });
+        });
+
+        it('부분 데이터(일부 키만)를 기본값과 merge해야 함', async () => {
+            const result = await restorePreferences({ enable_animations: false });
+
+            expect(result).toBe(true);
+            expect(getPreferences()).toEqual({ enable_animations: false });
+        });
+
+        it('localStorage에 저장해야 함', async () => {
+            await restorePreferences({ enable_animations: false });
+
+            const stored = localStorage.getItem(STORAGE_KEY);
+            expect(stored).toBe(JSON.stringify({ enable_animations: false }));
         });
     });
 

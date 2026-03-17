@@ -13,6 +13,7 @@ import {
     updateScript,
     deleteScript,
     toggleScript,
+    restoreUserScripts,
 } from '../user_scripts.svelte';
 import { asMock } from '#test/mock_helpers';
 
@@ -161,6 +162,60 @@ describe('user_scripts store', () => {
             const enabled = getEnabledScripts();
             expect(enabled).toHaveLength(1);
             expect(enabled[0]!.name).toBe('활성');
+        });
+    });
+
+    describe('restoreUserScripts', () => {
+        it('유효한 스크립트 배열로 복원해야 함', async () => {
+            const new_scripts = [
+                {
+                    id: 'restored-1',
+                    name: '복원된 스크립트',
+                    enabled: false,
+                    url_patterns: ['*://restored.ecount.com/*'],
+                    code: '// restored',
+                    run_at: 'document_idle' as const,
+                    created_at: 2000,
+                    updated_at: 2000,
+                },
+            ];
+            const result = await restoreUserScripts(new_scripts);
+
+            expect(result).toBe(true);
+            const scripts = getScripts();
+            expect(scripts).toHaveLength(1);
+            expect(scripts[0]?.name).toBe('복원된 스크립트');
+            expect(scripts[0]?.enabled).toBe(false);
+        });
+
+        it('잘못된 데이터를 거부해야 함', async () => {
+            const invalid = [
+                { id: 'x', name: 'y' }, // code 누락
+            ];
+            const result = await restoreUserScripts(invalid as never);
+
+            expect(result).toBe(false);
+            expect(getScripts()).toHaveLength(0);
+        });
+
+        it('배열이 아니면 거부해야 함', async () => {
+            const result = await restoreUserScripts({} as never);
+
+            expect(result).toBe(false);
+        });
+
+        it('빈 배열로 복원할 수 있어야 함', async () => {
+            await addScript({
+                name: '삭제될 스크립트',
+                enabled: true,
+                url_patterns: [],
+                code: '',
+                run_at: 'document_idle',
+            });
+            const result = await restoreUserScripts([]);
+
+            expect(result).toBe(true);
+            expect(getScripts()).toHaveLength(0);
         });
     });
 

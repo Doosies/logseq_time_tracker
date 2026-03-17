@@ -1,5 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { initializeVisibility, isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
+import {
+    initializeVisibility,
+    isSectionVisible,
+    toggleVisibility,
+    restoreVisibility,
+} from '#stores/section_visibility.svelte';
 import { asMock } from '#test/mock_helpers';
 
 const ALL_IDS = ['quick-login', 'server-manager', 'action-bar'];
@@ -117,6 +122,53 @@ describe('section_visibility 스토어', () => {
             asMock(chrome.storage.sync.set).mockRejectedValueOnce(new Error('Storage error'));
 
             const result = await toggleVisibility('quick-login', ALL_IDS);
+
+            expect(result).toBe(false);
+            expect(isSectionVisible('quick-login')).toBe(true);
+        });
+    });
+
+    describe('restoreVisibility', () => {
+        beforeEach(async () => {
+            asMock(chrome.storage.sync.get).mockResolvedValue({
+                section_visibility_state: undefined,
+            });
+            await initializeVisibility();
+        });
+
+        it('유효한 상태로 복원해야 함', async () => {
+            const new_state = {
+                'quick-login': false,
+                'server-manager': true,
+                'action-bar': false,
+            };
+            const result = await restoreVisibility(new_state);
+
+            expect(result).toBe(true);
+            expect(isSectionVisible('quick-login')).toBe(false);
+            expect(isSectionVisible('server-manager')).toBe(true);
+            expect(isSectionVisible('action-bar')).toBe(false);
+        });
+
+        it('잘못된 데이터를 거부해야 함', async () => {
+            const invalid = { 'quick-login': 'not_a_boolean' } as never;
+            const result = await restoreVisibility(invalid);
+
+            expect(result).toBe(false);
+        });
+
+        it('배열이면 거부해야 함', async () => {
+            const result = await restoreVisibility([] as never);
+
+            expect(result).toBe(false);
+        });
+
+        it('storage 저장 실패 시 이전 상태로 롤백해야 함', async () => {
+            expect(isSectionVisible('quick-login')).toBe(true);
+
+            asMock(chrome.storage.sync.set).mockRejectedValueOnce(new Error('Storage error'));
+
+            const result = await restoreVisibility({ 'quick-login': false });
 
             expect(result).toBe(false);
             expect(isSectionVisible('quick-login')).toBe(true);
