@@ -50,6 +50,12 @@ ecount.com 개발 환경 관리를 위한 Chrome Extension입니다.
 - **섹션 접기/펼치기**: 각 섹션 헤더 클릭으로 접기/펼치기 (섹션 1개일 때 비활성화)
 - **확장성**: 섹션 레지스트리 패턴으로 새 섹션 추가 시 `src/sections/registry.ts` 한 곳만 수정
 
+### 6. 설정 백업
+- **설정 내보내기**: 모든 설정(계정, 사용자 스크립트, 섹션 설정, 테마)을 JSON 파일로 다운로드
+- **설정 가져오기**: JSON 백업 파일을 선택하여 설정 복원
+- 확장 프로그램 제거/재설치 시 설정 손실 방지
+- 섹션 설정 팝오버의 "데이터 백업" 영역에서 접근
+
 ## 개발
 
 ### 의존성 설치
@@ -93,13 +99,16 @@ src/
 │   ├── registry.ts     # SECTION_REGISTRY (중앙 집중식 정의)
 │   └── index.ts        # getSectionById, getAllSections 유틸
 ├── services/           # 비즈니스 로직
+│   ├── backup_service.ts # 설정 내보내기/가져오기
 │   ├── url_service.ts  # URL 파싱/빌드
 │   ├── tab_service.ts  # Chrome Tab API
 │   └── page_actions.ts # Content Script 함수
 ├── stores/             # Svelte Store (Runes)
 │   └── current_tab.svelte.ts
 ├── types/              # TypeScript 타입
-│   └── server.ts
+│   ├── backup.ts       # BackupData, BackupPayload 타입
+│   ├── server.ts
+│   └── user_script.ts
 ├── constants/          # 상수
 │   └── servers.ts
 ├── test/               # 테스트 헬퍼 및 통합 테스트
@@ -236,6 +245,28 @@ devMode(disableMin) URL을 생성합니다.
 
 ---
 
+#### `backup_service.ts`
+
+설정 내보내기/가져오기 유틸리티입니다.
+
+##### `exportAllSettings(): BackupData`
+
+모든 스토어에서 데이터를 수집하여 BackupData 객체를 반환합니다.
+
+##### `downloadBackup(): void`
+
+모든 설정을 JSON 파일(`ecount-dev-tool-backup-YYYY-MM-DD.json`)로 다운로드합니다.
+
+##### `importAllSettings(json: string): Promise<{ success: boolean; errors: string[] }>`
+
+JSON 문자열을 파싱하여 각 스토어에 설정을 복원합니다. 부분 복원을 지원합니다.
+
+##### `readBackupFile(file: File): Promise<{ success: boolean; errors: string[] }>`
+
+File 객체에서 JSON을 읽어 `importAllSettings`를 호출합니다.
+
+---
+
 #### `tab_service.ts`
 
 Chrome Tab API 래퍼 함수입니다.
@@ -303,6 +334,26 @@ const supported = $derived(isSupported());
 ---
 
 ### Types
+
+#### `backup.ts`
+
+```typescript
+interface BackupPayload {
+    accounts?: LoginAccount[];
+    active_account?: string | null;
+    user_scripts?: UserScript[];
+    section_order?: string[];
+    section_visibility?: Record<string, boolean>;
+    theme?: Theme;
+    preferences?: { enable_animations: boolean };
+}
+
+interface BackupData {
+    version: number;
+    exported_at: string;
+    data: BackupPayload;
+}
+```
 
 #### `server.ts`
 
