@@ -35,3 +35,16 @@ export async function initializeActiveAccount(): Promise<void> {
         active_key = null;
     }
 }
+
+export async function restoreActiveAccount(key: string | null): Promise<boolean> {
+    const prev = active_key;
+    active_key = key;
+    try {
+        await chrome.storage.sync.set({ [STORAGE_KEY]: key });
+        return true;
+    } catch (e) {
+        active_key = prev;
+        console.error('활성 계정 복원 실패:', e);
+        return false;
+    }
+}

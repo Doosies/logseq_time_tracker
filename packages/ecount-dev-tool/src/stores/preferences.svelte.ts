@@ -32,3 +32,15 @@ export function resetPreferences(): void {
     preferences = { enable_animations: true };
     localStorage.removeItem(STORAGE_KEY);
 }
+
+export async function restorePreferences(new_prefs: Partial<{ enable_animations: boolean }>): Promise<boolean> {
+    try {
+        const defaults = { enable_animations: true };
+        preferences = { ...defaults, ...new_prefs };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(preferences));
+        return true;
+    } catch (e) {
+        console.error('설정 복원 실패:', e);
+        return false;
+    }
+}

@@ -1,7 +1,15 @@
 <script lang="ts">
+    import { getContext } from 'svelte';
     import { Popover, CheckboxList } from '@personal/uikit';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
     import { getSectionOrder, setSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
+    import { downloadBackup, readBackupFile } from '#services/backup_service';
+
+    interface ToastContext {
+        show: (message: string) => void;
+    }
+
+    const toast_ctx = getContext<ToastContext>('toast');
 
     interface SectionItem {
         id: string;
@@ -15,6 +23,8 @@
     let { sections }: SectionSettingsProps = $props();
 
     let dnd_items = $state<SectionItem[]>([]);
+    let file_input: HTMLInputElement | undefined;
+    let is_importing = $state(false);
 
     const all_ids = $derived(sections.map((s) => s.id));
     const visible_count = $derived(all_ids.filter((id) => isSectionVisible(id)).length);
@@ -43,6 +53,32 @@
         dnd_items = new_items;
         const new_order = new_items.map((item) => item.id);
         await setSectionOrder(new_order);
+    }
+
+    function handleExport(): void {
+        downloadBackup();
+    }
+
+    function handleImportClick(): void {
+        file_input?.click();
+    }
+
+    async function handleFileChange(event: Event): Promise<void> {
+        const input = event.target as HTMLInputElement;
+        const file = input.files?.[0];
+        if (!file) return;
+
+        is_importing = true;
+        const result = await readBackupFile(file);
+        is_importing = false;
+
+        if (result.success) {
+            toast_ctx?.show('설정을 성공적으로 가져왔습니다');
+        } else {
+            toast_ctx?.show(result.errors.join(', ') || '설정 가져오기 실패');
+        }
+
+        input.value = '';
     }
 
     function getItemAttrs(section: SectionItem, visible: boolean) {
@@ -85,6 +121,52 @@
                 </CheckboxList.Item>
             {/snippet}
         </CheckboxList.Root>
+
+        <div class="backup-section">
+            <div class="backup-divider"></div>
+            <div class="backup-title">데이터 백업</div>
+            <div class="backup-buttons">
+                <button
+                    type="button"
+                    class="backup-btn"
+                    onclick={handleExport}
+                    disabled={is_importing}
+                    aria-label="설정 내보내기"
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M8 2a.5.5 0 0 1 .5.5v8.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 1 1 .708-.708L7.5 10.293V2.5A.5.5 0 0 1 8 2z"
+                        />
+                    </svg>
+                    <span>설정 내보내기</span>
+                </button>
+                <button
+                    type="button"
+                    class="backup-btn"
+                    onclick={handleImportClick}
+                    disabled={is_importing}
+                    aria-label="설정 가져오기"
+                >
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                        <path
+                            d="M8.5 6a.5.5 0 0 0-1 0v3.793L6.354 9.146a.5.5 0 1 0-.708.708l2 2a.5.5 0 0 0 .708 0l2-2a.5.5 0 0 0-.708-.708L8.5 9.793V6z"
+                        />
+                        <path
+                            d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"
+                        />
+                    </svg>
+                    <span>설정 가져오기</span>
+                </button>
+            </div>
+            <input
+                type="file"
+                accept=".json"
+                class="hidden-input"
+                bind:this={file_input}
+                onchange={handleFileChange}
+                aria-hidden="true"
+            />
+        </div>
     </Popover.Content>
 </Popover.Root>
 
@@ -152,5 +234,61 @@
         font-size: var(--font-size-sm);
         color: var(--color-text);
         user-select: none;
+    }
+
+    .backup-section {
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .backup-divider {
+        height: 1px;
+        background-color: var(--color-border);
+        margin: var(--space-sm) 0;
+    }
+
+    .backup-title {
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary);
+        font-weight: var(--font-weight-medium);
+        margin-bottom: var(--space-sm);
+    }
+
+    .backup-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-xs);
+    }
+
+    .backup-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        width: 100%;
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--font-size-sm);
+        color: var(--color-text);
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background-color var(--transition-fast);
+        text-align: left;
+    }
+
+    .backup-btn:hover:not(:disabled) {
+        background-color: var(--color-surface);
+    }
+
+    .backup-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .hidden-input {
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
     }
 </style>

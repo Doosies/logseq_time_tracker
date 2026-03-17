@@ -24,6 +24,27 @@ export function isSectionVisible(section_id: string): boolean {
     return state[section_id] ?? true;
 }
 
+export function getVisibilityState(): Record<string, boolean> {
+    return { ...$state.snapshot(state) };
+}
+
+export async function restoreVisibility(new_state: Record<string, boolean>): Promise<boolean> {
+    if (!is_loaded) return false;
+    if (!isValidState(new_state)) return false;
+
+    const prev = { ...state };
+    state = { ...new_state };
+
+    try {
+        await syncToStorage();
+        return true;
+    } catch (e) {
+        state = prev;
+        console.error('섹션 가시성 복원 실패:', e);
+        return false;
+    }
+}
+
 export async function initializeVisibility(): Promise<void> {
     try {
         const result = await chrome.storage.sync.get(STORAGE_KEY);

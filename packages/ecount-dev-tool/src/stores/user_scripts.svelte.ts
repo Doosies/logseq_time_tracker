@@ -33,6 +33,11 @@ function loadAndMigrateScripts(value: unknown): UserScript[] {
     return value.filter(canMigrateItem).map((item) => migrateScript(item));
 }
 
+function isValidUserScriptArray(value: unknown): value is UserScript[] {
+    if (!Array.isArray(value)) return false;
+    return value.every((item) => canMigrateItem(item));
+}
+
 async function syncToStorage(): Promise<void> {
     await chrome.storage.local.set({
         [STORAGE_KEY]: $state.snapshot(scripts),
@@ -132,6 +137,28 @@ export async function toggleScript(id: string): Promise<boolean> {
     if (!script) return false;
 
     return updateScript(id, { enabled: !script.enabled });
+}
+
+export function getScriptsSnapshot(): UserScript[] {
+    return $state.snapshot(scripts);
+}
+
+export async function restoreUserScripts(new_scripts: UserScript[]): Promise<boolean> {
+    if (!is_loaded) return false;
+    if (!isValidUserScriptArray(new_scripts)) return false;
+
+    const migrated = loadAndMigrateScripts(new_scripts);
+    const prev = [...scripts];
+    scripts = migrated;
+
+    try {
+        await syncToStorage();
+        return true;
+    } catch (e) {
+        scripts = prev;
+        console.error('스크립트 복원 실패:', e);
+        return false;
+    }
 }
 
 /**
