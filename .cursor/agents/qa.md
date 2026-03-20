@@ -488,87 +488,16 @@ describe('calculateTotal', () => {
 
 ### async 스토어 도입 시 필수 테스트 패턴
 
-스토어가 동기 → async로 전환될 때 아래 케이스를 **반드시 포함**합니다.
+스토어가 동기 → async로 전환될 때 아래 4가지 패턴을 **반드시 포함**합니다:
+1. 마이그레이션 분기 상태 일치 검증
+2. 모듈 전역 상태 격리 (`resetForTests` 패턴)
+3. async 타이밍: 준비 전/후 UI 차이
+4. 첫 사용 시나리오 재현
 
-#### 1. 마이그레이션 분기 상태 일치 검증
+**테스트 환경 패치 금지**: prototype 오염, 에러 억제, workaround 후 전체 테스트 미실행 절대 금지.
 
-```typescript
-it('마이그레이션 후 메모리 스토어가 새 저장소 값과 일치한다', async () => {
-    // localStorage에만 값이 있고 sync는 비어있는 상황
-    localStorage.setItem('theme', 'dark');
-    await initializeTheme();
-
-    // 메모리 상태(getTheme)와 저장소(sync.set 호출) 모두 확인
-    expect(getTheme()).toBe('dark');
-    expect(chrome.storage.sync.set).toHaveBeenCalledWith({ theme: 'dark' });
-});
-```
-
-#### 2. 모듈 전역 상태 격리 (`reset*ForTests` 패턴)
-
-모듈 스코프에 `$state` 변수가 있는 스토어는 테스트 간 상태가 남을 수 있습니다.  
-**전용 리셋 함수**를 스토어에 추가하고 `beforeEach`에서 호출하세요.
-
-```typescript
-// 스토어 파일 (테스트 전용 export)
-export function resetThemeForTests(): void {
-    current_theme = 'auto';
-    media_query = null;
-}
-
-// 테스트 파일
-beforeEach(() => {
-    resetThemeForTests();
-});
-```
-
-#### 3. async 타이밍: 준비 전/후 UI 차이
-
-```typescript
-it('스토어 준비 완료 전에는 기본값이 표시된다', () => {
-    // await 없이 렌더링
-    render(App);
-    expect(screen.queryByText('로딩')).toBeInTheDocument();
-});
-
-it('스토어 준비 완료 후 실제 값이 반영된다', async () => {
-    render(App);
-    await waitFor(() => expect(screen.getByText('실제 값')).toBeInTheDocument());
-});
-```
-
-#### 4. 첫 설치 플래그 시나리오
-
-플래그 기반 첫 실행 흐름은 **`undefined` 상태를 명시적으로 재현**하세요.
-
-```typescript
-beforeEach(() => {
-    // setup_completed를 undefined로 두어 첫 설치 상태 재현
-    // (beforeEach 상위에서 true로 설정하는 경우 덮어써야 함)
-    local_storage_data['setup_completed'] = undefined;
-    resetSetupState();
-});
-```
-
-### 테스트 환경 패치 금지 (필수)
-
-테스트 환경(jsdom, Vitest setup 등)에서 다음을 **절대 금지**합니다:
-
-1. **전역 prototype 오염 금지**
-   - `Object.prototype`, `Array.prototype` 등 built-in prototype에 속성 추가 **절대 금지**
-   - 예: `Object.defineProperty(Object.prototype, 'tagName', { ... })` 등
-   - 이유: `@testing-library`, `userEvent` 등 DOM 상호작용이 완전히 망가질 수 있음
-   - 대안: 문제가 되는 라이브러리를 모킹하거나, jsdom 호환 layer를 **해당 모듈에만** 적용
-
-2. **에러 억제 금지**
-   - `process.on('uncaughtException')`, `onUnhandledError` 등으로 에러를 숨기는 행위 **금지**
-   - 에러가 발생하면 **근본 원인을 분석**하고 수정
-   - workaround로 에러를 억제하면 추가 디버깅이 불가능해짐
-
-3. **workaround/패치 적용 후 전체 테스트 필수**
-   - 테스트 setup에 패치나 workaround를 적용한 경우 **반드시 전체 테스트 스위트 실행**
-   - 회귀 여부 확인: `pnpm test` (또는 해당 프로젝트 테스트 명령) 실행
-   - 특정 테스트만 통과하고 다른 테스트가 깨지는 경우를 놓치지 말 것
+- 범용 패턴: `.cursor/skills/qa/references/async-store-testing.md`
+- 프로젝트 구현: `.cursor/skills/project-knowledge/references/ecount-dev-tool.md`
 
 ## 테스트 실패 시
 

@@ -610,9 +610,15 @@ try {
 - 서브에이전트 호출 및 조율 로직 포함
 - 메트릭 수집 및 품질 게이트 관리
 
-#### Skill 파일
-각 에이전트는 전문 영역의 Skill 파일을 참조합니다:
+#### Skill 파일 (3계층 지식 분리)
 
+에이전트 시스템의 지식은 3개 계층으로 분리됩니다:
+
+- **에이전트 정의** (`.cursor/agents/*.md`): 역할, 원칙, 프로세스 (범용)
+- **도메인 스킬** (`.cursor/skills/*/references/`): 재사용 가능한 기술 패턴 (함수명/변수명 없이)
+- **프로젝트 지식** (`.cursor/skills/project-knowledge/references/`): 이 프로젝트의 구체적 구현 (함수명, 초기화 순서 등)
+
+##### 도메인 스킬 (에이전트별)
 - **기획**: `.cursor/skills/planner/references/`
 - **구현**: `.cursor/skills/developer/references/`
 - **QA**: `.cursor/skills/qa/references/`
@@ -622,13 +628,18 @@ try {
 - **MCP 개발**: `.cursor/skills/developer/references/mcp/`
 - **시스템 개선**: `.cursor/skills/system-improvement/references/`
 - **오케스트레이터**: `.cursor/skills/orchestrator/references/`
-- **공용**: `.cursor/skills/` (cli-usage/, error-handling/, project-conventions/)
+
+##### 공용 스킬
+- **코딩 컨벤션**: `.cursor/skills/project-conventions/` (HOW: 어떻게 작성하는가)
+- **에러 처리**: `.cursor/skills/error-handling/`
+- **CLI 사용**: `.cursor/skills/cli-usage/`
+- **프로젝트 지식**: `.cursor/skills/project-knowledge/` (WHAT: 무엇이 구현되어 있는가)
 
 ### 추가 문서
 
-- [AGENT_SYSTEM_DESIGN.md](.cursor/AGENT_SYSTEM_DESIGN.md): 전체 시스템 설계
+- [AGENT_SYSTEM_DESIGN.md](.cursor/AGENT_SYSTEM_DESIGN.md): 시스템 설계 (현재 구조와 현황)
 - [DIRECTORY_STRUCTURE.md](.cursor/DIRECTORY_STRUCTURE.md): 디렉토리 구조
-- [IMPLEMENTATION_ROADMAP.md](.cursor/IMPLEMENTATION_ROADMAP.md): 구현 로드맵
+- [agent-architecture-guide.md](.cursor/docs/agent-architecture-guide.md): 아키텍처 가이드 (설계 철학, 재사용 가능)
 - [plan-execution-workflow.md](.cursor/workflows/plan-execution-workflow.md): 플랜 실행 워크플로우 (0~10단계, 0단계 사이클 메트릭 초기화 포함)
 - [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~9단계)
 - [final-report-template.md](.cursor/workflows/final-report-template.md): 작업 완료 보고서 템플릿

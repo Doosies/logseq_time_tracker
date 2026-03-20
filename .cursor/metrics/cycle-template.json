@@ -37,6 +37,16 @@
             "outcome": "success|failure|skipped",
             "retries": 0,
             "errors": []
+        },
+        "git-workflow": {
+            "outcome": "success|failure|skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "mcp-development": {
+            "outcome": "success|failure|skipped",
+            "retries": 0,
+            "errors": []
         }
     },
     "files_changed": {
