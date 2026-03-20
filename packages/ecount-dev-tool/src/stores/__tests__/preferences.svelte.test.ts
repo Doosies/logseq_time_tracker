@@ -6,50 +6,65 @@ import {
     resetPreferences,
     restorePreferences,
 } from '../preferences.svelte';
+import { asMock } from '#test/mock_helpers';
 
 const STORAGE_KEY = 'user_preferences';
 
 describe('preferences store', () => {
-    beforeEach(() => {
-        resetPreferences();
+    beforeEach(async () => {
+        await resetPreferences();
         if (typeof localStorage !== 'undefined') {
             localStorage.clear();
         }
+        // sync에 유효한 user_preferences가 없을 때만 localStorage 마이그레이션 경로를 탄다
+        asMock(chrome.storage.sync.get).mockResolvedValue({ user_preferences: undefined });
     });
 
     describe('initializePreferences', () => {
-        it('localStorage에 저장된 설정을 복원한다', () => {
-            const stored = JSON.stringify({ enable_animations: false });
-            localStorage.setItem(STORAGE_KEY, stored);
-            initializePreferences();
+        it('chrome.storage.sync에 유효한 user_preferences가 있으면 해당 값을 적용하고 localStorage에 반영한다', async () => {
+            asMock(chrome.storage.sync.get).mockResolvedValue({
+                user_preferences: { enable_animations: false },
+            });
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: false });
+            expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify({ enable_animations: false }));
         });
 
-        it('enable_animations 값을 복원 확인한다', () => {
+        it('localStorage에 저장된 설정을 복원한다', async () => {
+            const stored = JSON.stringify({ enable_animations: false });
+            localStorage.setItem(STORAGE_KEY, stored);
+            await initializePreferences();
+            expect(getPreferences()).toEqual({ enable_animations: false });
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                user_preferences: { enable_animations: false },
+            });
+        });
+
+        it('enable_animations 값을 복원 확인한다', async () => {
             localStorage.setItem(STORAGE_KEY, JSON.stringify({ enable_animations: true }));
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences().enable_animations).toBe(true);
 
-            resetPreferences();
+            await resetPreferences();
             localStorage.setItem(STORAGE_KEY, JSON.stringify({ enable_animations: false }));
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences().enable_animations).toBe(false);
         });
 
-        it('저장된 값 없을 때 기본값 {enable_animations: true}를 유지한다', () => {
-            initializePreferences();
+        it('저장된 값 없을 때 기본값 {enable_animations: true}를 유지한다', async () => {
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: true });
         });
 
-        it('잘못된 JSON 시 기본값으로 폴백한다', () => {
+        it('잘못된 JSON 시 기본값으로 폴백한다', async () => {
             localStorage.setItem(STORAGE_KEY, 'invalid json {{{');
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: true });
         });
 
-        it('localStorage.getItem()이 null 반환 시 기본값을 유지한다', () => {
+        it('localStorage.getItem()이 null 반환 시 기본값을 유지한다', async () => {
             expect(localStorage.getItem(STORAGE_KEY)).toBeNull();
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: true });
         });
     });
@@ -94,6 +109,13 @@ describe('preferences store', () => {
             await setEnableAnimations(false);
             expect(localStorage.getItem(STORAGE_KEY)).toBe('{"enable_animations":false}');
         });
+
+        it('chrome.storage.sync.set을 호출하여 동기화한다', async () => {
+            await setEnableAnimations(false);
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                user_preferences: { enable_animations: false },
+            });
+        });
     });
 
     describe('restorePreferences', () => {
@@ -117,18 +139,35 @@ describe('preferences store', () => {
             const stored = localStorage.getItem(STORAGE_KEY);
             expect(stored).toBe(JSON.stringify({ enable_animations: false }));
         });
+
+        it('chrome.storage.sync.set을 호출하여 동기화한다', async () => {
+            await restorePreferences({ enable_animations: false });
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                user_preferences: { enable_animations: false },
+            });
+        });
+    });
+
+    describe('resetPreferences', () => {
+        it('chrome.storage.sync에 기본값을 저장한다', async () => {
+            await setEnableAnimations(false);
+            await resetPreferences();
+            expect(chrome.storage.sync.set).toHaveBeenCalledWith({
+                user_preferences: { enable_animations: true },
+            });
+        });
     });
 
     describe('엣지 케이스', () => {
-        it('JSON.parse() 예외 발생 시(잘못된 JSON) 기본값으로 폴백한다', () => {
+        it('JSON.parse() 예외 발생 시(잘못된 JSON) 기본값으로 폴백한다', async () => {
             localStorage.setItem(STORAGE_KEY, '{]');
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: true });
         });
 
-        it('빈 문자열 저장 시 기본값 유지한다', () => {
+        it('빈 문자열 저장 시 기본값 유지한다', async () => {
             localStorage.setItem(STORAGE_KEY, '');
-            initializePreferences();
+            await initializePreferences();
             expect(getPreferences()).toEqual({ enable_animations: true });
         });
     });

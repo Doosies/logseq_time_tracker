@@ -12,8 +12,8 @@ import { asMock } from '#test/mock_helpers';
 describe('backup_service', () => {
     beforeEach(async () => {
         vi.clearAllMocks();
-        resetPreferences();
-        resetTheme();
+        await resetPreferences();
+        await resetTheme();
         if (typeof localStorage !== 'undefined') {
             localStorage.clear();
         }
@@ -44,8 +44,8 @@ describe('backup_service', () => {
         await initializeUserScripts();
         await initializeSectionOrder();
         await initializeVisibility();
-        initializeTheme();
-        initializePreferences();
+        await initializeTheme();
+        await initializePreferences();
     });
 
     describe('exportAllSettings', () => {

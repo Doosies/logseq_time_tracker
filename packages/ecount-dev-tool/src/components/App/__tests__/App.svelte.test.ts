@@ -5,10 +5,20 @@ import App from '../App.svelte';
 import { asMock } from '#test/mock_helpers';
 import { initializeVisibility } from '#stores/section_visibility.svelte';
 import { initializeSectionOrder } from '#stores/section_order.svelte';
+import { resetTabStateForTests } from '#stores/current_tab.svelte';
+
+function setLocalStorageItem(key: string, value: unknown): void {
+    (
+        globalThis as unknown as { __storybook_set_local_storage?: (k: string, v: unknown) => void }
+    ).__storybook_set_local_storage?.(key, value);
+}
 
 describe('App', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        resetTabStateForTests();
+        // 첫 설치 UI 대신 기본 앱: setup_completed 플래그
+        setLocalStorageItem('setup_completed', true);
     });
 
     it('is_loading 상태에서 "로딩 중..."이 표시되어야 함', async () => {
@@ -465,6 +475,83 @@ describe('App', () => {
                 },
                 { timeout: 2000 },
             );
+        });
+    });
+
+    describe('첫 설치 가져오기', () => {
+        beforeEach(() => {
+            // 상위 beforeEach가 setup_completed를 true로 두므로, 첫 설치 시나리오에서는 제거
+            setLocalStorageItem('setup_completed', undefined);
+        });
+
+        it('첫 설치 시 "설정 가져오기" 화면이 표시되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.getByRole('heading', { name: '설정 가져오기' })).toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+        });
+
+        it('건너뛰기 클릭 시 일반 앱 콘텐츠가 표시되어야 함', async () => {
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.getByRole('heading', { name: '설정 가져오기' })).toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            const user = userEvent.setup();
+            await user.click(screen.getByRole('button', { name: '건너뛰기' }));
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByRole('heading', { name: '설정 가져오기' })).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+        });
+
+        it('두 번째 실행 시 첫 설치 화면이 표시되지 않아야 함', async () => {
+            setLocalStorageItem('setup_completed', true);
+            asMock(chrome.tabs.query).mockResolvedValue([
+                {
+                    id: 1,
+                    url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1',
+                } as chrome.tabs.Tab,
+            ]);
+
+            render(App);
+
+            await waitFor(
+                () => {
+                    expect(screen.queryByText('로딩 중...')).not.toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
+
+            expect(screen.queryByRole('heading', { name: '설정 가져오기' })).not.toBeInTheDocument();
+            expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
         });
     });
 
