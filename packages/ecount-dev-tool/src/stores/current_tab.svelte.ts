@@ -25,6 +25,16 @@ export function isSupported(): boolean {
 }
 
 /**
+ * Vitest 등에서 모듈 수준 탭 상태를 격리할 때 사용합니다.
+ */
+export function resetTabStateForTests(): void {
+    current_url = '';
+    tab_id = 0;
+    parsed = null;
+    is_loading = true;
+}
+
+/**
  * popup 오픈 시 현재 탭 정보를 로드합니다.
  */
 export async function initializeTabState(): Promise<void> {

@@ -91,7 +91,7 @@ export async function importAllSettings(json: string): Promise<{ success: boolea
 
     if (data.theme !== undefined) {
         if (data.theme === 'light' || data.theme === 'dark' || data.theme === 'auto') {
-            setTheme(data.theme);
+            await setTheme(data.theme);
         }
     }
 

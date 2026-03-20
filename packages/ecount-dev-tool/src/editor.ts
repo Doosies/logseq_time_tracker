@@ -1,11 +1,11 @@
 import { mount } from 'svelte';
 import '@personal/uikit/design';
-import { initializeTheme } from './stores/theme.svelte';
+import { initializeThemeSync } from './stores/theme.svelte';
 import { initializeUserScripts } from './stores/user_scripts.svelte';
 import EditorPage from '#components/EditorPage';
 
-// Apply theme before mount
-initializeTheme();
+// 동기적 테마 초기화 (FOUC 방지)
+initializeThemeSync();
 
 // Initialize user scripts store
 await initializeUserScripts();
