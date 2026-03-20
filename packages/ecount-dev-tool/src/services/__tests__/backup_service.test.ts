@@ -202,6 +202,17 @@ describe('backup_service', () => {
             expect(result.errors).toContain('JSON 파싱 실패');
         });
 
+        it('5MB를 초과하는 파일은 에러를 반환해야 함', async () => {
+            const large_content = 'x'.repeat(1);
+            const file = new File([large_content], 'backup.json', { type: 'application/json' });
+            Object.defineProperty(file, 'size', { value: 5 * 1024 * 1024 + 1 });
+
+            const result = await readBackupFile(file);
+
+            expect(result.success).toBe(false);
+            expect(result.errors[0]).toContain('5MB');
+        });
+
         it('파일 읽기 실패 시 에러를 반환해야 함', async () => {
             const file = new File(['valid'], 'backup.json', { type: 'application/json' });
             const original_readAsText = FileReader.prototype.readAsText;

@@ -500,6 +500,58 @@ UI/UX 관련 라이브러리(예: DnD, 모달, 폼)를 교체할 때는 **기존
     - prop 추가/제거 시 **모든 계층**에서 해당 prop 전달 여부 확인
     - 예: primitive에서 `handle` prop 제거 시, styled 래퍼와 consumer에서도 제거해야 함
 
+## 스토리지/스토어 마이그레이션 (필수)
+
+저장소(localStorage → chrome.storage.sync, IndexedDB 등)를 교체하거나 async로 전환할 때는 **저장소·메모리·UI 파생 상태의 삼중 일치**를 반드시 확인합니다.
+
+### 마이그레이션 분기 체크리스트
+
+마이그레이션 분기(기존 값 → 새 저장소 이관) 코드를 작성할 때마다 아래 세 가지를 **동시에** 처리했는지 확인:
+
+1. **persist**: 새 저장소에 값 저장 (예: `chrome.storage.sync.set(...)`)
+2. **메모리 스토어**: 현재 세션의 `$state` 변수도 갱신 (예: `current_theme = local`)
+3. **파생 UI 상태**: 화면에 즉시 반영되는 파생 로직 실행 (예: `applyTheme()`)
+
+```typescript
+// ❌ 잘못된 예: 저장소만 이관, 메모리 상태 미갱신
+if (!synced && local) {
+    await chrome.storage.sync.set({ theme: local }); // persist만
+    // current_theme 미갱신 → UI와 불일치
+}
+
+// ✅ 올바른 예: 세 가지 모두 처리
+if (!synced && local) {
+    current_theme = local;                            // 메모리 스토어
+    await chrome.storage.sync.set({ theme: local }); // persist
+    applyTheme();                                     // 파생 UI 상태
+}
+```
+
+### async 초기화 2단계 패턴 (FOUC 방지)
+
+동기(localStorage)와 비동기(chrome.storage.sync/fetch) 저장소를 함께 쓸 때:
+
+```typescript
+// 1단계: 동기 함수 - 마운트 전 호출, localStorage에서 즉시 적용 (FOUC 방지)
+export function initializeXSync(): void { ... }
+
+// 2단계: async 함수 - onMount에서 호출, 원격/sync 저장소 확정 + 마이그레이션
+export async function initializeX(): Promise<void> { ... }
+```
+
+### onMount에서 async 스토어 사용 시
+
+```svelte
+onMount(async () => {
+    await initializeSetupState(); // 의존 순서대로 await
+    await initializeTheme();
+    await initializePreferences();
+});
+```
+
+- 스토어가 async로 바뀌면 **onMount에도 await 추가** (누락 시 준비 전에 UI 렌더링)
+- 명세에 "마이그레이션 시 갱신할 상태 목록"이 없으면 구현 전 플래너/메인 에이전트에 확인
+
 ## ReadLints 사용 (필수 프로세스!)
 
 **중요**: 파일을 **작성하거나 수정한 직후** 반드시 ReadLints로 확인합니다!

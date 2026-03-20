@@ -106,7 +106,13 @@ export async function importAllSettings(json: string): Promise<{ success: boolea
     };
 }
 
+const MAX_BACKUP_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
+
 export async function readBackupFile(file: File): Promise<{ success: boolean; errors: string[] }> {
+    if (file.size > MAX_BACKUP_FILE_SIZE_BYTES) {
+        return { success: false, errors: ['파일 크기가 너무 큽니다. 5MB 이하의 파일만 가져올 수 있습니다.'] };
+    }
+
     return new Promise((resolve) => {
         const reader = new FileReader();
         reader.onload = async () => {

@@ -486,6 +486,70 @@ describe('calculateTotal', () => {
 3. **성능 회귀 방지**: 기존 대비 10% 이상 느려지면 안 됨
 4. **보안 최우선**: 취약점 발견 시 즉시 보고
 
+### async 스토어 도입 시 필수 테스트 패턴
+
+스토어가 동기 → async로 전환될 때 아래 케이스를 **반드시 포함**합니다.
+
+#### 1. 마이그레이션 분기 상태 일치 검증
+
+```typescript
+it('마이그레이션 후 메모리 스토어가 새 저장소 값과 일치한다', async () => {
+    // localStorage에만 값이 있고 sync는 비어있는 상황
+    localStorage.setItem('theme', 'dark');
+    await initializeTheme();
+
+    // 메모리 상태(getTheme)와 저장소(sync.set 호출) 모두 확인
+    expect(getTheme()).toBe('dark');
+    expect(chrome.storage.sync.set).toHaveBeenCalledWith({ theme: 'dark' });
+});
+```
+
+#### 2. 모듈 전역 상태 격리 (`reset*ForTests` 패턴)
+
+모듈 스코프에 `$state` 변수가 있는 스토어는 테스트 간 상태가 남을 수 있습니다.  
+**전용 리셋 함수**를 스토어에 추가하고 `beforeEach`에서 호출하세요.
+
+```typescript
+// 스토어 파일 (테스트 전용 export)
+export function resetThemeForTests(): void {
+    current_theme = 'auto';
+    media_query = null;
+}
+
+// 테스트 파일
+beforeEach(() => {
+    resetThemeForTests();
+});
+```
+
+#### 3. async 타이밍: 준비 전/후 UI 차이
+
+```typescript
+it('스토어 준비 완료 전에는 기본값이 표시된다', () => {
+    // await 없이 렌더링
+    render(App);
+    expect(screen.queryByText('로딩')).toBeInTheDocument();
+});
+
+it('스토어 준비 완료 후 실제 값이 반영된다', async () => {
+    render(App);
+    await waitFor(() => expect(screen.getByText('실제 값')).toBeInTheDocument());
+});
+```
+
+#### 4. 첫 설치 플래그 시나리오
+
+플래그 기반 첫 실행 흐름은 **`undefined` 상태를 명시적으로 재현**하세요.
+
+```typescript
+beforeEach(() => {
+    // setup_completed를 undefined로 두어 첫 설치 상태 재현
+    // (beforeEach 상위에서 true로 설정하는 경우 덮어써야 함)
+    local_storage_data['setup_completed'] = undefined;
+    resetSetupState();
+});
+```
+
 ### 테스트 환경 패치 금지 (필수)
 
 테스트 환경(jsdom, Vitest setup 등)에서 다음을 **절대 금지**합니다:

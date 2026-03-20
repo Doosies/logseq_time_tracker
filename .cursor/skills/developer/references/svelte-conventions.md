@@ -280,6 +280,33 @@ Svelte 5 Runes 모드에서는 `<svelte:component>`가 deprecated되었습니다
 
 **해결 방법**: `{@const}`를 `{#each}`, `{#snippet}`, `{#if}` 등의 직접 자식으로 이동합니다.
 
+## DOM Ref: `bind:this` + `$state` 패턴
+
+Svelte 5에서 DOM 엘리먼트 ref를 `bind:this`로 바인딩할 때는 **`$state`로 선언**합니다.  
+일반 `let`으로 선언하면 non-reactive 경고가 발생합니다.
+
+```svelte
+<script lang="ts">
+    // ❌ 잘못된 예: 일반 let → non-reactive 경고
+    let input_el: HTMLInputElement | undefined;
+
+    // ✅ 올바른 예: $state로 선언
+    let input_el = $state<HTMLInputElement | undefined>(undefined);
+
+    function handleClick(): void {
+        input_el?.click();
+    }
+</script>
+
+<button onclick={handleClick}>열기</button>
+<input type="file" bind:this={input_el} />
+```
+
+**규칙 요약**:
+- `bind:this` 타겟은 항상 `$state<ElementType | undefined>(undefined)` 형태로 선언
+- `undefined` 초기값과 `| undefined` 타입을 함께 명시하여 null 체크 명확화
+- 접근 시 `?.` 옵셔널 체이닝 사용
+
 ## 체크리스트
 
 Svelte 컴포넌트 작성 시 확인할 항목:
@@ -295,3 +322,4 @@ Svelte 컴포넌트 작성 시 확인할 항목:
 - [ ] 일반 .ts 파일: AGENTS.md 규칙 준수 (변수 snake_case)
 - [ ] Svelte 5 동적 컴포넌트: dot notation 사용 (`<section.component />`)
 - [ ] `{@const}`: snippet/#if/#each의 직접 자식에만 배치
+- [ ] `bind:this` 타겟: `$state<ElementType | undefined>(undefined)` 형태로 선언
