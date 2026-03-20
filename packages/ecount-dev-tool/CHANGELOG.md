@@ -105,6 +105,25 @@
   - server_change_flow.test.ts: 4개 → 10개 (test/zeus/-dev/EC3 환경 서버 변경 플로우)
   - dev_mode_flow.test.ts: 3개 → 7개 (devMode 레거시 분기)
 
+## [2.3.0] - 2026-03-20
+
+### Added
+
+- 설정 자동 동기화: 테마·환경설정(preferences)이 `chrome.storage.sync`를 통해 동일 Google 계정의 다른 기기와 자동 동기화됨
+- 첫 설치 시 파일 선택 가져오기: 확장 프로그램 최초 설치 후 이전에 내보낸 백업 JSON을 선택해 설정을 복원할 수 있는 화면 자동 표시 (건너뛰기 가능)
+- `setup_state.svelte.ts`: 첫 설치/온보딩 상태 스토어 신규 추가
+
+### Changed
+
+- 테마 초기화 API 정리
+  - 기존 동기 `initializeTheme()` → FOUC 방지용 동기 함수 `initializeThemeSync()`로 이름 변경
+  - 비동기 초기화용 `initializeTheme()` 신규 추가
+- `setTheme()`, `resetTheme()` → `chrome.storage.sync` 저장을 위해 비동기(async) 함수로 변경
+- `initializePreferences()` → `chrome.storage.sync`에서 읽도록 비동기(async) 함수로 변경
+- `backup_service.ts`: 테마 적용 시 `setTheme` 대기(await) 추가
+- `App.svelte`: 첫 설치 시 백업 가져오기 UI
+- `popup.ts`, `editor.ts`: 초기 로드 시 `initializeThemeSync()` 사용
+
 ## [2.2.2] - 2026-03-09
 
 ### Added
