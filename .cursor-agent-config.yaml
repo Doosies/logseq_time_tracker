@@ -1,0 +1,26 @@
+# Cursor Agent System Configuration
+# 에이전트 시스템이 프로젝트에 맞게 동작하도록 설정합니다.
+# 이 파일이 없으면 AGENTS.md → project-conventions → package.json scripts 순으로 폴백합니다.
+
+project:
+  name: "personal-monorepo"
+  package_manager: "pnpm"
+  monorepo: true
+
+scripts:
+  type_check: "pnpm type-check"
+  build: "pnpm build"
+  test: "pnpm test"
+  lint: "pnpm lint"
+  format: "pnpm format"
+
+stack_skills:
+  - svelte
+  - react
+  - chrome-extension
+  - storybook
+  - pnpm-monorepo
+
+locale:
+  test_descriptions: "ko"
+  commit_subject: "ko"

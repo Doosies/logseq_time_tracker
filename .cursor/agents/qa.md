@@ -91,19 +91,30 @@ QA 작업 시작 전 아래 절차를 반드시 수행합니다.
 
 ## 테스트 전략
 ### 단위 테스트 (Unit Test)
-- **대상**: 순수 함수, 유틸리티, 단일 컴포넌트
-- **도구**: Vitest
+- **대상**: 순수 함수, 유틸리티, 단일 단위(함수·클래스·UI 단위 등)
+- **도구**: 프로젝트의 테스트 러너 (`.cursor-agent-config.yaml`의 `test_runner` 등 확인)
 - **목표**: 90%+ 커버리지
 
 ### 통합 테스트 (Integration Test)
 - **대상**: API, 모듈 간 협업
-- **도구**: Vitest + Mock
+- **도구**: 프로젝트의 테스트 러너 + Mock/Fixture
 - **목표**: 80%+ 커버리지
 
 ### E2E 테스트
 - **대상**: 핵심 사용자 플로우
-- **도구**: Playwright / Cypress
+- **도구**: 프로젝트의 E2E 테스트 도구
 - **목표**: 주요 시나리오만
+
+### 스택별 테스트 컨벤션 (해당 시 참조)
+
+프로젝트에서 사용하는 기술 스택에 따라 추가 테스트 규칙을 참조합니다:
+
+- **프레임워크 컴포넌트 테스트**: [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md) 참조
+- **컴포넌트 스토리·비주얼 테스트 전략**: [`skills/stack/storybook/testing.md`](../skills/stack/storybook/testing.md) 참조
+- **Chrome Extension 테스트**: [`skills/stack/chrome-extension/testing.md`](../skills/stack/chrome-extension/testing.md) 참조
+- **테스트 러너 설정**: 프로젝트의 `.cursor-agent-config.yaml`에서 `test_runner` 확인
+
+> 프로젝트의 `.cursor-agent-config.yaml`에 명시된 `stack_skills`를 확인하여 해당 스킬만 참조합니다.
 
 ## 품질 기준
 - [ ] **모든 테스트 통과** (필수!)
@@ -207,15 +218,15 @@ describe('calculateTotal', () => {
 
 ### 3단계: 테스트 작성 및 실행 (필수!)
 - **중요**: 코드 리뷰 후 반드시 테스트 코드 작성
-- 단위 테스트 작성 (Vitest)
-- 통합 테스트 작성 (Vitest + Mock)
-- E2E 테스트 작성 (Playwright/Cypress) - 필요 시
+- 단위 테스트 작성 (프로젝트의 테스트 러너)
+- 통합 테스트 작성 (프로젝트의 테스트 러너 + Mock/Fixture)
+- E2E 테스트 작성 (프로젝트의 E2E 테스트 도구) — 필요 시
 - E2E 테스트코드는 단위/통합 테스트와 동일한 네이밍/품질 기준 적용
 - 테스트 실행:
-  - 기본: 단위/통합 테스트 실행
+  - 기본: 프로젝트의 `test` 스크립트로 단위/통합 테스트 실행
   - E2E: 사용자 명시 요청 시에만 실행
 - `browser-use` 기반 수동 브라우저 검증은 본 에이전트 기본 프로세스에서 제외
-- **테스트 설명은 한글로 작성** (예: `it('올바른 스타일로 logseq.setMainUIInlineStyle을 호출해야 함')`)
+- **테스트 케이스 설명 문자열**은 [프로젝트 컨벤션 SKILL](../skills/project-conventions/SKILL.md)의 로케일 규칙 및 `.cursor-agent-config.yaml`을 따름
 
 ### 4단계: 커버리지 측정
 - **Skill 사용**: [커버리지 측정](../skills/qa/references/coverage-check.md)
@@ -255,11 +266,22 @@ describe('calculateTotal', () => {
 
 테스트 완료 전 **반드시** 확인:
 
+### 검증 실행 순서
+
+1. ReadLints (변경된 파일)
+2. format (프로젝트 format 스크립트)
+3. test (프로젝트 test 스크립트)
+4. lint (프로젝트 lint 스크립트)
+5. type-check (프로젝트 type-check 스크립트)
+6. build (프로젝트 build 스크립트)
+
+> 각 스크립트의 실제 명령어는 프로젝트의 `.cursor-agent-config.yaml` 또는 루트 `package.json`을 참조합니다.
+
 ### 기본 요구사항
 - [ ] **테스트 파일이 생성되었는가?** (필수! 누락 시 메인 에이전트가 거부)
 - [ ] **모든 테스트 통과** (필수!)
 - [ ] **커버리지 80% 이상** (Line Coverage)
-- [ ] **테스트 설명이 한글로 작성되었는가?** (필수!)
+- [ ] **테스트 케이스 설명이 프로젝트 로케일 규칙을 따르는가?** (필수! [프로젝트 컨벤션 SKILL](../skills/project-conventions/SKILL.md), `.cursor-agent-config.yaml` 참조)
 - [ ] **Linter 오류 0개** (테스트 코드도!) (필수!)
 - [ ] E2E 테스트코드가 기존 테스트와 동일한 품질 기준을 따르는가?
 - [ ] E2E 실행은 사용자 요청이 있을 때만 수행했는가?
@@ -277,10 +299,9 @@ describe('calculateTotal', () => {
 - [ ] 성능 저하 10% 이내
 - [ ] 보안 취약점 없음
 
-### Story 품질 검증 (스토리 존재 시)
-- [ ] **모든 Story에 play function 존재** (storybook-strategy.md 참조)
-- [ ] play function에서 최소 1개 이상 assertion (렌더링/역할/텍스트 검증)
-- [ ] 모듈 레벨 상태 사용하는 컴포넌트: StoryWrapper onMount에서 reset 함수 호출 여부 확인
+### 스토리·비주얼 테스트 검증 (스토리 존재 시)
+
+체크리스트 및 트리거는 [`skills/stack/storybook/testing.md`](../skills/stack/storybook/testing.md)를 참조합니다.
 
 **Skill 사용**: [테스트 품질 검증](../skills/qa/references/test-quality.md) - 상세 체크리스트 참조
 
@@ -306,20 +327,18 @@ describe('calculateTotal', () => {
 ```
 
 ### 테스트 네이밍
-**중요**: 테스트 설명(`it`의 첫 번째 인자)은 **한글로 작성**합니다.
+
+테스트 설명(`it` / `test`의 첫 번째 인자)은 **동작과 기대 결과가 한눈에 드러나게** 작성합니다. 언어·톤(한글/영어 등)은 [프로젝트 컨벤션 SKILL](../skills/project-conventions/SKILL.md)의 테스트 로케일 규칙과 `.cursor-agent-config.yaml`을 따릅니다.
 
 ```typescript
-// ✅ 좋은 테스트명 (한글)
-it('빈 배열일 때 ValidationError를 던져야 함')
-it('모든 가격이 0일 때 0을 반환해야 함')
-it('음수 가격을 올바르게 처리해야 함')
-it('올바른 스타일로 logseq.setMainUIInlineStyle을 호출해야 함')
+// ✅ 좋은 테스트명 (의도가 분명함)
+it('throws ValidationError when items array is empty')
+it('calls savePreferences with the payload built from the form')
 
 // ❌ 나쁜 테스트명
 it('test1')
 it('works')
 it('error case')
-it('should throw ValidationError when items array is empty') // 영어 사용 지양
 ```
 
 ### 엣지 케이스
@@ -364,9 +383,7 @@ describe('calculateTotal', () => {
   - 변수: `snake_case`
   - 함수: `camelCase`
   - 클래스: `PascalCase`
-- [ ] **Compound Component 검증** (해당 시):
-  - 사용처(`<Component>`)가 모두 `<Component.Root>` 등으로 업데이트되었는지 확인
-  - Part 컴포넌트(Trigger, Content, Item 등)가 `...rest`로 `aria-label` 등 HTML 속성을 전달하는지 확인
+- [ ] **Compound Component·프레임워크 UI 패턴** (해당 시): [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md)의 체크리스트 적용
 
 ## 커버리지 목표
 
@@ -385,23 +402,8 @@ describe('calculateTotal', () => {
 - 코드 리뷰 → [코드 리뷰](../skills/qa/references/code-review.md)
 - 커버리지 측정 → [커버리지 체크](../skills/qa/references/coverage-check.md)
 - **테스트 코드 품질 검증 → [테스트 품질](../skills/qa/references/test-quality.md)** (필수!)
-- Svelte 5 컴포넌트 테스트 → [Svelte 테스트](../skills/qa/references/svelte-testing.md)
-- Storybook Story 작성 → [Storybook 전략](../skills/qa/references/storybook-strategy.md)
-- Chrome Extension 테스트 → [Chrome Extension 테스트](../skills/qa/references/chrome-extension-testing.md)
+- 스택별 테스트 진입점 → [`skills/stack/`](../skills/stack/) 하위 각 스택의 `testing.md` (프레임워크·스토리 도구·Chrome Extension 등, 해당 스택만 참조)
 - 에러 처리 검증 → [에러 처리 SKILL](../skills/error-handling/SKILL.md)
-
-## Storybook Story 작성 트리거
-
-### Feature 태스크 시 (필수)
-
-새 컴포넌트(`.svelte`) 파일이 생성된 경우, 해당 컴포넌트의 `__tests__/*.stories.ts` 존재 여부를 확인합니다.
-
-- **스토리 없음** → [Storybook 전략](../skills/qa/references/storybook-strategy.md)을 참조하여 스토리 작성
-- **스토리 작성 불가** (mock 부재, 환경 제약 등) → 원인을 메인 에이전트에게 보고하고 인프라 개선 제안
-
-### 기존 컴포넌트 수정 시
-
-기존 스토리가 있는 컴포넌트의 props/구조가 변경된 경우, 스토리도 함께 업데이트합니다.
 
 ## 완료 보고
 
@@ -421,7 +423,7 @@ describe('calculateTotal', () => {
 - Function Coverage: 90.1% ✅
 
 ## 테스트 코드 품질
-- 테스트 설명 한글화: 100% ✅
+- 테스트 설명 로케일 준수: 100% ✅
 - AAA 패턴 준수: 95% ✅
 - 중복 코드 비율: 5% ✅
 - 엣지 케이스 커버: 100% ✅
@@ -486,18 +488,11 @@ describe('calculateTotal', () => {
 3. **성능 회귀 방지**: 기존 대비 10% 이상 느려지면 안 됨
 4. **보안 최우선**: 취약점 발견 시 즉시 보고
 
-### async 스토어 도입 시 필수 테스트 패턴
+### async 스토어·모듈 상태 전환
 
-스토어가 동기 → async로 전환될 때 아래 4가지 패턴을 **반드시 포함**합니다:
-1. 마이그레이션 분기 상태 일치 검증
-2. 모듈 전역 상태 격리 (`resetForTests` 패턴)
-3. async 타이밍: 준비 전/후 UI 차이
-4. 첫 사용 시나리오 재현
+동기 → async 전환 등 저장소·스토어 패턴이 바뀔 때의 **필수 테스트 패턴·금지 사항**은 [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md) 및 [async-store-testing.md](../skills/qa/references/async-store-testing.md)를 참조합니다.
 
 **테스트 환경 패치 금지**: prototype 오염, 에러 억제, workaround 후 전체 테스트 미실행 절대 금지.
-
-- 범용 패턴: `.cursor/skills/qa/references/async-store-testing.md`
-- 프로젝트 구현: `.cursor/skills/project-knowledge/references/ecount-dev-tool.md`
 
 ## 테스트 실패 시
 

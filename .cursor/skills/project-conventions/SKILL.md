@@ -380,6 +380,23 @@ describe('calculateTotal', () => {
 });
 ```
 
+### 테스트 케이스 설명(로케일)
+
+`describe` / `it` / `test` 등의 **첫 번째 인자(설명 문자열)** 는 프로젝트의 **locale·문서 언어 규칙**에 따릅니다. (예: 한국어를 쓰는 프로젝트는 `it('빈 배열일 때 ValidationError를 던져야 함')` 형태로 통일)
+
+> `.cursor-agent-config.yaml`의 `locale` 또는 동등 필드를 확인합니다. 설정이 없으면 README·기존 테스트 스위트의 관례를 따릅니다.
+
+```typescript
+// ✅ 의도가 드러나는 설명 (팀 로케일이 한국어인 경우 예시)
+it('빈 배열일 때 ValidationError를 던져야 함')
+it('외부 API 클라이언트가 올바른 페이로드로 호출되어야 함')
+
+// ❌ 모호한 설명 (로케일 무관)
+it('test1')
+it('works')
+it('error case')
+```
+
 ---
 
 ## Git 컨벤션

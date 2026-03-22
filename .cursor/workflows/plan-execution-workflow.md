@@ -118,10 +118,9 @@ todos:
 **참조 skill/reference** (해당 작업에 필요한 것만 로드):
 - `developer/references/code-implementation.md`
 - `developer/references/refactoring-patterns.md`
-- `developer/references/svelte-conventions.md` (Svelte 작업 시)
 - `developer/references/headless-components.md` (Compound Component 전환 시)
-- `developer/references/chrome-extension-routing.md` (Chrome Extension 작업 시)
 - `developer/references/mcp/*` (MCP 서버 개발 시)
+- 프로젝트의 스택에 해당하는 `.cursor/skills/stack/*/conventions.md` (UI·프레임워크·런타임별 구현 시)
 
 **주요 서브에이전트**:
 - `developer`: 코드 구현, 리팩토링
@@ -142,19 +141,14 @@ todos:
 - `qa/references/test-strategy.md`
 - `qa/references/test-quality.md`
 - `qa/references/coverage-check.md`
-- `qa/references/svelte-testing.md` (Svelte 컴포넌트 테스트 시)
-- `qa/references/storybook-strategy.md` (Storybook 검증 시)
 - `qa/references/code-review.md`
+- 프로젝트의 스택에 해당하는 `.cursor/skills/stack/*/testing.md` (컴포넌트·스토리북·E2E 등 스택별 테스트 시)
 
 모든 구현 작업 완료 후:
 
 1. **검증 명령 실행**
    - ReadLints (변경된 파일 경로 지정)
-   - `pnpm format`
-   - `pnpm test`
-   - `pnpm lint`
-   - `pnpm type-check`
-   - `pnpm build`
+   - 프로젝트 `package.json`의 `format`, `test`, `lint`, `type-check`, `build` 스크립트(존재하는 항목만 순서대로 실행)
 2. 실패 시 해당 서브에이전트가 **원인 분석 + 수정 + 재검증**
 3. 검증 통과 후 다음 단계로 진행
 4. QA에서 발견된 이슈를 사이클 메트릭의 `issues_encountered[]`에 수집
@@ -196,7 +190,7 @@ todos:
 모든 작업 완료 후:
 
 1. **CHANGELOG** 업데이트
-   - `packages/*/CHANGELOG.md`: 변경된 패키지별
+   - 변경된 패키지·모듈별 `CHANGELOG`(모노레포면 해당 패키지 경로, 단일 저장소면 루트 등 프로젝트 관례에 따름)
 2. **API 문서** 업데이트 (필요 시)
 3. **설계 토큰** 문서 업데이트 (디자인 관련 변경 시)
 4. **README** 업데이트 (필요 시)
@@ -289,7 +283,7 @@ call_mcp_tool({
     ↓
 실행 (developer / planner / explore)
     ↓
-QA 검증 (qa) — ReadLints + pnpm format/test/lint/type-check/build
+QA 검증 (qa) — ReadLints + format/test/lint/type-check/build 스크립트
     ↓
 보안 검증 (security) [선택]
     ↓

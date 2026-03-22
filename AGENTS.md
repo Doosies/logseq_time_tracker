@@ -507,11 +507,11 @@ function deleteUser(id: string) {
 - 문서화는 변경 범위에 따라 선택적
 
 **대상 작업**:
-- package.json 정리 (의존성 추가/제거/업데이트)
-- pnpm catalog 관리
+- package.json 등 매니페스트 정리 (의존성 추가/제거/업데이트)
+- 패키지 매니저 카탈로그·워크스페이스 버전 고정 등 설정 관리
 - TypeScript 설정 (tsconfig) 최적화
 - ESLint/Prettier 설정 통합/개선
-- Vite/빌드 도구 설정 변경
+- 빌드 도구 설정 변경
 - CI/CD 파이프라인 수정
 
 ---
@@ -635,6 +635,9 @@ try {
 - **CLI 사용**: `.cursor/skills/cli-usage/`
 - **프로젝트 지식**: `.cursor/skills/project-knowledge/` (WHAT: 무엇이 구현되어 있는가)
 
+##### 스택별 스킬
+- **스택별 설정·컨벤션·테스트**: `.cursor/skills/stack/*` (`conventions.md`, `testing.md` 등 — 프로젝트에 포함된 스택 디렉터리만 참조)
+
 ### 추가 문서
 
 - [AGENT_SYSTEM_DESIGN.md](.cursor/AGENT_SYSTEM_DESIGN.md): 시스템 설계 (현재 구조와 현황)
@@ -644,7 +647,7 @@ try {
 - [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~9단계)
 - [final-report-template.md](.cursor/workflows/final-report-template.md): 작업 완료 보고서 템플릿
 - **도메인 특화 워크플로우** (`.cursor/workflows/domain-specific/`):
-  - [add-svelte-component.md](.cursor/workflows/domain-specific/add-svelte-component.md): Svelte 5 컴포넌트 추가 절차
+  - [add-svelte-component.md](.cursor/workflows/domain-specific/add-svelte-component.md): 프레임워크 컴포넌트 추가 절차 (해당 스택 워크플로우·`.cursor/skills/stack/` 참조)
   - [add-api-endpoint.md](.cursor/workflows/domain-specific/add-api-endpoint.md): RESTful API 엔드포인트 추가 절차
 - **명령어**: 에이전트 입력창에 `/plan-execution [할 일]` 로 위 워크플로우 실행 가능
 
