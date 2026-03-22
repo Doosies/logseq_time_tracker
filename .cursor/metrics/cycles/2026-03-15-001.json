@@ -1,0 +1,96 @@
+{
+    "cycle_id": "2026-03-15-001",
+    "task_type": "feature",
+    "task_description": "packages/time-tracker를 time-tracker-core(플랫폼 무관 코어)와 logseq-time-tracker(Logseq 플러그인)로 분리하고, 시간 추적 기능 전체 설계 및 구현",
+    "started_at": "2026-03-15T00:00:00+09:00",
+    "completed_at": null,
+    "success": null,
+    "failure_reason": null,
+    "workflow": ["planner"],
+    "agents": {
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "pending",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "pending",
+            "retries": 0,
+            "errors": []
+        },
+        "security": {
+            "outcome": "pending",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "pending",
+            "retries": 0,
+            "errors": []
+        },
+        "system-improvement": {
+            "outcome": "pending",
+            "retries": 0,
+            "errors": []
+        }
+    },
+    "files_changed": {
+        "created": [],
+        "modified": [],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": null,
+        "type_check": null,
+        "lint": null,
+        "test": null,
+        "build": null,
+        "security": null
+    },
+    "decisions": [
+        {
+            "phase": "planning",
+            "decision": "core는 Logseq 의존 없음 (플랫폼 독립)",
+            "rationale": "사용자 요청: 껍데기만 logseq, 본체는 다른 곳에 붙일 수 있게",
+            "alternatives_considered": ["Logseq API를 core에 직접 의존"]
+        },
+        {
+            "phase": "planning",
+            "decision": "진행중(IN_PROGRESS) 상태 1개만 허용",
+            "rationale": "사용자 명시 제약",
+            "alternatives_considered": ["N개 허용"]
+        },
+        {
+            "phase": "planning",
+            "decision": "Storage Adapter 패턴 (DI)",
+            "rationale": "사용자 요청: 서비스를 언제든 갈아끼울 수 있게",
+            "alternatives_considered": ["단일 SQLite 직접 의존"]
+        },
+        {
+            "phase": "planning",
+            "decision": "Phase 1은 MemoryStorageAdapter만 사용",
+            "rationale": "SQLite 준비 전 빠른 검증",
+            "alternatives_considered": ["처음부터 OPFS+SQLite"]
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "planning",
+            "description": "OPFS+SQLite 브라우저 제약 (SharedArrayBuffer 필요)",
+            "resolution": "Phase 2에서 sql.js + OPFS 사용, fallback으로 IndexedDB",
+            "impact": "major"
+        },
+        {
+            "phase": "planning",
+            "description": "스위칭됨 상태 해석 모호",
+            "resolution": "전환 직후 임시 상태로 해석, IN_PROGRESS로 정규화",
+            "impact": "minor"
+        }
+    ],
+    "notes": "Phase 1(프로토타입)부터 단계적 구현. 사용자 기획 노트를 체계적 설계 문서로 변환 포함."
+}
