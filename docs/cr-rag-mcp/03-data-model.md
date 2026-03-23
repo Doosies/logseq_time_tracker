@@ -481,6 +481,8 @@ time_weight = base_weight + (1 - base_weight) * exp(-decay_rate * days_ago)
 
 **적용 위치**: MCP 서버의 검색 엔진에서 벡터 DB 결과를 받은 후 re-ranking 단계에서 적용.
 
+> **필터와 랭킹 분리**: `similarity_score`(순수 유사도)는 노이즈 필터 임계값에 사용하고, `final_score`(유사도 × time_weight)는 결과 랭킹에만 사용한다. 이 분리를 통해 관련성 높지만 오래된 변경이 필터에서 탈락하는 문제를 방지한다.
+
 **설정 가능**: 사용자가 검색 시 `time_weight_enabled: false`로 비활성화하거나, `decay_rate` 조정 가능.
 
 ### 6-5. 검색 결과 보강
@@ -491,7 +493,7 @@ Vector DB 결과 (요약 + 점수)
   → 중복 제거
   → 시간 가중치 re-ranking
   → 맥락 조합 (Phase 1b)
-  → 노이즈 필터
+  → 노이즈 필터 (similarity_score 기준)
 → commit_hash로 Metadata Store 조회 (structured_facts, llm_summary)
 → 필요 시 git show / GitLab API로 원본 diff on-demand 조회
 → reason_inferred 여부 표시 (추론된 내용 태그 포함 여부)

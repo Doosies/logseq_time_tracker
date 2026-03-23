@@ -60,7 +60,7 @@ interface SearchReviewContextOutput {
         id: string; // commit hash 또는 MR iid
         summary: string; // LLM 생성 요약 ([추론된내용] 태그 포함 가능)
         change_type: string;
-        similarity_score: number; // 0.0 ~ 1.0 (시간 가중치 적용 후)
+        similarity_score: number; // 0.0 ~ 1.0 (순수 내용 유사도, 시간 감쇠 미적용)
         confidence_score: number; // 검증 신뢰도
         reason_known: boolean;
         reason_inferred: boolean; // true면 summary에 [추론된내용] 태그 포함

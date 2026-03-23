@@ -2,7 +2,7 @@
 
 ## 목표
 
-벡터 DB 검색 결과를 LLM에 전달하기 전에 중복 제거, 시간순 정렬, 노이즈 필터를 적용하여 검색 결과 품질을 향상한다.
+벡터 DB 검색 결과를 LLM에 전달하기 전에 중복 제거, 노이즈 필터(similarity_score 기준), final_score 내림차순 정렬을 적용하여 검색 결과 품질을 향상한다.
 
 ---
 
@@ -26,7 +26,7 @@
 
 | 파일                           | 역할                                                      |
 | ------------------------------ | --------------------------------------------------------- |
-| `src/search/post_processor.ts` | 후처리 파이프라인 (중복 제거 + 시간순 정렬 + 노이즈 필터) |
+| `src/search/post_processor.ts` | 후처리 파이프라인 (중복 제거 + 노이즈 필터 + final_score 정렬) |
 | `src/types/search.ts`          | PostProcessedResult, ProcessedSearchResult 타입           |
 
 ---
@@ -39,6 +39,7 @@
 export interface ProcessedSearchResult {
     content: string;
     score: number; // 최종 점수 (유사도 * 시간 가중치)
+    similarity_score: number;
     commit_hash: string;
     date: string;
     file_paths: string[];
@@ -68,7 +69,7 @@ export interface PostProcessedResult {
 import type { SearchResult } from './engine.js';
 import type { PostProcessedResult, ProcessedSearchResult } from '../types/search.js';
 
-const MIN_SCORE_THRESHOLD = 0.3;
+const MIN_SIMILARITY_THRESHOLD = 0.25;
 const FILE_OVERLAP_THRESHOLD = 0.8;
 
 export class PostProcessor {
@@ -78,17 +79,16 @@ export class PostProcessor {
         // 1. 중복 제거
         const deduped = this.deduplicate(raw_results);
 
-        // 2. 노이즈 필터 (임계값 이하 제거)
-        const filtered = deduped.filter((r) => r.final_score >= MIN_SCORE_THRESHOLD);
+        // 2. 노이즈 필터 (순수 유사도 임계값 이하 제거; final_score는 시간 감쇠 반영)
+        const filtered = deduped.filter((r) => r.similarity_score >= MIN_SIMILARITY_THRESHOLD);
 
-        // 3. 시간순 정렬 (최신 먼저)
-        const sorted = filtered.sort(
-            (a, b) => new Date(b.metadata.committed_at).getTime() - new Date(a.metadata.committed_at).getTime(),
-        );
+        // 3. final_score 내림차순 (유사도×시간 가중 반영 순)
+        const sorted = filtered.sort((a, b) => b.final_score - a.final_score);
 
         const results: ProcessedSearchResult[] = sorted.map((r) => ({
             content: r.document,
             score: r.final_score,
+            similarity_score: r.similarity_score,
             commit_hash: r.metadata.commit_hash,
             date: r.metadata.committed_at,
             file_paths: r.metadata.file_paths,
@@ -159,8 +159,8 @@ export class PostProcessor {
 
 - [ ] 동일 커밋 해시 중복 제거 동작
 - [ ] 파일 겹침 80%+ 결과 병합 동작
-- [ ] 노이즈 필터 (score < 0.3 제거) 동작
-- [ ] 시간순 정렬 (최신 먼저) 동작
+- [ ] 노이즈 필터 (similarity_score < 0.25 제거) 동작
+- [ ] final_score 내림차순 정렬 동작
 - [ ] PostProcessedResult.metadata 통계 정확
 - [ ] `pnpm type-check` 성공
 

@@ -940,7 +940,7 @@ flowchart LR
 | **중복 제거**   | 동일 커밋이 다른 쿼리 경로로 중복 검색된 경우 병합       | 1a    |
 | **시간순 정렬** | 검색 결과를 시간 역순(최신 먼저)으로 재정렬              | 1a    |
 | **맥락 조합**   | 같은 파일/기능의 연속 변경을 하나의 스토리로 조합        | 1b    |
-| **노이즈 필터** | 유사도 점수 임계값 이하 결과 제거, 관련성 낮은 결과 필터 | 1a    |
+| **노이즈 필터** | 순수 유사도(similarity_score) 임계값 이하 결과 제거. 시간 감쇠(time_decay)는 필터에 적용하지 않고 정렬(랭킹)에만 사용 | 1a    |
 
 ### 9-2. 중복 제거 전략
 
@@ -990,6 +990,7 @@ interface PostProcessedResult {
 interface ProcessedSearchResult {
     content: string;
     score: number; // 최종 점수 (유사도 * 시간 가중치)
+    similarity_score: number;
     commit_hash: string;
     date: string;
     file_paths: string[];
