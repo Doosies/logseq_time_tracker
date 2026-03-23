@@ -5,7 +5,7 @@
     import { SectionSettings } from '#components/SectionSettings';
     import { SECTION_REGISTRY, getSectionById } from '#sections';
     import { initializeTabState, getTabState } from '#stores/current_tab.svelte';
-    import { initializeAccounts } from '#stores/accounts.svelte';
+    import { initializeAccounts, resetAccounts } from '#stores/accounts.svelte';
     import { initializeActiveAccount } from '#stores/active_account.svelte';
     import { initializeVisibility, isSectionVisible } from '#stores/section_visibility.svelte';
     import { initializeSectionOrder, getSectionOrder, setSectionOrder } from '#stores/section_order.svelte';
@@ -80,6 +80,7 @@
     }
 
     async function handleSkipImport(): Promise<void> {
+        await resetAccounts();
         await markSetupCompleted();
     }
 

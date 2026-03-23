@@ -159,7 +159,7 @@ export async function resetAccounts(): Promise<boolean> {
     accounts = [];
     is_loaded = true;
     try {
-        await chrome.storage.sync.remove(STORAGE_KEY);
+        await chrome.storage.sync.set({ [STORAGE_KEY]: [] });
         return true;
     } catch (e) {
         accounts = prev;
