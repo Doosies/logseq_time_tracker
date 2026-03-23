@@ -1,5 +1,8 @@
+import { stat } from 'node:fs/promises';
+
 import { runIngestPipeline } from '../pipeline/ingest_pipeline.js';
 import type { ServerContext } from '../server/server_context.js';
+import { isValidCommitHash } from '../storage/meta_store.js';
 
 export async function handleIngestCommits(
     ctx: ServerContext,
@@ -28,6 +31,52 @@ export async function handleIngestCommits(
                 {
                     type: 'text',
                     text: JSON.stringify({ error: 'mode must be bulk, incremental, or single' }, null, 2),
+                },
+            ],
+        };
+    }
+
+    if (commit_hash !== undefined && !isValidCommitHash(commit_hash)) {
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        { error: 'commit_hash는 7~40자 16진수여야 합니다' },
+                        null,
+                        2,
+                    ),
+                },
+            ],
+        };
+    }
+
+    try {
+        const repo_stat = await stat(repo_path);
+        if (!repo_stat.isDirectory()) {
+            return {
+                content: [
+                    {
+                        type: 'text',
+                        text: JSON.stringify(
+                            { error: 'repo_path must be an existing directory' },
+                            null,
+                            2,
+                        ),
+                    },
+                ],
+            };
+        }
+    } catch {
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        { error: 'repo_path must be an existing directory' },
+                        null,
+                        2,
+                    ),
                 },
             ],
         };

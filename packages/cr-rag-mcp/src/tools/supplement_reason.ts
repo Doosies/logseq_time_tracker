@@ -1,5 +1,8 @@
 import type { CommitDocumentMetadata } from '../types/documents.js';
 import type { ServerContext } from '../server/server_context.js';
+import { isValidCommitHash } from '../storage/meta_store.js';
+
+const REASON_MAX_LENGTH = 2000;
 
 export async function handleSupplementReason(
     ctx: ServerContext,
@@ -18,6 +21,36 @@ export async function handleSupplementReason(
                         {
                             error: 'commit_hash, reason, and supplemented_by are required',
                         },
+                        null,
+                        2,
+                    ),
+                },
+            ],
+        };
+    }
+
+    if (!isValidCommitHash(commit_hash)) {
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        { error: 'commit_hash는 7~40자 16진수여야 합니다' },
+                        null,
+                        2,
+                    ),
+                },
+            ],
+        };
+    }
+
+    if (reason.length > REASON_MAX_LENGTH) {
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: JSON.stringify(
+                        { error: `reason은 최대 ${REASON_MAX_LENGTH}자까지 허용됩니다` },
                         null,
                         2,
                     ),
