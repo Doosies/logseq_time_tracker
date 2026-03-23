@@ -244,7 +244,7 @@
         width: 100%;
     }
 
-    .app-content > :global(*) {
+    .app-content > :global(*:not(.settings-root)) {
         width: 100%;
     }
 
