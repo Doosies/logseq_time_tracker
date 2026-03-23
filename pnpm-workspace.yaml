@@ -64,6 +64,13 @@ catalog:
     # Documentation
     vitepress: ^1.6.4
 
+    # MCP & RAG (cr-rag-mcp)
+    '@modelcontextprotocol/sdk': ^1.27.1
+    chromadb: ^3.4.0
+    simple-git: ^3.33.0
+    openai: ^6.32.0
+    yaml: ^2.8.3
+
     # Types
     '@types/node': ^25.0.10
     '@types/chrome': ^0.1.36

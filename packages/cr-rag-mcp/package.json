@@ -1,0 +1,35 @@
+{
+    "name": "@personal/cr-rag-mcp",
+    "version": "0.0.1",
+    "description": "Code Review RAG MCP Server — Git 커밋 히스토리를 LLM 요약 + 벡터 검색으로 제공",
+    "type": "module",
+    "main": "dist/index.js",
+    "bin": {
+        "cr-rag-mcp": "dist/index.js"
+    },
+    "scripts": {
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "start": "node dist/index.js",
+        "type-check": "tsc --noEmit",
+        "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,json,md}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,json,md}\""
+    },
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "catalog:",
+        "chromadb": "catalog:",
+        "simple-git": "catalog:",
+        "openai": "catalog:",
+        "yaml": "catalog:"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@types/node": "catalog:",
+        "eslint": "catalog:",
+        "globals": "catalog:",
+        "prettier": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:"
+    }
+}
