@@ -48,3 +48,16 @@ export async function restoreActiveAccount(key: string | null): Promise<boolean>
         return false;
     }
 }
+
+export async function resetActiveAccount(): Promise<boolean> {
+    const prev = active_key;
+    active_key = null;
+    try {
+        await chrome.storage.sync.remove(STORAGE_KEY);
+        return true;
+    } catch (e) {
+        active_key = prev;
+        console.error('활성 계정 초기화 실패:', e);
+        return false;
+    }
+}

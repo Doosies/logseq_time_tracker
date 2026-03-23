@@ -85,6 +85,19 @@ export async function setSectionOrder(new_order: string[]): Promise<boolean> {
     }
 }
 
+export async function resetSectionOrder(): Promise<boolean> {
+    const prev = [...order];
+    order = [...DEFAULT_ORDER];
+    try {
+        await chrome.storage.sync.remove(STORAGE_KEY);
+        return true;
+    } catch (e) {
+        order = prev;
+        console.error('섹션 순서 초기화 실패:', e);
+        return false;
+    }
+}
+
 export async function moveSectionDown(section_id: string): Promise<boolean> {
     if (!is_loaded) return false;
 

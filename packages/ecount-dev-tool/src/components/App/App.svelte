@@ -13,7 +13,8 @@
     import { initializePreferences } from '#stores/preferences.svelte';
     import { initializeTheme } from '#stores/theme.svelte';
     import { initializeSetupState, isFirstLaunch, markSetupCompleted } from '#stores/setup_state.svelte';
-    import { readBackupFile } from '#services/backup_service';
+    import { DEFAULT_SETTINGS } from '#constants/default_settings';
+    import { readBackupFile, importFromPayload } from '#services/backup_service';
 
     interface DndSectionItem {
         id: string;
@@ -82,6 +83,19 @@
         await markSetupCompleted();
     }
 
+    async function handleUseDefaults(): Promise<void> {
+        is_importing = true;
+        import_result_message = '';
+        const result = await importFromPayload(DEFAULT_SETTINGS);
+        is_importing = false;
+        if (result.success) {
+            import_result_message = '기본 설정을 적용했습니다!';
+            await markSetupCompleted();
+        } else {
+            import_result_message = result.errors.join(', ') || '기본 설정 적용에 실패했습니다.';
+        }
+    }
+
     onMount(async () => {
         await initializeSetupState();
         await initializeTheme();
@@ -126,10 +140,13 @@
                             onclick={handleFirstLaunchImport}
                             disabled={is_importing}
                         >
-                            {is_importing ? '가져오는 중...' : '파일 선택'}
+                            {is_importing ? '가져오는 중...' : '파일에서 가져오기'}
+                        </button>
+                        <button type="button" class="btn-primary" onclick={handleUseDefaults} disabled={is_importing}>
+                            기본값 사용
                         </button>
                         <button type="button" class="btn-secondary" onclick={handleSkipImport} disabled={is_importing}>
-                            건너뛰기
+                            빈값으로 시작
                         </button>
                     </div>
 
@@ -376,8 +393,11 @@
 
     .first-launch-actions {
         display: flex;
+        flex-direction: column;
+        align-items: stretch;
         gap: var(--space-sm);
         margin-top: var(--space-md);
+        width: 100%;
     }
 
     .btn-primary {

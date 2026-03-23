@@ -1,12 +1,12 @@
 import { SECTION_REGISTRY } from '#sections';
 import type { BackupData, BackupPayload } from '#types/backup';
-import { getAccountsSnapshot, restoreAccounts } from '#stores/accounts.svelte';
-import { getActiveAccountKey, restoreActiveAccount } from '#stores/active_account.svelte';
-import { getScriptsSnapshot, restoreUserScripts } from '#stores/user_scripts.svelte';
-import { getSectionOrder, setSectionOrder } from '#stores/section_order.svelte';
-import { getVisibilityState, restoreVisibility } from '#stores/section_visibility.svelte';
-import { getTheme, setTheme } from '#stores/theme.svelte';
-import { getPreferences, restorePreferences } from '#stores/preferences.svelte';
+import { getAccountsSnapshot, restoreAccounts, resetAccounts } from '#stores/accounts.svelte';
+import { getActiveAccountKey, restoreActiveAccount, resetActiveAccount } from '#stores/active_account.svelte';
+import { getScriptsSnapshot, restoreUserScripts, clearUserScriptsFromStorage } from '#stores/user_scripts.svelte';
+import { getSectionOrder, setSectionOrder, resetSectionOrder } from '#stores/section_order.svelte';
+import { getVisibilityState, restoreVisibility, resetVisibility } from '#stores/section_visibility.svelte';
+import { getTheme, setTheme, resetTheme } from '#stores/theme.svelte';
+import { getPreferences, restorePreferences, resetPreferences } from '#stores/preferences.svelte';
 
 const BACKUP_VERSION = 1;
 
@@ -40,25 +40,8 @@ export function downloadBackup(): void {
     URL.revokeObjectURL(url);
 }
 
-export async function importAllSettings(json: string): Promise<{ success: boolean; errors: string[] }> {
+export async function importFromPayload(data: BackupPayload): Promise<{ success: boolean; errors: string[] }> {
     const errors: string[] = [];
-    let parsed: unknown;
-    try {
-        parsed = JSON.parse(json);
-    } catch {
-        return { success: false, errors: ['JSON 파싱 실패'] };
-    }
-
-    if (typeof parsed !== 'object' || parsed === null) {
-        return { success: false, errors: ['잘못된 백업 형식'] };
-    }
-
-    const backup = parsed as BackupData;
-    if (typeof backup.version !== 'number' || backup.version > BACKUP_VERSION) {
-        return { success: false, errors: [`지원하지 않는 백업 버전: ${backup.version}`] };
-    }
-
-    const data = backup.data ?? {};
 
     if (data.accounts !== undefined) {
         const ok = await restoreAccounts(data.accounts);
@@ -104,6 +87,50 @@ export async function importAllSettings(json: string): Promise<{ success: boolea
         success: errors.length === 0,
         errors,
     };
+}
+
+export async function importAllSettings(json: string): Promise<{ success: boolean; errors: string[] }> {
+    let parsed: unknown;
+    try {
+        parsed = JSON.parse(json);
+    } catch {
+        return { success: false, errors: ['JSON 파싱 실패'] };
+    }
+
+    if (typeof parsed !== 'object' || parsed === null) {
+        return { success: false, errors: ['잘못된 백업 형식'] };
+    }
+
+    const backup = parsed as BackupData;
+    if (typeof backup.version !== 'number' || backup.version > BACKUP_VERSION) {
+        return { success: false, errors: [`지원하지 않는 백업 버전: ${backup.version}`] };
+    }
+
+    return importFromPayload(backup.data ?? {});
+}
+
+export async function resetAllSettings(): Promise<{ success: boolean; errors: string[] }> {
+    const errors: string[] = [];
+
+    const ok_accounts = await resetAccounts();
+    if (!ok_accounts) errors.push('계정 초기화 실패');
+
+    const ok_active = await resetActiveAccount();
+    if (!ok_active) errors.push('활성 계정 초기화 실패');
+
+    const ok_scripts = await clearUserScriptsFromStorage();
+    if (!ok_scripts) errors.push('사용자 스크립트 초기화 실패');
+
+    const ok_order = await resetSectionOrder();
+    if (!ok_order) errors.push('섹션 순서 초기화 실패');
+
+    const ok_vis = await resetVisibility();
+    if (!ok_vis) errors.push('섹션 가시성 초기화 실패');
+
+    await resetTheme();
+    await resetPreferences();
+
+    return { success: errors.length === 0, errors };
 }
 
 const MAX_BACKUP_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB

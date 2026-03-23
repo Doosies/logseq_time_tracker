@@ -3,7 +3,7 @@
     import { Popover, CheckboxList } from '@personal/uikit';
     import { isSectionVisible, toggleVisibility } from '#stores/section_visibility.svelte';
     import { getSectionOrder, setSectionOrder, moveSectionUp, moveSectionDown } from '#stores/section_order.svelte';
-    import { downloadBackup, readBackupFile } from '#services/backup_service';
+    import { downloadBackup, readBackupFile, resetAllSettings } from '#services/backup_service';
 
     interface ToastContext {
         show: (message: string) => void;
@@ -25,6 +25,8 @@
     let dnd_items = $state<SectionItem[]>([]);
     let file_input: HTMLInputElement | undefined;
     let is_importing = $state(false);
+    let is_resetting = $state(false);
+    let show_reset_confirm = $state(false);
 
     const all_ids = $derived(sections.map((s) => s.id));
     const visible_count = $derived(all_ids.filter((id) => isSectionVisible(id)).length);
@@ -89,6 +91,24 @@
             'aria-label': `${section.label} - 드래그하여 순서 변경`,
             onkeydown: (e: KeyboardEvent) => handleItemKeydown(e, section.id),
         } as Record<string, unknown>;
+    }
+
+    async function handleResetAll(): Promise<void> {
+        is_resetting = true;
+        const result = await resetAllSettings();
+        is_resetting = false;
+
+        if (result.success) {
+            try {
+                await chrome.storage.local.remove('setup_completed');
+            } catch {
+                /* ignore */
+            }
+            window.location.reload();
+        } else {
+            toast_ctx?.show(result.errors.join(', ') || '초기화 실패');
+        }
+        show_reset_confirm = false;
     }
 </script>
 
@@ -166,6 +186,42 @@
                 onchange={handleFileChange}
                 aria-hidden="true"
             />
+
+            <div class="reset-section">
+                <div class="backup-divider"></div>
+                <div class="backup-title">설정 초기화</div>
+                {#if show_reset_confirm}
+                    <p class="reset-warning">모든 설정이 삭제됩니다. 계속하시겠습니까?</p>
+                    <div class="backup-buttons">
+                        <button type="button" class="reset-btn danger" onclick={handleResetAll} disabled={is_resetting}>
+                            {is_resetting ? '초기화 중...' : '확인'}
+                        </button>
+                        <button
+                            type="button"
+                            class="backup-btn"
+                            onclick={() => (show_reset_confirm = false)}
+                            disabled={is_resetting}
+                        >
+                            취소
+                        </button>
+                    </div>
+                {:else}
+                    <div class="backup-buttons">
+                        <button type="button" class="reset-btn" onclick={() => (show_reset_confirm = true)}>
+                            <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                <path
+                                    d="M11.534 7h3.932a.25.25 0 0 1 .192.41l-1.966 2.36a.25.25 0 0 1-.384 0l-1.966-2.36a.25.25 0 0 1 .192-.41zm-11 2h3.932a.25.25 0 0 0 .192-.41L2.692 6.23a.25.25 0 0 0-.384 0L.342 8.59A.25.25 0 0 0 .534 9z"
+                                />
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M8 3c-1.552 0-2.94.707-3.857 1.818a.5.5 0 1 1-.771-.636A6.002 6.002 0 0 1 13.917 7H12.9A5.002 5.002 0 0 0 8 3zM3.1 9a5.002 5.002 0 0 0 8.757 2.182.5.5 0 1 1 .771.636A6.002 6.002 0 0 1 2.083 9H3.1z"
+                                />
+                            </svg>
+                            <span>전체 초기화</span>
+                        </button>
+                    </div>
+                {/if}
+            </div>
         </div>
     </Popover.Content>
 </Popover.Root>
@@ -290,5 +346,49 @@
         height: 0;
         opacity: 0;
         pointer-events: none;
+    }
+
+    .reset-section {
+        padding: var(--space-sm) var(--space-md);
+    }
+
+    .reset-warning {
+        font-size: var(--font-size-xs);
+        color: var(--color-error, #ef4444);
+        margin: 0 0 var(--space-sm) 0;
+    }
+
+    .reset-btn {
+        display: flex;
+        align-items: center;
+        gap: var(--space-sm);
+        width: 100%;
+        padding: var(--space-sm) var(--space-md);
+        font-size: var(--font-size-sm);
+        color: var(--color-text);
+        background: transparent;
+        border: none;
+        border-radius: var(--radius-sm);
+        cursor: pointer;
+        transition: background-color var(--transition-fast);
+        text-align: left;
+    }
+
+    .reset-btn:hover:not(:disabled) {
+        background-color: var(--color-surface);
+    }
+
+    .reset-btn.danger {
+        color: var(--color-error, #ef4444);
+        font-weight: var(--font-weight-medium);
+    }
+
+    .reset-btn.danger:hover:not(:disabled) {
+        background-color: rgba(239, 68, 68, 0.1);
+    }
+
+    .reset-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 </style>

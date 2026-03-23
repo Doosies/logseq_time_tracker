@@ -154,6 +154,20 @@ export async function restoreAccounts(snapshot: LoginAccount[]): Promise<boolean
     }, '계정 복원 실패:');
 }
 
+export async function resetAccounts(): Promise<boolean> {
+    const prev = accounts;
+    accounts = [];
+    is_loaded = true;
+    try {
+        await chrome.storage.sync.remove(STORAGE_KEY);
+        return true;
+    } catch (e) {
+        accounts = prev;
+        console.error('계정 초기화 실패:', e);
+        return false;
+    }
+}
+
 export function getAccountsSnapshot(): LoginAccount[] {
     return $state.snapshot(accounts);
 }

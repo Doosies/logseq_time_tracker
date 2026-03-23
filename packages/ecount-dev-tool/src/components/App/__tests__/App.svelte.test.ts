@@ -502,7 +502,7 @@ describe('App', () => {
             );
         });
 
-        it('건너뛰기 클릭 시 일반 앱 콘텐츠가 표시되어야 함', async () => {
+        it('빈값으로 시작 클릭 시 일반 앱 콘텐츠가 표시되어야 함', async () => {
             asMock(chrome.tabs.query).mockResolvedValue([
                 {
                     id: 1,
@@ -520,7 +520,7 @@ describe('App', () => {
             );
 
             const user = userEvent.setup();
-            await user.click(screen.getByRole('button', { name: '건너뛰기' }));
+            await user.click(screen.getByRole('button', { name: '빈값으로 시작' }));
 
             await waitFor(
                 () => {
@@ -529,7 +529,12 @@ describe('App', () => {
                 { timeout: 2000 },
             );
 
-            expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+            await waitFor(
+                () => {
+                    expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
         });
 
         it('두 번째 실행 시 첫 설치 화면이 표시되지 않아야 함', async () => {
@@ -551,7 +556,13 @@ describe('App', () => {
             );
 
             expect(screen.queryByRole('heading', { name: '설정 가져오기' })).not.toBeInTheDocument();
-            expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+
+            await waitFor(
+                () => {
+                    expect(screen.getByText('빠른 로그인')).toBeInTheDocument();
+                },
+                { timeout: 2000 },
+            );
         });
     });
 

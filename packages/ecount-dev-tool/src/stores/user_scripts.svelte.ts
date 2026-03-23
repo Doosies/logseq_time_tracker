@@ -162,6 +162,23 @@ export async function restoreUserScripts(new_scripts: UserScript[]): Promise<boo
 }
 
 /**
+ * chrome.storage.local에서 사용자 스크립트 키를 제거하고 메모리 목록을 비웁니다.
+ * 앱 설정 전체 초기화(backup_service.resetAllSettings)에서 사용합니다.
+ */
+export async function clearUserScriptsFromStorage(): Promise<boolean> {
+    const prev = [...scripts];
+    scripts = [];
+    try {
+        await chrome.storage.local.remove(STORAGE_KEY);
+        return true;
+    } catch (e) {
+        scripts = prev;
+        console.error('사용자 스크립트 초기화 실패:', e);
+        return false;
+    }
+}
+
+/**
  * Storybook용 초기화: 스토어 상태를 초기화합니다.
  * StoryWrapper onMount 시점에 호출하여 스토리 간 격리를 보장합니다.
  */

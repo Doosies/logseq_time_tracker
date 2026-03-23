@@ -58,6 +58,19 @@ export async function initializeVisibility(): Promise<void> {
     }
 }
 
+export async function resetVisibility(): Promise<boolean> {
+    const prev = { ...state };
+    state = {};
+    try {
+        await chrome.storage.sync.remove(STORAGE_KEY);
+        return true;
+    } catch (e) {
+        state = prev;
+        console.error('섹션 가시성 초기화 실패:', e);
+        return false;
+    }
+}
+
 export async function toggleVisibility(section_id: string, visible_ids: string[]): Promise<boolean> {
     if (!is_loaded) return false;
 
