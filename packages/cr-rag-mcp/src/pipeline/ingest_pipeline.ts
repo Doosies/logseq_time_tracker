@@ -37,6 +37,11 @@ function buildCommitDocumentMetadata(
     verification: VerificationResult,
 ): CommitDocumentMetadata {
     const symbols = [...new Set(facts.files.flatMap((f) => f.functions_modified))];
+    const symbols_modified = symbols.length > 0 ? symbols : ['(none)'];
+    const file_paths = facts.files.map((f) => f.path);
+    const file_paths_non_empty = file_paths.length > 0 ? file_paths : ['(none)'];
+    const file_roles = facts.files.map((f) => f.file_role);
+    const file_roles_non_empty = file_roles.length > 0 ? file_roles : ['(none)'];
     const base: CommitDocumentMetadata = {
         doc_type: 'commit',
         commit_hash: facts.commit_hash,
@@ -49,9 +54,9 @@ function buildCommitDocumentMetadata(
         files_changed: facts.files.length,
         total_additions: facts.total_additions,
         total_deletions: facts.total_deletions,
-        file_paths: facts.files.map((f) => f.path),
-        symbols_modified: symbols,
-        file_roles: facts.files.map((f) => f.file_role),
+        file_paths: file_paths_non_empty,
+        symbols_modified,
+        file_roles: file_roles_non_empty,
         reason_known: summary.reason_known,
         reason_inferred: summary.reason_inferred,
         reason_supplemented: false,
@@ -174,7 +179,11 @@ export async function runIngestPipeline(
 
             const verification = verifyCommitSummary(summary, facts);
             if (!verification.passed) {
-                const msg = `Verification failed: ${commit.hash}`;
+                const violation_details = verification.violations
+                    .filter((v) => v.severity === 'error')
+                    .map((v) => `[${v.type}] ${v.detail}`)
+                    .join('; ');
+                const msg = `Verification failed: ${commit.hash}: ${violation_details}`;
                 errors.push(msg);
                 failed += 1;
                 state.failed_items.push({

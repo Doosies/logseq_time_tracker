@@ -34,11 +34,7 @@ export async function handleSupplementReason(
             content: [
                 {
                     type: 'text',
-                    text: JSON.stringify(
-                        { error: 'commit_hash는 7~40자 16진수여야 합니다' },
-                        null,
-                        2,
-                    ),
+                    text: JSON.stringify({ error: 'commit_hash는 7~40자 16진수여야 합니다' }, null, 2),
                 },
             ],
         };
@@ -49,11 +45,7 @@ export async function handleSupplementReason(
             content: [
                 {
                     type: 'text',
-                    text: JSON.stringify(
-                        { error: `reason은 최대 ${REASON_MAX_LENGTH}자까지 허용됩니다` },
-                        null,
-                        2,
-                    ),
+                    text: JSON.stringify({ error: `reason은 최대 ${REASON_MAX_LENGTH}자까지 허용됩니다` }, null, 2),
                 },
             ],
         };

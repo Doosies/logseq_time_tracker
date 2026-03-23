@@ -156,10 +156,11 @@ export class GitCollector {
     async listCommits(since?: string, options?: ListCommitsOptions): Promise<RawCommit[]> {
         if (options?.single_hash) {
             const log_with_args = this.git.log as unknown as (
+                this: SimpleGit,
                 args: string[],
                 opts: LogOptions<LogFormatFields>,
             ) => Promise<LogResult<LogFormatFields>>;
-            const log = await log_with_args(['-n', '1', options.single_hash], {
+            const log = await log_with_args.call(this.git, ['-n', '1', options.single_hash], {
                 format: GIT_LOG_FORMAT,
             });
             return log.all.map((e) => this.toRawCommit(e));

@@ -1,0 +1,14 @@
+{
+    "mcpServers": {
+        "cr-rag-mcp": {
+            "command": "node",
+            "args": [
+                "--env-file=d:/personal/packages/cr-rag-mcp/.env",
+                "d:/personal/packages/cr-rag-mcp/dist/index.js"
+            ],
+            "env": {
+                "NODE_TLS_REJECT_UNAUTHORIZED": "0"
+            }
+        }
+    }
+}

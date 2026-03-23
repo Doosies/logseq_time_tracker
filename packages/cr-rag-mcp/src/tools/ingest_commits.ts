@@ -41,11 +41,7 @@ export async function handleIngestCommits(
             content: [
                 {
                     type: 'text',
-                    text: JSON.stringify(
-                        { error: 'commit_hash는 7~40자 16진수여야 합니다' },
-                        null,
-                        2,
-                    ),
+                    text: JSON.stringify({ error: 'commit_hash는 7~40자 16진수여야 합니다' }, null, 2),
                 },
             ],
         };
@@ -58,11 +54,7 @@ export async function handleIngestCommits(
                 content: [
                     {
                         type: 'text',
-                        text: JSON.stringify(
-                            { error: 'repo_path must be an existing directory' },
-                            null,
-                            2,
-                        ),
+                        text: JSON.stringify({ error: 'repo_path must be an existing directory' }, null, 2),
                     },
                 ],
             };
@@ -72,11 +64,7 @@ export async function handleIngestCommits(
             content: [
                 {
                     type: 'text',
-                    text: JSON.stringify(
-                        { error: 'repo_path must be an existing directory' },
-                        null,
-                        2,
-                    ),
+                    text: JSON.stringify({ error: 'repo_path must be an existing directory' }, null, 2),
                 },
             ],
         };

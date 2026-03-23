@@ -1,8 +1,8 @@
 import type { DiffSizeGate } from '../types/summary.js';
 import type { CrRagConfig } from '../types/config.js';
 
-const DEFAULT_SMALL_MAX = 200;
-const DEFAULT_MEDIUM_MAX = 500;
+const DEFAULT_SMALL_MAX = 500;
+const DEFAULT_MEDIUM_MAX = 2000;
 const TOKENS_PER_LINE = 4;
 const COST_PER_INPUT_TOKEN = 0.00000015;
 

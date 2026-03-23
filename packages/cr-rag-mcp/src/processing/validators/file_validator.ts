@@ -2,7 +2,11 @@ import type { StructuredFacts } from '../../types/facts.js';
 import type { CommitSummary } from '../../types/summary.js';
 import type { Violation } from '../../types/verification.js';
 
-const FILE_PATH_RE = /[\w\-./]+\.\w+/g;
+/** 알려진 소스/설정 확장자만 매칭해 console.log 등 점 표기법 오탐을 줄임 */
+const KNOWN_CODE_FILE_EXTENSIONS =
+    'ts|tsx|js|jsx|mjs|cjs|css|html|json|yaml|yml|md|py|go|rs|java|c|cpp|h|hpp|svelte|vue|scss|less|xml|sql|sh|bat|env|toml|ini|cfg|conf';
+
+const FILE_PATH_RE = new RegExp(`[\\w\\-./]+\\.(?:${KNOWN_CODE_FILE_EXTENSIONS})(?![\\w])`, 'g');
 
 export function validateFiles(summary: CommitSummary, facts: StructuredFacts): Violation[] {
     const violations: Violation[] = [];

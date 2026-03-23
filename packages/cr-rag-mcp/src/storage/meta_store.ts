@@ -68,11 +68,7 @@ export class JsonMetaStore {
         }
         const dir = this.commit_doc_dir(meta.project_id);
         await mkdir(dir, { recursive: true });
-        const path = this.pathUnderBase(
-            'commit_docs',
-            toSafeSlug(meta.project_id),
-            `${meta.commit_hash}.json`,
-        );
+        const path = this.pathUnderBase('commit_docs', toSafeSlug(meta.project_id), `${meta.commit_hash}.json`);
         await writeFile(path, JSON.stringify(meta, null, 2));
     }
 

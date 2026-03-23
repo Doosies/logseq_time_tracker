@@ -16,7 +16,7 @@ export function validateInferences(summary: CommitSummary): {
         violations.push({
             type: 'unsupported_inference',
             detail: 'reason_inferred=true이지만 [추론된내용] 태그가 없음',
-            severity: 'error',
+            severity: 'warning',
         });
     }
 

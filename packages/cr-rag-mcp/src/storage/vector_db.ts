@@ -130,6 +130,11 @@ function parse_commit_metadata(raw: Metadata | null | undefined): CommitDocument
     return out;
 }
 
+/** ChromaDB 1.5+ rejects empty list metadata values; use a sentinel when absent. */
+function chromaNonEmptyStringList(values: string[]): string[] {
+    return values.length > 0 ? values : ['(none)'];
+}
+
 function commit_metadata_to_chroma(meta: CommitDocumentMetadata): Metadata {
     const row: Metadata = {
         doc_type: meta.doc_type,
@@ -143,9 +148,9 @@ function commit_metadata_to_chroma(meta: CommitDocumentMetadata): Metadata {
         files_changed: meta.files_changed,
         total_additions: meta.total_additions,
         total_deletions: meta.total_deletions,
-        file_paths: meta.file_paths,
-        symbols_modified: meta.symbols_modified,
-        file_roles: meta.file_roles,
+        file_paths: chromaNonEmptyStringList(meta.file_paths),
+        symbols_modified: chromaNonEmptyStringList(meta.symbols_modified),
+        file_roles: chromaNonEmptyStringList(meta.file_roles),
         reason_known: meta.reason_known,
         reason_inferred: meta.reason_inferred,
         reason_supplemented: meta.reason_supplemented,
