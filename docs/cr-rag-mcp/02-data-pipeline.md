@@ -338,6 +338,34 @@ interface ReasonSupplement {
 }
 ```
 
+**임베딩 콘텐츠 압축 (Content Compression)**:
+
+임베딩 대상 content(`buildContent` 출력)에서 파일 경로와 심볼은 **압축 형태**로 포함한다. 전체 파일 경로는 `CommitDocumentMetadata.file_paths` 메타데이터에 저장되어 검색 결과 필터링 및 표시에 사용되므로, content에 전부 나열하면 토큰 낭비이며 임베딩 품질에도 부정적이다.
+
+**압축 규칙**:
+
+| 조건 | 파일 경로 | 심볼 |
+| --- | --- | --- |
+| 파일 5개 이하 | 전체 경로 나열 | 전체 나열 |
+| 파일 6개 이상 | 디렉토리 단위 그룹화 (최대 5개) + "외 N개 디렉토리 (총 M파일)" | 최대 10개 + "외 N개" |
+
+**디렉토리 그룹화 예시**:
+
+Before (46개 파일 나열):
+```
+파일: packages/30.flexion-node/src/nodes/button/views/Label/ButtonLabelView.tsx, packages/30.flexion-node/src/nodes/button/views/Toggle/ButtonToggleView.tsx, ... (46개)
+```
+
+After (디렉토리 요약):
+```
+변경 영역: packages/30.flexion-node/src/nodes/button/ (15), packages/01.flexion/src/ (5), packages/30.flexion-node/src/mocks/ (10) 외 3개 디렉토리 (총 46파일)
+```
+
+**설계 근거**:
+- 임베딩 모델(`text-embedding-3-small`)은 의미 단위로 벡터를 생성하므로, 긴 경로 나열보다 **변경 영역 요약**이 시맨틱 검색에 더 효과적
+- 파일 경로 전체는 메타데이터로 보존되어 검색 후 필터링/표시에 사용
+- 소규모 커밋(5개 이하)은 경로 자체가 의미 있는 컨텍스트이므로 전체 나열 유지
+
 **Diff 크기 게이트**:
 
 LLM에 전달하기 전에 diff 줄 수를 측정하여 처리 방식을 결정한다. 바이너리 파일, 자동 생성 파일(lock 파일, `*.min.js` 등)은 측정 전에 제외. **모든 커밋은 처리**하며, 과거의 `LargeDiffError`(처리 중단)는 사용하지 않는다. 대형 diff는 **파일별 대표 hunk 샘플링**으로 컨텍스트를 줄인 뒤 요약한다.

@@ -48,6 +48,16 @@ interface CommitDocument {
     //
     // 예 (이유 불명, reason_known: false):
     //   "validateToken() 함수에 revoked 토큰 체크 조건을 추가."
+    //
+    // === content 압축 전략 ===
+    // 파일 경로: 6개 이상이면 디렉토리 단위 그룹화 (최대 5개 디렉토리 표시)
+    // 심볼: 11개 이상이면 상위 10개만 표시 + "외 N개"
+    // 전체 파일 경로/심볼은 metadata.file_paths / metadata.symbols_modified에 보존
+    //
+    // 예 (압축된 content, 46파일 변경):
+    //   "FlexionDecoratorNode 클래스의 디버그 로깅 포맷 수정 및 getTimezoneRestoredDate 함수에 utcOffset 기본값 추가.
+    //    변경 영역: packages/30.flexion-node/src/nodes/button/ (15), packages/01.flexion/src/ (5) 외 4개 디렉토리 (총 46파일)
+    //    주요 심볼: FlexionDecoratorNode, getTimezoneRestoredDate, DefaultDecimalView 외 34개"
 
     // === 필터/검색용 메타데이터 ===
     metadata: {
@@ -112,7 +122,7 @@ interface CommitDocument {
 }
 ```
 
-**임베딩 대상**: `content` 필드만 임베딩. 메타데이터는 필터링에만 사용.
+**임베딩 대상**: `content` 필드만 임베딩. 메타데이터는 필터링에만 사용. content 내 파일 경로/심볼은 압축 형태로 포함(02-data-pipeline 4-2절 "임베딩 콘텐츠 압축" 참조).
 
 ### 2-2. MRDocument 컬렉션
 
