@@ -1,0 +1,58 @@
+{
+    "cycle_id": "2026-03-23-004",
+    "task_type": "refactor",
+    "task_description": "Diff 전략 2-tier 전환 + 커밋 그룹핑 메타데이터 방식 구현",
+    "started_at": "2026-03-23T06:00:00.000Z",
+    "completed_at": "2026-03-23T06:30:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["developer", "docs", "qa", "developer(fix)"],
+    "agents": {
+        "developer": { "invocations": 2, "success": true, "notes": "코드 5항목 구현 + vector_db group 메타데이터 버그 수정" },
+        "docs": { "invocations": 2, "success": true, "notes": "설계문서 4개 갱신 + 비교 보고서 생성" },
+        "qa": { "invocations": 1, "success": true, "notes": "format/lint/type-check/build 전체 통과" }
+    },
+    "files_changed": {
+        "created": [
+            "packages/cr-rag-mcp/src/processing/grouper.ts",
+            "docs/cr-rag-mcp/diff-strategy-comparison-report.md",
+            "packages/cr-rag-mcp/test-reingest.mjs",
+            "packages/cr-rag-mcp/test-revalidate.mjs"
+        ],
+        "modified": [
+            "packages/cr-rag-mcp/src/types/summary.ts",
+            "packages/cr-rag-mcp/src/types/documents.ts",
+            "packages/cr-rag-mcp/src/types/config.ts",
+            "packages/cr-rag-mcp/src/processing/diff_gate.ts",
+            "packages/cr-rag-mcp/src/processing/summarizer.ts",
+            "packages/cr-rag-mcp/src/pipeline/ingest_pipeline.ts",
+            "packages/cr-rag-mcp/src/storage/vector_db.ts",
+            "docs/cr-rag-mcp/02-data-pipeline.md",
+            "docs/cr-rag-mcp/07-roadmap.md",
+            "docs/phase-plans/cr-rag-mcp/phase-1a/00-overview.md",
+            "docs/phase-plans/cr-rag-mcp/phase-1b/plan.md"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "type_check": "pass",
+        "build": "pass",
+        "lint": "pass",
+        "format": "pass",
+        "re_ingest": "pass (44/46, 95.7%)",
+        "grouping_verification": "pass (6 groups, 4/6 complete)"
+    },
+    "decisions": [
+        { "phase": "developer", "decision": "group_id를 그룹의 가장 오래된 커밋 hash로 설정", "rationale": "안정적이고 UUID 불필요" },
+        { "phase": "developer", "decision": "delta_min >= 0 조건으로 역순 데이터 방지", "rationale": "시간순 정렬 전제" },
+        { "phase": "developer", "decision": "hunk 샘플링 시 변경 라인 수 기준 정렬", "rationale": "대표 hunk 선정 정확도 향상" },
+        { "phase": "docs", "decision": "그룹핑 조건에서 branch 제거 (author+시간만)", "rationale": "grouper.ts 코드와 일치" }
+    ],
+    "issues_encountered": [
+        { "phase": "developer", "issue": "vector_db.ts에 group 메타데이터 저장/파싱 누락", "resolution": "developer 재호출로 수정", "impact": "major" },
+        { "phase": "re-ingest", "issue": "ChromaDB deleteCollection API 미작동", "resolution": "REST API 직접 호출로 대체", "impact": "minor" },
+        { "phase": "re-ingest", "issue": "pipeline_state 파일 경로 불일치", "resolution": "pipeline_flexion.json으로 정정", "impact": "minor" },
+        { "phase": "re-ingest", "issue": "a56640b 임베딩 토큰 한도 초과 (8192)", "resolution": "향후 Phase 1b에서 content 길이 제한 추가", "impact": "medium" }
+    ],
+    "notes": "Plan: diff_전략_+_그룹핑_설계변경_411a2303. LargeDiffError 완전 제거, 통과율 92.7% → 95.7% 향상."
+}

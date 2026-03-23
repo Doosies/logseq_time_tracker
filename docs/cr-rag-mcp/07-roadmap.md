@@ -95,7 +95,7 @@ P1a-6(ChromaDB 연동)까지 완료되면, 파이프라인이 "수집 → 요약
 - `ingest_commits` Tool (bulk, incremental)
 - `supplement_reason` Tool
 - `project://overview` Resource
-- Diff 크기 게이트 (소/중/대)
+- Diff 크기 게이트 (2-tier: normal / oversized)
 - 구조 검증 (1단계, 추론 근거 검증 포함)
 - ChromaDB embedded
 - JSON 파일 기반 Metadata Store
@@ -107,7 +107,7 @@ P1a-6(ChromaDB 연동)까지 완료되면, 파이프라인이 "수집 → 요약
 **제외 (Phase 1b로 이연)**:
 
 - TypeScript Compiler API (L3~L4)
-- 커밋 그룹핑 (Logical Change Unit)
+- 커밋 그룹핑 (메타데이터 방식, Phase 1b)
 - 코드 구조 스냅샷 (ArchitectureDocument)
 - FileHistoryDocument
 - `get_file_history`, `search_by_topic`, `get_impact_analysis`, `analyze_architecture` Tools
@@ -146,7 +146,7 @@ Node.js >= 20 + TypeScript
 | #     | 마일스톤                | 산출물                       | 완료 기준                            |
 | ----- | ----------------------- | ---------------------------- | ------------------------------------ |
 | P1b-1 | TypeScript Compiler API | AST 분석 모듈 (L3~L4)        | 시그니처, 의존성 관계 추출           |
-| P1b-2 | 커밋 그룹핑             | Logical Change Unit 모듈     | 연속 커밋 자동 그룹핑, 통합 요약     |
+| P1b-2 | 커밋 그룹핑             | 커밋 그룹 감지 + 메타데이터 부여 모듈 | 연속 커밋 자동 그룹핑, `group_id` / `group_size` / `group_index` 메타데이터 부여 |
 | P1b-3 | 코드 구조 스냅샷        | ArchitectureDocument 생성    | 핵심 인터페이스/베이스 클래스 인덱싱 |
 | P1b-4 | FileHistoryDocument     | 파일별 히스토리 요약 생성    | 파일 변천사 요약, 갱신 파이프라인    |
 | P1b-5 | 후처리 강화             | 맥락 조합 (동일 파일 스토리) | 시간순 변경 스토리 생성              |
@@ -157,7 +157,7 @@ Node.js >= 20 + TypeScript
 - `get_file_history`, `search_by_topic`, `get_impact_analysis`, `analyze_architecture` Tools
 - `project://hot-files`, `project://recent-issues` Resources
 - TypeScript Compiler API (L3~L4 구조 추출)
-- 커밋 그룹핑 (Logical Change Unit)
+- 커밋 그룹핑 (메타데이터 방식, 커밋 합치지 않음)
 - 코드 구조 스냅샷 (ArchitectureDocument)
 - FileHistoryDocument 생성/갱신 파이프라인
 - 맥락 조합 (후처리 강화)

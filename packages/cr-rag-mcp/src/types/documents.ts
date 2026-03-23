@@ -21,4 +21,7 @@ export interface CommitDocumentMetadata {
     verified_at: string;
     impact: string;
     risk_notes?: string;
+    group_id?: string;
+    group_size?: number;
+    group_index?: number;
 }

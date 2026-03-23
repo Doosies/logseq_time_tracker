@@ -127,6 +127,29 @@ function parse_commit_metadata(raw: Metadata | null | undefined): CommitDocument
         out = { ...out, risk_notes: risk };
     }
 
+    const group_id = raw['group_id'];
+    const group_size = raw['group_size'];
+    const group_index = raw['group_index'];
+
+    if (group_id !== undefined && group_id !== null) {
+        if (typeof group_id !== 'string') {
+            throw new Error('group_id must be string when set');
+        }
+        out = { ...out, group_id };
+    }
+    if (group_size !== undefined && group_size !== null) {
+        if (typeof group_size !== 'number') {
+            throw new Error('group_size must be number when set');
+        }
+        out = { ...out, group_size };
+    }
+    if (group_index !== undefined && group_index !== null) {
+        if (typeof group_index !== 'number') {
+            throw new Error('group_index must be number when set');
+        }
+        out = { ...out, group_index };
+    }
+
     return out;
 }
 
@@ -163,6 +186,15 @@ function commit_metadata_to_chroma(meta: CommitDocumentMetadata): Metadata {
     }
     if (meta.risk_notes !== undefined) {
         row['risk_notes'] = meta.risk_notes;
+    }
+    if (meta.group_id !== undefined) {
+        row['group_id'] = meta.group_id;
+    }
+    if (meta.group_size !== undefined) {
+        row['group_size'] = meta.group_size;
+    }
+    if (meta.group_index !== undefined) {
+        row['group_index'] = meta.group_index;
     }
     return row;
 }

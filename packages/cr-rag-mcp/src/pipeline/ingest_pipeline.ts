@@ -4,7 +4,8 @@ import { GitCollector } from '../collection/git_cli.js';
 import { loadConfig } from '../config/loader.js';
 import { buildContent, EmbeddingGenerator } from '../processing/embedder.js';
 import { extractStructuredFacts } from '../processing/extractor.js';
-import { LargeDiffError, LlmSummarizer } from '../processing/summarizer.js';
+import { detectGroups, type GroupInfo } from '../processing/grouper.js';
+import { LlmSummarizer } from '../processing/summarizer.js';
 import { verifyCommitSummary } from '../processing/verifier.js';
 import type { JsonMetaStore } from '../storage/meta_store.js';
 import type { VectorStore } from '../storage/vector_db.js';
@@ -35,6 +36,7 @@ function buildCommitDocumentMetadata(
     facts: StructuredFacts,
     summary: CommitSummary,
     verification: VerificationResult,
+    group_info?: GroupInfo,
 ): CommitDocumentMetadata {
     const symbols = [...new Set(facts.files.flatMap((f) => f.functions_modified))];
     const symbols_modified = symbols.length > 0 ? symbols : ['(none)'];
@@ -69,6 +71,11 @@ function buildCommitDocumentMetadata(
     }
     if (summary.risk_notes !== null && summary.risk_notes !== undefined) {
         base.risk_notes = summary.risk_notes;
+    }
+    if (group_info) {
+        base.group_id = group_info.group_id;
+        base.group_size = group_info.group_size;
+        base.group_index = group_info.group_index;
     }
     return base;
 }
@@ -133,6 +140,7 @@ export async function runIngestPipeline(
     }
 
     const chronological = [...commits].reverse();
+    const group_map = detectGroups(chronological);
     const processed = chronological.length;
 
     const state: PipelineState =
@@ -155,27 +163,8 @@ export async function runIngestPipeline(
             }
 
             const facts = extractStructuredFacts(commit, diff, cfg);
-            let summary: CommitSummary;
-            try {
-                const out = await summarizer.summarize(facts, diff.raw_patch);
-                summary = out.summary;
-            } catch (e) {
-                if (e instanceof LargeDiffError) {
-                    const msg = `Large diff skipped: ${commit.hash}: ${e.message}`;
-                    errors.push(msg);
-                    failed += 1;
-                    state.failed_items.push({
-                        type: 'commit',
-                        id: commit.hash,
-                        error: e.message,
-                        failed_at: new Date().toISOString(),
-                        retry_count: 0,
-                    });
-                    state.total_failed += 1;
-                    continue;
-                }
-                throw e;
-            }
+            const out = await summarizer.summarize(facts, diff.raw_patch);
+            const summary = out.summary;
 
             const verification = verifyCommitSummary(summary, facts);
             if (!verification.passed) {
@@ -197,7 +186,8 @@ export async function runIngestPipeline(
                 continue;
             }
 
-            const meta = buildCommitDocumentMetadata(project_id, branch, facts, summary, verification);
+            const group_info = group_map.get(commit.hash);
+            const meta = buildCommitDocumentMetadata(project_id, branch, facts, summary, verification, group_info);
             const content = buildContent(facts, summary);
             const embedding = await embedder.embed(content);
             const doc_id = buildCommitDocId(project_id, commit.hash);

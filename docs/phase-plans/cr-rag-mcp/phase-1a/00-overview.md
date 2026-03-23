@@ -54,7 +54,7 @@ Node.js >= 20 + TypeScript
 - `ingest_commits` Tool (bulk, incremental)
 - `supplement_reason` Tool
 - `project://overview` Resource
-- Diff 크기 게이트 (소/중/대)
+- Diff 크기 게이트 (2-tier: normal ≤ 5,000줄 / oversized, `sample`)
 - 구조 검증 (1단계, 추론 근거 검증 포함)
 - ChromaDB embedded
 - JSON 파일 기반 Metadata Store
@@ -66,13 +66,23 @@ Node.js >= 20 + TypeScript
 **제외 (Phase 1b로 이연)**:
 
 - TypeScript Compiler API (L3~L4)
-- 커밋 그룹핑 (Logical Change Unit)
+- 커밋 그룹핑 (메타데이터 방식, Phase 1b)
 - 코드 구조 스냅샷 (ArchitectureDocument)
 - FileHistoryDocument
 - `get_file_history`, `search_by_topic`, `get_impact_analysis`, `analyze_architecture` Tools
 - `project://hot-files`, `project://recent-issues` Resources
 - 맥락 조합 (후처리 강화)
 - Registry 패턴 추적
+
+---
+
+## Phase 1a 보완 사항 (설계·구현 갱신)
+
+검증 과정에서 **medium 구간에서 diff를 절단(truncate)하는 방식**이 LLM 요약 정확도를 떨어뜨리는 것이 확인되어, Diff 크기 게이트를 **3-tier(small/medium/large)에서 2-tier로 단순화**했다.
+
+- **normal**: 변경 diff 총 줄 수가 `normal_max_lines`(기본 5,000) 이하 → 전체 diff(`full`)를 LLM에 전달
+- **oversized**: 그 초과 → `truncateDiff` 대신 **파일별 대표 hunk 샘플링**(`sample`) 후 전달
+- 과거 설계의 **사용자 확인(confirm) 흐름** 및 **`LargeDiffError`로 처리 중단**은 제거하고, 모든 커밋을 자동 처리한다.
 
 ---
 

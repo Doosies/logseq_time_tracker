@@ -13,8 +13,8 @@ export interface DiffSizeGate {
     total_lines: number;
     estimated_tokens: number;
     estimated_cost_usd: number;
-    tier: 'small' | 'medium' | 'large';
-    strategy: 'auto' | 'split' | 'confirm';
+    tier: 'normal' | 'oversized';
+    strategy: 'full' | 'sample';
 }
 
 export interface ReasonSupplement {

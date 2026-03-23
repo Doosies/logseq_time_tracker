@@ -9,7 +9,6 @@ export interface CrRagConfig {
         require_file_overlap?: boolean;
     };
     diff_size_gate?: {
-        small_max_lines?: number;
-        medium_max_lines?: number;
+        normal_max_lines?: number;
     };
 }

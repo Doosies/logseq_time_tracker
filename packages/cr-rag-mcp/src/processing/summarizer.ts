@@ -5,7 +5,7 @@ import type { StructuredFacts } from '../types/facts.js';
 import type { CommitSummary, DiffSizeGate } from '../types/summary.js';
 import { estimateDiffSize } from './diff_gate.js';
 
-const DEFAULT_SMALL_MAX_LINES = 200;
+const DEFAULT_NORMAL_MAX_LINES = 5000;
 const LLM_MODEL = 'gpt-4o-mini';
 
 const CHANGE_TYPES = new Set<CommitSummary['change_type']>([
@@ -55,12 +55,8 @@ export class LlmSummarizer {
         const diff_lines = splitDiffLines(diff_text);
         const gate = estimateDiffSize(diff_lines, this.config);
 
-        if (gate.tier === 'large') {
-            throw new LargeDiffError(facts.commit_hash, gate);
-        }
-
-        const small_max = this.config?.diff_size_gate?.small_max_lines ?? DEFAULT_SMALL_MAX_LINES;
-        const effective_diff = gate.tier === 'medium' ? truncateDiff(diff_lines, small_max) : diff_text;
+        const normal_max = this.config?.diff_size_gate?.normal_max_lines ?? DEFAULT_NORMAL_MAX_LINES;
+        const effective_diff = gate.tier === 'oversized' ? sampleDiffByFile(diff_text, normal_max) : diff_text;
 
         const summary = await this.callLlm(facts, effective_diff);
         return { summary, gate };
@@ -94,20 +90,191 @@ export class LlmSummarizer {
     }
 }
 
-export function truncateDiff(diff_lines: string[], max_lines: number): string {
-    if (diff_lines.length <= max_lines) {
-        return diff_lines.join('\n');
-    }
-    const head = diff_lines.slice(0, max_lines);
-    const omitted = diff_lines.length - max_lines;
-    return [...head, `[diff truncated: ${omitted} lines omitted]`].join('\n');
-}
-
 function splitDiffLines(diff_text: string): string[] {
     if (diff_text.length === 0) {
         return [];
     }
     return diff_text.split(/\r?\n/);
+}
+
+function splitDiffIntoFileChunks(lines: string[]): string[][] {
+    const starts: number[] = [];
+    for (let i = 0; i < lines.length; i++) {
+        if (lines[i]!.startsWith('diff --git ')) {
+            starts.push(i);
+        }
+    }
+    if (starts.length === 0) {
+        return lines.length > 0 ? [lines] : [];
+    }
+    const out: string[][] = [];
+    for (let j = 0; j < starts.length; j++) {
+        const start = starts[j]!;
+        const end = j + 1 < starts.length ? starts[j + 1]! : lines.length;
+        out.push(lines.slice(start, end));
+    }
+    return out;
+}
+
+function isChangeLine(line: string): boolean {
+    if (line.startsWith('+++') || line.startsWith('---')) {
+        return false;
+    }
+    if (line.startsWith('+')) {
+        return true;
+    }
+    if (line.startsWith('-')) {
+        return true;
+    }
+    return false;
+}
+
+const HUNK_CONTEXT_RADIUS = 2;
+
+function sampleHunkBody(body: string[], max_lines: number): string[] {
+    if (body.length <= max_lines) {
+        return [...body];
+    }
+    const n = body.length;
+    const pick = new Set<number>();
+    for (let i = 0; i < n; i++) {
+        if (!isChangeLine(body[i]!)) {
+            continue;
+        }
+        for (let d = -HUNK_CONTEXT_RADIUS; d <= HUNK_CONTEXT_RADIUS; d++) {
+            const j = i + d;
+            if (j >= 0 && j < n) {
+                pick.add(j);
+            }
+        }
+    }
+    if (pick.size === 0) {
+        return body.slice(0, max_lines);
+    }
+    const ordered = [...pick].sort((a, b) => a - b);
+    if (ordered.length > max_lines) {
+        return ordered.slice(0, max_lines).map((idx) => body[idx]!);
+    }
+    const extra: number[] = [];
+    for (let i = 0; i < n && ordered.length + extra.length < max_lines; i++) {
+        if (!pick.has(i)) {
+            extra.push(i);
+        }
+    }
+    return [...ordered, ...extra].slice(0, max_lines).map((idx) => body[idx]!);
+}
+
+function splitIntoHunks(lines: string[]): { header: string; body: string[] }[] {
+    const hunks: { header: string; body: string[] }[] = [];
+    let i = 0;
+    while (i < lines.length) {
+        const line = lines[i]!;
+        if (!line.startsWith('@@ ')) {
+            i += 1;
+            continue;
+        }
+        const header = line;
+        i += 1;
+        const body: string[] = [];
+        while (i < lines.length && !lines[i]!.startsWith('@@ ')) {
+            body.push(lines[i]!);
+            i += 1;
+        }
+        hunks.push({ header, body });
+    }
+    return hunks;
+}
+
+function sampleFileChunkLines(chunk: string[], max_lines: number): string {
+    if (chunk.length === 0) {
+        return '';
+    }
+    if (chunk.length <= max_lines) {
+        return chunk.join('\n');
+    }
+    let first_at = -1;
+    for (let i = 0; i < chunk.length; i++) {
+        if (chunk[i]!.startsWith('@@ ')) {
+            first_at = i;
+            break;
+        }
+    }
+    if (first_at < 0) {
+        return chunk.slice(0, max_lines).join('\n');
+    }
+    const preamble = chunk.slice(0, first_at);
+    const from_at = chunk.slice(first_at);
+    if (preamble.length >= max_lines) {
+        return preamble.slice(0, max_lines).join('\n');
+    }
+    let budget = max_lines - preamble.length;
+    const hunks = splitIntoHunks(from_at);
+    const with_meta = hunks.map((h, order) => ({
+        order,
+        header: h.header,
+        body: h.body,
+        change_count: h.body.filter(isChangeLine).length,
+    }));
+    with_meta.sort((a, b) => b.change_count - a.change_count);
+
+    type Selected = { order: number; lines: string[] };
+    const selected: Selected[] = [];
+    for (const h of with_meta) {
+        if (budget <= 0) {
+            break;
+        }
+        const full_cost = 1 + h.body.length;
+        if (full_cost <= budget) {
+            selected.push({ order: h.order, lines: [h.header, ...h.body] });
+            budget -= full_cost;
+            continue;
+        }
+        if (budget === 1) {
+            selected.push({ order: h.order, lines: [h.header] });
+            budget -= 1;
+            continue;
+        }
+        const body_budget = budget - 1;
+        const sampled_body = sampleHunkBody(h.body, body_budget);
+        selected.push({ order: h.order, lines: [h.header, ...sampled_body] });
+        budget -= 1 + sampled_body.length;
+    }
+    selected.sort((a, b) => a.order - b.order);
+    const hunk_lines = selected.flatMap((s) => s.lines);
+    return [...preamble, ...hunk_lines].join('\n');
+}
+
+export function sampleDiffByFile(diff_text: string, budget: number): string {
+    const lines = splitDiffLines(diff_text);
+    const total_original_lines = lines.length;
+    const chunks = splitDiffIntoFileChunks(lines);
+    const file_count = chunks.length;
+
+    if (file_count === 0) {
+        return diff_text;
+    }
+    if (budget <= 0) {
+        return `[diff sampled: ${file_count} files, ${total_original_lines} total lines → ${budget} lines]`;
+    }
+
+    const base = Math.floor(budget / file_count);
+    const rem = budget % file_count;
+    const indices_by_size = chunks.map((ch, i) => ({ i, len: ch.length })).sort((a, b) => b.len - a.len);
+    const per_file_budget = new Array(file_count).fill(base);
+    for (let k = 0; k < rem; k++) {
+        const idx = indices_by_size[k]?.i;
+        if (idx !== undefined) {
+            per_file_budget[idx] += 1;
+        }
+    }
+
+    const parts: string[] = [];
+    for (let f = 0; f < file_count; f++) {
+        parts.push(sampleFileChunkLines(chunks[f]!, per_file_budget[f]!));
+    }
+    const body = parts.join('\n');
+    const footer = `[diff sampled: ${file_count} files, ${total_original_lines} total lines → ${budget} lines]`;
+    return `${body}\n${footer}`;
 }
 
 const SYSTEM_PROMPT = `You are a commit analyst. Output a single JSON object only (no markdown).
@@ -122,6 +289,7 @@ Rules:
 - Never guess business/product motivations or ticket intent. If unclear, use level 3.
 - "impact" and "risk_notes": technical scope only; mark uncertainty briefly if needed.
 - change_type must be one of: bugfix, feature, refactor, optimization, chore, unknown.
+- The diff may be sampled (one representative hunk per file). Rely on structured_facts for the complete file list, symbols, and change statistics. Do not guess about files not shown in the diff.
 
 Required JSON keys (exact names, booleans not strings):
 what (string), reason_known (boolean), reason_inferred (boolean), reason (string or null),
