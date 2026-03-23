@@ -1,7 +1,7 @@
 import type { SearchResult } from './engine.js';
 import type { PostProcessedResult, ProcessedSearchResult } from '../types/search.js';
 
-const MIN_SCORE_THRESHOLD = 0.3;
+const MIN_SIMILARITY_THRESHOLD = 0.25;
 const FILE_OVERLAP_THRESHOLD = 0.8;
 
 export class PostProcessor {
@@ -11,13 +11,11 @@ export class PostProcessor {
         // 1. 중복 제거
         const deduped = this.deduplicate(raw_results);
 
-        // 2. 노이즈 필터 (임계값 이하 제거)
-        const filtered = deduped.filter((r) => r.final_score >= MIN_SCORE_THRESHOLD);
+        // 2. 노이즈 필터 (순수 유사도 임계값 이하 제거; final_score는 시간 감쇠 반영)
+        const filtered = deduped.filter((r) => r.similarity_score >= MIN_SIMILARITY_THRESHOLD);
 
-        // 3. 시간순 정렬 (최신 먼저)
-        const sorted = filtered.sort(
-            (a, b) => new Date(b.metadata.committed_at).getTime() - new Date(a.metadata.committed_at).getTime(),
-        );
+        // 3. final_score 내림차순 (유사도×시간 가중 반영 순)
+        const sorted = filtered.sort((a, b) => b.final_score - a.final_score);
 
         const results: ProcessedSearchResult[] = sorted.map((r) => this.toProcessedSearchResult(r));
 
@@ -41,6 +39,7 @@ export class PostProcessor {
         const base: ProcessedSearchResult = {
             content: r.document ?? '',
             score: r.final_score,
+            similarity_score: r.similarity_score,
             commit_hash: r.metadata.commit_hash,
             date: r.metadata.committed_at,
             file_paths: r.metadata.file_paths,

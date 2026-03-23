@@ -1,6 +1,7 @@
 export interface ProcessedSearchResult {
     content: string;
     score: number;
+    similarity_score: number;
     commit_hash: string;
     date: string;
     file_paths: string[];

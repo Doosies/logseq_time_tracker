@@ -14,7 +14,8 @@
         "type-check": "tsc --noEmit",
         "lint": "eslint . --ext ts --report-unused-disable-directives --max-warnings 0",
         "format": "prettier --write \"src/**/*.{ts,json,md}\"",
-        "format:check": "prettier --check \"src/**/*.{ts,json,md}\""
+        "format:check": "prettier --check \"src/**/*.{ts,json,md}\"",
+        "test": "vitest run"
     },
     "dependencies": {
         "@modelcontextprotocol/sdk": "catalog:",
@@ -30,6 +31,8 @@
         "globals": "catalog:",
         "prettier": "catalog:",
         "typescript": "catalog:",
-        "typescript-eslint": "catalog:"
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
     }
 }
