@@ -47,6 +47,7 @@ alwaysApply: true
 그 외 모든 코드 작업은 서브에이전트에게 위임합니다.
 
 - **QA 검증 실행 위임**: QA 검증(ReadLints, format, test, lint, type-check, build) 실행은 **qa 서브에이전트에게 위임**. 메인 에이전트 직접 실행 금지.
+- **시스템 개선 직접 수행**: 시스템 개선(패턴 분석, 에이전트 규칙 개선)은 메인 에이전트가 **system-improvement 스킬을 참조하여 직접 수행**. `.cursor/skills/system-improvement/SKILL.md` 참조.
 
 ### 위임 판단 기준
 
@@ -58,7 +59,7 @@ alwaysApply: true
 | 코드 리뷰/보안   | security           | 구현 완료 후       |
 | 문서 작성        | docs               | API 문서, README   |
 | 커밋/PR          | git-workflow       | 코드 변경 완료 후  |
-| 시스템 분석/개선 | system-improvement | 성능 저하 감지 시  |
+| 시스템 분석/개선 | 메인 에이전트 직접 | system-improvement 스킬 참조 |
 
 ### Plan Mode 활용
 
@@ -376,11 +377,6 @@ Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검
 - **역할**: 반복 작업 자동화 도구(MCP 서버) 개발
 - **정의 파일**: [mcp-development](../agents/mcp-development.md)
 
-### 시스템 개선 에이전트
-
-- **역할**: 에이전트 시스템 성능 분석 및 자동 최적화
-- **정의 파일**: [system-improvement](../agents/system-improvement.md)
-
 ---
 
 ## 서브에이전트 호출 규칙
@@ -505,7 +501,7 @@ Developer/QA가 **코드 변경을 반환한 직후** 메인 에이전트는 검
 | 4   | Security(코드) 호출 (Bugfix/Feature/Refactor)                     |            ✓            |        -        |
 | 5   | docs 서브에이전트 호출 (Chore 단순 제외)                          |            ✓            |    스킵가능     |
 | 6   | git-workflow 서브에이전트 호출 (코드 변경 시)                     |            ✓            |      선택       |
-| 7   | system-improvement 호출 (Chore 단순 제외)                         |            ✓            |    스킵가능     |
+| 7   | system-improvement 스킬 직접 수행 (Chore 단순 제외)              |            ✓            |    스킵가능     |
 | 10  | 최종 보고서 저장 (reports/), completed_at/success 기록            |            ✓            |        ✓        |
 
 - 하나라도 미충족 → **작업 미완료**, 해당 단계 수행 후 재확인

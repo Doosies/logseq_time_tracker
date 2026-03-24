@@ -33,11 +33,6 @@
             "retries": 0,
             "errors": []
         },
-        "system-improvement": {
-            "outcome": "success|failure|skipped",
-            "retries": 0,
-            "errors": []
-        },
         "git-workflow": {
             "outcome": "success|failure|skipped",
             "retries": 0,

@@ -217,16 +217,18 @@ todos:
 
 ---
 
-## 8. 시스템 개선 (System-Improvement) 단계
+## 8. 시스템 개선 단계
 
-**참조**: [`.cursor/agents/system-improvement.md`](../agents/system-improvement.md)
+**실행 주체**: 메인 에이전트 직접 수행 (system-improvement 스킬 참조)
+**참조 스킬**: [`.cursor/skills/system-improvement/SKILL.md`](../skills/system-improvement/SKILL.md)
 
 **호출 시점**: 커밋 완료 후. **스킵 가능**: Chore 단순 작업 시 스킵.
 
-1. 이번 세션에서 발생한 **패턴/이슈** 분석
-2. 서브에이전트 정의 파일에 **개선이 필요한지** 판단
-3. 개선 필요 시: `developer.md`, `qa.md`, `security.md`, `docs.md` 등에 규칙 추가/수정
-4. 개선 결과를 `.cursor/metrics/improvements/` 에 리포트 저장
+1. `.cursor/skills/system-improvement/SKILL.md` 스킬을 참조
+2. 이번 세션에서 발생한 **패턴/이슈** 분석
+3. 서브에이전트 정의 파일에 **개선이 필요한지** 판단
+4. 개선 필요 시: `developer.md`, `qa.md`, `security.md`, `docs.md` 등에 규칙 추가/수정
+5. 개선 결과를 `.cursor/metrics/improvements/` 에 리포트 저장
 
 ---
 
@@ -291,7 +293,7 @@ QA 검증 (qa) — ReadLints + format/test/lint/type-check/build 스크립트
     ↓
 커밋 (git-workflow)
     ↓
-시스템 개선 (system-improvement)
+시스템 개선 (메인 에이전트, system-improvement 스킬 참조)
     ↓
 개선 시 → 커밋 (git-workflow)
     ↓

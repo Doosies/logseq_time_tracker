@@ -27,12 +27,12 @@
 ```mermaid
 graph TB
     subgraph metaLayer["레벨 0: 메타 레이어"]
-        systemImprove["시스템 개선 에이전트"]
         mcpDev["MCP 개발 에이전트"]
     end
 
     subgraph strategyLayer["레벨 1: 전략 레이어"]
         main["메인 에이전트 (조율자)"]
+        sysSkill["system-improvement 스킬"]
     end
 
     subgraph tacticalLayer["레벨 2: 전술 레이어 (조건부)"]
@@ -48,7 +48,7 @@ graph TB
         docs["문서화"]
     end
 
-    systemImprove -.->|개선 피드백| main
+    main -.->|직접 참조| sysSkill
     mcpDev -.->|도구 추가| executionLayer
 
     main --> orchestrator
@@ -66,7 +66,7 @@ graph TB
 
 | 레이어 | 목적 | 작동 | 판단 |
 |--------|------|------|------|
-| 레벨 0: 메타 | 시스템 자체를 관찰·개선 | 20 사이클마다 또는 임계값 초과 시 | IMPROVE |
+| 레벨 0: 메타 | 도구 자동 개발 | MCP 서버 필요 감지 시 | IMPROVE |
 | 레벨 1: 전략 | 목표 정의, 최종 품질 승인 | 모든 사용자 요청에 응답 | WHAT |
 | 레벨 2: 전술 | 복잡한 멀티태스크 조율 | 5개+ 파일, 3개+ 에이전트 병렬 시 | HOW |
 | 레벨 3: 실행 | 각 전문 영역 작업 수행 | 메인 에이전트가 호출 시 | DO |
@@ -75,7 +75,7 @@ graph TB
 
 ## 에이전트 목록
 
-### 실행 레이어 (6개)
+### 실행 레이어 (6개 서브에이전트)
 
 | 에이전트 | 정의 파일 | 역할 |
 |----------|-----------|------|
@@ -86,12 +86,12 @@ graph TB
 | Git 워크플로우 | `.cursor/agents/git-workflow.md` | Conventional Commits, PR 설명 생성 |
 | 문서화 (Docs) | `.cursor/agents/docs.md` | JSDoc/TSDoc, README, CHANGELOG |
 
-### 메타 레이어 (2개)
+### 메타 레이어 (1개 서브에이전트 + 1개 스킬)
 
-| 에이전트 | 정의 파일 | 역할 |
+| 구분 | 위치 | 역할 |
 |----------|-----------|------|
-| 시스템 개선 | `.cursor/agents/system-improvement.md` | 메트릭 분석, Rule/Skill 자동 최적화 |
-| MCP 개발 | `.cursor/agents/mcp-development.md` | 반복 작업 감지, MCP 서버 개발 |
+| 시스템 개선 (스킬) | `.cursor/skills/system-improvement/SKILL.md` | 메트릭 분석, Rule/Skill 최적화 (메인 에이전트 직접 수행) |
+| MCP 개발 (에이전트) | `.cursor/agents/mcp-development.md` | 반복 작업 감지, MCP 서버 개발 |
 
 ---
 
@@ -173,7 +173,7 @@ graph TB
 각 작업 사이클에서 수집하는 데이터:
 - `cycle_id`, `task_type`, `task_description`
 - `started_at`, `completed_at`, `success`
-- `agents`: 8개 에이전트별 outcome/retries/errors
+- `agents`: 7개 서브에이전트별 outcome/retries/errors
 - `quality_gates`: readlints, type_check, lint, test, build, security
 - `decisions`, `issues_encountered`
 - `files_changed`: created/modified/deleted
@@ -181,9 +181,9 @@ graph TB
 ### 자기 진화 사이클
 
 ```
-사이클 실행 → 메트릭 수집 → 트리거 판단 → 메타 에이전트 분석
-  → 프로세스 문제: system-improvement (Rule/Skill 수정)
-  → 도구 부족: mcp-development (MCP 서버 개발)
+사이클 실행 → 메트릭 수집 → 트리거 판단 → 분석
+  → 프로세스 문제: 메인 에이전트가 system-improvement 스킬로 직접 Rule/Skill 수정
+  → 도구 부족: mcp-development 에이전트가 MCP 서버 개발
   → 개선 적용 → 다음 사이클
 ```
 

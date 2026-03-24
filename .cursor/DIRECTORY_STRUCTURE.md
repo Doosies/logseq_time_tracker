@@ -11,15 +11,14 @@
 ├── DIRECTORY_STRUCTURE.md          # 이 문서
 ├── mcp-servers.json                # MCP 서버 설정
 │
-├── agents/                         # 서브에이전트 정의 (8개)
+├── agents/                         # 서브에이전트 정의 (7개)
 │   ├── planner.md                  # 기획/설계 에이전트
 │   ├── developer.md                # 구현 에이전트
 │   ├── qa.md                       # 품질 보증 에이전트
 │   ├── security.md                 # 보안 에이전트
 │   ├── git-workflow.md             # Git 워크플로우 에이전트
 │   ├── docs.md                     # 문서화 에이전트
-│   ├── mcp-development.md          # MCP 개발 에이전트 (메타)
-│   └── system-improvement.md       # 시스템 개선 에이전트 (메타)
+│   └── mcp-development.md          # MCP 개발 에이전트 (메타)
 │
 ├── rules/                          # Rule 파일 (메인 에이전트 전용)
 │   ├── main-orchestrator.mdc       # 메인 에이전트 조율 규칙

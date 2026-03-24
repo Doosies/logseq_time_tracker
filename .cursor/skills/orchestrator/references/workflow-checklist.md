@@ -39,7 +39,7 @@
 - [ ] `git push`는 사용자에게 요청
 
 ### 7단계: 시스템 개선 (선택적, Chore 시 스킵 가능)
-- [ ] system-improvement 서브에이전트 호출
+- [ ] 메인 에이전트가 system-improvement 스킬 참조하여 직접 수행 (`.cursor/skills/system-improvement/SKILL.md`)
 - [ ] 패턴/이슈 분석
 - [ ] 개선 리포트 저장 (`.cursor/metrics/improvements/`)
 

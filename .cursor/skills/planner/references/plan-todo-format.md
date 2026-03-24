@@ -48,7 +48,6 @@ todos:
 | **docs** | CHANGELOG, README, API 문서 | 문서 업데이트 |
 | **security** | 보안 검증, 취약점 스캔 | Feature/Refactor 배포 전 |
 | **git-workflow** | 커밋 메시지, PR 설명, 커밋 분할 | 코드 변경 완료 후 |
-| **system-improvement** | 패턴 분석, 에이전트 규칙 개선 | 커밋 후 (선택) |
 
 ---
 

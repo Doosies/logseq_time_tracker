@@ -95,7 +95,7 @@
 
 ## 8. 시스템 개선 (선택)
 
-- **분석**: system-improvement 에이전트 실행 여부
+- **분석**: system-improvement 스킬 적용 여부 (메인 에이전트 직접 수행)
 - **개선 사항**: (있으면) 에이전트 규칙 추가/수정 내용
 - **리포트 경로**: `.cursor/metrics/improvements/YYYY-MM-DD-NNN-description.md`
 - **추가 커밋**: (있으면) chore(agents): improve subagent rules

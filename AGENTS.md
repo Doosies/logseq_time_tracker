@@ -593,7 +593,6 @@ try {
 - **Git 워크플로우**: `.cursor/agents/git-workflow.md`
 - **문서화**: `.cursor/agents/docs.md`
 - **MCP 개발**: `.cursor/agents/mcp-development.md`
-- **시스템 개선**: `.cursor/agents/system-improvement.md`
 
 **특징**:
 - Task tool로 호출되는 서브에이전트는 User Rules를 받지 못함
