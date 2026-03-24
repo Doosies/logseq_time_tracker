@@ -1,12 +1,19 @@
 import '@logseq/libs';
 import { mount } from 'svelte';
-import { PocTest } from '@personal/time-tracker-core';
+import App from './App.svelte';
+import { initializeApp, ConsoleLogger } from '@personal/time-tracker-core';
+import type { AppContext } from '@personal/time-tracker-core';
 
-function renderApp() {
+let app_context: AppContext | null = null;
+
+async function renderApp() {
     const app_root = document.getElementById('app');
-    if (app_root) {
-        mount(PocTest, { target: app_root });
-    }
+    if (!app_root) return;
+
+    const ctx = await initializeApp({ logger: new ConsoleLogger() });
+    app_context = ctx;
+
+    mount(App, { target: app_root, props: { ctx } });
 }
 
 function main() {
@@ -22,8 +29,12 @@ function main() {
             },
         });
 
-        renderApp();
+        void renderApp();
     });
 }
+
+window.addEventListener('beforeunload', () => {
+    app_context?.services.timer_service.dispose();
+});
 
 main();

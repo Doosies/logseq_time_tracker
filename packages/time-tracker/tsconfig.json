@@ -1,9 +1,0 @@
-{
-  "extends": "../../tsconfig.base.json",
-  "compilerOptions": {
-    // Vite + Vitest 타입 추가
-    "types": ["vite/client", "vitest/globals"]
-  },
-  "include": ["src/**/*", "tests/**/*"],
-  "exclude": ["node_modules", "dist"]
-}
