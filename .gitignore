@@ -87,3 +87,6 @@ GIT_COMMANDS.md
 *.heapsnapshot
 
 storybook-static/
+
+# sql.js WASM copied by logseq-time-tracker prebuild/dev
+packages/logseq-time-tracker/public/assets/sql-wasm.wasm
