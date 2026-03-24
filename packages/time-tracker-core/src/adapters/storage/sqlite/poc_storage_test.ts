@@ -137,7 +137,7 @@ function idb_tx_promise<T>(
 /**
  * 검증 3: sql.js DB export → IndexedDB 저장 → 로드 후 SELECT로 왕복 (브라우저 전용).
  */
-export async function testIndexedDbRoundtrip(): Promise<PocResult> {
+export async function testIndexedDbRoundtrip(wasm_url?: string): Promise<PocResult> {
     if (!is_browser_runtime() || typeof indexedDB === 'undefined') {
         return {
             test_name: TEST_NAME_INDEXED_DB,
@@ -146,8 +146,8 @@ export async function testIndexedDbRoundtrip(): Promise<PocResult> {
         };
     }
     try {
-        const locate_file = build_locate_file(undefined);
-        const SQL = await initSqlJs({ locateFile: locate_file });
+        const locate_file = build_locate_file(wasm_url);
+        const SQL = is_browser_runtime() ? await initSqlJs({ locateFile: locate_file }) : await initSqlJs();
         const db = new SQL.Database();
         db.exec(`CREATE TABLE ${POC_TABLE} (id INTEGER PRIMARY KEY, name TEXT NOT NULL);`);
         db.exec(`INSERT INTO ${POC_TABLE} (name) VALUES ('idb-roundtrip');`);
@@ -190,6 +190,6 @@ export async function testIndexedDbRoundtrip(): Promise<PocResult> {
 export async function runAllPocTests(wasm_url?: string): Promise<PocResult[]> {
     const sql_result = await testSqlJsInit(wasm_url);
     const opfs_result = await testOpfsAccess();
-    const idb_result = await testIndexedDbRoundtrip();
+    const idb_result = await testIndexedDbRoundtrip(wasm_url);
     return [sql_result, opfs_result, idb_result];
 }

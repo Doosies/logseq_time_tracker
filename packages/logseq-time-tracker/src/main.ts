@@ -20,7 +20,10 @@ async function renderApp() {
     const ctx = await initializeApp({
         logger: new ConsoleLogger(),
         storage_mode: 'sqlite',
-        sqlite_options: { wasm_url: './assets', db_name: 'time-tracker.db' },
+        sqlite_options: {
+            wasm_url: new URL('./assets/', document.baseURI).href,
+            db_name: 'time-tracker.db',
+        },
     });
     app_context = ctx;
 

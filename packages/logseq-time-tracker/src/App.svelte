@@ -223,7 +223,7 @@
         poc_running = true;
         poc_results = [];
         try {
-            poc_results = await runAllPocTests('./assets');
+            poc_results = await runAllPocTests(new URL('./assets/', document.baseURI).href);
         } catch (e) {
             poc_results = [{ test_name: 'runAllPocTests', success: false, error: String(e) }];
         } finally {
