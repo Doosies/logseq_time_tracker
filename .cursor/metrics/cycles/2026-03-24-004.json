@@ -1,0 +1,97 @@
+{
+    "cycle_id": "2026-03-24-004",
+    "task_type": "refactor",
+    "task_description": "system-improvement 서브에이전트를 메인 에이전트 직접 수행 스킬로 전환",
+    "started_at": "2026-03-24T09:00:00+09:00",
+    "completed_at": "2026-03-24T10:30:00+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "git-workflow"],
+    "agents": {
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "security": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "git-workflow": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "mcp-development": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        }
+    },
+    "files_changed": {
+        "created": [],
+        "modified": [
+            ".cursor/skills/system-improvement/SKILL.md",
+            ".cursor/rules/main-orchestrator.mdc",
+            ".cursor/workflows/plan-execution-workflow.md",
+            ".cursor/commands/plan-execution.md",
+            ".cursor/skills/orchestrator/references/workflow-checklist.md",
+            ".cursor/skills/planner/references/plan-todo-format.md",
+            "AGENTS.md",
+            ".cursor/AGENT_SYSTEM_DESIGN.md",
+            ".cursor/DIRECTORY_STRUCTURE.md",
+            ".cursor/workflows/final-report-template.md",
+            ".cursor/metrics/cycle-template.json"
+        ],
+        "deleted": [
+            ".cursor/agents/system-improvement.md"
+        ]
+    },
+    "quality_gates": {
+        "readlints": "skipped",
+        "type_check": "skipped",
+        "lint": "skipped",
+        "test": "skipped",
+        "build": "skipped",
+        "security": "skipped"
+    },
+    "decisions": [
+        {
+            "phase": "planning",
+            "decision": "에이전트 정의 파일 삭제 후 SKILL.md로 내용 통합",
+            "rationale": "메인 에이전트가 직접 참조할 수 있도록 스킬 파일에 모든 프로세스/원칙 포함",
+            "alternatives": "에이전트 파일 유지하면서 스킬만 강화 (이중 관리 문제)"
+        },
+        {
+            "phase": "git-workflow",
+            "decision": "refactor(cursor) 타입 사용",
+            "rationale": "동작 변경 없이 에이전트/워크플로우 역할만 재배치",
+            "alternatives": "chore(cursor)"
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "git-workflow",
+            "issue": "워킹 트리에 무관 변경 다수 존재",
+            "resolution": "해당 파일만 선택적 스테이징",
+            "impact": "none"
+        }
+    ],
+    "notes": "코드 변경 없이 에이전트 시스템 설정 파일만 수정하는 리팩토링이므로 QA/Security/Build 검증 스킵"
+}

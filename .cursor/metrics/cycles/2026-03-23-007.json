@@ -1,0 +1,39 @@
+{
+    "cycle_id": "2026-03-23-007",
+    "task_type": "bugfix",
+    "task_description": "검색 후처리기 PostProcessor에서 필터링 기준을 final_score에서 similarity_score로 분리하여, 시간 감쇠로 인해 관련 커밋이 잘못 필터링되는 버그 수정",
+    "started_at": "2026-03-23T17:00:00.000Z",
+    "completed_at": "2026-03-23T17:45:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "developer", "qa", "docs", "git-workflow", "system-improvement", "git-workflow"],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "success", "retries": 0, "errors": [] },
+        "qa": { "outcome": "success", "retries": 0, "errors": [] },
+        "security": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "docs": { "outcome": "success", "retries": 0, "errors": [] },
+        "system-improvement": { "outcome": "success", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": { "created": ["packages/cr-rag-mcp/src/search/post_processor.test.ts", "packages/cr-rag-mcp/vitest.config.ts"], "modified": ["packages/cr-rag-mcp/src/search/post_processor.ts", "packages/cr-rag-mcp/src/types/search.ts", "packages/cr-rag-mcp/package.json", "docs/phase-plans/cr-rag-mcp/phase-1a/P1a-7-post-processing.md", "docs/cr-rag-mcp/02-data-pipeline.md", "docs/cr-rag-mcp/03-data-model.md", "docs/cr-rag-mcp/05-mcp-interface.md"], "deleted": [] },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass",
+        "lint": "pass",
+        "test": "pass (8/8)",
+        "build": "pass",
+        "security": "skipped (bugfix)"
+    },
+    "decisions": [
+        {
+            "phase": "planning",
+            "decision": "필터링은 similarity_score(순수 유사도) 기준, final_score(시간 감쇠 포함)는 정렬에만 사용",
+            "rationale": "시간 감쇠가 필터 임계값에 영향을 주면 관련성 높지만 오래된 결과가 탈락됨",
+            "alternatives": ["MIN_SCORE_THRESHOLD를 0.15로 낮추기 (근본 해결 아님)", "time_decay 비활성화 (최신 우선 기능 상실)"]
+        }
+    ],
+    "issues_encountered": [],
+    "notes": ""
+}

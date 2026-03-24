@@ -1,0 +1,76 @@
+{
+    "cycle_id": "2026-03-24-001",
+    "task_type": "refactor",
+    "task_description": "에이전트 시스템 일반화 개선 - 프로젝트 특정 참조를 플레이스홀더로 치환, pnpm 하드코딩 제거, 스킬 참조 경로 통일",
+    "started_at": "2026-03-24T00:00:00+09:00",
+    "completed_at": "2026-03-24T09:40:00+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "qa", "git-workflow"],
+    "agents": {
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "success",
+            "retries": 1,
+            "errors": ["QA 1차에서 4건 잔여 참조 발견 - 즉시 수정 후 재검증 통과"]
+        },
+        "security": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "git-workflow": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "mcp-development": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        }
+    },
+    "files_changed": {
+        "created": [],
+        "modified": [],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": null,
+        "type_check": null,
+        "lint": null,
+        "test": null,
+        "build": null,
+        "security": null
+    },
+    "decisions": [
+        {
+            "phase": "plan",
+            "decision": "플레이스홀더 스타일로 {ui-lib}, {extension-pkg} 등 중괄호 형식 채택",
+            "rationale": "사용자 선택, 마크다운 내 가독성 우수",
+            "alternatives": ["일반화된 예시명 (my-ui-lib)", "패턴 표기 (<ui-library>)"]
+        },
+        {
+            "phase": "plan",
+            "decision": "본문 스킬 참조를 ../skills/ 상대경로로 통일",
+            "rationale": "에이전트 파일이 .cursor/agents/에 위치하므로 자연스러운 상대경로",
+            "alternatives": [".cursor/skills/ 워크스페이스 루트 기준"]
+        }
+    ],
+    "issues_encountered": [],
+    "notes": "P0(3계층 위반 수정) + P1(일관성) + P2(선택적 개선) 전체 범위"
+}
