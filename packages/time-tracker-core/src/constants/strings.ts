@@ -3,7 +3,7 @@ export const STRINGS = {
         start: '시작',
         pause: '일시정지',
         resume: '재개',
-        stop: '정지',
+        stop: '완료',
         switch_job: '전환',
         elapsed: '경과 시간',
     },

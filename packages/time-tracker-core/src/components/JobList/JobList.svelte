@@ -8,11 +8,17 @@
         jobs,
         selected_job_id,
         time_totals = new SvelteMap(),
+        active_job_id = null as string | null,
+        running_since = null as string | null,
+        accumulated_ms = 0,
         onselect,
     }: {
         jobs: Job[];
         selected_job_id: string | null;
         time_totals?: Map<string, number>;
+        active_job_id?: string | null;
+        running_since?: string | null;
+        accumulated_ms?: number;
         onselect: (id: string) => void;
     } = $props();
 </script>
@@ -24,6 +30,9 @@
                 {job}
                 is_selected={job.id === selected_job_id}
                 total_seconds={time_totals.get(job.id) ?? 0}
+                is_active_running={job.id === active_job_id}
+                running_since={job.id === active_job_id ? running_since : null}
+                accumulated_ms={job.id === active_job_id ? accumulated_ms : 0}
                 onclick={() => onselect(job.id)}
             />
         </li>

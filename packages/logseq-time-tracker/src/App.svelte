@@ -21,6 +21,10 @@
 
     const time_totals = new SvelteMap<string, number>();
 
+    const selected_job_total_seconds = $derived(
+        job_store.selected_job_id ? (time_totals.get(job_store.selected_job_id) ?? 0) : 0,
+    );
+
     async function loadTimeTotals() {
         const entries = await ctx.uow.timeEntryRepo.getTimeEntries();
         time_totals.clear();
@@ -199,6 +203,7 @@
             <Timer
                 {timer_store}
                 {job_store}
+                {selected_job_total_seconds}
                 onstart={handleStart}
                 onpause={handlePause}
                 onresume={handleResume}
@@ -214,6 +219,9 @@
                     jobs={job_store.jobs}
                     selected_job_id={job_store.selected_job_id}
                     {time_totals}
+                    active_job_id={timer_store.active_job_id}
+                    running_since={timer_store.state.current_segment_start}
+                    accumulated_ms={timer_store.state.accumulated_ms}
                     onselect={handleSelectJob}
                 />
                 <div class="add-job-area">
