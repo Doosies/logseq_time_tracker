@@ -26,7 +26,9 @@ export class HistoryService implements IHistoryService {
             occurred_at: now,
             created_at: now,
         };
-        await this._uow.historyRepo.appendJobHistory(history);
+        await this._uow.transaction(async (uow) => {
+            await uow.historyRepo.appendJobHistory(history);
+        });
         this._logger?.debug('Recorded transition', { job_id, from, to });
     }
 

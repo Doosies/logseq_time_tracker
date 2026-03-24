@@ -101,9 +101,11 @@ export class CategoryService implements ICategoryService {
             created_at: now,
             updated_at: now,
         };
-        await this._uow.categoryRepo.upsertCategory(category);
-        this._logger?.debug('Category created', { id: category.id });
-        return category;
+        return this._uow.transaction(async (uow) => {
+            await uow.categoryRepo.upsertCategory(category);
+            this._logger?.debug('Category created', { id: category.id });
+            return category;
+        });
     }
 
     async updateCategory(id: string, updates: Partial<Pick<Category, 'name' | 'sort_order'>>): Promise<Category> {
@@ -162,7 +164,9 @@ export class CategoryService implements ICategoryService {
                 id,
             );
         }
-        await this._uow.categoryRepo.deleteCategory(id);
+        await this._uow.transaction(async (uow) => {
+            await uow.categoryRepo.deleteCategory(id);
+        });
         this._logger?.debug('Category deleted', { id });
     }
 
@@ -173,20 +177,22 @@ export class CategoryService implements ICategoryService {
         }
         const now = new Date().toISOString();
         const defaults = ['개발', '분석', '회의', '기타'];
-        let sort_order = 1;
-        for (const name of defaults) {
-            const category: Category = {
-                id: generateId(),
-                name,
-                parent_id: null,
-                is_active: true,
-                sort_order,
-                created_at: now,
-                updated_at: now,
-            };
-            sort_order += 1;
-            await this._uow.categoryRepo.upsertCategory(category);
-        }
+        await this._uow.transaction(async (uow) => {
+            let sort_order = 1;
+            for (const name of defaults) {
+                const category: Category = {
+                    id: generateId(),
+                    name,
+                    parent_id: null,
+                    is_active: true,
+                    sort_order,
+                    created_at: now,
+                    updated_at: now,
+                };
+                sort_order += 1;
+                await uow.categoryRepo.upsertCategory(category);
+            }
+        });
         this._logger?.info('Default categories seeded', { count: defaults.length });
     }
 }

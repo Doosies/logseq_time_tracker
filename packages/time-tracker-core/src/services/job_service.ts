@@ -41,9 +41,11 @@ export class JobService implements IJobService {
             created_at: now,
             updated_at: now,
         };
-        await this._uow.jobRepo.upsertJob(job);
-        this._logger?.debug('Job created', { id: job.id });
-        return job;
+        return this._uow.transaction(async (uow) => {
+            await uow.jobRepo.upsertJob(job);
+            this._logger?.debug('Job created', { id: job.id });
+            return job;
+        });
     }
 
     async getJobs(filter?: { status?: StatusKind }): Promise<Job[]> {
@@ -80,8 +82,10 @@ export class JobService implements IJobService {
             description,
             updated_at: now,
         };
-        await this._uow.jobRepo.upsertJob(job);
-        return job;
+        return this._uow.transaction(async (uow) => {
+            await uow.jobRepo.upsertJob(job);
+            return job;
+        });
     }
 
     async deleteJob(id: string): Promise<void> {
@@ -124,8 +128,10 @@ export class JobService implements IJobService {
             throw new StateTransitionError(job.status, to_status);
         }
         const now = new Date().toISOString();
-        await this._history_service.recordTransition(job_id, job.status, to_status, reason_sanitized);
-        await this._uow.jobRepo.updateJobStatus(job_id, to_status, now);
+        await this._uow.transaction(async (uow) => {
+            await this._history_service.recordTransition(job_id, job.status, to_status, reason_sanitized);
+            await uow.jobRepo.updateJobStatus(job_id, to_status, now);
+        });
     }
 
     async switchJob(from_job_id: string, to_job_id: string, reason: string): Promise<void> {

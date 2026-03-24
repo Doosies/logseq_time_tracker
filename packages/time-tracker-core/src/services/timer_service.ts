@@ -76,32 +76,33 @@ export class TimerService implements ITimerService {
         const pause_reason = reason !== undefined ? sanitizeText(reason, MAX_REASON_LENGTH) : default_switch_label;
         const progress_reason = reason !== undefined ? sanitizeText(reason, MAX_REASON_LENGTH) : default_switch_label;
 
-        if (this._active_job?.id === job.id) {
+        await this._uow.transaction(async () => {
+            if (this._active_job?.id === job.id) {
+                this._active_category = category;
+                await this.persistActiveTimerState();
+                return;
+            }
+
+            if (this._active_job && this._active_category) {
+                await this.flushSwitchAwayFromActiveJob(pause_reason);
+            }
+
+            if (job.status === 'completed' || job.status === 'cancelled') {
+                await this._job_service.transitionStatus(job.id, 'pending', progress_reason);
+            }
+
+            await this._job_service.transitionStatus(job.id, 'in_progress', progress_reason);
+
+            const now = new Date().toISOString();
+            this._active_job = job;
             this._active_category = category;
+            this._accumulated_ms = 0;
+            this._current_segment_start = now;
+            this._is_paused = false;
+            this._session_started_at = now;
+
             await this.persistActiveTimerState();
-            this.ensureBackupInterval();
-            return;
-        }
-
-        if (this._active_job && this._active_category) {
-            await this.flushSwitchAwayFromActiveJob(pause_reason);
-        }
-
-        if (job.status === 'completed' || job.status === 'cancelled') {
-            await this._job_service.transitionStatus(job.id, 'pending', progress_reason);
-        }
-
-        await this._job_service.transitionStatus(job.id, 'in_progress', progress_reason);
-
-        const now = new Date().toISOString();
-        this._active_job = job;
-        this._active_category = category;
-        this._accumulated_ms = 0;
-        this._current_segment_start = now;
-        this._is_paused = false;
-        this._session_started_at = now;
-
-        await this.persistActiveTimerState();
+        });
         this.ensureBackupInterval();
     }
 
@@ -119,8 +120,10 @@ export class TimerService implements ITimerService {
         this._accumulated_ms += Date.now() - new Date(this._current_segment_start).getTime();
         this._current_segment_start = null;
         this._is_paused = true;
-        await this._job_service.transitionStatus(this._active_job.id, 'paused', reason_sanitized);
-        await this.persistActiveTimerState();
+        await this._uow.transaction(async () => {
+            await this._job_service.transitionStatus(this._active_job!.id, 'paused', reason_sanitized);
+            await this.persistActiveTimerState();
+        });
     }
 
     async resume(reason: string): Promise<void> {
@@ -134,8 +137,10 @@ export class TimerService implements ITimerService {
         const now = new Date().toISOString();
         this._current_segment_start = now;
         this._is_paused = false;
-        await this._job_service.transitionStatus(this._active_job.id, 'in_progress', reason_sanitized);
-        await this.persistActiveTimerState();
+        await this._uow.transaction(async () => {
+            await this._job_service.transitionStatus(this._active_job!.id, 'in_progress', reason_sanitized);
+            await this.persistActiveTimerState();
+        });
     }
 
     async stop(reason: string): Promise<TimeEntry | null> {
@@ -163,13 +168,17 @@ export class TimerService implements ITimerService {
                 created_at: now,
                 updated_at: now,
             };
-            await this._uow.timeEntryRepo.upsertTimeEntry(entry);
-            await this._job_service.transitionStatus(job.id, 'completed', reason_sanitized);
-        } else {
-            await this._job_service.transitionStatus(job.id, 'paused', reason_sanitized);
         }
 
-        await this.fullCleanup();
+        await this._uow.transaction(async () => {
+            if (duration_seconds > 0 && entry) {
+                await this._uow.timeEntryRepo.upsertTimeEntry(entry);
+                await this._job_service.transitionStatus(job.id, 'completed', reason_sanitized);
+            } else {
+                await this._job_service.transitionStatus(job.id, 'paused', reason_sanitized);
+            }
+            await this.fullCleanup();
+        });
         return entry;
     }
 
@@ -199,11 +208,15 @@ export class TimerService implements ITimerService {
                 created_at: now,
                 updated_at: now,
             };
-            await this._uow.timeEntryRepo.upsertTimeEntry(entry);
         }
 
-        await this._job_service.transitionStatus(job.id, 'cancelled', reason_sanitized);
-        await this.fullCleanup();
+        await this._uow.transaction(async () => {
+            if (duration_seconds > 0 && entry) {
+                await this._uow.timeEntryRepo.upsertTimeEntry(entry);
+            }
+            await this._job_service.transitionStatus(job.id, 'cancelled', reason_sanitized);
+            await this.fullCleanup();
+        });
         return entry;
     }
 
@@ -214,28 +227,31 @@ export class TimerService implements ITimerService {
         const duration_seconds = Math.floor(duration_ms / 1000);
         const now = new Date().toISOString();
 
-        if (duration_seconds > 0) {
-            const entry: TimeEntry = {
-                id: generateId(),
-                job_id: old_job.id,
-                category_id: old_category.id,
-                started_at: this._session_started_at ?? now,
-                ended_at: now,
-                duration_seconds,
-                note: '',
-                is_manual: false,
-                created_at: now,
-                updated_at: now,
-            };
-            await this._uow.timeEntryRepo.upsertTimeEntry(entry);
-        }
+        await this._uow.transaction(async () => {
+            if (duration_seconds > 0) {
+                const entry: TimeEntry = {
+                    id: generateId(),
+                    job_id: old_job.id,
+                    category_id: old_category.id,
+                    started_at: this._session_started_at ?? now,
+                    ended_at: now,
+                    duration_seconds,
+                    note: '',
+                    is_manual: false,
+                    created_at: now,
+                    updated_at: now,
+                };
+                await this._uow.timeEntryRepo.upsertTimeEntry(entry);
+            }
 
-        if (!this._is_paused) {
-            await this._job_service.transitionStatus(old_job.id, 'paused', pause_reason);
-        }
+            if (!this._is_paused) {
+                await this._job_service.transitionStatus(old_job.id, 'paused', pause_reason);
+            }
+
+            await this._uow.settingsRepo.deleteSetting('active_timer');
+        });
 
         this.clearBackupInterval();
-        await this._uow.settingsRepo.deleteSetting('active_timer');
         this._active_job = null;
         this._active_category = null;
         this._current_segment_start = null;
@@ -260,7 +276,9 @@ export class TimerService implements ITimerService {
         if (this._is_paused) {
             state.paused_at = now;
         }
-        await this._uow.settingsRepo.setSetting('active_timer', state);
+        await this._uow.transaction(async (uow) => {
+            await uow.settingsRepo.setSetting('active_timer', state);
+        });
     }
 
     private clearBackupInterval(): void {
@@ -292,7 +310,9 @@ export class TimerService implements ITimerService {
 
     private async fullCleanup(): Promise<void> {
         this.clearBackupInterval();
-        await this._uow.settingsRepo.deleteSetting('active_timer');
+        await this._uow.transaction(async (uow) => {
+            await uow.settingsRepo.deleteSetting('active_timer');
+        });
         this._active_job = null;
         this._active_category = null;
         this._current_segment_start = null;
