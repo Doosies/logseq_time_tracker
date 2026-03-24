@@ -18,6 +18,13 @@ const DEFAULT_RETRY: ExponentialBackoffOptions = {
     base_delay_ms: 50,
 };
 
+const RUNTIME_RETRY: ExponentialBackoffOptions = {
+    max_attempts: 3,
+    base_delay_ms: 500,
+};
+
+const READONLY_LOCK_RETRY_MS = 5000;
+
 const SETTINGS_KEYS: (keyof SettingsMap)[] = ['active_timer', 'last_selected_category'];
 
 export interface StorageManagerOptions {
@@ -80,10 +87,18 @@ export class StorageManager {
     private _active_uow!: IUnitOfWork;
     private _memory_uow: MemoryUnitOfWork | null = null;
     private _lock_acquired = false;
+    private _recovery_interval: ReturnType<typeof setInterval> | null = null;
+    private _is_readonly = false;
+    private _lock_retry_interval: ReturnType<typeof setInterval> | null = null;
+    private readonly _readonly_listeners = new Set<(readonly_mode: boolean) => void>();
 
     constructor(options: StorageManagerOptions) {
         this._options = options;
         this._retry = { ...DEFAULT_RETRY, ...options.retry_options };
+    }
+
+    get is_readonly(): boolean {
+        return this._is_readonly;
     }
 
     async initialize(): Promise<IUnitOfWork> {
@@ -94,6 +109,9 @@ export class StorageManager {
             this._lock_acquired = await locks.acquireLock();
             if (!this._lock_acquired) {
                 logger?.warn('Web Lock not acquired; continuing without exclusive lock');
+                this._is_readonly = true;
+                this._emitReadonly();
+                this._startLockRetryPolling();
             }
         }
 
@@ -109,6 +127,7 @@ export class StorageManager {
             this._memory_uow = mem;
             this._active_uow = mem;
             this._state_machine.transitionToFallback(reason);
+            this.startAutoRecovery();
             return mem;
         }
     }
@@ -123,6 +142,51 @@ export class StorageManager {
 
     subscribe(listener: StorageStateListener): () => void {
         return this._state_machine.subscribe(listener);
+    }
+
+    subscribeReadonly(listener: (readonly_mode: boolean) => void): () => void {
+        this._readonly_listeners.add(listener);
+        return () => {
+            this._readonly_listeners.delete(listener);
+        };
+    }
+
+    async executeWithFallback<T>(fn: (uow: IUnitOfWork) => Promise<T>): Promise<T> {
+        if (this._state_machine.getState().mode === 'memory_fallback') {
+            return fn(this._active_uow);
+        }
+        try {
+            return await runWithExponentialBackoff(RUNTIME_RETRY, () => fn(this._active_uow));
+        } catch (e) {
+            const reason = e instanceof Error ? e.message : String(e);
+            this._switchToMemoryFallback(reason);
+            return fn(this._active_uow);
+        }
+    }
+
+    startAutoRecovery(interval_ms = 30_000): void {
+        if (this._recovery_interval !== null) {
+            return;
+        }
+        this._recovery_interval = setInterval(() => {
+            void (async () => {
+                if (this._state_machine.getState().mode !== 'memory_fallback') {
+                    this.stopAutoRecovery();
+                    return;
+                }
+                const ok = await this.tryRecover();
+                if (ok) {
+                    this.stopAutoRecovery();
+                }
+            })();
+        }, interval_ms);
+    }
+
+    stopAutoRecovery(): void {
+        if (this._recovery_interval !== null) {
+            clearInterval(this._recovery_interval);
+            this._recovery_interval = null;
+        }
     }
 
     /**
@@ -182,6 +246,12 @@ export class StorageManager {
     }
 
     dispose(): void {
+        this.stopAutoRecovery();
+        if (this._lock_retry_interval !== null) {
+            clearInterval(this._lock_retry_interval);
+            this._lock_retry_interval = null;
+        }
+        this._readonly_listeners.clear();
         if (this._options.web_locks !== undefined && this._lock_acquired) {
             this._options.web_locks.releaseLock();
             this._lock_acquired = false;
@@ -190,6 +260,42 @@ export class StorageManager {
         this._sqlite_adapter = null;
         this._memory_uow = null;
         this._state_machine.clearListeners();
+    }
+
+    private _switchToMemoryFallback(reason: string): void {
+        const mem = new MemoryUnitOfWork();
+        this._memory_uow = mem;
+        this._active_uow = mem;
+        this._state_machine.transitionToFallback(reason);
+        this.startAutoRecovery();
+    }
+
+    private _emitReadonly(): void {
+        const readonly_mode = this._is_readonly;
+        for (const listener of this._readonly_listeners) {
+            listener(readonly_mode);
+        }
+    }
+
+    private _startLockRetryPolling(): void {
+        const locks = this._options.web_locks;
+        if (locks === undefined || this._lock_retry_interval !== null) {
+            return;
+        }
+        this._lock_retry_interval = setInterval(() => {
+            void (async () => {
+                const acquired = await locks.acquireLock();
+                if (acquired) {
+                    this._lock_acquired = true;
+                    this._is_readonly = false;
+                    if (this._lock_retry_interval !== null) {
+                        clearInterval(this._lock_retry_interval);
+                        this._lock_retry_interval = null;
+                    }
+                    this._emitReadonly();
+                }
+            })();
+        }, READONLY_LOCK_RETRY_MS);
     }
 
     private async _tryInitSqliteUow(): Promise<SqliteUnitOfWork> {

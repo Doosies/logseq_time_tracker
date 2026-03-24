@@ -17,4 +17,5 @@ export interface AppContext {
     logger: ILogger;
     /** Set when the app was initialized with `storage_mode: 'sqlite'` (uses {@link StorageManager}, including memory fallback). */
     storage_manager?: StorageManager;
+    dispose(): void;
 }

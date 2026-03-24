@@ -93,12 +93,20 @@ export async function initializeApp(options: InitializeOptions = {}): Promise<Ap
     const jobs = await services.job_service.getJobs();
     job_store.setJobs(jobs);
 
+    if (storage_manager !== undefined) {
+        services.timer_service.setReadonlyGetter(() => storage_manager.is_readonly);
+    }
+
     const ctx: AppContext = {
         services,
         stores: { timer_store, job_store, toast_store },
         uow,
         logger,
         ...(storage_manager !== undefined ? { storage_manager } : {}),
+        dispose() {
+            services.timer_service.dispose();
+            storage_manager?.dispose();
+        },
     };
     return ctx;
 }

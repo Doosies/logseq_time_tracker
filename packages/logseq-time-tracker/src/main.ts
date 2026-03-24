@@ -8,7 +8,7 @@ let app_context: AppContext | null = null;
 let unregister_before_unload: (() => void) | null = null;
 
 function disposeTimerOnBeforeUnload() {
-    app_context?.services.timer_service.dispose();
+    app_context?.dispose();
     unregister_before_unload?.();
     unregister_before_unload = null;
 }

@@ -19,6 +19,7 @@ export interface ITimerService extends IDisposable {
     getActiveJob(): Job | null;
     /** Persists active timer settings (e.g. `beforeunload`). */
     flushBeforeUnload(): Promise<void>;
+    setReadonlyGetter(fn: () => boolean): void;
     dispose(): void;
 }
 
@@ -37,12 +38,17 @@ export class TimerService implements ITimerService {
     private _is_paused = false;
     private _backup_interval: ReturnType<typeof setInterval> | null = null;
     private _session_started_at: string | null = null;
+    private _readonly_getter: (() => boolean) | null = null;
 
     constructor(
         private readonly _uow: IUnitOfWork,
         private readonly _job_service: IJobService,
         private readonly _logger?: ILogger,
     ) {}
+
+    setReadonlyGetter(fn: () => boolean): void {
+        this._readonly_getter = fn;
+    }
 
     getActiveJob(): Job | null {
         return this._active_job;
@@ -71,6 +77,7 @@ export class TimerService implements ITimerService {
     }
 
     async start(job: Job, category: Category, reason?: string): Promise<void> {
+        this.assertWritable();
         const safe_title = job.title.length > MAX_TITLE_LENGTH ? job.title.slice(0, MAX_TITLE_LENGTH) : job.title;
         const default_switch_label = `작업 전환: ${safe_title}`;
         const pause_reason = reason !== undefined ? sanitizeText(reason, MAX_REASON_LENGTH) : default_switch_label;
@@ -107,6 +114,7 @@ export class TimerService implements ITimerService {
     }
 
     async pause(reason: string): Promise<void> {
+        this.assertWritable();
         if (!this._active_job) {
             throw new TimerError('No active timer');
         }
@@ -127,6 +135,7 @@ export class TimerService implements ITimerService {
     }
 
     async resume(reason: string): Promise<void> {
+        this.assertWritable();
         if (!this._active_job) {
             throw new TimerError('No active timer');
         }
@@ -144,6 +153,7 @@ export class TimerService implements ITimerService {
     }
 
     async stop(reason: string): Promise<TimeEntry | null> {
+        this.assertWritable();
         if (!this._active_job || !this._active_category) {
             throw new TimerError('No active timer');
         }
@@ -183,6 +193,7 @@ export class TimerService implements ITimerService {
     }
 
     async cancel(reason: string): Promise<TimeEntry | null> {
+        this.assertWritable();
         if (!this._active_job || !this._active_category) {
             throw new TimerError('No active timer');
         }
@@ -218,6 +229,12 @@ export class TimerService implements ITimerService {
             await this.fullCleanup();
         });
         return entry;
+    }
+
+    private assertWritable(): void {
+        if (this._readonly_getter?.()) {
+            throw new TimerError('읽기 전용 모드에서는 타이머를 조작할 수 없습니다');
+        }
     }
 
     private async flushSwitchAwayFromActiveJob(pause_reason: string): Promise<void> {
@@ -260,6 +277,13 @@ export class TimerService implements ITimerService {
         this._session_started_at = null;
     }
 
+    private computeSnapshotAccumulatedMs(): number {
+        if (this._is_paused || !this._current_segment_start) {
+            return this._accumulated_ms;
+        }
+        return getElapsedMs(this._accumulated_ms, this._current_segment_start, false);
+    }
+
     private async persistActiveTimerState(): Promise<void> {
         if (!this._active_job || !this._active_category) {
             return;
@@ -271,7 +295,7 @@ export class TimerService implements ITimerService {
             category_id: this._active_category.id,
             started_at: this._current_segment_start ?? now,
             is_paused: this._is_paused,
-            accumulated_ms: this._accumulated_ms,
+            accumulated_ms: this.computeSnapshotAccumulatedMs(),
         };
         if (this._is_paused) {
             state.paused_at = now;

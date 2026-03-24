@@ -48,6 +48,46 @@
         void loadTimeTotals();
     });
 
+    let storage_banner = $state<{ type: 'warning' | 'info'; message: string } | null>(null);
+
+    $effect(() => {
+        const sm = ctx.storage_manager;
+        if (!sm) return;
+        const unsub = sm.subscribe((state) => {
+            if (state.mode === 'memory_fallback') {
+                storage_banner = {
+                    type: 'warning',
+                    message: '임시 모드: 데이터가 영구 저장되지 않습니다.',
+                };
+            } else {
+                if (storage_banner?.type === 'warning') {
+                    toast_store.addToast('success', '저장소가 복구되었습니다');
+                }
+                storage_banner = null;
+            }
+        });
+        return unsub;
+    });
+
+    $effect(() => {
+        const sm = ctx.storage_manager;
+        if (!sm) return;
+        const unsub = sm.subscribeReadonly((readonly_mode) => {
+            if (readonly_mode) {
+                storage_banner = {
+                    type: 'info',
+                    message: '다른 탭에서 실행 중 - 읽기 전용 모드',
+                };
+            } else {
+                if (storage_banner?.type === 'info') {
+                    toast_store.addToast('success', '전체 기능이 복원되었습니다');
+                }
+                storage_banner = null;
+            }
+        });
+        return unsub;
+    });
+
     let show_reason_modal = $state(false);
     let reason_modal_config = $state<{
         title: string;
@@ -265,6 +305,22 @@
         >
         <button type="button" class="close-btn" onclick={handleClose} aria-label="닫기">✕</button>
         <main>
+            {#if storage_banner}
+                <div class="storage-banner storage-banner--{storage_banner.type}">
+                    <span>{storage_banner.message}</span>
+                    {#if storage_banner.type === 'warning'}
+                        <button
+                            type="button"
+                            class="storage-banner-retry"
+                            onclick={() => {
+                                void ctx.storage_manager?.tryRecover();
+                            }}
+                        >
+                            재시도
+                        </button>
+                    {/if}
+                </div>
+            {/if}
             <Timer
                 {timer_store}
                 {job_store}
@@ -639,5 +695,40 @@
     .poc-fail {
         color: #dc2626;
         font-weight: 600;
+    }
+
+    .storage-banner {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 8px 16px;
+        font-size: 0.8rem;
+        border-bottom: 1px solid;
+    }
+
+    .storage-banner--warning {
+        background: #fef3cd;
+        color: #856404;
+        border-color: #ffc107;
+    }
+
+    .storage-banner--info {
+        background: #cce5ff;
+        color: #004085;
+        border-color: #b8daff;
+    }
+
+    .storage-banner-retry {
+        padding: 2px 8px;
+        border: 1px solid currentColor;
+        border-radius: 4px;
+        background: transparent;
+        color: inherit;
+        cursor: pointer;
+        font-size: 0.75rem;
+    }
+
+    .storage-banner-retry:hover {
+        background: rgba(0, 0, 0, 0.05);
     }
 </style>
