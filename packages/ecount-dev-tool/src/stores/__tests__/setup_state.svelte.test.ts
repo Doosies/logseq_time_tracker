@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import {
-    initializeSetupState,
-    isFirstLaunch,
-    markSetupCompleted,
-    resetSetupState,
-} from '../setup_state.svelte';
+import { initializeSetupState, isFirstLaunch, markSetupCompleted, resetSetupState } from '../setup_state.svelte';
 import { asMock } from '#test/mock_helpers';
 
 function setLocalStorageItem(key: string, value: unknown): void {
