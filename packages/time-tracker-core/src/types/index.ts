@@ -1,5 +1,6 @@
 export * from './disposable';
 export * from './export';
+export * from './export_schema';
 export * from './job_status';
 export * from './job';
 export * from './category';

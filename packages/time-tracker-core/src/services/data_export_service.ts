@@ -2,6 +2,7 @@ import type { ILogger } from '../adapters/logger';
 import type { IUnitOfWork } from '../adapters/storage/unit_of_work';
 import type { Category } from '../types/category';
 import type { ExportData, ImportResult } from '../types/export';
+import { validateExportData } from '../types/export_schema';
 import type { JobCategory } from '../types/job_category';
 import type { SettingsMap } from '../types/settings';
 import { StorageError, ValidationError } from '../errors';
@@ -130,7 +131,8 @@ export class DataExportService {
 
     async importAll(data: ExportData): Promise<ImportResult> {
         try {
-            const migrated = migrateExportData(data);
+            const validated = validateExportData(data);
+            const migrated = migrateExportData(validated);
             const payload = migrated.data;
             const imported_counts = await this._uow.transaction(async (uow) => {
                 await this.clearAllData(uow);

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteMap } from 'svelte/reactivity';
-    import type { AppContext, TimeEntry, JobHistory } from '@personal/time-tracker-core';
+    import type { AppContext, TimeEntry, JobHistory, PocResult } from '@personal/time-tracker-core';
     import {
         Timer,
         JobList,
@@ -12,6 +12,7 @@
         STRINGS,
         formatDuration,
         formatLocalDateTime,
+        runAllPocTests,
     } from '@personal/time-tracker-core';
 
     let { ctx }: { ctx: AppContext } = $props();
@@ -20,6 +21,13 @@
     const timer_store = $derived(ctx.stores.timer_store);
     const job_store = $derived(ctx.stores.job_store);
     const toast_store = $derived(ctx.stores.toast_store);
+
+    const storage_mode_label = $derived.by(() => {
+        if (!ctx.storage_manager) return 'Memory (기본)';
+        const state = ctx.storage_manager.getStorageState();
+        if (state.mode === 'sqlite') return 'SQLite';
+        return `Memory Fallback (${state.fallback_reason ?? '알 수 없음'})`;
+    });
 
     const time_totals = new SvelteMap<string, number>();
 
@@ -208,6 +216,20 @@
     let show_debug_modal = $state(false);
     let debug_entries = $state<TimeEntry[]>([]);
     let debug_history = $state<JobHistory[]>([]);
+    let poc_results = $state<PocResult[]>([]);
+    let poc_running = $state(false);
+
+    async function handleRunPocTests() {
+        poc_running = true;
+        poc_results = [];
+        try {
+            poc_results = await runAllPocTests('./assets');
+        } catch (e) {
+            poc_results = [{ test_name: 'runAllPocTests', success: false, error: String(e) }];
+        } finally {
+            poc_running = false;
+        }
+    }
 
     function getJobTitle(job_id: string): string {
         const job = job_store.jobs.find((j) => j.id === job_id);
@@ -224,6 +246,7 @@
         debug_entries = entries.sort((a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime());
         const history = await ctx.uow.historyRepo.getJobHistoryByPeriod({});
         debug_history = history.sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime());
+        poc_results = [];
         show_debug_modal = true;
     }
 
@@ -346,6 +369,38 @@
                                             <td>{formatLocalDateTime(h.occurred_at)}</td>
                                             <td>{getStatusLabel(h.from_status)} → {getStatusLabel(h.to_status)}</td>
                                             <td>{h.reason || '-'}</td>
+                                        </tr>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        {/if}
+
+                        <h3 class="debug-subtitle">스토리지 상태</h3>
+                        <p class="storage-mode-badge">
+                            현재 모드: <strong>{storage_mode_label}</strong>
+                        </p>
+
+                        <button type="button" class="poc-test-btn" onclick={handleRunPocTests} disabled={poc_running}>
+                            {poc_running ? '검증 중...' : 'Storage PoC 검증 실행'}
+                        </button>
+
+                        {#if poc_results.length > 0}
+                            <table class="debug-table">
+                                <thead>
+                                    <tr>
+                                        <th>테스트</th>
+                                        <th>결과</th>
+                                        <th>상세</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each poc_results as result (result.test_name)}
+                                        <tr>
+                                            <td>{result.test_name}</td>
+                                            <td class={result.success ? 'poc-pass' : 'poc-fail'}>
+                                                {result.success ? 'PASS' : 'FAIL'}
+                                            </td>
+                                            <td>{result.details ?? result.error ?? '-'}</td>
                                         </tr>
                                     {/each}
                                 </tbody>
@@ -548,5 +603,41 @@
     .debug-duration {
         font-family: monospace;
         font-variant-numeric: tabular-nums;
+    }
+
+    .storage-mode-badge {
+        font-size: 0.8rem;
+        color: #555;
+        margin: 4px 0 8px;
+    }
+
+    .poc-test-btn {
+        padding: 6px 12px;
+        border: 1px solid #3b82f6;
+        border-radius: 4px;
+        background: #3b82f6;
+        color: white;
+        cursor: pointer;
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+    }
+
+    .poc-test-btn:hover:not(:disabled) {
+        background: #2563eb;
+    }
+
+    .poc-test-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .poc-pass {
+        color: #16a34a;
+        font-weight: 600;
+    }
+
+    .poc-fail {
+        color: #dc2626;
+        font-weight: 600;
     }
 </style>
