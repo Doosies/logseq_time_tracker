@@ -4,7 +4,7 @@
 
 타임 트래커의 데이터 모델은 **하이브리드 구조**를 채택합니다.
 
-초> **Phase 구현 범위**: 메타 레지스트리(DataType, EntityType, DataField)는 **Phase 3** 이후에 구현합니다. 커스텀 필드 값은 **시스템 테이블의 `custom_fields` JSON 컬럼**(예: Job)으로 저장합니다. Phase 1~2에서는 고정 스키마(Job, Category, TimeEntry, JobHistory)만 사용하여 복잡도를 억제합니다.
+> **Phase 구현 범위**: 메타 레지스트리(DataType, EntityType, DataField)는 **Phase 3** 이후에 구현합니다. 커스텀 필드 값은 **시스템 테이블의 `custom_fields` JSON 컬럼**(예: Job)으로 저장합니다. Phase 1~2에서는 고정 스키마(Job, Category, TimeEntry, JobHistory)만 사용하여 복잡도를 억제합니다.
 
 - **DataType**: 필드 값 타입 정의 (시스템 정의, 사용자 추가 불가) — Phase 3+
 - **EntityType**: 엔티티/모델 정의 (시스템 정의, 코드로 확장) — Phase 3+
@@ -32,6 +32,8 @@ EntityType (엔티티 정의 - 시스템 정의만, 코드로 추가)
 ---
 
 ## 1. 메타 레지스트리
+
+이 절의 표는 **설계 관점** 제약을 설명합니다. TypeScript에서 필드 필수 여부·정확한 타입은 **`types/meta.ts`** (`DataType`, `EntityType`, `DataField`)를 기준으로 합니다.
 
 ### 1.1 DataType (필드 값 타입 정의)
 
@@ -592,71 +594,27 @@ WHERE json_extract(custom_fields, '$.department') = 'Dev';
 
 ---
 
-## 6. $$ 타입 패턴 (DataType 런타임/타입 이중 export)
+## 6. DataType 키와 `DataTypeKey` (`types/meta.ts`)
 
-core 패키지에서 각 DataType을 **const 값(DB 저장용)** 과 **TypeScript 타입(코드 사용)** 을 하나의 파일에서 동시에 export합니다. DB에는 항상 string으로 저장됩니다.
-
-### 패턴
+현재 구현에서는 별도의 `data_types.ts` 파일 없이 **`types/meta.ts`** 에서 필드 값 타입 키를 문자열 리터럴 유니온으로 정의합니다. DB에는 해당 키가 **문자열**로 저장됩니다.
 
 ```typescript
-// src/types/data_types.ts
-
-// string 타입
-export const $$string = 'string' as const;
-export type $$string = string;
-
-// decimal 타입 (number로 처리, 정밀도가 필요하면 추후 decimal.js 도입)
-export const $$decimal = 'decimal' as const;
-export type $$decimal = number;
-
-// date 타입 (DB에서는 ISO8601 string)
-export const $$date = 'date' as const;
-export type $$date = string;
-
-// datetime 타입 (DB에서는 ISO8601 string)
-export const $$datetime = 'datetime' as const;
-export type $$datetime = string;
-
-// boolean 타입
-export const $$boolean = 'boolean' as const;
-export type $$boolean = boolean;
-
-// enum 타입 (DB에서는 string)
-export const $$enum = 'enum' as const;
-export type $$enum = string;
-
-// relation 타입 (DB에서는 대상 record의 id string)
-export const $$relation = 'relation' as const;
-export type $$relation = string;
+// types/meta.ts (발췌)
+export type DataTypeKey = 'string' | 'decimal' | 'date' | 'datetime' | 'boolean' | 'enum' | 'relation';
 ```
+
+### 향후 $$ const 패턴과의 관계
+
+설계상 각 키에 대해 `export const $$string = 'string' as const` 형태의 **런타임 const + TS 타입 이중 export** 를 두면 `DataType.key` 와 런타임 비교가 명확해집니다. 현재 코드베이스는 위 `DataTypeKey` 유니온으로 동일 역할을 수행합니다.
 
 ### 사용 예시
 
 ```typescript
-import { $$string, $$decimal, $$enum } from './types/data_types';
+import type { DataTypeKey } from './types/meta';
 
-// 값으로 사용 (런타임 비교, DB 저장)
-if (field.data_type === $$string) {
-    /* ... */
+function isEnumField(data_type: DataTypeKey): boolean {
+    return data_type === 'enum';
 }
-if (field.data_type === $$enum) {
-    /* ... */
-}
-
-// 타입으로 사용 (컴파일 타임 검증)
-function parseValue(raw: string, type: typeof $$string): $$string;
-function parseValue(raw: string, type: typeof $$decimal): $$decimal;
-```
-
-### $$ const와 DataType 레코드의 관계
-
-```typescript
-// $$ const 값 === DataType.key (DB에 저장된 값)
-// $$ type === 해당 DataType의 TypeScript 타입
-
-$$string === 'string'; // DataType { key: 'string', label: '텍스트' }
-$$decimal === 'decimal'; // DataType { key: 'decimal', label: '소수' }
-$$date === 'date'; // DataType { key: 'date',   label: '날짜' }
 ```
 
 ### view_type 처리 (코드 레벨)
@@ -677,23 +635,47 @@ export function resolveFieldComponent(field: DataField): SvelteComponent {
 
 ## 7. TypeScript 타입 정의
 
-### 메타 레지스트리
+도메인 타입의 단일 출처는 `packages/time-tracker-core/src/types/` 입니다. 아래는 **현재 구현**(`*.ts`)과 동일한 형태의 발췌입니다.
+
+### 앱 설정·저장소 상태 (`types/settings.ts`)
+
+진행 중 타이머·UI 설정 키맵, SQLite/메모리 폴백 상태 등 **앱 내부 영속 설정**에 쓰입니다 (`ISettingsRepository` / `StorageStateMachine` 와 연계).
 
 ```typescript
-export type DataTypeKey =
-    | typeof $$string
-    | typeof $$decimal
-    | typeof $$date
-    | typeof $$datetime
-    | typeof $$boolean
-    | typeof $$enum
-    | typeof $$relation;
+export interface ActiveTimerState {
+    version: number;
+    job_id: string;
+    category_id: string;
+    started_at: string;
+    is_paused: boolean;
+    paused_at?: string;
+    accumulated_ms: number;
+}
+
+export type SettingsMap = {
+    active_timer: ActiveTimerState;
+    last_selected_category: string;
+};
+
+export type AppInitState = 'loading' | 'ready' | 'error';
+
+export interface StorageState {
+    mode: 'sqlite' | 'memory_fallback';
+    fallback_reason?: string;
+    fallback_since?: string;
+}
+```
+
+### 메타 레지스트리 (`types/meta.ts`)
+
+```typescript
+export type DataTypeKey = 'string' | 'decimal' | 'date' | 'datetime' | 'boolean' | 'enum' | 'relation';
 
 export interface DataType {
     id: string;
     key: DataTypeKey;
     label: string;
-    description?: string;
+    description: string;
     created_at: string;
 }
 
@@ -701,7 +683,7 @@ export interface EntityType {
     id: string;
     key: string;
     label: string;
-    description?: string;
+    description: string;
     created_at: string;
     updated_at: string;
 }
@@ -715,10 +697,10 @@ export interface DataField {
     view_type: string;
     is_required: boolean;
     is_system: boolean;
-    default_value?: string;
-    options?: string[]; // DB에는 JSON 문자열로 저장 (예: '["Dev","Design","PM"]'), 런타임에서는 string[]
-    relation_entity_key?: string;
-    sort_order?: number;
+    default_value: string;
+    options: string; // DB·직렬화 계층에서는 JSON 문자열
+    relation_entity_key: string;
+    sort_order: number;
     created_at: string;
 }
 ```
@@ -731,19 +713,17 @@ export type StatusKind = 'pending' | 'in_progress' | 'paused' | 'cancelled' | 'c
 export interface Job {
     id: string;
     title: string;
-    description?: string;
+    description: string;
     status: StatusKind;
-    custom_fields?: string | null;
+    custom_fields: string;
     created_at: string;
     updated_at: string;
 }
 
-/** custom_fields JSON을 파싱한 후의 타입. DB 저장은 string, 런타임에서는 이 타입으로 사용 */
+/** custom_fields JSON을 파싱한 후의 타입 */
 export type ParsedCustomFields = Record<string, string | number | boolean>;
 
-/** custom_fields JSON 파싱 유틸 */
-// function parseCustomFields(raw: string | null | undefined): ParsedCustomFields
-//   → 파싱 실패 시 빈 객체 {} 반환 (에러 무시, 로그 경고만)
+/** `parseCustomFields` 는 types/job.ts 에 구현됨 — 파싱 실패 시 `{}` 반환 */
 
 export interface ExternalRef {
     id: string;
@@ -757,9 +737,9 @@ export interface ExternalRef {
 export interface Category {
     id: string;
     name: string;
-    parent_id?: string;
+    parent_id: string | null;
     is_active: boolean;
-    sort_order?: number;
+    sort_order: number;
     created_at: string;
     updated_at: string;
 }
@@ -771,7 +751,7 @@ export interface TimeEntry {
     started_at: string;
     ended_at: string;
     duration_seconds: number;
-    note?: string;
+    note: string;
     is_manual: boolean;
     created_at: string;
     updated_at: string;
@@ -799,7 +779,7 @@ export interface JobTemplate {
     id: string;
     name: string;
     content: string;
-    placeholders?: PlaceholderDef[];
+    placeholders: string; // PlaceholderDef[] JSON 문자열; 사용 시 JSON.parse
     created_at: string;
     updated_at: string;
 }
@@ -830,7 +810,7 @@ export interface PlaceholderDef {
 | **추가** | DataType (필드 값 타입 - 시스템 정의, 사용자 선택 전용)                                                   |
 | **추가** | EntityType (엔티티/모델 정의 - 기존 DataType에서 분리)                                                    |
 | **추가** | `custom_fields` JSON 컬럼 (Job 등 — 커스텀 필드 값, DataField.key 기반)                                   |
-| **추가** | `$$` 타입 패턴 (DataType의 런타임 const + TS 타입 이중 export)                                            |
+| **추가** | `DataTypeKey` 문자열 유니온 (`types/meta.ts`); 향후 `$$` const + 타입 이중 export 패턴(§6)으로 정리 가능 |
 | **추가** | DataField에 `view_type` + `data_type` (DataType 참조)                                                     |
 | **변경** | Job에 `status` 직접 포함 (현재 상태)                                                                      |
 | **제거** | EntityType의 `is_system` 필드 (사용자 정의 엔티티 전제 제거)                                              |

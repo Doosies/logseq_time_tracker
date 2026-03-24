@@ -35,6 +35,7 @@
 | `services/category_service.ts` | 삭제 시 참조 검사 활성화 | 변경 |
 | `services/index.ts` | 신규 서비스 export, `createServices` 반환 확장 | 변경 |
 | `types/export.ts` | `ExportData`, `ImportResult` 타입 | 신규 |
+| `types/export_schema.ts` | Zod 런타임 스키마 및 `validateExportData` (import 전 구조·필드 검증) | 신규 |
 | `app/initialize.ts` | `createServices` 반환 구조 확장에 따른 `AppContext` 연동·초기화 점검 | 변경 |
 
 ---
@@ -107,31 +108,56 @@ class DataExportService {
 
 **`importAll(data)`**
 
-1. `data.version` 확인 후 필요 시 아래 **Export 버전 마이그레이션** 체인 적용
-2. 단일 트랜잭션 내에서:
+1. 진입 직후 **`validateExportData(data)`**(`types/export_schema.ts`)로 Zod 런타임 검증을 수행합니다. 스키마에 맞지 않으면 `ValidationError` 등으로 중단되고, 서비스 구현에서는 이를 잡아 `ImportResult.success === false` 및 `errors`에 메시지를 담습니다.
+2. `data.version` 확인 후 필요 시 아래 **Export 버전 마이그레이션** 체인 적용
+3. 단일 트랜잭션 내에서:
    - 기존 데이터 전체 삭제(권장: FK 순서 역으로) 또는 설계상 허용되는 upsert 전략
    - 삽입 순서: **Category → Job → TimeEntry → JobHistory → ExternalRef → JobCategory → JobTemplate** (`05-storage.md` 및 FK 의존성 준수)
    - `settings`는 FK가 없으나 앱 일관성을 위해 고정 순서(예: 테이블 데이터 삽입 후 settings 반영)로 문서화
-3. 테이블(또는 논리 단위)별로 `imported_counts` 집계
-4. 예외 시 전체 **ROLLBACK**, `ImportResult.success === false`, `errors`에 메시지 수집
+4. 테이블(또는 논리 단위)별로 `imported_counts` 집계
+5. 예외 시 전체 **ROLLBACK**, `ImportResult.success === false`, `errors`에 메시지 수집
 
 **Export 버전 마이그레이션**
 
-```typescript
-type MigrationFn = (data: ExportData) => ExportData;
+소스 버전을 **키**로 두고, `CURRENT_EXPORT_VERSION`과 같아질 때까지 `while` 루프에서 한 단계씩 적용합니다(`data_export_service.ts`의 `migrateExportData`).
 
-const EXPORT_MIGRATIONS: Record<string, MigrationFn> = {
-  '0.1.0→0.2.0': (data) => ({
+```typescript
+const CURRENT_EXPORT_VERSION = '0.2.0';
+
+type ExportMigrationFn = (data: ExportData) => ExportData;
+
+const EXPORT_MIGRATIONS: Record<string, ExportMigrationFn> = {
+  '0.1.0': (data) => ({
     ...data,
-    data: { ...data.data, job_categories: [], job_templates: [], external_refs: [] },
+    version: '0.2.0',
+    data: {
+      ...data.data,
+      job_categories: [],
+      job_templates: [],
+      external_refs: [],
+    },
   }),
 };
+
+function migrateExportData(data: ExportData): ExportData {
+  let current: ExportData = structuredClone(data);
+  while (current.version !== CURRENT_EXPORT_VERSION) {
+    const fn = EXPORT_MIGRATIONS[current.version];
+    if (!fn) {
+      throw new ValidationError(`Unsupported export version: ${current.version}`, 'version');
+    }
+    current = fn(current);
+  }
+  return current;
+}
 ```
 
-- import 진입 시 `data.version`을 목표 버전까지 단계적으로 변환(체인 실행)
-- 알 수 없는/너무 오래된 버전은 `ImportResult.errors`에 명시하고 중단
+(`ValidationError`는 `../errors`에서 import합니다.)
 
-타입 정의는 `types/export.ts`에 두고, 서비스 및 테스트에서 import합니다.
+- 각 마이그레이션 함수는 **다음** 스키마에 맞게 `version` 필드를 갱신합니다(예: `'0.1.0'` → 함수 실행 후 `'0.2.0'`).
+- 알 수 없는 `version` 키는 `ValidationError`로 중단되고, `importAll`이 `ImportResult.errors`에 메시지를 담습니다.
+
+타입 정의는 `types/export.ts`에 두고, 서비스 및 테스트에서 import합니다. Zod 런타임 스키마와 `validateExportData`는 `types/export_schema.ts`에 둡니다.
 
 ---
 
@@ -180,14 +206,14 @@ function createServices(uow: IUnitOfWork, logger?: ILogger) {
 
 ## 완료 기준
 
-- [ ] `JobCategoryService` 구현 (`link` / `unlink` / `get*` / `setDefaultCategory`)
-- [ ] 동일 Job 내 `is_default` 유일성 보장 (트랜잭션 + DB 제약과 일치)
-- [ ] `DataExportService.exportAll()` — 전체 데이터 JSON 스냅샷
-- [ ] `DataExportService.importAll()` — 트랜잭션 내 전체 import 및 실패 시 롤백
-- [ ] Export 버전 마이그레이션 체인 (`EXPORT_MIGRATIONS` 및 적용 순서)
-- [ ] `CategoryService.deleteCategory()` 참조 검사 활성화 (`TimeEntry`, `JobCategory`, 하위 카테고리)
-- [ ] `createServices`에 Phase 2 서비스 추가 및 barrel export
-- [ ] `ExportData`, `ImportResult` 타입 정의 (`types/export.ts`)
+- [x] `JobCategoryService` 구현 (`link` / `unlink` / `get*` / `setDefaultCategory`)
+- [x] 동일 Job 내 `is_default` 유일성 보장 (트랜잭션 + DB 제약과 일치)
+- [x] `DataExportService.exportAll()` — 전체 데이터 JSON 스냅샷
+- [x] `DataExportService.importAll()` — 트랜잭션 내 전체 import 및 실패 시 롤백
+- [x] Export 버전 마이그레이션 (`EXPORT_MIGRATIONS` 출발 버전 키 + `migrateExportData` `while` 루프)
+- [x] `CategoryService.deleteCategory()` 참조 검사 활성화 (`TimeEntry`, `JobCategory`, 하위 카테고리)
+- [x] `createServices`에 Phase 2 서비스 추가 및 barrel export
+- [x] `ExportData`, `ImportResult` 타입 정의 (`types/export.ts`)
 
 ---
 

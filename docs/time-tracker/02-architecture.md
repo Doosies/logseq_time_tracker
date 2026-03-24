@@ -483,53 +483,35 @@ sequenceDiagram
 서비스 간 의존성 순서를 명시적으로 관리하기 위해 팩토리 함수를 사용합니다.
 
 ```typescript
-function createServices(uow: IUnitOfWork, logger?: ILogger) {
-    // Phase 1 (Core)
+// packages/time-tracker-core/src/services/index.ts 기준
+export function createServices(uow: IUnitOfWork, logger?: ILogger) {
     const history_service = new HistoryService(uow, logger);
     const job_service = new JobService(uow, history_service, logger);
     const category_service = new CategoryService(uow, logger);
     const timer_service = new TimerService(uow, job_service, logger);
-
-    // Phase 2
     const job_category_service = new JobCategoryService(uow, logger);
-
-    // Phase 3 (수동 시간 입력)
-    const time_entry_service = new TimeEntryService(uow, logger);
-
-    // Phase 4 (템플릿)
-    const template_service = new TemplateService(uow, logger);
-
-    // Phase 5 (통계/내보내기)
-    const statistics_service = new StatisticsService(uow, logger);
-    const data_export_service = new DataExportService(uow, statistics_service, logger);
-    const data_field_service = new DataFieldService(uow, logger);
-
+    const data_export_service = new DataExportService(uow, logger);
     return {
-        // Phase 1
         history_service,
         job_service,
         category_service,
         timer_service,
-        // Phase 2+
         job_category_service,
-        time_entry_service,
-        template_service,
-        statistics_service,
         data_export_service,
-        data_field_service,
     };
 }
 ```
 
-> **Phase별 서비스 확장**: 초기 구현(Phase 1)에서는 Phase 1 서비스만 인스턴스화합니다. Phase 2+ 서비스는 해당 Phase 구현 시 추가하며, 상위 Phase 서비스는 하위 Phase 서비스에 의존하지 않습니다.
+> **Phase별 서비스 확장**: 현재 팩토리는 Phase 1·2 범위(`HistoryService`~`TimerService`, `JobCategoryService`, `DataExportService`)까지 인스턴스화합니다. `TimeEntryService`, `TemplateService`, `StatisticsService`, `DataFieldService` 등은 이후 Phase에서 `createServices`에 추가하며, 상위 Phase 서비스는 하위 Phase 서비스에 불필요하게 의존하지 않도록 유지합니다.
 
 **초기화 순서 규칙**:
 
 1. `HistoryService` (의존성 없음)
 2. `JobService` (HistoryService 의존)
 3. `CategoryService` (의존성 없음, JobService와 독립)
-4. `JobCategoryService` (의존성 없음, Phase 2에서 추가)
-5. `TimerService` (JobService 의존)
+4. `JobCategoryService` (의존성 없음, Phase 2)
+5. `DataExportService` (uow·logger만 의존, Phase 2; 다른 서비스와 순서 무관하게 먼저/나중 생성 가능)
+6. `TimerService` (JobService 의존)
 
 > Phase별 서비스 추가 시 이 팩토리를 확장합니다. 순환 의존은 구조적으로 금지됩니다.
 
@@ -576,7 +558,9 @@ Logseq 플러그인은 **iframe(sandbox)** 내에서 실행되며, `@logseq/libs
 | `logseq.App.getCurrentPage()`         | 현재 페이지 정보        | 인라인 UI               |
 | `logseq.useSettingsSchema()`          | 설정 UI 등록            | `LogseqSettingsAdapter` |
 | `logseq.settings`                     | 설정값 읽기             | `LogseqSettingsAdapter` |
-| `logseq.beforeunload(callback)`       | 종료 전 정리            | `main.ts`               |
+| `window.addEventListener('beforeunload', …)` | 종료 전 정리       | `main.ts`               |
+
+[^logseq-beforeunload]: 이전 설계·문서에서 `logseq.beforeunload`를 가정한 적이 있으나, **`@logseq/libs` SDK에는 해당 API가 없습니다.** 종료 전 정리는 브라우저 표준 `window.addEventListener('beforeunload', …)`만 사용합니다.
 
 ### 제약사항
 
@@ -741,7 +725,7 @@ interface IDisposable {
 
 **호출 시점**:
 
-- `logseq.beforeunload` 콜백에서 모든 disposable 서비스의 `dispose()` 호출
+- `window.addEventListener('beforeunload', …)`에서 모든 disposable 서비스의 `dispose()` 호출[^logseq-beforeunload]
 - 앱 재초기화(Storage fallback 전환) 시 기존 인스턴스 dispose 후 새 인스턴스 생성
 
 ---

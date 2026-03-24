@@ -146,19 +146,19 @@ function mapRowToJob(row: Record<string, unknown>): Job {
 
 ## 완료 기준
 
-- [ ] 9개 SQLite Repository 구현(`IDataFieldRepository` 포함; DataField는 스텁 또는 DDL 유무에 따른 최소 구현)
-- [ ] 모든 Repository가 `repositories.ts`의 인터페이스 시그니처·의미(Memory와 동일한 에러·경고) 준수
-- [ ] Row Mapper(및 엔티티 매핑)로 SQL row → TypeScript 도메인 객체 변환, 조회마다 독립 객체
-- [ ] INTEGER boolean ↔ TypeScript boolean 변환 처리
-- [ ] JSON 컬럼(`custom_fields`, `placeholders` 등) 파싱 실패 시 fallback 및 정책 일치
-- [ ] `TimeEntryFilter` 동적 `WHERE` 절 구현(`started_at` 기준 기간 inclusive)
-- [ ] `HistoryFilter` 동적 `WHERE` 절 구현(`occurred_at` 기준 기간 inclusive)
-- [ ] ExternalRef `(job_id, system_key)` 유일성 제약을 upsert 전략에 반영
-- [ ] JobCategory `(job_id, category_id)` 유일성 제약을 upsert 전략에 반영
+- [x] 9개 SQLite Repository 구현(`IDataFieldRepository` 포함; DataField는 스텁 또는 DDL 유무에 따른 최소 구현)
+- [x] 모든 Repository가 `repositories.ts`의 인터페이스 시그니처·의미(Memory와 동일한 에러·경고) 준수
+- [x] Row Mapper(및 엔티티 매핑)로 SQL row → TypeScript 도메인 객체 변환, 조회마다 독립 객체
+- [x] INTEGER boolean ↔ TypeScript boolean 변환 처리
+- [x] JSON 컬럼(`custom_fields`, `placeholders` 등) 파싱 실패 시 fallback 및 정책 일치
+- [x] `TimeEntryFilter` 동적 `WHERE` 절 구현(`started_at` 기준 기간 inclusive)
+- [x] `HistoryFilter` 동적 `WHERE` 절 구현(`occurred_at` 기준 기간 inclusive)
+- [x] ExternalRef `(job_id, system_key)` 유일성 제약을 upsert 전략에 반영
+- [x] JobCategory `(job_id, category_id)` 유일성 제약을 upsert 전략에 반영
 - [ ] 단위 테스트(선택): Memory 대비 동일 시나리오 스모크 또는 Repository별 SQL 통합 테스트(Phase 계획에 따름)
 
 ---
 
 ## 다음 단계
 
-→ **Phase 2D**: SQLite `UnitOfWork` 조립 및 앱 통합(`2d-sqlite-unit-of-work.md` 등 후속 문서)
+→ **Phase 2D**: SQLite `UnitOfWork` 조립 및 앱 통합 (`2d-integration.md`)

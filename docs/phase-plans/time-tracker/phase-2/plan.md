@@ -83,13 +83,14 @@ flowchart TD
 
 ## 완료 기준
 
-- [ ] Storage PoC 검증 완료 (OPFS 또는 IndexedDB 백엔드 확정)
-- [ ] sql.js Adapter + Migration Runner + DDL
-- [ ] 9개 SQLite Repository 구현
-- [ ] SqliteUnitOfWork + initializeApp 통합
-- [ ] Storage Fallback (SQLite → Memory) + Web Locks
-- [ ] JobCategoryService + DataExportService
-- [ ] 전체 테스트 통과 + 커버리지 80%+
+- [x] Storage PoC 검증 완료 (OPFS 또는 IndexedDB 백엔드 확정)
+- [x] sql.js Adapter + Migration Runner + DDL
+- [x] 9개 SQLite Repository 구현
+- [x] SqliteUnitOfWork + initializeApp 통합 (`createUnitOfWork`·`StorageManager` 경로)
+- [x] Storage Fallback: SQLite 초기화 실패 시 Memory 전환, `StorageManager`·`tryRecover`, Web Locks 옵션 연동, 지수 백오프 재시도(기본 `base_delay_ms: 50` → 50ms / 100ms / 200ms)
+- [ ] 런타임 SQLite 쓰기 실패 시 Memory 폴백, Web Lock 실패 시 읽기 전용 모드, 사용자 알림 UI(배너·토스트) 연동 — 설계 대비 미구현
+- [x] JobCategoryService + DataExportService
+- [ ] 전체 테스트 통과 + 커버리지 80%+ (Phase 2G)
 
 ---
 

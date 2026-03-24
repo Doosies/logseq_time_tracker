@@ -44,6 +44,13 @@ sql.js 초기화, Storage Adapter(OPFS / IndexedDB), Forward-only Migration Runn
 
 ## 상세 구현 내용
 
+### wasm_loader (`wasm_loader.ts`)
+
+- **`loadWasmBinary(base_url)`**: `base_url` 끝에 슬래시를 보정한 뒤 `sql-wasm.wasm` 파일명을 붙인 URL에서 WASM `ArrayBuffer`를 반환합니다.
+- **XHR 우선**: `XMLHttpRequest`(`GET`, `responseType: 'arraybuffer'`)로 먼저 로드합니다. Logseq 플러그인처럼 **iframe + 커스텀 프로토콜(`lsp://` 등)** 환경에서는 `fetch`가 동작하지 않는 경우가 있어, Electron·Logseq 호스트에서도 통하는 경로를 우선합니다.
+- **`fetch` 폴백**: XHR이 실패하면 같은 URL로 `fetch` → `arrayBuffer()`를 시도합니다.
+- **연동**: 브라우저 런타임에서 `wasm_url`이 주어지면 `SqliteAdapter.initialize`가 이 모듈로 바이너리를 읽은 뒤 `initSqlJs({ wasmBinary })` 형태로 sql.js를 초기화합니다.
+
 ### 1. SqliteAdapter
 
 ```typescript
@@ -68,7 +75,7 @@ class SqliteAdapter {
 - 초기화 직후 `PRAGMA journal_mode=WAL;`, `PRAGMA foreign_keys=ON;` 실행.
 - `persist()`: `db.export()` → `Uint8Array` → `backend.write(data)`.
 - `getDatabase()` 호출 전 `initialize` 완료를 전제로 하며, 미초기화 시 명시적 에러를 권장.
-- **초기화 순서(권장)**: 백엔드 생성 → `initialize`(WASM + DB 로드) → `MigrationRunner.run()` → 이후 Repository 계층 사용. 마이그레이션 완료 후 필요 시 `persist()` 호출.
+- **초기화 순서(권장)**: `new SqliteAdapter(backend)` → `initialize`(WASM + DB 로드) → `MigrationRunner.run()`(동기) → 이후 Repository 계층 사용. 마이그레이션 완료 후 필요 시 `persist()` 호출.
 
 ### 2. IStorageBackend
 
@@ -109,7 +116,8 @@ interface Migration {
 class MigrationRunner {
   constructor(private db: Database, private migrations: Migration[]);
 
-  async run(): Promise<void>;
+  /** 동기 실행(sql.js `Database`는 동기 API). `await` 불필요 */
+  run(): void;
   getCurrentVersion(): number;
 }
 ```
@@ -230,17 +238,17 @@ CREATE TABLE IF NOT EXISTS job_template (
 
 ## 완료 기준
 
-- [ ] sql.js WASM 초기화 및 `Database` 생성 성공
-- [ ] OPFS 또는 IndexedDB로 DB 바이너리 읽기·쓰기 성공
-- [ ] `IStorageBackend` 정의 및 구현체 2종(OPFS, IndexedDB)
-- [ ] Migration Runner 동작(Forward-only, 버전 순 적용)
-- [ ] `001_initial` DDL 실행 → `app_settings`, `job`, `category`, `time_entry`, `job_history` 5테이블 생성 및 `schema_version = 1`
-- [ ] `002_phase2` DDL 실행 → `external_ref`, `job_category`, `job_template` 추가 및 `schema_version = 2`
-- [ ] `PRAGMA foreign_keys=ON` 적용 확인
-- [ ] partial unique index `idx_job_active` 생성 확인
+- [x] sql.js WASM 초기화 및 `Database` 생성 성공
+- [x] OPFS 또는 IndexedDB로 DB 바이너리 읽기·쓰기 성공
+- [x] `IStorageBackend` 정의 및 구현체 2종(OPFS, IndexedDB)
+- [x] Migration Runner 동작(Forward-only, 버전 순 적용, `run()` 동기)
+- [x] `001_initial` DDL 실행 → `app_settings`, `job`, `category`, `time_entry`, `job_history` 5테이블 생성 및 `schema_version = 1`
+- [x] `002_phase2` DDL 실행 → `external_ref`, `job_category`, `job_template` 추가 및 `schema_version = 2`
+- [x] `PRAGMA foreign_keys=ON` 적용 확인
+- [x] partial unique index `idx_job_active` 생성 확인
 
 ---
 
 ## 다음 단계
 
-→ Phase 2C: SQLite Repository 구현
+→ Phase 2C: SQLite Repository 구현 (`2c-sqlite-repository.md`)
