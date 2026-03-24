@@ -167,6 +167,9 @@
                 <EmptyState oncreate={handleCreateJob} />
             {:else}
                 <JobList jobs={job_store.jobs} selected_job_id={job_store.selected_job_id} onselect={handleSelectJob} />
+                <div class="add-job-area">
+                    <button type="button" class="add-job-btn" onclick={handleCreateJob}>+ 새 작업</button>
+                </div>
             {/if}
 
             <ToastContainer {toast_store} />
@@ -240,5 +243,26 @@
     .close-btn:hover {
         background: rgba(0, 0, 0, 0.08);
         color: #333;
+    }
+
+    .add-job-area {
+        padding: 8px 16px;
+    }
+
+    .add-job-btn {
+        width: 100%;
+        padding: 8px;
+        border: 1px dashed #ccc;
+        border-radius: 4px;
+        background: transparent;
+        cursor: pointer;
+        color: #666;
+        font-size: 0.875rem;
+    }
+
+    .add-job-btn:hover {
+        border-color: #999;
+        color: #333;
+        background: rgba(0, 0, 0, 0.02);
     }
 </style>

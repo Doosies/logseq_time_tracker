@@ -74,6 +74,10 @@ export class TimerService implements ITimerService {
             await this.flushSwitchAwayFromActiveJob(pause_reason);
         }
 
+        if (job.status === 'completed' || job.status === 'cancelled') {
+            await this._job_service.transitionStatus(job.id, 'pending', progress_reason);
+        }
+
         await this._job_service.transitionStatus(job.id, 'in_progress', progress_reason);
 
         const now = new Date().toISOString();

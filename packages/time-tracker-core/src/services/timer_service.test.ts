@@ -153,4 +153,29 @@ describe('TimerService', () => {
         await timer_service.start(job, cat);
         expect(timer_service.getActiveJob()?.title).toBe('j');
     });
+
+    it('start: completed Job 재시작 시 pending 경유 후 in_progress', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        vi.setSystemTime(new Date('2025-06-01T12:00:03.000Z'));
+        await timer_service.stop('done');
+        const completed_job = await job_service.getJobById(job.id);
+        expect(completed_job?.status).toBe('completed');
+        await timer_service.start(completed_job!, cat);
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('in_progress');
+    });
+
+    it('start: cancelled Job 재시작 시 pending 경유 후 in_progress', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        await timer_service.cancel('x');
+        const cancelled_job = await job_service.getJobById(job.id);
+        expect(cancelled_job?.status).toBe('cancelled');
+        await timer_service.start(cancelled_job!, cat);
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('in_progress');
+    });
 });
