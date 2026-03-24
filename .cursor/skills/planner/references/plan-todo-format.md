@@ -74,16 +74,16 @@ todos:
 
 **예시**:
 ```markdown
-[병렬-1] CheckboxList DnD 마이그레이션 (담당: developer)
-[병렬-2] QuickLoginSection DnD 마이그레이션 (담당: developer)
+[병렬-1] {component-name-A} DnD 마이그레이션 (담당: developer)
+[병렬-2] {component-name-B} DnD 마이그레이션 (담당: developer)
 ```
 
 ### 혼합 패턴
 
 ```markdown
-[직렬-1] uikit Dnd 프리미티브 교체 (담당: developer)
-[병렬-1] App.svelte DnD 업데이트 (담당: developer, 선행: primitives)
-[병렬-2] QuickLoginSection DnD 업데이트 (담당: developer, 선행: primitives)
+[직렬-1] {ui-lib} Dnd 프리미티브 교체 (담당: developer)
+[병렬-1] {entry-component} DnD 업데이트 (담당: developer, 선행: primitives)
+[병렬-2] {feature-module} DnD 업데이트 (담당: developer, 선행: primitives)
 [직렬-2] 테스트/스토리 수정 (담당: qa, 선행: app-update, quick-update)
 ```
 

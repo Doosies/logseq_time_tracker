@@ -51,7 +51,7 @@ import Select from '../Select.svelte';
 
 const meta = {
     component: Select,
-    title: 'uikit/Select',
+    title: '{ui-lib}/Select',
     args: {
         onchange: fn(),
     },
@@ -113,7 +113,7 @@ import ButtonStoryWrapper from './ButtonStoryWrapper.svelte';
 
 const meta = {
     component: ButtonStoryWrapper,
-    title: 'uikit/Button',
+    title: '{ui-lib}/Button',
     args: { onclick: fn() },
     argTypes: {
         variant: { control: 'select', options: ['primary', 'secondary', 'accent'] },
@@ -203,14 +203,14 @@ import ServerManagerStoryWrapper from './ServerManagerStoryWrapper.svelte';
 
 const meta = {
     component: ServerManagerStoryWrapper,
-    title: 'ecount-dev-tool/ServerManager',
+    title: '{extension-pkg}/ServerManager',
 } satisfies Meta<typeof ServerManagerStoryWrapper>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const ZeusEnvironment: Story = {
-    args: { url: 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1' },
+export const SomeVariant: Story = {
+    args: { url: 'https://{erp-sample-url}/path/to/page' },
 };
 ```
 
@@ -398,7 +398,7 @@ play function에서 `args['onclick']`으로 호출 여부를 검증합니다.
 `.storybook/preview.ts`에서 글로벌 chrome API mock을 설정합니다.
 
 ```typescript
-let storybook_tab_url = 'https://zeus01ba1.ecount.com/ec5/view/erp?__v3domains=ba1';
+let storybook_tab_url = 'https://{erp-sample-url}/ec5/view/erp?__v3domains=ba1';
 
 if (typeof globalThis.chrome === 'undefined') {
     (globalThis as Record<string, unknown>).chrome = {
@@ -431,10 +431,10 @@ StoryWrapper에서 `__storybook_set_tab_url`을 호출하여 URL을 변경합니
 패키지명/컴포넌트명
 ```
 
-- `uikit/Button`
-- `uikit/Select`
-- `ecount-dev-tool/ServerManager`
-- `ecount-dev-tool/ActionBar`
+- `{ui-lib}/Button`
+- `{ui-lib}/Select`
+- `{extension-pkg}/ServerManager`
+- `{extension-pkg}/ActionBar`
 
 ### Story export 이름
 
@@ -509,7 +509,7 @@ const meta = {
 ### URL 패턴
 
 ```
-http://localhost:6008/iframe.html?id={story-id}&viewMode=story
+http://localhost:{storybook-port}/iframe.html?id={story-id}&viewMode=story
 ```
 
 - **`iframe.html`**: Storybook UI 크롬 없이 스토리만 렌더링 (accessibility snapshot 호환)
@@ -521,25 +521,25 @@ Story ID는 `meta.title`과 Story export 이름으로 결정됩니다:
 
 | 요소 | 변환 규칙 | 예시 |
 |------|-----------|------|
-| `meta.title` | 소문자 + `/` → `-` + 공백 → `-` | `ecount-dev-tool/ServerManager` → `ecount-dev-tool-servermanager` |
-| Story export | 소문자 + PascalCase → kebab-case | `ZeusEnvironment` → `zeus-environment` |
+| `meta.title` | 소문자 + `/` → `-` + 공백 → `-` | `{extension-pkg}/ServerManager` → `{extension-pkg}-servermanager` |
+| Story export | 소문자 + PascalCase → kebab-case | `SomeVariant` → `some-variant` |
 | 구분자 | `--` (더블 하이픈) | |
 
 ### URL 구성 예시
 
 | title | export | URL |
 |-------|--------|-----|
-| `ecount-dev-tool/ServerManager` | `ZeusEnvironment` | `http://localhost:6008/iframe.html?id=ecount-dev-tool-servermanager--zeus-environment&viewMode=story` |
-| `uikit/Button` | `Primary` | `http://localhost:6008/iframe.html?id=uikit-button--primary&viewMode=story` |
-| `uikit/Select` | `Default` | `http://localhost:6008/iframe.html?id=uikit-select--default&viewMode=story` |
+| `{extension-pkg}/ServerManager` | `SomeVariant` | `http://localhost:{storybook-port}/iframe.html?id={extension-pkg}-servermanager--some-variant&viewMode=story` |
+| `{ui-lib}/Button` | `Primary` | `http://localhost:{storybook-port}/iframe.html?id={ui-lib}-button--primary&viewMode=story` |
+| `{ui-lib}/Select` | `Default` | `http://localhost:{storybook-port}/iframe.html?id={ui-lib}-select--default&viewMode=story` |
 
 ### 일반 URL과의 차이
 
 ```
-❌ http://localhost:6008/?path=/story/ecount-dev-tool-servermanager--zeus-environment
+❌ http://localhost:{storybook-port}/?path=/story/{extension-pkg}-servermanager--some-variant
    → Storybook UI 크롬 포함, accessibility snapshot에서 불필요한 요소 다수 포함
 
-✅ http://localhost:6008/iframe.html?id=ecount-dev-tool-servermanager--zeus-environment&viewMode=story
+✅ http://localhost:{storybook-port}/iframe.html?id={extension-pkg}-servermanager--some-variant&viewMode=story
    → 스토리만 렌더링, 깔끔한 snapshot
 ```
 

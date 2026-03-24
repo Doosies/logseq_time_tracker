@@ -264,11 +264,11 @@ paths:
 **실행 순서**:
 
 1. [ ] **ReadLints** (변경된 파일 경로 지정)
-2. [ ] **pnpm format**
-3. [ ] **pnpm test**
-4. [ ] **pnpm lint**
-5. [ ] **pnpm type-check**
-6. [ ] **pnpm build**
+2. [ ] **format** (프로젝트 스크립트)
+3. [ ] **test** (프로젝트 스크립트)
+4. [ ] **lint** (프로젝트 스크립트)
+5. [ ] **type-check** (프로젝트 스크립트)
+6. [ ] **build** (프로젝트 스크립트)
 
 ---
 

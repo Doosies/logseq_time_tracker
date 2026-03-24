@@ -44,7 +44,7 @@
 2. **실행** ← 위에서 할당된 서브에이전트들을 통해 작업 진행
 
 3. **QA 검증** ← qa 서브에이전트
-    - ReadLints (변경 파일) → `pnpm format` → `pnpm test` → `pnpm lint` → `pnpm type-check` → `pnpm build`
+    - ReadLints (변경 파일) → `format` → `test` → `lint` → `type-check` → `build` 순 실행 (스크립트 명은 `.cursor-agent-config.yaml` 또는 루트 `package.json` 참조)
     - 실패 시 원인 분석·수정·재검증
 
 4. **보안 검증** (Feature, Refactor, **Bugfix** 시) ← security 서브에이전트

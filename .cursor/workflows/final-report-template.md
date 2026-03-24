@@ -44,7 +44,7 @@
 ### 검증
 
 - **담당**: qa 서브에이전트 x1
-- **내용**: ReadLints + pnpm format + test + lint + type-check → build
+- **내용**: ReadLints + 프로젝트 format → test → lint → type-check → build 스크립트 순 실행 (스크립트 명은 `.cursor-agent-config.yaml` 또는 루트 `package.json` 참조)
 - **결과**: PASS / FAIL (이슈 N건 제외)
 
 ### 문서화/CHANGELOG

@@ -68,8 +68,8 @@ pnpm build --filter <workspace>
 pnpm --filter <package-name> <command>
 
 # 예시
-pnpm --filter ecount-dev-tool test
-pnpm --filter @minhyung/uikit build
+pnpm --filter {extension-pkg} test
+pnpm --filter @{scope}/{ui-lib} build
 ```
 
 ---

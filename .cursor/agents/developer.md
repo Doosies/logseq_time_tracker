@@ -188,7 +188,7 @@ user-service.ts   // kebab-case 사용하지 않음
 
 ### 스택별 컨벤션 (해당 시 참조)
 
-프로젝트에서 사용하는 기술 스택별 세부 규칙은 [`.cursor/skills/stack/`](../skills/stack/) 디렉터리 하위의 해당 `conventions.md`를 참조합니다.
+프로젝트에서 사용하는 기술 스택별 세부 규칙은 [`skills/stack/`](../skills/stack/) 디렉터리 하위의 해당 `conventions.md`를 참조합니다.
 
 > 프로젝트의 `.cursor-agent-config.yaml`에 명시된 stack_skills를 확인하여 해당 스킬만 참조합니다.
 
@@ -375,7 +375,7 @@ Developer 에이전트는 **코드 구현만** 담당합니다. 다음 작업은
 
 ### 설정 파일 포매팅 보존 (필수)
 
-`package.json`, `tsconfig.json`, 워크스페이스 매니페스트(`pnpm-workspace.yaml` 등) 등 설정 파일을 수정할 때:
+`package.json`, `tsconfig.json`, 워크스페이스 매니페스트(워크스페이스/모노레포 사용 시; 예: `pnpm-workspace.yaml` 등) 등 설정 파일을 수정할 때:
 
 1. **기존 들여쓰기 확인**: 수정 전 파일을 읽어 들여쓰기 칸 수(2칸/4칸) 확인
 2. **동일하게 유지**: 수정 후 동일한 들여쓰기 적용
@@ -383,7 +383,7 @@ Developer 에이전트는 **코드 구현만** 담당합니다. 다음 작업은
     - 예: 프로젝트 루트 `package.json`이 4칸이면 `JSON.stringify(pkg, null, 4)`
 4. **Prettier 적용**: 프로젝트의 format 스크립트 실행 시 프로젝트 `.prettierrc`(tabWidth) 준수. 수동 작성 시 tabWidth와 일치시킬 것
 
-상세(모노레포·ReadLints 연계)는 [pnpm 모노레포 스택 스킬](../skills/stack/pnpm-monorepo/conventions.md) 참조.
+해당 프로젝트가 모노레포 구조를 사용하는 경우, 상세(모노레포·ReadLints 연계)는 [모노레포 스택 스킬](../skills/stack/pnpm-monorepo/conventions.md) 참조.
 
 ### 외부 라이브러리 API 사용 시 (필수)
 
@@ -445,7 +445,7 @@ UI/UX 관련 라이브러리(예: DnD, 모달, 폼)를 교체할 때는 **기존
 
 ### 신규 패키지에 비자명 로직 추가 시 — 테스트 러너 (필수)
 
-모노레포 내 **새 패키지** 또는 기존 패키지에 **PostProcessor, 랭킹, 파싱 파이프라인** 등 단위 테스트로 검증할 가치가 있는 로직을 추가할 때:
+다중 패키지(워크스페이스/모노레포) 저장소에서 **새 패키지** 또는 기존 패키지에 **PostProcessor, 랭킹, 파싱 파이프라인** 등 단위 테스트로 검증할 가치가 있는 로직을 추가할 때:
 
 - 해당 패키지에 `test` 스크립트와 테스트 러너(예: **Vitest**, Jest) 구성이 없으면 **이번 작업 범위에서 최소 구성 추가**를 우선 검토
 - 루트/워크스페이스의 기존 관례(`.cursor-agent-config.yaml`, 루트 `package.json`, 타 패키지)에 맞출 것
@@ -453,11 +453,11 @@ UI/UX 관련 라이브러리(예: DnD, 모달, 폼)를 교체할 때는 **기존
 
 ## 스토리지/스토어 마이그레이션 (필수)
 
-저장소 교체·async 전환 시 **저장소·메모리·UI 파생 상태의 삼중 일치**를 반드시 확인합니다. 세부 절차·프로젝트 지식 링크는 해당 스택 [conventions](../skills/stack/chrome-extension/conventions.md) 참조.
+저장소 교체·async 전환 시 **저장소·메모리·UI 파생 상태의 삼중 일치**를 반드시 확인합니다. Chrome Extension(MV3) 작업 시 세부 절차·프로젝트 지식 링크는 해당 스택의 [conventions](../skills/stack/chrome-extension/conventions.md) 참조.
 
 ## ReadLints 사용 (필수 프로세스!)
 
-**중요**: 파일을 **작성하거나 수정한 직후** 반드시 ReadLints로 확인합니다. type-check·lint:fix·format과의 연계 순서 및 예시는 [pnpm 모노레포 스택 스킬](../skills/stack/pnpm-monorepo/conventions.md) 참조.
+**중요**: 파일을 **작성하거나 수정한 직후** 반드시 ReadLints로 확인합니다. 해당 프로젝트가 모노레포 구조를 사용하는 경우, type-check·lint:fix·format과의 연계 순서 및 예시는 [모노레포 스택 스킬](../skills/stack/pnpm-monorepo/conventions.md) 참조.
 
 ## 작업 완료 조건
 

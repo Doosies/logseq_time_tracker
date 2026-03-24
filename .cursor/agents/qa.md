@@ -109,9 +109,8 @@ QA 작업 시작 전 아래 절차를 반드시 수행합니다.
 
 프로젝트에서 사용하는 기술 스택에 따라 추가 테스트 규칙을 참조합니다:
 
-- **프레임워크 컴포넌트 테스트**: [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md) 참조
-- **컴포넌트 스토리·비주얼 테스트 전략**: [`skills/stack/storybook/testing.md`](../skills/stack/storybook/testing.md) 참조
-- **Chrome Extension 테스트**: [`skills/stack/chrome-extension/testing.md`](../skills/stack/chrome-extension/testing.md) 참조
+- 프로젝트에서 사용하는 스택에 해당하는 `skills/stack/<stack-name>/testing.md` 참조
+  - 예: [Svelte](../skills/stack/svelte/testing.md), [Storybook](../skills/stack/storybook/testing.md), [Chrome Extension](../skills/stack/chrome-extension/testing.md)
 - **테스트 러너 설정**: 프로젝트의 `.cursor-agent-config.yaml`에서 `test_runner` 확인
 
 > 프로젝트의 `.cursor-agent-config.yaml`에 명시된 `stack_skills`를 확인하여 해당 스킬만 참조합니다.
@@ -220,7 +219,7 @@ describe('calculateTotal', () => {
 - 변경 대상 패키지에 `test` 스크립트·테스트 러너 설정이 없고, 이번 변경에 **랭킹/필터/스코어링·파싱** 등 테스트로 잡기 쉬운 로직이 포함되면:
   1. 완료 보고에 “테스트 인프라 부재”를 이슈로 명시
   2. Developer 에이전트에게 **Vitest 등 최소 테스트 하네스 추가** 및 핵심 케이스 1개 이상 위임 (또는 동일 스프린트에서 직접 추가 가능 시 수행)
-- 인프라 추가 후에는 프로젝트 관례에 맞게 `pnpm` 워크스페이스에서 해당 패키지 테스트가 실행되는지 확인
+- 인프라 추가 후에는 워크스페이스/모노레포 관례에 따라 해당 패키지 테스트가 실행되는지 확인
 
 ### 3단계: 테스트 작성 및 실행 (필수!)
 - **중요**: 코드 리뷰 후 반드시 테스트 코드 작성
@@ -307,7 +306,7 @@ describe('calculateTotal', () => {
 
 ### 스토리·비주얼 테스트 검증 (스토리 존재 시)
 
-체크리스트 및 트리거는 [`skills/stack/storybook/testing.md`](../skills/stack/storybook/testing.md)를 참조합니다.
+Storybook을 사용하는 프로젝트에서는 체크리스트 및 트리거를 [Storybook 테스트 전략](../skills/stack/storybook/testing.md)에서 참조합니다.
 
 **Skill 사용**: [테스트 품질 검증](../skills/qa/references/test-quality.md) - 상세 체크리스트 참조
 
@@ -389,7 +388,7 @@ describe('calculateTotal', () => {
   - 변수: `snake_case`
   - 함수: `camelCase`
   - 클래스: `PascalCase`
-- [ ] **Compound Component·프레임워크 UI 패턴** (해당 시): [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md)의 체크리스트 적용
+- [ ] **Compound Component·프레임워크 UI 패턴** (해당 시): 사용 스택의 `skills/stack/<stack-name>/testing.md` 체크리스트 적용 — 예: [Svelte](../skills/stack/svelte/testing.md)
 
 ## 커버리지 목표
 
@@ -496,7 +495,7 @@ describe('calculateTotal', () => {
 
 ### async 스토어·모듈 상태 전환
 
-동기 → async 전환 등 저장소·스토어 패턴이 바뀔 때의 **필수 테스트 패턴·금지 사항**은 [`skills/stack/svelte/testing.md`](../skills/stack/svelte/testing.md) 및 [async-store-testing.md](../skills/qa/references/async-store-testing.md)를 참조합니다.
+Svelte 등 프레임워크 스토어에서 동기 → async 전환 등 패턴이 바뀔 때의 **필수 테스트 패턴·금지 사항**은 해당 스택의 testing.md(예: [Svelte](../skills/stack/svelte/testing.md)) 및 [async-store-testing.md](../skills/qa/references/async-store-testing.md)를 참조합니다.
 
 **테스트 환경 패치 금지**: prototype 오염, 에러 억제, workaround 후 전체 테스트 미실행 절대 금지.
 

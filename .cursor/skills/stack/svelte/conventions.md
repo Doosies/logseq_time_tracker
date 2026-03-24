@@ -1,6 +1,6 @@
 # Svelte 스택 컨벤션
 
-Svelte 패키지(uikit, ecount-dev-tool 등) 작업 시 적용합니다.
+Svelte 패키지({ui-lib}, {extension-pkg} 등 프로젝트의 Svelte 패키지) 작업 시 적용합니다.
 
 > **상세·예시·체크리스트**는 [Svelte 컨벤션](../../developer/references/svelte-conventions.md) 참조 (본 문서는 진입용 요약)
 

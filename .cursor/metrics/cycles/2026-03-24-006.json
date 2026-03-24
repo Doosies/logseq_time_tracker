@@ -1,0 +1,69 @@
+{
+    "cycle_id": "2026-03-24-006",
+    "task_type": "refactor",
+    "task_description": "에이전트 시스템 일반화: 플레이스홀더 치환, 패키지 매니저 중립 표현, 스킬 참조 상대경로 통일",
+    "started_at": "2026-03-24T00:00:00.000Z",
+    "completed_at": "2026-03-24T12:30:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["user-direct-commit", "git-commit"],
+    "agents": {
+        "planner": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "developer": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "qa": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "security": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": {
+        "created": [".cursor/metrics/cycles/2026-03-24-006.json"],
+        "modified": [
+            ".cursor/agents/developer.md",
+            ".cursor/agents/planner.md",
+            ".cursor/agents/qa.md",
+            ".cursor/commands/plan-execution.md",
+            ".cursor/commands/test-when-needed.md",
+            ".cursor/skills/cli-usage/SKILL.md",
+            ".cursor/skills/developer/references/config-optimization.md",
+            ".cursor/skills/developer/references/file-status-guide.md",
+            ".cursor/skills/developer/references/headless-components.md",
+            ".cursor/skills/developer/references/refactoring-patterns.md",
+            ".cursor/skills/developer/references/svelte-conventions.md",
+            ".cursor/skills/docs-agent/references/staleness-detection.md",
+            ".cursor/skills/planner/references/plan-todo-format.md",
+            ".cursor/skills/project-conventions/SKILL.md",
+            ".cursor/skills/project-knowledge/references/ecount-dev-tool.md",
+            ".cursor/skills/qa/references/chrome-extension-testing.md",
+            ".cursor/skills/qa/references/storybook-strategy.md",
+            ".cursor/skills/stack/chrome-extension/conventions.md",
+            ".cursor/skills/stack/react/SKILL.md",
+            ".cursor/skills/stack/react/conventions.md",
+            ".cursor/skills/stack/svelte/SKILL.md",
+            ".cursor/skills/stack/svelte/conventions.md",
+            ".cursor/skills/stack/svelte/testing.md",
+            ".cursor/skills/stack/svelte/workflows.md",
+            ".cursor/workflows/domain-specific/add-api-endpoint.md",
+            ".cursor/workflows/domain-specific/add-svelte-component.md",
+            ".cursor/workflows/final-report-template.md"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": "skipped",
+        "type_check": "skipped",
+        "lint": "skipped",
+        "test": "skipped",
+        "build": "skipped",
+        "security": "skipped"
+    },
+    "decisions": [
+        {
+            "phase": "commit",
+            "decision": "문서-only 변경이며 .cursor/metrics의 타 사이클·리포트는 커밋에서 제외",
+            "rationale": "논리적 단일 커밋 유지 및 사용자 제약(.cr-rag-data, docs/, chroma 제외) 준수"
+        }
+    ],
+    "issues_encountered": [],
+    "notes": "developer/SKILL.md·qa/SKILL.md는 CRLF 경고만 있고 HEAD 대비 내용 diff 없음 → 스테이징 제외."
+}

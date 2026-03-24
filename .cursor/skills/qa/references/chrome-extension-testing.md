@@ -65,7 +65,7 @@ describe('getCurrentTab', () => {
     // Arrange
     const mock_tab = {
       id: 1,
-      url: 'https://zeus01ba1.ecount.com/ECERP/ECP050M',
+      url: 'https://{erp-sample-url}/path/to/page',
     };
     vi.mocked(chrome.tabs.query).mockResolvedValue([mock_tab]);
 
@@ -100,11 +100,11 @@ describe('updateTabUrl', () => {
     vi.stubGlobal('close', close_mock);
 
     // Act
-    await updateTabUrl(1, 'https://new-url.ecount.com/');
+    await updateTabUrl(1, 'https://{erp-sample-url}/');
 
     // Assert
     expect(chrome.tabs.update).toHaveBeenCalledWith(1, {
-      url: 'https://new-url.ecount.com/',
+      url: 'https://{erp-sample-url}/',
     });
     expect(close_mock).toHaveBeenCalled();
   });
@@ -248,26 +248,26 @@ describe('switchV5TestServer', () => {
 
     // Assert
     expect(mock_top.location.href).toBe(
-      'https://onetestba1.ecount.com/login/login.aspx'
+      'https://{erp-sample-url}/login/login.aspx'
     );
   });
 });
 ```
 
-### top.$ECount, top.$ECountApp 모킹
+### top.{host-global-context}, top.{host-global-app} 모킹
 
 ```typescript
 describe('debugAndGetPageInfo', () => {
-  it('$ECount.setDevMode가 있을 때 hasSetDevMode=true를 반환해야 함', () => {
+  it('{host-global-context}.setDevMode가 있을 때 hasSetDevMode=true를 반환해야 함', () => {
     // Arrange
     const mock_top = {
-      $ECount: { setDevMode: vi.fn() },
-      $ECountApp: {
+      '{host-global-context}': { setDevMode: vi.fn() },
+      '{host-global-app}': {
         getContext: () => ({
           config: { ec_zone_num: 'BA1' },
         }),
       },
-      location: { href: 'https://zeus01ba1.ecount.com/' },
+      location: { href: 'https://{erp-sample-url}/' },
     };
     vi.stubGlobal('top', mock_top);
 
@@ -279,9 +279,9 @@ describe('debugAndGetPageInfo', () => {
     expect(info.zoneNum).toBe('BA1');
   });
 
-  it('$ECount가 없을 때 hasSetDevMode=false를 반환해야 함', () => {
+  it('{host-global-context}가 없을 때 hasSetDevMode=false를 반환해야 함', () => {
     const mock_top = {
-      location: { href: 'https://zeus01ba1.ecount.com/' },
+      location: { href: 'https://{erp-sample-url}/' },
     };
     vi.stubGlobal('top', mock_top);
 
@@ -291,6 +291,16 @@ describe('debugAndGetPageInfo', () => {
   });
 });
 ```
+```
+
+Wait - I accidentally added an extra ``` at the end. Let me fix the chrome-extension file - I need to read it and fix.
+
+Actually the replace might have broken - I included ``` at the end of new_string which would duplicate closing fence. Let me read the file.
+</think>
+
+
+<｜tool▁calls▁begin｜><｜tool▁call▁begin｜>
+Read
 
 ---
 

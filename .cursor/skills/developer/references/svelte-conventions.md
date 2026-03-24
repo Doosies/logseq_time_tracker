@@ -1,13 +1,13 @@
 ---
 name: svelte-conventions
-description: Svelte 프로젝트 네이밍 컨벤션 및 코딩 가이드 (uikit, ecount-dev-tool)
+description: Svelte 프로젝트 네이밍 컨벤션 및 코딩 가이드 ({ui-lib}, {extension-pkg})
 ---
 
 # Svelte 프로젝트 네이밍 컨벤션
 
 ## 개요
 
-이 Skill은 Svelte 프로젝트(uikit, ecount-dev-tool) 전용 네이밍 규칙을 정의합니다. AGENTS.md의 공통 규칙과 달리, **Svelte 컴포넌트 내부는 TypeScript/Svelte 생태계 표준인 camelCase를 사용**하며, 일반 `.ts` 파일의 snake_case 규칙과 구분됩니다.
+이 Skill은 Svelte 프로젝트({ui-lib}, {extension-pkg}) 전용 네이밍 규칙을 정의합니다. AGENTS.md의 공통 규칙과 달리, **Svelte 컴포넌트 내부는 TypeScript/Svelte 생태계 표준인 camelCase를 사용**하며, 일반 `.ts` 파일의 snake_case 규칙과 구분됩니다.
 
 ## 핵심 원칙
 

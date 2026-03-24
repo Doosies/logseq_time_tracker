@@ -51,9 +51,9 @@ export { default as Item } from './Item.svelte';
 
 ```svelte
 <script lang="ts">
-  import * as Select from '@uikit/Select';
+  import * as Select from '@{scope}/Select';
   // 또는
-  import { Root as SelectRoot, Trigger, Content, Item } from '@uikit/Select';
+  import { Root as SelectRoot, Trigger, Content, Item } from '@{scope}/Select';
 </script>
 
 <Select.Root ...>

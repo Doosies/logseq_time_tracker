@@ -54,8 +54,8 @@ git diff --name-only <base>..HEAD
 ```
 
 예시:
-- 문서: `import { parseEcountUrl } from '@/services/url_service'`
-- 실제: `import { parseEcountUrl } from '#services/url_service'`
+- 문서: `import { {function-name} } from '@/services/url_service'`
+- 실제: `import { {function-name} } from '#services/url_service'`
 - 결과: **노후화 (P0)**
 
 **B. API 시그니처 검증**
@@ -68,8 +68,8 @@ git diff --name-only <base>..HEAD
 ```
 
 예시:
-- 문서: `buildEc5Url(base_url: string, server_config: ServerConfig): string`
-- 실제: `buildEc5Url(current_url: URL, to_v5_server: string, to_v3_server: string): string`
+- 문서: `{function-name}(base_url: string, server_config: ServerConfig): string`
+- 실제: `{function-name}(current_url: URL, to_v5_server: string, to_v3_server: string): string`
 - 결과: **노후화 (P0)**
 
 **C. 타입 정의 검증**
@@ -125,7 +125,7 @@ git diff --name-only <base>..HEAD
 ### P0 (즉시 수정)
 | 문서 | 위치 | 노후화 내용 | 원인 커밋 |
 |---|---|---|---|
-| ecount-dev-tool/README.md | API 섹션 | import 경로 `@/` → `#` 미반영 | abc1234 |
+| {extension-pkg}/README.md | API 섹션 | import 경로 `@/` → `#` 미반영 | abc1234 |
 | storybook-strategy.md | 전체 | 제거된 addon을 권장 | def5678 |
 
 ### P1 (다음 작업 시)

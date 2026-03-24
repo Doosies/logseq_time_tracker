@@ -1,6 +1,6 @@
 ---
 name: stack-react
-description: React(time-tracker 등) 컨벤션·테스트 진입점. 상세는 references·QA 스킬 링크.
+description: React 패키지(워크스페이스 내 React 앱·라이브러리, 예: {app-name}) 컨벤션·테스트 진입점. 상세는 references·QA 스킬 링크.
 ---
 
 # React 스택 스킬 (진입점)

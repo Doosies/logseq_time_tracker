@@ -266,22 +266,22 @@ function getPayAmount() {
 ```svelte
 <script>
   const SECTION_LIST = [
-    { id: 'quick-login', label: '빠른 로그인' },
-    { id: 'server-manager', label: '서버 관리' },
+    { id: 'section-a', label: '섹션 A' },
+    { id: 'section-b', label: '섹션 B' },
   ];
 </script>
 
-{#if section_type === 'quick-login'}
-  <QuickLoginSection />
-{:else if section_type === 'server-manager'}
-  <ServerManager />
+{#if section_type === 'section-a'}
+  <SectionA />
+{:else if section_type === 'section-b'}
+  <SectionB />
 {/if}
 ```
 
 `section_order.svelte.ts`:
 
 ```typescript
-const DEFAULT_ORDER = ['quick-login', 'server-manager'];
+const DEFAULT_ORDER = ['section-a', 'section-b'];
 ```
 
 **After (레지스트리 패턴)**:
@@ -291,7 +291,7 @@ const DEFAULT_ORDER = ['quick-login', 'server-manager'];
 ```typescript
 import type { Component } from 'svelte';
 
-export type SectionId = 'quick-login' | 'server-manager' | 'action-bar';
+export type SectionId = 'section-a' | 'section-b' | 'section-c';
 
 export interface SectionDefinition {
   id: SectionId;
@@ -303,13 +303,13 @@ export interface SectionDefinition {
 **2. 레지스트리** (`sections/registry.ts`):
 
 ```typescript
-import { QuickLoginSection } from '#components/QuickLoginSection';
-import { ServerManager } from '#components/ServerManager';
+import { SectionA } from '#components/SectionA';
+import { SectionB } from '#components/SectionB';
 import type { SectionDefinition } from './types';
 
 export const SECTION_REGISTRY: SectionDefinition[] = [
-  { id: 'quick-login', label: '빠른 로그인', component: QuickLoginSection },
-  { id: 'server-manager', label: '서버 관리', component: ServerManager },
+  { id: 'section-a', label: '섹션 A', component: SectionA },
+  { id: 'section-b', label: '섹션 B', component: SectionB },
 ];
 ```
 

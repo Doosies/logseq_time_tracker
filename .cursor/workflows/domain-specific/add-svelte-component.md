@@ -1,6 +1,6 @@
 # Svelte 5 컴포넌트 추가 워크플로우
 
-이 문서는 `packages/uikit`에 새 Svelte 5 컴포넌트를 추가할 때 사용하는 도메인 특화 워크플로우입니다.
+이 문서는 `{ui-lib-path}`에 새 Svelte 5 컴포넌트를 추가할 때 사용하는 도메인 특화 워크플로우입니다. (`{ui-lib-path}`는 대상 UI 라이브러리 패키지 경로, 예: `packages/design-system`)
 프로젝트의 기존 패턴(Svelte 5 Runes, Vanilla Extract, Storybook)을 따릅니다.
 
 ---
@@ -9,8 +9,8 @@
 
 워크플로우 시작 전 확인:
 
-- [ ] 컴포넌트 이름 확정 (`PascalCase`, 예: `Textarea`, `CheckboxList`)
-- [ ] `packages/uikit` 패키지 대상
+- [ ] 컴포넌트 이름 확정 (`PascalCase`, 예: `Textarea`, `DataGrid`)
+- [ ] `{ui-lib-path}` 패키지 대상
 - [ ] plan-execution 워크플로우 0단계(사이클 메트릭) 적용 여부 확인 (Feature/Refactor 시)
 
 ---
@@ -21,7 +21,7 @@
 
 ### 1.1 유사한 컴포넌트 찾기
 
-- [ ] `packages/uikit/src/components/` 내 유사 컴포넌트 검색
+- [ ] `{ui-lib-path}/src/components/` 내 유사 컴포넌트 검색
 - [ ] Props 패턴 확인 (예: `value`, `disabled`, `placeholder`, `oninput` 등)
 - [ ] `$bindable()` 사용 여부 확인
 
@@ -43,7 +43,7 @@ let { value = $bindable(), oninput, ... }: TextareaProps = $props();
 ```typescript
 const meta = {
     component: Textarea,
-    title: 'uikit/Textarea',
+    title: '{ui-lib}/Textarea',
     args: { oninput: fn() },
     argTypes: { disabled: { control: 'boolean' }, ... },
 } satisfies Meta<typeof Textarea>;
@@ -51,7 +51,7 @@ const meta = {
 
 ### 1.3 스타일 패턴 확인
 
-- [ ] `packages/uikit/src/design/styles/` 내 `*.css.ts` 파일 구조 확인
+- [ ] `{ui-lib-path}/src/design/styles/` 내 `*.css.ts` 파일 구조 확인
 - [ ] `theme_vars` 사용 방식 확인
 
 ---
@@ -63,7 +63,7 @@ const meta = {
 ### 2.1 디렉토리 구조
 
 ```
-packages/uikit/src/components/{ComponentName}/
+{ui-lib-path}/src/components/{ComponentName}/
 ├── {ComponentName}.svelte
 ├── index.ts
 └── __tests__/
@@ -73,7 +73,7 @@ packages/uikit/src/components/{ComponentName}/
 
 ### 2.2 컴포넌트 파일 작성
 
-**파일**: `packages/uikit/src/components/{ComponentName}/{ComponentName}.svelte`
+**파일**: `{ui-lib-path}/src/components/{ComponentName}/{ComponentName}.svelte`
 
 - [ ] Svelte 5 Runes 사용 (`$props()`, `$derived`, `$effect`)
 - [ ] TypeScript 타입 정의 (`interface` 또는 `type`)
@@ -117,7 +117,7 @@ export { default as ComponentName } from './ComponentName.svelte';
 
 ### 2.4 스타일 파일 (필요 시)
 
-**파일**: `packages/uikit/src/design/styles/component_name.css.ts`
+**파일**: `{ui-lib-path}/src/design/styles/component_name.css.ts`
 
 - [ ] Vanilla Extract `style()` 사용
 - [ ] `theme_vars` 사용 (색상, 간격, 폰트 등)
@@ -131,7 +131,7 @@ export { default as ComponentName } from './ComponentName.svelte';
 **파일**: `__tests__/{ComponentName}.stories.ts`
 
 - [ ] `Meta`, `StoryObj` 타입 사용
-- [ ] `title` 형식: `uikit/{ComponentName}`
+- [ ] `title` 형식: `{ui-lib}/{ComponentName}`
 - [ ] `argTypes` 정의
 - [ ] 각 스토리에 `play` 함수로 상호작용 테스트
 - [ ] 접근성 테스트 포함 (role, aria)
@@ -145,7 +145,7 @@ import ComponentName from '../ComponentName.svelte';
 
 const meta = {
     component: ComponentName,
-    title: 'uikit/ComponentName',
+    title: '{ui-lib}/ComponentName',
     parameters: {
         docs: {
             description: { component: '컴포넌트 설명' },
@@ -243,11 +243,11 @@ describe('ComponentName', () => {
 **실행 순서**:
 
 1. [ ] **ReadLints** (변경된 파일 경로 지정)
-2. [ ] **pnpm format** (워크스페이스 루트)
-3. [ ] **pnpm test** (packages/uikit 또는 전체)
-4. [ ] **pnpm lint**
-5. [ ] **pnpm type-check** (워크스페이스 루트)
-6. [ ] **pnpm build**
+2. [ ] **format** (프로젝트 스크립트) (워크스페이스 루트)
+3. [ ] **test** (프로젝트 스크립트) (해당 패키지 스코프 또는 루트 스크립트)
+4. [ ] **lint** (프로젝트 스크립트)
+5. [ ] **type-check** (프로젝트 스크립트) (워크스페이스 루트)
+6. [ ] **build** (프로젝트 스크립트)
 
 ---
 

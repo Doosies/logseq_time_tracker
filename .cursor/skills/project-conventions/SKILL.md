@@ -193,10 +193,10 @@ import { onMount } from 'svelte';
 import express from 'express';
 
 // 2. 모노레포 패키지
-import { Button } from '@personal/uikit';
+import { Button } from '@{scope}/{ui-lib}';
 
 // 3. 내부 절대 경로 (Node.js subpath imports)
-import { buildEc5Url } from '#services/url_service';
+import { formatUrl } from '#services/url_service';
 import type { ParsedUrl } from '#types/server';
 
 // 4. 상대 경로

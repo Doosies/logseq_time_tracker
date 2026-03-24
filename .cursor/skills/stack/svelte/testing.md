@@ -41,4 +41,4 @@ Svelte(및 Svelte 5 Runes) 기반 UI·스토어 테스트 시 QA 에이전트가
 
 - 범용 패턴·코드 예: [async-store-testing.md](../../qa/references/async-store-testing.md)
 - 저장소 설계와의 정합: [chrome-extension-storage.md](../../developer/references/chrome-extension-storage.md) (확장 프로그램 시)
-- 프로젝트 구현 예: [ecount-dev-tool.md](../../project-knowledge/references/ecount-dev-tool.md)
+- 프로젝트 구현 예: `project-knowledge/references/` 내 해당 패키지 문서 참조
