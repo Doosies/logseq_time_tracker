@@ -72,4 +72,19 @@ describe('JobList', () => {
         fireEvent.click(getByRole('button', { name: /클릭/ }));
         expect(onselect).toHaveBeenCalledWith('click-me');
     });
+
+    it('time_totals: 누적 시간이 0보다 크면 HH:MM:SS 표시', () => {
+        const jobs = [make_job('j1', '작업A')];
+        const time_totals = new Map<string, number>([['j1', 3661]]);
+        const { getByRole } = render(JobList, {
+            props: {
+                jobs,
+                selected_job_id: null,
+                time_totals,
+                onselect: vi.fn(),
+            },
+        });
+        const btn = getByRole('button', { name: /작업A/ });
+        expect(btn.textContent).toContain('01:01:01');
+    });
 });

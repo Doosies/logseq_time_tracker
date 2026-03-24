@@ -13,6 +13,7 @@
         onresume,
         onstop,
         oncancel,
+        onswitch,
     }: {
         timer_store: TimerStore;
         job_store: JobStore;
@@ -21,7 +22,14 @@
         onresume: () => void;
         onstop: () => void;
         oncancel: () => void;
+        onswitch: () => void;
     } = $props();
+
+    const can_switch = $derived(
+        timer_store.state.active_job !== null &&
+            job_store.selected_job !== null &&
+            timer_store.active_job_id !== job_store.selected_job_id,
+    );
 </script>
 
 <section class={css.timer_container} aria-label="타이머">
@@ -43,10 +51,12 @@
         is_running={timer_store.is_running}
         is_paused={timer_store.state.is_paused}
         job_selected={job_store.selected_job !== null}
+        {can_switch}
         {onstart}
         {onpause}
         {onresume}
         {onstop}
         {oncancel}
+        {onswitch}
     />
 </section>

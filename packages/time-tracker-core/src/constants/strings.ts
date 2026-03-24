@@ -4,6 +4,7 @@ export const STRINGS = {
         pause: '일시정지',
         resume: '재개',
         stop: '정지',
+        switch_job: '전환',
         elapsed: '경과 시간',
     },
     job: {

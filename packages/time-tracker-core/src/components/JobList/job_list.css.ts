@@ -17,6 +17,7 @@ export const job_item = style({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: '8px',
     width: '100%',
     padding: '8px 12px',
     borderRadius: '4px',
@@ -38,6 +39,16 @@ export const job_item_selected = style({
 
 export const job_title = style({
     fontWeight: 500,
+});
+
+export const job_duration = style({
+    fontSize: '0.75rem',
+    color: '#6b7280',
+    fontVariantNumeric: 'tabular-nums',
+    fontFamily: 'monospace',
+    marginLeft: 'auto',
+    marginRight: '8px',
+    flexShrink: 0,
 });
 
 export const status_badge = style({

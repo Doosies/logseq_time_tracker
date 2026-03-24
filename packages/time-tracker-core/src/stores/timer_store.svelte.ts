@@ -85,6 +85,9 @@ export function createTimerStore() {
         get state() {
             return state;
         },
+        get active_job_id(): string | null {
+            return state.active_job?.id ?? null;
+        },
         get is_running() {
             return is_running;
         },
