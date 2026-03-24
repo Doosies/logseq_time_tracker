@@ -2,6 +2,7 @@ import initSqlJs from 'sql.js';
 import type { Database } from 'sql.js';
 import { StorageError } from '../../../errors/base';
 import type { IStorageBackend } from './storage_backend';
+import { loadWasmBinary } from './wasm_loader';
 
 export interface SqliteAdapterOptions {
     /** Base URL/path for WASM files, or a full URL ending in `.wasm` (directory is inferred). */
@@ -10,19 +11,8 @@ export interface SqliteAdapterOptions {
     db_name?: string;
 }
 
-function build_locate_file(wasm_url: string | undefined): ((file: string) => string) | undefined {
-    if (wasm_url === undefined || wasm_url === '') {
-        return undefined;
-    }
-    return (file: string) => {
-        if (wasm_url.endsWith('.wasm')) {
-            const slash = wasm_url.lastIndexOf('/');
-            const base = slash >= 0 ? wasm_url.slice(0, slash + 1) : '';
-            return `${base}${file}`;
-        }
-        const with_slash = wasm_url.endsWith('/') ? wasm_url : `${wasm_url}/`;
-        return `${with_slash}${file}`;
-    };
+function is_browser_runtime(): boolean {
+    return typeof window !== 'undefined' && typeof navigator !== 'undefined';
 }
 
 /**
@@ -34,8 +24,13 @@ export class SqliteAdapter {
     constructor(private readonly backend: IStorageBackend) {}
 
     async initialize(options: SqliteAdapterOptions = {}): Promise<void> {
-        const locate_file = build_locate_file(options.wasm_url);
-        const SQL = await (locate_file !== undefined ? initSqlJs({ locateFile: locate_file }) : initSqlJs());
+        let SQL: Awaited<ReturnType<typeof initSqlJs>>;
+        if (options.wasm_url && is_browser_runtime()) {
+            const wasm_binary = await loadWasmBinary(options.wasm_url);
+            SQL = await initSqlJs({ wasmBinary: wasm_binary } as Parameters<typeof initSqlJs>[0]);
+        } else {
+            SQL = await initSqlJs();
+        }
         const existing = await this.backend.read();
         this.db = existing !== null && existing.length > 0 ? new SQL.Database(existing) : new SQL.Database();
         this.db.run('PRAGMA journal_mode=WAL');

@@ -1,4 +1,5 @@
 import initSqlJs from 'sql.js';
+import { loadWasmBinary } from './wasm_loader';
 
 const POC_DB_OBJECT_STORE = 'poc_db_blob';
 const POC_IDB_NAME = 'time-tracker-poc';
@@ -20,14 +21,12 @@ function is_browser_runtime(): boolean {
     return typeof window !== 'undefined' && typeof navigator !== 'undefined';
 }
 
-function build_locate_file(wasm_base: string | undefined): (file: string) => string {
-    return (file: string) => {
-        if (wasm_base !== undefined && wasm_base !== '') {
-            const with_slash = wasm_base.endsWith('/') ? wasm_base : `${wasm_base}/`;
-            return `${with_slash}${file}`;
-        }
-        return `/assets/${file}`;
-    };
+async function initSqlJsWithWasm(wasm_url?: string) {
+    if (wasm_url && is_browser_runtime()) {
+        const wasm_binary = await loadWasmBinary(wasm_url);
+        return initSqlJs({ wasmBinary: wasm_binary } as Parameters<typeof initSqlJs>[0]);
+    }
+    return initSqlJs();
 }
 
 /**
@@ -35,8 +34,7 @@ function build_locate_file(wasm_base: string | undefined): (file: string) => str
  */
 export async function testSqlJsInit(wasm_url?: string): Promise<PocResult> {
     try {
-        const locate_file = build_locate_file(wasm_url);
-        const SQL = is_browser_runtime() ? await initSqlJs({ locateFile: locate_file }) : await initSqlJs();
+        const SQL = await initSqlJsWithWasm(wasm_url);
         const db = new SQL.Database();
         db.exec(`CREATE TABLE ${POC_TABLE} (id INTEGER PRIMARY KEY, label TEXT NOT NULL);`);
         db.exec(`INSERT INTO ${POC_TABLE} (label) VALUES ('poc');`);
@@ -146,8 +144,7 @@ export async function testIndexedDbRoundtrip(wasm_url?: string): Promise<PocResu
         };
     }
     try {
-        const locate_file = build_locate_file(wasm_url);
-        const SQL = is_browser_runtime() ? await initSqlJs({ locateFile: locate_file }) : await initSqlJs();
+        const SQL = await initSqlJsWithWasm(wasm_url);
         const db = new SQL.Database();
         db.exec(`CREATE TABLE ${POC_TABLE} (id INTEGER PRIMARY KEY, name TEXT NOT NULL);`);
         db.exec(`INSERT INTO ${POC_TABLE} (name) VALUES ('idb-roundtrip');`);
