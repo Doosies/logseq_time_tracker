@@ -23,6 +23,19 @@ describe('ReasonModal', () => {
         expect(confirm).toBeDisabled();
     });
 
+    it('allow_empty일 때 빈 텍스트여도 확인 버튼 enabled', () => {
+        const { getByRole } = render(ReasonModal, {
+            props: {
+                title: '제목',
+                allow_empty: true,
+                onconfirm: vi.fn(),
+                oncancel: vi.fn(),
+            },
+        });
+        const confirm = getByRole('button', { name: STRINGS.reason_modal.confirm });
+        expect(confirm).not.toBeDisabled();
+    });
+
     it('1글자 이상 입력 후 확인 버튼 enabled', async () => {
         const user = userEvent.setup();
         const { getByRole, container } = render(ReasonModal, {

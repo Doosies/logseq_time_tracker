@@ -8,6 +8,7 @@
         description = '',
         placeholder = STRINGS.reason_modal.placeholder,
         max_length = MAX_REASON_LENGTH,
+        allow_empty = false,
         onconfirm,
         oncancel,
     }: {
@@ -15,6 +16,7 @@
         description?: string;
         placeholder?: string;
         max_length?: number;
+        allow_empty?: boolean;
         onconfirm: (reason: string) => void | Promise<void>;
         oncancel: () => void;
     } = $props();
@@ -23,7 +25,7 @@
     let is_loading = $state(false);
     let textarea_ref: HTMLTextAreaElement | undefined = $state(undefined);
 
-    const is_valid = $derived(reason.trim().length >= 1 && reason.length <= max_length);
+    const is_valid = $derived((allow_empty || reason.trim().length >= 1) && reason.length <= max_length);
 
     $effect(() => {
         textarea_ref?.focus();

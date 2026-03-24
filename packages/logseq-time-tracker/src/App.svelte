@@ -8,6 +8,7 @@
         EmptyState,
         ReasonModal,
         MAX_TITLE_LENGTH,
+        MAX_REASON_LENGTH,
         STRINGS,
         formatDuration,
         formatLocalDateTime,
@@ -45,6 +46,7 @@
         description?: string;
         placeholder?: string;
         max_length?: number;
+        allow_empty?: boolean;
         action: (reason: string) => Promise<void>;
     } | null>(null);
 
@@ -54,6 +56,7 @@
         description?: string,
         placeholder?: string,
         max_length?: number,
+        allow_empty?: boolean,
     ) {
         reason_modal_config = {
             title,
@@ -61,6 +64,7 @@
             ...(description !== undefined ? { description } : {}),
             ...(placeholder !== undefined ? { placeholder } : {}),
             ...(max_length !== undefined ? { max_length } : {}),
+            ...(allow_empty !== undefined ? { allow_empty } : {}),
         };
         show_reason_modal = true;
     }
@@ -165,6 +169,34 @@
         );
     }
 
+    function handleSwitch() {
+        const job = job_store.selected_job;
+        if (!job) return;
+        openReasonModal(
+            '작업 전환 사유',
+            async (reason) => {
+                const trimmed = reason.trim();
+                const categories = await services.category_service.getCategories();
+                const category = categories[0];
+                if (!category) return;
+                try {
+                    await services.timer_service.start(job, category, trimmed.length > 0 ? trimmed : undefined);
+                    timer_store.startTimer(job, category);
+                    const jobs = await services.job_service.getJobs();
+                    job_store.setJobs(jobs);
+                    await loadTimeTotals();
+                    closeReasonModal();
+                } catch (e) {
+                    toast_store.addToast('error', String(e));
+                }
+            },
+            undefined,
+            `입력하지 않으면 기본 사유(작업 전환: ${job.title})가 적용됩니다`,
+            MAX_REASON_LENGTH,
+            true,
+        );
+    }
+
     function handleSelectJob(id: string) {
         job_store.selectJob(id);
     }
@@ -219,7 +251,7 @@
                 onresume={handleResume}
                 onstop={handleStop}
                 oncancel={handleCancel}
-                onswitch={handleStart}
+                onswitch={handleSwitch}
             />
 
             {#if job_store.jobs.length === 0}
@@ -252,6 +284,9 @@
                         : {}}
                     {...reason_modal_config.max_length !== undefined
                         ? { max_length: reason_modal_config.max_length }
+                        : {}}
+                    {...reason_modal_config.allow_empty !== undefined
+                        ? { allow_empty: reason_modal_config.allow_empty }
                         : {}}
                     onconfirm={reason_modal_config.action}
                     oncancel={closeReasonModal}
