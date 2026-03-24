@@ -154,6 +154,83 @@ describe('TimerService', () => {
         expect(timer_service.getActiveJob()?.title).toBe('j');
     });
 
+    it('restore: 복원 직후 getActiveJob이 복원된 job을 반환', async () => {
+        const job = await job_service.createJob({ title: '복원됨' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job.id, 'in_progress', new Date().toISOString());
+        const job_row = await job_service.getJobById(job.id);
+        timer_service.restore(job_row!, cat, '2025-06-01T11:00:00.000Z', false, 0);
+        expect(timer_service.getActiveJob()?.id).toBe(job.id);
+        expect(timer_service.getActiveJob()?.title).toBe('복원됨');
+    });
+
+    it('restore: 실행 중 상태에서 pause가 TimerError 없이 동작', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job.id, 'in_progress', new Date().toISOString());
+        const job_row = await job_service.getJobById(job.id);
+        timer_service.restore(job_row!, cat, '2025-06-01T11:00:00.000Z', false, 1000);
+        await timer_service.pause('p');
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('paused');
+    });
+
+    it('restore: 일시정지 상태에서 resume가 TimerError 없이 동작', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job.id, 'paused', new Date().toISOString());
+        const job_row = await job_service.getJobById(job.id);
+        timer_service.restore(job_row!, cat, '2025-06-01T11:00:00.000Z', true, 5000);
+        await timer_service.resume('r');
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('in_progress');
+    });
+
+    it('restore: 실행 중 상태에서 stop이 정상 완료(TimeEntry·completed) 처리', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job.id, 'in_progress', new Date().toISOString());
+        const job_row = await job_service.getJobById(job.id);
+        timer_service.restore(job_row!, cat, '2025-06-01T11:58:00.000Z', false, 0);
+        const entry = await timer_service.stop('완료');
+        expect(entry).not.toBeNull();
+        expect(entry!.duration_seconds).toBeGreaterThanOrEqual(110);
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('completed');
+        expect(timer_service.getActiveJob()).toBeNull();
+    });
+
+    it('restore: 실행 중 상태에서 cancel이 정상 취소 처리', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job.id, 'in_progress', new Date().toISOString());
+        const job_row = await job_service.getJobById(job.id);
+        timer_service.restore(job_row!, cat, '2025-06-01T11:59:00.000Z', false, 0);
+        const entry = await timer_service.cancel('그만');
+        expect(entry).not.toBeNull();
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('cancelled');
+        expect(timer_service.getActiveJob()).toBeNull();
+    });
+
+    it('restore: 다른 job으로 start 시 기존 job에 TimeEntry 반영 후 paused 전환', async () => {
+        const job_a = await job_service.createJob({ title: 'a' });
+        const job_b = await job_service.createJob({ title: 'b' });
+        const cat = await category_service.createCategory('c');
+        await uow.jobRepo.updateJobStatus(job_a.id, 'in_progress', new Date().toISOString());
+        const job_a_row = await job_service.getJobById(job_a.id);
+        timer_service.restore(job_a_row!, cat, '2025-06-01T11:59:30.000Z', false, 0);
+        vi.setSystemTime(new Date('2025-06-01T12:00:05.000Z'));
+        await timer_service.start(job_b, cat, '전환');
+        const entries = await uow.timeEntryRepo.getTimeEntries({ job_id: job_a.id });
+        expect(entries.length).toBeGreaterThanOrEqual(1);
+        expect(entries[0]?.duration_seconds).toBeGreaterThanOrEqual(4);
+        const a_after = await job_service.getJobById(job_a.id);
+        const b_after = await job_service.getJobById(job_b.id);
+        expect(a_after?.status).toBe('paused');
+        expect(b_after?.status).toBe('in_progress');
+    });
+
     it('start: completed Job 재시작 시 pending 경유 후 in_progress', async () => {
         const job = await job_service.createJob({ title: 'j' });
         const cat = await category_service.createCategory('c');

@@ -11,6 +11,8 @@ import { generateId, getElapsedMs, sanitizeText } from '../utils';
 import { MAX_REASON_LENGTH, MAX_NOTE_LENGTH, MAX_TITLE_LENGTH, TIMER_BACKUP_INTERVAL_MS } from '../constants/config';
 
 export interface ITimerService extends IDisposable {
+    /** In-memory 복원(앱 재시작 시 `timer_store.restore`와 함께 호출). DB는 변경하지 않습니다. */
+    restore(job: Job, category: Category, started_at: string, is_paused: boolean, accumulated_ms: number): void;
     start(job: Job, category: Category, reason?: string): Promise<void>;
     pause(reason: string): Promise<void>;
     resume(reason: string): Promise<void>;
@@ -48,6 +50,16 @@ export class TimerService implements ITimerService {
 
     setReadonlyGetter(fn: () => boolean): void {
         this._readonly_getter = fn;
+    }
+
+    restore(job: Job, category: Category, started_at: string, is_paused: boolean, accumulated_ms: number): void {
+        this._active_job = job;
+        this._active_category = category;
+        this._current_segment_start = is_paused ? null : started_at;
+        this._accumulated_ms = accumulated_ms;
+        this._is_paused = is_paused;
+        this._session_started_at = started_at;
+        this.ensureBackupInterval();
     }
 
     getActiveJob(): Job | null {

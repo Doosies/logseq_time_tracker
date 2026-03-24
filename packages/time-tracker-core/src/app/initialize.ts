@@ -13,6 +13,25 @@ import { createTimerStore } from '../stores/timer_store.svelte';
 import { createJobStore } from '../stores/job_store.svelte';
 import { createToastStore } from '../stores/toast_store.svelte';
 
+async function pauseOrphanInProgressJobs(uow: IUnitOfWork, logger: ILogger): Promise<void> {
+    try {
+        const orphans = await uow.jobRepo.getJobsByStatus('in_progress');
+        if (orphans.length === 0) {
+            return;
+        }
+        const now = new Date().toISOString();
+        for (const job of orphans) {
+            await uow.jobRepo.updateJobStatus(job.id, 'paused', now);
+        }
+        logger.warn('Orphan in_progress jobs paused on startup', {
+            count: orphans.length,
+            job_ids: orphans.map((j) => j.id),
+        });
+    } catch (e) {
+        logger.error('Failed to pause orphan in_progress jobs', { error: String(e) });
+    }
+}
+
 export interface InitializeOptions {
     logger?: ILogger;
     uow?: IUnitOfWork;
@@ -61,6 +80,7 @@ export async function initializeApp(options: InitializeOptions = {}): Promise<Ap
 
     await services.category_service.seedDefaults();
 
+    let timer_restored = false;
     try {
         const saved_timer = await uow.settingsRepo.getSetting('active_timer');
         if (saved_timer) {
@@ -77,6 +97,14 @@ export async function initializeApp(options: InitializeOptions = {}): Promise<Ap
                     saved_timer.accumulated_ms,
                     saved_timer.paused_at,
                 );
+                services.timer_service.restore(
+                    job,
+                    category,
+                    saved_timer.started_at,
+                    saved_timer.is_paused,
+                    saved_timer.accumulated_ms,
+                );
+                timer_restored = true;
                 logger.info('Timer state restored', { job_id: job.id });
             } else {
                 await uow.settingsRepo.deleteSetting('active_timer');
@@ -88,6 +116,10 @@ export async function initializeApp(options: InitializeOptions = {}): Promise<Ap
         }
     } catch (e) {
         logger.error('Failed to restore timer state', { error: String(e) });
+    }
+
+    if (!timer_restored) {
+        await pauseOrphanInProgressJobs(uow, logger);
     }
 
     const jobs = await services.job_service.getJobs();
