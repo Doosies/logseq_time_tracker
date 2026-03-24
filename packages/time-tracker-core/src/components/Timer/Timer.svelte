@@ -65,7 +65,7 @@
         />
     {/if}
     <TimerButton
-        active_job_exists={timer_store.state.active_job !== null}
+        {is_viewing_active}
         is_running={timer_store.is_running}
         is_paused={timer_store.state.is_paused}
         job_selected={job_store.selected_job !== null}

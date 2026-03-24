@@ -1,6 +1,6 @@
 <script lang="ts">
     import { SvelteMap } from 'svelte/reactivity';
-    import type { AppContext, TimeEntry } from '@personal/time-tracker-core';
+    import type { AppContext, TimeEntry, JobHistory } from '@personal/time-tracker-core';
     import {
         Timer,
         JobList,
@@ -8,6 +8,7 @@
         EmptyState,
         ReasonModal,
         MAX_TITLE_LENGTH,
+        STRINGS,
         formatDuration,
         formatLocalDateTime,
     } from '@personal/time-tracker-core';
@@ -174,21 +175,30 @@
 
     let show_debug_modal = $state(false);
     let debug_entries = $state<TimeEntry[]>([]);
+    let debug_history = $state<JobHistory[]>([]);
 
     function getJobTitle(job_id: string): string {
         const job = job_store.jobs.find((j) => j.id === job_id);
         return job?.title ?? job_id;
     }
 
+    function getStatusLabel(status: string | null): string {
+        if (!status) return '-';
+        return (STRINGS.job.status as Record<string, string>)[status] ?? status;
+    }
+
     async function openDebugModal() {
         const entries = await ctx.uow.timeEntryRepo.getTimeEntries();
         debug_entries = entries.sort((a, b) => new Date(b.started_at).getTime() - new Date(a.started_at).getTime());
+        const history = await ctx.uow.historyRepo.getJobHistoryByPeriod({});
+        debug_history = history.sort((a, b) => new Date(b.occurred_at).getTime() - new Date(a.occurred_at).getTime());
         show_debug_modal = true;
     }
 
     function closeDebugModal() {
         show_debug_modal = false;
         debug_entries = [];
+        debug_history = [];
     }
 </script>
 
@@ -278,6 +288,29 @@
                                             <td>{formatLocalDateTime(entry.ended_at)}</td>
                                             <td class="debug-duration">{formatDuration(entry.duration_seconds)}</td>
                                             <td>{entry.note || '-'}</td>
+                                        </tr>
+                                    {/each}
+                                </tbody>
+                            </table>
+                        {/if}
+                        {#if debug_history.length > 0}
+                            <h3 class="debug-subtitle">상태 전환 이력</h3>
+                            <table class="debug-table">
+                                <thead>
+                                    <tr>
+                                        <th>작업</th>
+                                        <th>시각</th>
+                                        <th>전환</th>
+                                        <th>사유</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {#each debug_history as h (h.id)}
+                                        <tr>
+                                            <td>{getJobTitle(h.job_id)}</td>
+                                            <td>{formatLocalDateTime(h.occurred_at)}</td>
+                                            <td>{getStatusLabel(h.from_status)} → {getStatusLabel(h.to_status)}</td>
+                                            <td>{h.reason || '-'}</td>
                                         </tr>
                                     {/each}
                                 </tbody>
@@ -446,6 +479,13 @@
         text-align: center;
         color: #999;
         padding: 24px 0;
+    }
+
+    .debug-subtitle {
+        margin: 16px 0 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #333;
     }
 
     .debug-table {
