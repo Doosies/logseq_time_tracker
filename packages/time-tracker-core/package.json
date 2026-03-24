@@ -1,0 +1,46 @@
+{
+    "name": "@personal/time-tracker-core",
+    "version": "0.1.0",
+    "description": "Time Tracker core library - domain logic, types, and Svelte 5 UI components",
+    "type": "module",
+    "exports": {
+        ".": "./src/index.ts"
+    },
+    "scripts": {
+        "dev": "vite dev",
+        "build": "vite build",
+        "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+        "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage --passWithNoTests"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@vanilla-extract/css": "catalog:"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@testing-library/jest-dom": "catalog:",
+        "@testing-library/svelte": "catalog:",
+        "@testing-library/user-event": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
+        "@vanilla-extract/vite-plugin": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-svelte": "catalog:",
+        "globals": "catalog:",
+        "jsdom": "catalog:",
+        "prettier": "catalog:",
+        "svelte": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "svelte": "catalog:"
+    }
+}

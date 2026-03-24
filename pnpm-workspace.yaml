@@ -22,6 +22,10 @@ catalog:
     '@types/react': ^19.2.10
     '@types/react-dom': ^19.2.3
 
+    # Logseq
+    '@logseq/libs': ^0.0.17
+    vite-plugin-logseq: ^1.1.2
+
     # vanilla-extract
     '@vanilla-extract/css': ^1.18.0
     '@vanilla-extract/vite-plugin': ^5.1.4

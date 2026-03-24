@@ -1,0 +1,49 @@
+{
+    "name": "@personal/logseq-time-tracker",
+    "version": "0.1.0",
+    "description": "Time Tracker Logseq Plugin with Svelte 5",
+    "main": "dist/index.html",
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
+        "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
+        "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
+        "test": "vitest run --passWithNoTests",
+        "test:watch": "vitest"
+    },
+    "license": "MIT",
+    "dependencies": {
+        "@personal/time-tracker-core": "workspace:*",
+        "@logseq/libs": "catalog:",
+        "@vanilla-extract/css": "catalog:"
+    },
+    "devDependencies": {
+        "@eslint/js": "catalog:",
+        "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@vanilla-extract/vite-plugin": "catalog:",
+        "eslint": "catalog:",
+        "eslint-plugin-svelte": "catalog:",
+        "globals": "catalog:",
+        "jsdom": "catalog:",
+        "prettier": "catalog:",
+        "svelte": "catalog:",
+        "svelte-check": "catalog:",
+        "typescript": "catalog:",
+        "typescript-eslint": "catalog:",
+        "vite": "catalog:",
+        "vite-plugin-logseq": "catalog:",
+        "vitest": "catalog:"
+    },
+    "peerDependencies": {
+        "svelte": "catalog:"
+    },
+    "logseq": {
+        "id": "logseq-time-tracker",
+        "title": "Time Tracker",
+        "icon": "./logo.svg",
+        "main": "dist/index.html"
+    }
+}
