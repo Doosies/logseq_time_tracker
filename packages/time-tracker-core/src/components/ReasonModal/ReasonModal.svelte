@@ -6,11 +6,15 @@
     let {
         title,
         description = '',
+        placeholder = STRINGS.reason_modal.placeholder,
+        max_length = MAX_REASON_LENGTH,
         onconfirm,
         oncancel,
     }: {
         title: string;
         description?: string;
+        placeholder?: string;
+        max_length?: number;
         onconfirm: (reason: string) => void | Promise<void>;
         oncancel: () => void;
     } = $props();
@@ -19,7 +23,7 @@
     let is_loading = $state(false);
     let textarea_ref: HTMLTextAreaElement | undefined = $state(undefined);
 
-    const is_valid = $derived(reason.trim().length >= 1 && reason.length <= MAX_REASON_LENGTH);
+    const is_valid = $derived(reason.trim().length >= 1 && reason.length <= max_length);
 
     $effect(() => {
         textarea_ref?.focus();
@@ -51,14 +55,9 @@
         {#if description}
             <p class={css.modal_description}>{description}</p>
         {/if}
-        <textarea
-            bind:this={textarea_ref}
-            bind:value={reason}
-            class={css.textarea}
-            placeholder={STRINGS.reason_modal.placeholder}
-            maxlength={MAX_REASON_LENGTH}
+        <textarea bind:this={textarea_ref} bind:value={reason} class={css.textarea} {placeholder} maxlength={max_length}
         ></textarea>
-        <div class={css.char_count}>{reason.length}/{MAX_REASON_LENGTH}</div>
+        <div class={css.char_count}>{reason.length}/{max_length}</div>
         <div class={css.button_row}>
             <button type="button" class={css.button_cancel} onclick={oncancel}>
                 {STRINGS.reason_modal.cancel}

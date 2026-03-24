@@ -1,6 +1,13 @@
 <script lang="ts">
     import type { AppContext } from '@personal/time-tracker-core';
-    import { Timer, JobList, ToastContainer, EmptyState, ReasonModal } from '@personal/time-tracker-core';
+    import {
+        Timer,
+        JobList,
+        ToastContainer,
+        EmptyState,
+        ReasonModal,
+        MAX_TITLE_LENGTH,
+    } from '@personal/time-tracker-core';
 
     let { ctx }: { ctx: AppContext } = $props();
 
@@ -13,11 +20,25 @@
     let reason_modal_config = $state<{
         title: string;
         description?: string;
+        placeholder?: string;
+        max_length?: number;
         action: (reason: string) => Promise<void>;
     } | null>(null);
 
-    function openReasonModal(title: string, action: (reason: string) => Promise<void>, description?: string) {
-        reason_modal_config = description === undefined ? { title, action } : { title, action, description };
+    function openReasonModal(
+        title: string,
+        action: (reason: string) => Promise<void>,
+        description?: string,
+        placeholder?: string,
+        max_length?: number,
+    ) {
+        reason_modal_config = {
+            title,
+            action,
+            ...(description !== undefined ? { description } : {}),
+            ...(placeholder !== undefined ? { placeholder } : {}),
+            ...(max_length !== undefined ? { max_length } : {}),
+        };
         show_reason_modal = true;
     }
 
@@ -98,16 +119,24 @@
         });
     }
 
-    async function handleCreateJob() {
-        const title = prompt('작업 이름을 입력하세요');
-        if (!title) return;
-        try {
-            const job = await services.job_service.createJob({ title });
-            job_store.addJob(job);
-            toast_store.addToast('success', `'${job.title}' 작업이 생성되었습니다`);
-        } catch (e) {
-            toast_store.addToast('error', String(e));
-        }
+    function handleCreateJob() {
+        openReasonModal(
+            '새 작업',
+            async (job_title) => {
+                try {
+                    const job = await services.job_service.createJob({ title: job_title });
+                    job_store.addJob(job);
+                    job_store.selectJob(job.id);
+                    toast_store.addToast('success', `'${job.title}' 작업이 생성되었습니다`);
+                    closeReasonModal();
+                } catch (e) {
+                    toast_store.addToast('error', String(e));
+                }
+            },
+            undefined,
+            '작업 이름을 입력하세요 (최소 1글자)',
+            MAX_TITLE_LENGTH,
+        );
     }
 
     function handleSelectJob(id: string) {
@@ -147,6 +176,12 @@
                     title={reason_modal_config.title}
                     {...reason_modal_config.description !== undefined
                         ? { description: reason_modal_config.description }
+                        : {}}
+                    {...reason_modal_config.placeholder !== undefined
+                        ? { placeholder: reason_modal_config.placeholder }
+                        : {}}
+                    {...reason_modal_config.max_length !== undefined
+                        ? { max_length: reason_modal_config.max_length }
                         : {}}
                     onconfirm={reason_modal_config.action}
                     oncancel={closeReasonModal}
