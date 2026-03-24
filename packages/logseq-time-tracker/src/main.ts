@@ -30,6 +30,12 @@ function main() {
         });
 
         void renderApp();
+
+        document.addEventListener('keydown', (e: KeyboardEvent) => {
+            if (e.key === 'Escape') {
+                logseq.hideMainUI();
+            }
+        });
     });
 }
 

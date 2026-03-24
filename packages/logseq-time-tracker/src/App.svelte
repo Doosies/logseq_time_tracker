@@ -113,33 +113,97 @@
     function handleSelectJob(id: string) {
         job_store.selectJob(id);
     }
+
+    function handleClose() {
+        logseq.hideMainUI();
+    }
 </script>
 
-<main>
-    <Timer
-        {timer_store}
-        {job_store}
-        onstart={handleStart}
-        onpause={handlePause}
-        onresume={handleResume}
-        onstop={handleStop}
-        oncancel={handleCancel}
-    />
+<div class="shell">
+    <button type="button" class="backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
+    <div class="panel">
+        <button type="button" class="close-btn" onclick={handleClose} aria-label="닫기">✕</button>
+        <main>
+            <Timer
+                {timer_store}
+                {job_store}
+                onstart={handleStart}
+                onpause={handlePause}
+                onresume={handleResume}
+                onstop={handleStop}
+                oncancel={handleCancel}
+            />
 
-    {#if job_store.jobs.length === 0}
-        <EmptyState oncreate={handleCreateJob} />
-    {:else}
-        <JobList jobs={job_store.jobs} selected_job_id={job_store.selected_job_id} onselect={handleSelectJob} />
-    {/if}
+            {#if job_store.jobs.length === 0}
+                <EmptyState oncreate={handleCreateJob} />
+            {:else}
+                <JobList jobs={job_store.jobs} selected_job_id={job_store.selected_job_id} onselect={handleSelectJob} />
+            {/if}
 
-    <ToastContainer {toast_store} />
+            <ToastContainer {toast_store} />
 
-    {#if show_reason_modal && reason_modal_config}
-        <ReasonModal
-            title={reason_modal_config.title}
-            {...reason_modal_config.description !== undefined ? { description: reason_modal_config.description } : {}}
-            onconfirm={reason_modal_config.action}
-            oncancel={closeReasonModal}
-        />
-    {/if}
-</main>
+            {#if show_reason_modal && reason_modal_config}
+                <ReasonModal
+                    title={reason_modal_config.title}
+                    {...reason_modal_config.description !== undefined
+                        ? { description: reason_modal_config.description }
+                        : {}}
+                    onconfirm={reason_modal_config.action}
+                    oncancel={closeReasonModal}
+                />
+            {/if}
+        </main>
+    </div>
+</div>
+
+<style>
+    .shell {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        justify-content: flex-end;
+        align-items: stretch;
+    }
+
+    .backdrop-hit {
+        flex: 1;
+        min-width: 0;
+        border: none;
+        padding: 0;
+        margin: 0;
+        background: rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        align-self: stretch;
+    }
+
+    .panel {
+        position: relative;
+        width: 360px;
+        height: 100vh;
+        background: white;
+        overflow-y: auto;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .close-btn:hover {
+        background: rgba(0, 0, 0, 0.08);
+        color: #333;
+    }
+</style>
