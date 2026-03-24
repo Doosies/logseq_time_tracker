@@ -1,5 +1,30 @@
 # Changelog
 
+## [0.2.0] - 2026-03-24
+
+### Added
+- SQLite 영속화 계층 (sql.js + OPFS/IndexedDB)
+- IStorageBackend 인터페이스 및 OPFS/IndexedDB 구현
+- Forward-only 스키마 마이그레이션 (MigrationRunner)
+- 9개 SQLite Repository (Job, Category, TimeEntry, History, Settings, ExternalRef, JobCategory, Template, DataField)
+- SqliteUnitOfWork (네이티브 트랜잭션, 중첩 조인)
+- StorageStateMachine (sqlite ↔ memory_fallback 전이)
+- StorageManager (초기화/런타임 실패 시 Memory fallback, 복구 로직)
+- WebLocksManager (멀티탭 동시 접근 제어)
+- JobCategoryService (Job-Category M:N 링크, 기본 카테고리 관리)
+- DataExportService (JSON 전체 export/import, 버전 마이그레이션)
+- beforeunload 타이머 상태 저장
+- Storage PoC 검증 유틸 (sql.js WASM, OPFS, IndexedDB)
+
+### Changed
+- initializeApp에 storage_mode 분기 추가 (memory/sqlite)
+- CategoryService.deleteCategory에 TimeEntry/JobCategory 참조 검사 활성화
+- createServices 팩토리에 JobCategoryService, DataExportService 추가
+- MemoryUnitOfWork에 MemoryJobCategoryRepository 추가 (스텁 교체)
+
+### Fixed
+- MemoryUnitOfWork 트랜잭션 스냅샷에 job_categories 포함
+
 ## [0.1.0] - 2026-03-24
 
 ### Added

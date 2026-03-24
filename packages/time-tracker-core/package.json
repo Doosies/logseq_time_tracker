@@ -19,7 +19,8 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@vanilla-extract/css": "catalog:"
+        "@vanilla-extract/css": "catalog:",
+        "sql.js": "^1.14.1"
     },
     "devDependencies": {
         "@eslint/js": "catalog:",
@@ -27,8 +28,9 @@
         "@testing-library/jest-dom": "catalog:",
         "@testing-library/svelte": "catalog:",
         "@testing-library/user-event": "catalog:",
-        "@vitest/coverage-v8": "catalog:",
+        "@types/sql.js": "^1.4.10",
         "@vanilla-extract/vite-plugin": "catalog:",
+        "@vitest/coverage-v8": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-svelte": "catalog:",
         "globals": "catalog:",

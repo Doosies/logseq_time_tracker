@@ -5,7 +5,8 @@
     "main": "dist/index.html",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "prebuild": "node scripts/copy_sql_wasm.mjs",
+        "dev": "node scripts/copy_sql_wasm.mjs && vite",
         "build": "vite build",
         "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
@@ -16,8 +17,8 @@
     },
     "license": "MIT",
     "dependencies": {
-        "@personal/time-tracker-core": "workspace:*",
         "@logseq/libs": "catalog:",
+        "@personal/time-tracker-core": "workspace:*",
         "@vanilla-extract/css": "catalog:"
     },
     "devDependencies": {
@@ -29,6 +30,7 @@
         "globals": "catalog:",
         "jsdom": "catalog:",
         "prettier": "catalog:",
+        "sql.js": "^1.14.1",
         "svelte": "catalog:",
         "svelte-check": "catalog:",
         "typescript": "catalog:",

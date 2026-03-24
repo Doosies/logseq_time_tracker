@@ -1,4 +1,9 @@
 import type { ILogger } from '../adapters/logger';
+import type { IStorageBackend } from '../adapters/storage/sqlite/storage_backend';
+import { IndexedDbBackend } from '../adapters/storage/sqlite/indexeddb_backend';
+import type { SqliteAdapterOptions } from '../adapters/storage/sqlite/sqlite_adapter';
+import { StorageManager, type StorageManagerOptions } from '../adapters/storage/storage_manager';
+import type { WebLocksManager } from '../adapters/storage/web_locks';
 import type { IUnitOfWork } from '../adapters/storage/unit_of_work';
 import type { AppContext } from './context';
 import { ConsoleLogger } from '../adapters/logger';
@@ -8,10 +13,46 @@ import { createTimerStore } from '../stores/timer_store.svelte';
 import { createJobStore } from '../stores/job_store.svelte';
 import { createToastStore } from '../stores/toast_store.svelte';
 
-export async function initializeApp(options?: { logger?: ILogger; uow?: IUnitOfWork }): Promise<AppContext> {
-    const logger = options?.logger ?? new ConsoleLogger();
+export interface InitializeOptions {
+    logger?: ILogger;
+    uow?: IUnitOfWork;
+    storage_mode?: 'memory' | 'sqlite';
+    sqlite_options?: SqliteAdapterOptions;
+    /** For tests or custom persistence; defaults to {@link IndexedDbBackend} when omitted in sqlite mode. */
+    sqlite_backend?: IStorageBackend;
+    /** Optional Web Locks around SQLite init when using {@link StorageManager}. */
+    web_locks?: WebLocksManager;
+}
 
-    const uow = options?.uow ?? new MemoryUnitOfWork();
+async function createUnitOfWork(
+    options: InitializeOptions,
+): Promise<{ uow: IUnitOfWork; storage_manager?: StorageManager }> {
+    if (options.uow !== undefined) {
+        return { uow: options.uow };
+    }
+    if (options.storage_mode === 'sqlite') {
+        const sqlite_opts = options.sqlite_options ?? {};
+        const backend = options.sqlite_backend ?? new IndexedDbBackend(sqlite_opts.db_name ?? 'time-tracker.db');
+        const sm_opts: StorageManagerOptions = {
+            sqlite_options: sqlite_opts,
+            backend,
+        };
+        if (options.logger !== undefined) {
+            sm_opts.logger = options.logger;
+        }
+        if (options.web_locks !== undefined) {
+            sm_opts.web_locks = options.web_locks;
+        }
+        const storage_manager = new StorageManager(sm_opts);
+        const uow = await storage_manager.initialize();
+        return { uow, storage_manager };
+    }
+    return { uow: new MemoryUnitOfWork() };
+}
+
+export async function initializeApp(options: InitializeOptions = {}): Promise<AppContext> {
+    const logger = options.logger ?? new ConsoleLogger();
+    const { uow, storage_manager } = await createUnitOfWork(options);
     const services = createServices(uow, logger);
 
     const timer_store = createTimerStore();
@@ -52,10 +93,12 @@ export async function initializeApp(options?: { logger?: ILogger; uow?: IUnitOfW
     const jobs = await services.job_service.getJobs();
     job_store.setJobs(jobs);
 
-    return {
+    const ctx: AppContext = {
         services,
         stores: { timer_store, job_store, toast_store },
         uow,
         logger,
+        ...(storage_manager !== undefined ? { storage_manager } : {}),
     };
+    return ctx;
 }

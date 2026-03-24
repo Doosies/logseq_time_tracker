@@ -1,7 +1,7 @@
 import type { ILogger } from '../adapters/logger';
 import type { IUnitOfWork } from '../adapters/storage/unit_of_work';
 import type { Category } from '../types/category';
-import { ValidationError } from '../errors';
+import { ReferenceIntegrityError, ValidationError } from '../errors';
 import { sanitizeText, generateId } from '../utils';
 import { MAX_CATEGORY_NAME_LENGTH, CATEGORY_MAX_DEPTH } from '../constants/config';
 
@@ -149,6 +149,18 @@ export class CategoryService implements ICategoryService {
         const has_children = all.some((c) => c.parent_id === id);
         if (has_children) {
             throw new ValidationError('Cannot delete a category that has child categories', 'id');
+        }
+        const time_entries = await this._uow.timeEntryRepo.getTimeEntries({ category_id: id });
+        if (time_entries.length > 0) {
+            throw new ReferenceIntegrityError('Cannot delete: category is referenced by time entries', 'category', id);
+        }
+        const job_category_links = await this._uow.jobCategoryRepo.getCategoryJobs(id);
+        if (job_category_links.length > 0) {
+            throw new ReferenceIntegrityError(
+                'Cannot delete: category is referenced by job categories',
+                'category',
+                id,
+            );
         }
         await this._uow.categoryRepo.deleteCategory(id);
         this._logger?.debug('Category deleted', { id });

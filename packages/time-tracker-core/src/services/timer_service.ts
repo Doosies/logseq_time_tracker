@@ -17,6 +17,8 @@ export interface ITimerService extends IDisposable {
     stop(reason: string): Promise<TimeEntry | null>;
     cancel(reason: string): Promise<TimeEntry | null>;
     getActiveJob(): Job | null;
+    /** Persists active timer settings (e.g. `beforeunload`). */
+    flushBeforeUnload(): Promise<void>;
     dispose(): void;
 }
 
@@ -44,6 +46,17 @@ export class TimerService implements ITimerService {
 
     getActiveJob(): Job | null {
         return this._active_job;
+    }
+
+    async flushBeforeUnload(): Promise<void> {
+        try {
+            if (!this._active_job || !this._active_category) {
+                return;
+            }
+            await this.persistActiveTimerState();
+        } catch (e) {
+            this._logger?.warn('flushBeforeUnload failed', { error: String(e) });
+        }
     }
 
     dispose(): void {

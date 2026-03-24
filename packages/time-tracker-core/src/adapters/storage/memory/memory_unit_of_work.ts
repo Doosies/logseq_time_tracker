@@ -1,5 +1,6 @@
 import type { Category } from '../../../types/category';
 import type { JobHistory } from '../../../types/history';
+import type { JobCategory } from '../../../types/job_category';
 import type { Job } from '../../../types/job';
 import type { TimeEntry } from '../../../types/time_entry';
 import type { IUnitOfWork } from '../unit_of_work';
@@ -16,21 +17,18 @@ import type {
 } from '../repositories';
 import { MemoryCategoryRepository } from './memory_category_repository';
 import { MemoryHistoryRepository } from './memory_history_repository';
+import { MemoryJobCategoryRepository } from './memory_job_category_repository';
 import { MemoryJobRepository } from './memory_job_repository';
 import { MemorySettingsRepository } from './memory_settings_repository';
 import { MemoryTimeEntryRepository } from './memory_time_entry_repository';
-import {
-    StubDataFieldRepository,
-    StubExternalRefRepository,
-    StubJobCategoryRepository,
-    StubTemplateRepository,
-} from './stubs';
+import { StubDataFieldRepository, StubExternalRefRepository, StubTemplateRepository } from './stubs';
 
 type MemoryDataSnapshot = {
     jobs: Map<string, Job>;
     categories: Map<string, Category>;
     time_entries: Map<string, TimeEntry>;
     history: Map<string, JobHistory>;
+    job_categories: Map<string, JobCategory>;
     settings: Map<string, unknown>;
 };
 
@@ -49,6 +47,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
     private readonly _category_repo: MemoryCategoryRepository;
     private readonly _time_entry_repo: MemoryTimeEntryRepository;
     private readonly _history_repo: MemoryHistoryRepository;
+    private readonly _job_category_repo: MemoryJobCategoryRepository;
     private readonly _settings_repo: MemorySettingsRepository;
 
     private _active_transaction = false;
@@ -58,6 +57,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this._category_repo = new MemoryCategoryRepository();
         this._time_entry_repo = new MemoryTimeEntryRepository();
         this._history_repo = new MemoryHistoryRepository();
+        this._job_category_repo = new MemoryJobCategoryRepository();
         this._settings_repo = new MemorySettingsRepository();
 
         this.jobRepo = this._job_repo;
@@ -67,7 +67,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this.settingsRepo = this._settings_repo;
         this.externalRefRepo = new StubExternalRefRepository();
         this.templateRepo = new StubTemplateRepository();
-        this.jobCategoryRepo = new StubJobCategoryRepository();
+        this.jobCategoryRepo = this._job_category_repo;
         this.dataFieldRepo = new StubDataFieldRepository();
     }
 
@@ -93,6 +93,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
             categories: this._category_repo.getSnapshot(),
             time_entries: this._time_entry_repo.getSnapshot(),
             history: this._history_repo.getSnapshot(),
+            job_categories: this._job_category_repo.getSnapshot(),
             settings: this._settings_repo.getSnapshot(),
         };
     }
@@ -102,6 +103,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this._category_repo.restoreFromSnapshot(snapshot.categories);
         this._time_entry_repo.restoreFromSnapshot(snapshot.time_entries);
         this._history_repo.restoreFromSnapshot(snapshot.history);
+        this._job_category_repo.restoreFromSnapshot(snapshot.job_categories);
         this._settings_repo.restoreFromSnapshot(snapshot.settings);
     }
 }
