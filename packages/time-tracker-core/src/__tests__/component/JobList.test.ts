@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup, fireEvent } from '@testing-library/svelte';
 import JobList from '../../components/JobList/JobList.svelte';
-import type { Job } from '../../types';
+import type { Job, StatusKind } from '../../types';
 
-function make_job(id: string, title: string): Job {
+function make_job(id: string, title: string, status: StatusKind = 'pending'): Job {
     const now = new Date().toISOString();
     return {
         id,
         title,
         description: '',
-        status: 'pending',
+        status,
         custom_fields: '{}',
         created_at: now,
         updated_at: now,
@@ -59,7 +59,7 @@ describe('JobList', () => {
         expect(selected?.textContent).toContain('둘');
     });
 
-    it('클릭 시 onselect 호출', () => {
+    it('UC-UI-006: 클릭 시 onselect(id) 호출', () => {
         const onselect = vi.fn();
         const jobs = [make_job('click-me', '클릭')];
         const { getByRole } = render(JobList, {
@@ -86,5 +86,45 @@ describe('JobList', () => {
         });
         const btn = getByRole('button', { name: /작업A/ });
         expect(btn.textContent).toContain('01:01:01');
+    });
+
+    it('UC-UI-004: 상태별 배지가 올바른 한글로 표시됨', () => {
+        const jobs = [
+            make_job('s1', '진행-항목', 'in_progress'),
+            make_job('s2', '보류-항목', 'paused'),
+            make_job('s3', '대기-항목', 'pending'),
+        ];
+        const { getAllByRole, getByRole } = render(JobList, {
+            props: {
+                jobs,
+                selected_job_id: null,
+                onselect: vi.fn(),
+            },
+        });
+        expect(getAllByRole('listitem')).toHaveLength(3);
+        expect(getByRole('button', { name: /진행-항목/ }).textContent).toContain('진행중');
+        expect(getByRole('button', { name: /보류-항목/ }).textContent).toContain('보류');
+        expect(getByRole('button', { name: /대기-항목/ }).textContent).toContain('대기');
+    });
+
+    it('UC-UI-005: 외부에서 필터링한 paused Job만 렌더링됨', () => {
+        const all_jobs = [
+            make_job('ip1', '진행작업', 'in_progress'),
+            make_job('pa1', '보류-A', 'paused'),
+            make_job('pa2', '보류-B', 'paused'),
+            make_job('pe1', '대기-1', 'pending'),
+            make_job('pe2', '대기-2', 'pending'),
+        ];
+        const filtered_jobs = all_jobs.filter((job) => job.status === 'paused');
+        const { getAllByRole, getByRole } = render(JobList, {
+            props: {
+                jobs: filtered_jobs,
+                selected_job_id: null,
+                onselect: vi.fn(),
+            },
+        });
+        expect(getAllByRole('listitem')).toHaveLength(2);
+        expect(getByRole('button', { name: /보류-A/ }).textContent).toContain('보류');
+        expect(getByRole('button', { name: /보류-B/ }).textContent).toContain('보류');
     });
 });
