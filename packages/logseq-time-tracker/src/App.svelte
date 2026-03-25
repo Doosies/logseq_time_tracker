@@ -1,14 +1,8 @@
 <script lang="ts">
-    import { SvelteMap } from 'svelte/reactivity';
     import type { AppContext, TimeEntry, JobHistory, PocResult } from '@personal/time-tracker-core';
     import {
-        Timer,
-        JobList,
+        FullView,
         ToastContainer,
-        EmptyState,
-        ReasonModal,
-        MAX_TITLE_LENGTH,
-        MAX_REASON_LENGTH,
         STRINGS,
         formatDuration,
         formatLocalDateTime,
@@ -17,8 +11,6 @@
 
     let { ctx }: { ctx: AppContext } = $props();
 
-    const services = $derived(ctx.services);
-    const timer_store = $derived(ctx.stores.timer_store);
     const job_store = $derived(ctx.stores.job_store);
     const toast_store = $derived(ctx.stores.toast_store);
 
@@ -27,25 +19,6 @@
         const state = ctx.storage_manager.getStorageState();
         if (state.mode === 'sqlite') return 'SQLite';
         return `Memory Fallback (${state.fallback_reason ?? '알 수 없음'})`;
-    });
-
-    const time_totals = new SvelteMap<string, number>();
-
-    const selected_job_total_seconds = $derived(
-        job_store.selected_job_id ? (time_totals.get(job_store.selected_job_id) ?? 0) : 0,
-    );
-
-    async function loadTimeTotals() {
-        const entries = await ctx.uow.timeEntryRepo.getTimeEntries();
-        time_totals.clear();
-        for (const entry of entries) {
-            time_totals.set(entry.job_id, (time_totals.get(entry.job_id) ?? 0) + entry.duration_seconds);
-        }
-    }
-
-    $effect(() => {
-        void ctx;
-        void loadTimeTotals();
     });
 
     let storage_banner = $state<{ type: 'warning' | 'info'; message: string } | null>(null);
@@ -87,167 +60,6 @@
         });
         return unsub;
     });
-
-    let show_reason_modal = $state(false);
-    let reason_modal_config = $state<{
-        title: string;
-        description?: string;
-        placeholder?: string;
-        max_length?: number;
-        allow_empty?: boolean;
-        action: (reason: string) => Promise<void>;
-    } | null>(null);
-
-    function openReasonModal(
-        title: string,
-        action: (reason: string) => Promise<void>,
-        description?: string,
-        placeholder?: string,
-        max_length?: number,
-        allow_empty?: boolean,
-    ) {
-        reason_modal_config = {
-            title,
-            action,
-            ...(description !== undefined ? { description } : {}),
-            ...(placeholder !== undefined ? { placeholder } : {}),
-            ...(max_length !== undefined ? { max_length } : {}),
-            ...(allow_empty !== undefined ? { allow_empty } : {}),
-        };
-        show_reason_modal = true;
-    }
-
-    function closeReasonModal() {
-        show_reason_modal = false;
-        reason_modal_config = null;
-    }
-
-    async function handleStart() {
-        const job = job_store.selected_job;
-        if (!job) return;
-        const categories = await services.category_service.getCategories();
-        const category = categories[0];
-        if (!category) return;
-        try {
-            await services.timer_service.start(job, category);
-            timer_store.startTimer(job, category);
-            const jobs = await services.job_service.getJobs();
-            job_store.setJobs(jobs);
-            await loadTimeTotals();
-        } catch (e) {
-            toast_store.addToast('error', String(e));
-        }
-    }
-
-    function handlePause() {
-        openReasonModal('일시정지 사유', async (reason) => {
-            try {
-                await services.timer_service.pause(reason);
-                timer_store.pauseTimer();
-                const jobs = await services.job_service.getJobs();
-                job_store.setJobs(jobs);
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
-        });
-    }
-
-    function handleResume() {
-        openReasonModal('재개 사유', async (reason) => {
-            try {
-                await services.timer_service.resume(reason);
-                timer_store.resumeTimer();
-                const jobs = await services.job_service.getJobs();
-                job_store.setJobs(jobs);
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
-        });
-    }
-
-    function handleStop() {
-        openReasonModal('완료 사유', async (reason) => {
-            try {
-                await services.timer_service.stop(reason);
-                timer_store.stopTimer();
-                const jobs = await services.job_service.getJobs();
-                job_store.setJobs(jobs);
-                await loadTimeTotals();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
-        });
-    }
-
-    function handleCancel() {
-        openReasonModal('취소 사유', async (reason) => {
-            try {
-                await services.timer_service.cancel(reason);
-                timer_store.cancelTimer();
-                const jobs = await services.job_service.getJobs();
-                job_store.setJobs(jobs);
-                await loadTimeTotals();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
-        });
-    }
-
-    function handleCreateJob() {
-        openReasonModal(
-            '새 작업',
-            async (job_title) => {
-                try {
-                    const job = await services.job_service.createJob({ title: job_title });
-                    job_store.addJob(job);
-                    job_store.selectJob(job.id);
-                    toast_store.addToast('success', `'${job.title}' 작업이 생성되었습니다`);
-                    closeReasonModal();
-                } catch (e) {
-                    toast_store.addToast('error', String(e));
-                }
-            },
-            undefined,
-            '작업 이름을 입력하세요 (최소 1글자)',
-            MAX_TITLE_LENGTH,
-        );
-    }
-
-    function handleSwitch() {
-        const job = job_store.selected_job;
-        if (!job) return;
-        openReasonModal(
-            '작업 전환 사유',
-            async (reason) => {
-                const trimmed = reason.trim();
-                const categories = await services.category_service.getCategories();
-                const category = categories[0];
-                if (!category) return;
-                try {
-                    await services.timer_service.start(job, category, trimmed.length > 0 ? trimmed : undefined);
-                    timer_store.startTimer(job, category);
-                    const jobs = await services.job_service.getJobs();
-                    job_store.setJobs(jobs);
-                    await loadTimeTotals();
-                    closeReasonModal();
-                } catch (e) {
-                    toast_store.addToast('error', String(e));
-                }
-            },
-            undefined,
-            `입력하지 않으면 기본 사유(작업 전환: ${job.title})가 적용됩니다`,
-            MAX_REASON_LENGTH,
-            true,
-        );
-    }
-
-    function handleSelectJob(id: string) {
-        job_store.selectJob(id);
-    }
 
     function handleClose() {
         logseq.hideMainUI();
@@ -304,7 +116,7 @@
             >🕐</button
         >
         <button type="button" class="close-btn" onclick={handleClose} aria-label="닫기">✕</button>
-        <main>
+        <main class="panel-main">
             {#if storage_banner}
                 <div class="storage-banner storage-banner--{storage_banner.type}">
                     <span>{storage_banner.message}</span>
@@ -321,56 +133,9 @@
                     {/if}
                 </div>
             {/if}
-            <Timer
-                {timer_store}
-                {job_store}
-                {selected_job_total_seconds}
-                onstart={handleStart}
-                onpause={handlePause}
-                onresume={handleResume}
-                onstop={handleStop}
-                oncancel={handleCancel}
-                onswitch={handleSwitch}
-            />
-
-            {#if job_store.jobs.length === 0}
-                <EmptyState oncreate={handleCreateJob} />
-            {:else}
-                <JobList
-                    jobs={job_store.jobs}
-                    selected_job_id={job_store.selected_job_id}
-                    {time_totals}
-                    active_job_id={timer_store.active_job_id}
-                    running_since={timer_store.state.current_segment_start}
-                    accumulated_ms={timer_store.state.accumulated_ms}
-                    onselect={handleSelectJob}
-                />
-                <div class="add-job-area">
-                    <button type="button" class="add-job-btn" onclick={handleCreateJob}>+ 새 작업</button>
-                </div>
-            {/if}
+            <FullView context={ctx} layout_mode="compact" />
 
             <ToastContainer {toast_store} />
-
-            {#if show_reason_modal && reason_modal_config}
-                <ReasonModal
-                    title={reason_modal_config.title}
-                    {...reason_modal_config.description !== undefined
-                        ? { description: reason_modal_config.description }
-                        : {}}
-                    {...reason_modal_config.placeholder !== undefined
-                        ? { placeholder: reason_modal_config.placeholder }
-                        : {}}
-                    {...reason_modal_config.max_length !== undefined
-                        ? { max_length: reason_modal_config.max_length }
-                        : {}}
-                    {...reason_modal_config.allow_empty !== undefined
-                        ? { allow_empty: reason_modal_config.allow_empty }
-                        : {}}
-                    onconfirm={reason_modal_config.action}
-                    oncancel={closeReasonModal}
-                />
-            {/if}
         </main>
 
         {#if show_debug_modal}
@@ -498,6 +263,11 @@
         box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
     }
 
+    .panel-main {
+        /* 우상단 absolute 헤더 버튼과 FullView 탭바 겹침 완화 */
+        padding-top: 40px;
+    }
+
     .close-btn {
         position: absolute;
         top: 8px;
@@ -518,27 +288,6 @@
     .close-btn:hover {
         background: rgba(0, 0, 0, 0.08);
         color: #333;
-    }
-
-    .add-job-area {
-        padding: 8px 16px;
-    }
-
-    .add-job-btn {
-        width: 100%;
-        padding: 8px;
-        border: 1px dashed #ccc;
-        border-radius: 4px;
-        background: transparent;
-        cursor: pointer;
-        color: #666;
-        font-size: 0.875rem;
-    }
-
-    .add-job-btn:hover {
-        border-color: #999;
-        color: #333;
-        background: rgba(0, 0, 0, 0.02);
     }
 
     .debug-btn {
