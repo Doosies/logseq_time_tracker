@@ -62,14 +62,6 @@ function main() {
 
         logseq.provideModel({
             togglePluginUI() {
-                logseq.setMainUIInlineStyle({
-                    position: 'fixed',
-                    top: '3.5rem',
-                    right: '1rem',
-                    width: '360px',
-                    maxHeight: '80vh',
-                    zIndex: '11',
-                });
                 logseq.toggleMainUI();
             },
             async startTimerFromPage() {

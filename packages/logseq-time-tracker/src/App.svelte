@@ -65,14 +65,6 @@
 
     function handleClose() {
         show_full_view = false;
-        logseq.setMainUIInlineStyle({
-            position: 'fixed',
-            top: '3.5rem',
-            right: '1rem',
-            width: '360px',
-            maxHeight: '80vh',
-            zIndex: '11',
-        });
         logseq.hideMainUI();
     }
 
@@ -80,25 +72,10 @@
 
     function handleOpenFullView() {
         show_full_view = true;
-        logseq.setMainUIInlineStyle({
-            position: 'fixed',
-            inset: '0',
-            width: '100%',
-            height: '100%',
-            zIndex: '11',
-        });
     }
 
     function handleBackToToolbar() {
         show_full_view = false;
-        logseq.setMainUIInlineStyle({
-            position: 'fixed',
-            top: '3.5rem',
-            right: '1rem',
-            width: '360px',
-            maxHeight: '80vh',
-            zIndex: '11',
-        });
     }
 
     let show_debug_modal = $state(false);
@@ -186,26 +163,29 @@
         </div>
     </div>
 {:else}
-    <!-- Toolbar: 드롭다운 모드, backdrop 없음 -->
-    <div class="dropdown-shell">
-        {#if storage_banner}
-            <div class="storage-banner storage-banner--{storage_banner.type}">
-                <span>{storage_banner.message}</span>
-                {#if storage_banner.type === 'warning'}
-                    <button
-                        type="button"
-                        class="storage-banner-retry"
-                        onclick={() => {
-                            void ctx.storage_manager?.tryRecover();
-                        }}
-                    >
-                        재시도
-                    </button>
-                {/if}
-            </div>
-        {/if}
-        <Toolbar context={ctx} on_open_full_view={handleOpenFullView} inline={true} />
-        <ToastContainer {toast_store} />
+    <!-- Toolbar: 드롭다운 모드 -->
+    <div class="dropdown-backdrop">
+        <button type="button" class="dropdown-backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
+        <div class="dropdown-shell">
+            {#if storage_banner}
+                <div class="storage-banner storage-banner--{storage_banner.type}">
+                    <span>{storage_banner.message}</span>
+                    {#if storage_banner.type === 'warning'}
+                        <button
+                            type="button"
+                            class="storage-banner-retry"
+                            onclick={() => {
+                                void ctx.storage_manager?.tryRecover();
+                            }}
+                        >
+                            재시도
+                        </button>
+                    {/if}
+                </div>
+            {/if}
+            <Toolbar context={ctx} on_open_full_view={handleOpenFullView} inline={true} />
+            <ToastContainer {toast_store} />
+        </div>
     </div>
 {/if}
 
@@ -305,12 +285,33 @@
 {/if}
 
 <style>
+    .dropdown-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 10;
+    }
+
+    .dropdown-backdrop-hit {
+        position: fixed;
+        inset: 0;
+        background: transparent;
+        border: none;
+        padding: 0;
+        margin: 0;
+        cursor: default;
+    }
+
     .dropdown-shell {
+        position: absolute;
+        top: 3.5rem;
+        right: 1rem;
+        width: 360px;
+        max-height: 80vh;
         background: white;
         border-radius: 8px;
         box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
         overflow-y: auto;
-        max-height: 80vh;
+        z-index: 11;
     }
 
     .shell {
