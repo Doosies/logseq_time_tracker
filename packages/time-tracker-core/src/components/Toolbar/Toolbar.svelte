@@ -228,7 +228,7 @@
     {/snippet}
 
     {#if inline}
-        <div class={css.dropdown_panel} role="region" aria-label="타이머 툴바">
+        <div class={css.inline_panel} role="region" aria-label="타이머 툴바">
             {@render toolbar_content()}
         </div>
     {:else}

@@ -113,6 +113,10 @@ export const job_list_button = style({
     },
 });
 
+export const inline_panel = style({
+    padding: '12px',
+});
+
 export const full_view_btn = style({
     marginTop: '10px',
     width: '100%',
