@@ -64,7 +64,6 @@
     }
 
     function toggleDropdown(): void {
-        if (!has_jobs) return;
         dropdown_open = !dropdown_open;
     }
 
@@ -174,65 +173,69 @@
 </script>
 
 <div class={css.toolbar_root}>
-    {#if has_jobs}
-        <button
-            type="button"
-            class={css.toolbar_trigger}
-            bind:this={trigger_el}
-            aria-haspopup="dialog"
-            aria-expanded={dropdown_open}
-            aria-label="타이머 툴바 열기"
-            onclick={toggleDropdown}
-        >
-            ⏱
-        </button>
-    {:else}
-        <span class={css.toolbar_icon_only} aria-hidden="true">⏱</span>
-    {/if}
+    <button
+        type="button"
+        class={css.toolbar_trigger}
+        bind:this={trigger_el}
+        aria-haspopup="dialog"
+        aria-expanded={dropdown_open}
+        aria-label="타이머 툴바 열기"
+        onclick={toggleDropdown}
+    >
+        ⏱
+    </button>
 
-    {#if dropdown_open && has_jobs}
+    {#if dropdown_open}
         <div class={css.dropdown_panel} bind:this={panel_el} role="dialog" aria-label="타이머 툴바" tabindex="-1">
-            {#if timer_store.state.active_job}
-                <div class={css.dropdown_header}>
-                    {timer_store.state.active_job.title}
+            {#if has_jobs}
+                {#if timer_store.state.active_job}
+                    <div class={css.dropdown_header}>
+                        {timer_store.state.active_job.title}
+                    </div>
+                    {#if timer_store.state.active_category}
+                        <div class={css.dropdown_sub}>{timer_store.state.active_category.name}</div>
+                    {/if}
+                    <TimerDisplay
+                        accumulated_ms={timer_store.state.accumulated_ms}
+                        current_segment_start={timer_store.state.current_segment_start}
+                        is_paused={timer_store.state.is_paused}
+                    />
+                {:else}
+                    <div class={css.dropdown_header}>활성 작업 없음</div>
+                {/if}
+
+                <div class={css.button_row}>
+                    {#if show_running_controls}
+                        <button type="button" class={css.toolbar_btn} onclick={() => void handlePause()}>
+                            일시정지
+                        </button>
+                        <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
+                    {:else if show_paused_controls}
+                        <button type="button" class={css.toolbar_btn} onclick={() => void handleResume()}>
+                            재개
+                        </button>
+                        <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
+                    {/if}
                 </div>
-                {#if timer_store.state.active_category}
-                    <div class={css.dropdown_sub}>{timer_store.state.active_category.name}</div>
+
+                {#if switchable_jobs.length > 0}
+                    <div class={css.job_list_heading} id="toolbar-waiting-heading">대기 / 일시정지</div>
+                    <ul class={css.job_list} role="list" aria-labelledby="toolbar-waiting-heading">
+                        {#each switchable_jobs as job (job.id)}
+                            <li class={css.job_list_item} role="listitem">
+                                <button
+                                    type="button"
+                                    class={css.job_list_button}
+                                    onclick={() => void handleSwitchToJob(job)}
+                                >
+                                    {job.title}
+                                </button>
+                            </li>
+                        {/each}
+                    </ul>
                 {/if}
-                <TimerDisplay
-                    accumulated_ms={timer_store.state.accumulated_ms}
-                    current_segment_start={timer_store.state.current_segment_start}
-                    is_paused={timer_store.state.is_paused}
-                />
             {:else}
-                <div class={css.dropdown_header}>활성 작업 없음</div>
-            {/if}
-
-            <div class={css.button_row}>
-                {#if show_running_controls}
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handlePause()}> 일시정지 </button>
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
-                {:else if show_paused_controls}
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleResume()}> 재개 </button>
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
-                {/if}
-            </div>
-
-            {#if switchable_jobs.length > 0}
-                <div class={css.job_list_heading} id="toolbar-waiting-heading">대기 / 일시정지</div>
-                <ul class={css.job_list} role="list" aria-labelledby="toolbar-waiting-heading">
-                    {#each switchable_jobs as job (job.id)}
-                        <li class={css.job_list_item} role="listitem">
-                            <button
-                                type="button"
-                                class={css.job_list_button}
-                                onclick={() => void handleSwitchToJob(job)}
-                            >
-                                {job.title}
-                            </button>
-                        </li>
-                    {/each}
-                </ul>
+                <div class={css.dropdown_header}>등록된 작업이 없습니다</div>
             {/if}
 
             <button type="button" class={css.full_view_btn} onclick={handleOpenFullView}> 전체 화면 열기 </button>
