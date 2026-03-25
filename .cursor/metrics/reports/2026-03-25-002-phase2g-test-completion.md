@@ -120,9 +120,28 @@
 
 ---
 
+## 7-1. 커밋 내역
+
+| # | 커밋 해시 | 메시지 |
+|---|-----------|--------|
+| 1 | `63c6d95` | docs(time-tracker): Phase 0~2 설계문서 완료 체크박스 일괄 갱신 |
+| 2 | `62f5add` | test(time-tracker): SQLite Repository 단위 테스트 4개 추가 |
+| 3 | `8a5da41` | test(time-tracker): UC-FSM-004/006 통합 및 UC-UI-004~006 컴포넌트 테스트 추가 |
+| 4 | `1620f2d` | feat(time-tracker): Playwright E2E 인프라 구축 및 UC-E2E-001/002 작성 |
+| 5 | `04c596a` | chore(time-tracker): Phase 2G 테스트 완료 기준 갱신 및 사이클 메트릭 기록 |
+| 6 | `d88c887` | chore(metrics): 사이클 2026-03-25-002 git-workflow·플랜 실행 보고 반영 |
+
+---
+
 ## 8. 시스템 개선
 
-- 이번 사이클에서 특별한 에이전트 규칙 개선 사항 없음
+- **분석**: system-improvement 스킬 적용 (메인 에이전트 직접 수행)
+- **관찰된 패턴 3가지**:
+  1. Vitest-Playwright 테스트 러너 충돌 → QA 체크리스트로 대응 (규칙 변경 불필요)
+  2. plan-execution 워크플로우 단계 누락 (6,7단계) → 관찰 상태 유지
+  3. 서브에이전트 범위 초과 (git-workflow가 메트릭/보고서까지 작성) → 관찰 상태 유지
+- **규칙 변경**: 없음 (3회 이상 재발 시 A/B 테스트 설계 예정)
+- **리포트 경로**: `.cursor/metrics/improvements/2026-03-25-002-vitest-playwright-boundary.md`
 
 ---
 
