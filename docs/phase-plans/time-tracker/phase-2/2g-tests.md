@@ -61,6 +61,42 @@ Phase 2 전체 기능(영속화, 마이그레이션, 폴백·Web Locks, Export/I
 
 ---
 
+## Phase 1~2 UC 테스트 커버리지 현황
+
+마지막 갱신: **2026-03-25**. `08-test-usecases.md`의 UC-ID를 테스트 제목에서 추적할 수 있도록 정리한 상태입니다.
+
+### 테스트명 UC 접두사 (`UC-XXX-NNN:`)
+
+실패 로그·리포트에서 UC를 바로 찾을 수 있게 `it`/`test` 제목 선두에 **`UC-XXX-NNN:`** 를 둡니다. **약 64건 리네임**, 대상 **17개 파일**:
+
+`timer_service.test.ts`, `job_service.test.ts`, `category_service.test.ts`, `job_category_service.test.ts`, `history_service.test.ts`, `job_status.test.ts`, `memory_job_repository.test.ts`, `memory_time_entry_repository.test.ts`, `storage_fallback.test.ts`, `export_import_roundtrip.test.ts`, `sqlite_external_ref_repository.test.ts`, `migration_runner.test.ts`, `toast_store.svelte.test.ts`, `job_lifecycle.test.ts`, `timer_workflow.test.ts`, `app_init.test.ts`, `TimerDisplay.test.ts`
+
+### 신규·확장 매핑 (이번 사이클)
+
+| 파일 | 추가(약) | UC(요약) |
+| --- | ---: | --- |
+| `packages/time-tracker-core/src/services/timer_service.test.ts` | 7 | UC-TIMER-006/009/010, UC-CANCEL-002, UC-STOP-001, UC-EDGE-001/002 |
+| `packages/time-tracker-core/src/services/job_service.test.ts` | 7 | UC-JOB-006/007/009/010, UC-EDGE-004/006/008 |
+| `packages/time-tracker-core/src/services/category_service.test.ts` | 4 | UC-CAT-003/004, UC-STORE-005, UC-CATEGORY-CYCLE-001 |
+| `packages/time-tracker-core/src/services/history_service.test.ts` | 1 | UC-HIST-002 |
+| `packages/time-tracker-core/src/adapters/storage/memory/memory_job_repository.test.ts` | 1 | UC-STORE-002 |
+| `packages/time-tracker-core/src/__tests__/integration/timer_workflow.test.ts` | 2 | UC-FSM-002/005 |
+| `packages/time-tracker-core/src/__tests__/component/Timer.test.ts` *(신규)* | 1 | UC-UI-002 |
+| `packages/time-tracker-core/src/utils/time.test.ts` | 2 | UC-TYPE-003/004 |
+| `packages/logseq-time-tracker/src/__tests__/main.test.ts` *(신규)* | 3 | UC-PLUGIN-001/002/003 |
+
+### 프로덕션 코드(위 테스트와 대응)
+
+- `packages/time-tracker-core/src/utils/time.ts`: `isValidISO8601` 추가
+- `packages/logseq-time-tracker/src/main.ts`: `registerSlashCommand` 추가
+
+### QA 스냅샷 (2026-03-25)
+
+- 전체 테스트 **823**개 통과, 0 실패
+- Lint·Type-check·Build 성공
+
+---
+
 ## 생성/변경 파일 목록
 
 기준 경로: `packages/time-tracker-core/src/__tests__/` (기존 Phase 1 테스트와 동일하게 `integration`·`component` 하위 배치). **9개 SQLite Repository**는 Phase 2C/2D의 Repository 목록과 1:1로 맞춥니다.
@@ -293,8 +329,8 @@ describe('CategoryService 참조 검사', () => {
 - [x] (권장) `fsm_storage.test.ts` 통합 테스트로 UC-FSM-004·006 충족
 - [x] (권장) 컴포넌트 테스트로 UC-UI-004 ~ 006 매핑 (UC-UI-007/008은 TimeEntryForm 미존재로 Phase 3에서 구현)
 - [x] (선택) Playwright E2E로 UC-E2E-001 ~ 002 통과 (`packages/logseq-time-tracker/e2e/tests/`)
-- [x] `pnpm test` 전체 통과
-- [x] 커버리지 **75.41%** (브라우저 전용·CSS 파일 제외 시 80%+ 추정) — 단위/통합 275개 + E2E 2개
+- [x] `pnpm test` 전체 통과 — **823**개(2026-03-25 스냅샷; UC 접두사·신규 케이스 반영)
+- [x] 커버리지 **75.41%** (브라우저 전용·CSS 파일 제외 시 80%+ 추정; 상기 테스트 수 증가 후 재측정 시 갱신)
 - [x] `pnpm type-check`·`pnpm lint` 성공(프로젝트 스크립트 기준)
 
 ---
