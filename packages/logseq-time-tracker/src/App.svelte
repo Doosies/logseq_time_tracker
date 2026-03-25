@@ -418,9 +418,9 @@
 
     .poc-test-btn {
         padding: 6px 12px;
-        border: 1px solid #3b82f6;
+        border: 1px solid #1d4ed8;
         border-radius: 4px;
-        background: #3b82f6;
+        background: #1d4ed8;
         color: white;
         cursor: pointer;
         font-size: 0.8rem;

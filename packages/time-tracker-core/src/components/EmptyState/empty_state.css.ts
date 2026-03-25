@@ -22,7 +22,7 @@ export const empty_text = style({
 
 export const empty_button = style({
     padding: '8px 16px',
-    backgroundColor: '#3b82f6',
+    backgroundColor: '#1d4ed8',
     color: 'white',
     borderRadius: '4px',
     border: 'none',

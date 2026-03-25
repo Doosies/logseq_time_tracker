@@ -7,6 +7,7 @@
     "scripts": {
         "prebuild": "node scripts/copy_sql_wasm.mjs",
         "dev": "node scripts/copy_sql_wasm.mjs && vite",
+        "dev:playwright": "vite --config e2e/vite.config.ts --port 5174",
         "build": "vite build",
         "type-check": "tsc --noEmit && svelte-check --tsconfig ./tsconfig.json",
         "lint": "eslint . --ext ts,svelte --report-unused-disable-directives --max-warnings 0",
@@ -23,6 +24,7 @@
         "@vanilla-extract/css": "catalog:"
     },
     "devDependencies": {
+        "@axe-core/playwright": "^4.11.1",
         "@eslint/js": "catalog:",
         "@playwright/test": "^1.58.2",
         "@sveltejs/vite-plugin-svelte": "catalog:",

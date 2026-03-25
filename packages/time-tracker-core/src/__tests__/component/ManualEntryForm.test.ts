@@ -150,4 +150,84 @@ describe('ManualEntryForm', () => {
             expect(getByRole('dialog', { name: '시간 겹침' })).toHaveAttribute('aria-modal', 'true');
         });
     });
+
+    it('UC-UI-007: 빈 필드 제출 거부 — 작업/카테고리 미선택 시 저장 버튼 비활성화', () => {
+        const mock_context = {
+            services: {
+                time_entry_service: {
+                    detectOverlaps: vi.fn().mockResolvedValue([]),
+                    createManualEntry: vi.fn(),
+                    resolveOverlap: vi.fn().mockResolvedValue([]),
+                },
+            },
+            stores: {
+                toast_store: { addToast: vi.fn() },
+            },
+        } as unknown as AppContext;
+
+        const { getByRole } = render(ManualEntryForm, {
+            props: {
+                context: mock_context,
+                jobs: [make_job({ id: 'j-1', title: 'Job' })],
+                categories: [make_category({ id: 'c-1', name: 'Cat', parent_id: null })],
+                onSubmit: vi.fn(),
+                onCancel: vi.fn(),
+            },
+        });
+
+        expect(getByRole('button', { name: '저장' })).toBeDisabled();
+    });
+
+    it('UC-UI-008: 정상 제출 — 작업/카테고리 선택 후 저장 시 createManualEntry 호출', async () => {
+        const user = userEvent.setup();
+        const created: TimeEntry = {
+            id: 'e-008',
+            job_id: 'j-1',
+            category_id: 'c-1',
+            started_at: '2025-06-01T09:00:00.000Z',
+            ended_at: '2025-06-01T10:00:00.000Z',
+            duration_seconds: 3600,
+            note: '',
+            is_manual: true,
+            created_at: ts,
+            updated_at: ts,
+        };
+        const create_manual_entry = vi.fn().mockResolvedValue(created);
+        const on_submit = vi.fn();
+        const mock_context = {
+            services: {
+                time_entry_service: {
+                    detectOverlaps: vi.fn().mockResolvedValue([]),
+                    createManualEntry: create_manual_entry,
+                    resolveOverlap: vi.fn().mockResolvedValue([]),
+                },
+            },
+            stores: {
+                toast_store: { addToast: vi.fn() },
+            },
+        } as unknown as AppContext;
+
+        const { getByRole, getAllByRole } = render(ManualEntryForm, {
+            props: {
+                context: mock_context,
+                jobs: [make_job({ id: 'j-1', title: '정상 제출 작업' })],
+                categories: [make_category({ id: 'c-1', name: '카테고리', parent_id: null })],
+                onSubmit: on_submit,
+                onCancel: vi.fn(),
+            },
+        });
+
+        const combos = getAllByRole('combobox');
+        await user.click(combos[0]!);
+        await user.click(getByRole('option', { name: /정상 제출 작업/ }));
+        await user.click(combos[1]!);
+        await user.click(getByRole('option', { name: '카테고리' }));
+
+        await user.click(getByRole('button', { name: '저장' }));
+
+        await waitFor(() => {
+            expect(create_manual_entry).toHaveBeenCalled();
+        });
+        expect(on_submit).toHaveBeenCalledWith(created);
+    });
 });

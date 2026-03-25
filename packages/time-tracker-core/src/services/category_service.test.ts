@@ -42,6 +42,19 @@ describe('CategoryService', () => {
         await expect(category_service.createCategory('too-deep', parent_id)).rejects.toThrow(ValidationError);
     });
 
+    it('UC-EDGE-003: 최대 깊이(CATEGORY_MAX_DEPTH=10) 성공 + 초과 시 거부', async () => {
+        let parent_id: string | undefined;
+        for (let i = 0; i < CATEGORY_MAX_DEPTH; i++) {
+            const c = await category_service.createCategory(`depth-${i}`, parent_id);
+            parent_id = c.id;
+            expect(c).toBeDefined();
+        }
+        const last = await uow.categoryRepo.getCategoryById(parent_id!);
+        expect(last).not.toBeNull();
+
+        await expect(category_service.createCategory('overflow', parent_id)).rejects.toThrow(ValidationError);
+    });
+
     it('UC-CAT-001: seedDefaults: 기본 4개 카테고리 생성', async () => {
         await category_service.seedDefaults();
         const all = await category_service.getCategories();
