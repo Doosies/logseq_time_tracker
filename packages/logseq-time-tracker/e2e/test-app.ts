@@ -5,6 +5,7 @@ import { ConsoleLogger, initializeApp } from '@personal/time-tracker-core';
 const logseq_stub = {
     hideMainUI: () => {},
     toggleMainUI: () => {},
+    setMainUIInlineStyle: (_style: Record<string, string>) => {},
 };
 
 (globalThis as unknown as { logseq: typeof logseq_stub }).logseq = logseq_stub;

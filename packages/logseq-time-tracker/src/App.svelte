@@ -64,6 +64,15 @@
     });
 
     function handleClose() {
+        show_full_view = false;
+        logseq.setMainUIInlineStyle({
+            position: 'fixed',
+            top: '3.5rem',
+            right: '1rem',
+            width: '360px',
+            maxHeight: '80vh',
+            zIndex: '11',
+        });
         logseq.hideMainUI();
     }
 
@@ -71,10 +80,25 @@
 
     function handleOpenFullView() {
         show_full_view = true;
+        logseq.setMainUIInlineStyle({
+            position: 'fixed',
+            inset: '0',
+            width: '100%',
+            height: '100%',
+            zIndex: '11',
+        });
     }
 
     function handleBackToToolbar() {
         show_full_view = false;
+        logseq.setMainUIInlineStyle({
+            position: 'fixed',
+            top: '3.5rem',
+            right: '1rem',
+            width: '360px',
+            maxHeight: '80vh',
+            zIndex: '11',
+        });
     }
 
     let show_debug_modal = $state(false);
@@ -121,143 +145,174 @@
     }
 </script>
 
-<div class="shell">
-    <button type="button" class="backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
-    <div class="panel" class:panel--fullview={show_full_view}>
-        {#if show_full_view}
+{#if show_full_view}
+    <!-- FullView: 기존 shell + backdrop + panel 구조 -->
+    <div class="shell">
+        <button type="button" class="backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
+        <div class="panel panel--fullview">
             <button type="button" class="back-btn" onclick={handleBackToToolbar} aria-label="돌아가기">←</button>
-        {/if}
-        <button type="button" class="debug-btn" onclick={openDebugModal} aria-label="기록 보기" title="시간 기록 보기"
-            >🕐</button
-        >
-        <button type="button" class="close-btn" onclick={handleClose} aria-label="닫기">✕</button>
-        <main class="panel-main">
-            {#if storage_banner}
-                <div class="storage-banner storage-banner--{storage_banner.type}">
-                    <span>{storage_banner.message}</span>
-                    {#if storage_banner.type === 'warning'}
-                        <button
-                            type="button"
-                            class="storage-banner-retry"
-                            onclick={() => {
-                                void ctx.storage_manager?.tryRecover();
-                            }}
-                        >
-                            재시도
-                        </button>
-                    {/if}
-                </div>
-            {/if}
-            {#if show_full_view}
+            <button
+                type="button"
+                class="debug-btn"
+                onclick={openDebugModal}
+                aria-label="기록 보기"
+                title="시간 기록 보기">🕐</button
+            >
+            <button type="button" class="close-btn" onclick={handleClose} aria-label="닫기">✕</button>
+            <main class="panel-main">
+                {#if storage_banner}
+                    <div class="storage-banner storage-banner--{storage_banner.type}">
+                        <span>{storage_banner.message}</span>
+                        {#if storage_banner.type === 'warning'}
+                            <button
+                                type="button"
+                                class="storage-banner-retry"
+                                onclick={() => {
+                                    void ctx.storage_manager?.tryRecover();
+                                }}
+                            >
+                                재시도
+                            </button>
+                        {/if}
+                    </div>
+                {/if}
                 <LayoutSwitcher>
                     {#snippet children({ layout_mode })}
                         <FullView context={ctx} {layout_mode} />
                     {/snippet}
                 </LayoutSwitcher>
-            {:else}
-                <Toolbar context={ctx} on_open_full_view={handleOpenFullView} />
-            {/if}
-
-            <ToastContainer {toast_store} />
-        </main>
-
-        {#if show_debug_modal}
-            <div class="debug-overlay" role="dialog" aria-label="시간 기록">
-                <div class="debug-modal">
-                    <div class="debug-header">
-                        <h2 class="debug-title">시간 기록 (Debug)</h2>
-                        <button type="button" class="debug-close" onclick={closeDebugModal} aria-label="닫기">✕</button>
-                    </div>
-                    <div class="debug-body">
-                        {#if debug_entries.length === 0}
-                            <p class="debug-empty">기록이 없습니다.</p>
-                        {:else}
-                            <table class="debug-table">
-                                <thead>
-                                    <tr>
-                                        <th>작업</th>
-                                        <th>시작</th>
-                                        <th>종료</th>
-                                        <th>소요</th>
-                                        <th>노트</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {#each debug_entries as entry (entry.id)}
-                                        <tr>
-                                            <td>{getJobTitle(entry.job_id)}</td>
-                                            <td>{formatLocalDateTime(entry.started_at)}</td>
-                                            <td>{formatLocalDateTime(entry.ended_at)}</td>
-                                            <td class="debug-duration">{formatDuration(entry.duration_seconds)}</td>
-                                            <td>{entry.note || '-'}</td>
-                                        </tr>
-                                    {/each}
-                                </tbody>
-                            </table>
-                        {/if}
-                        {#if debug_history.length > 0}
-                            <h3 class="debug-subtitle">상태 전환 이력</h3>
-                            <table class="debug-table">
-                                <thead>
-                                    <tr>
-                                        <th>작업</th>
-                                        <th>시각</th>
-                                        <th>전환</th>
-                                        <th>사유</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {#each debug_history as h (h.id)}
-                                        <tr>
-                                            <td>{getJobTitle(h.job_id)}</td>
-                                            <td>{formatLocalDateTime(h.occurred_at)}</td>
-                                            <td>{getStatusLabel(h.from_status)} → {getStatusLabel(h.to_status)}</td>
-                                            <td>{h.reason || '-'}</td>
-                                        </tr>
-                                    {/each}
-                                </tbody>
-                            </table>
-                        {/if}
-
-                        <h3 class="debug-subtitle">스토리지 상태</h3>
-                        <p class="storage-mode-badge">
-                            현재 모드: <strong>{storage_mode_label}</strong>
-                        </p>
-
-                        <button type="button" class="poc-test-btn" onclick={handleRunPocTests} disabled={poc_running}>
-                            {poc_running ? '검증 중...' : 'Storage PoC 검증 실행'}
-                        </button>
-
-                        {#if poc_results.length > 0}
-                            <table class="debug-table">
-                                <thead>
-                                    <tr>
-                                        <th>테스트</th>
-                                        <th>결과</th>
-                                        <th>상세</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {#each poc_results as result (result.test_name)}
-                                        <tr>
-                                            <td>{result.test_name}</td>
-                                            <td class={result.success ? 'poc-pass' : 'poc-fail'}>
-                                                {result.success ? 'PASS' : 'FAIL'}
-                                            </td>
-                                            <td>{result.details ?? result.error ?? '-'}</td>
-                                        </tr>
-                                    {/each}
-                                </tbody>
-                            </table>
-                        {/if}
-                    </div>
-                </div>
+                <ToastContainer {toast_store} />
+            </main>
+        </div>
+    </div>
+{:else}
+    <!-- Toolbar: 드롭다운 모드, backdrop 없음 -->
+    <div class="dropdown-shell">
+        {#if storage_banner}
+            <div class="storage-banner storage-banner--{storage_banner.type}">
+                <span>{storage_banner.message}</span>
+                {#if storage_banner.type === 'warning'}
+                    <button
+                        type="button"
+                        class="storage-banner-retry"
+                        onclick={() => {
+                            void ctx.storage_manager?.tryRecover();
+                        }}
+                    >
+                        재시도
+                    </button>
+                {/if}
             </div>
         {/if}
+        <Toolbar context={ctx} on_open_full_view={handleOpenFullView} inline={true} />
+        <ToastContainer {toast_store} />
     </div>
-</div>
+{/if}
+
+{#if show_debug_modal}
+    <!-- debug modal은 모드와 무관하게 항상 사용 가능 -->
+    <div class="debug-overlay" role="dialog" aria-label="시간 기록">
+        <div class="debug-modal">
+            <div class="debug-header">
+                <h2 class="debug-title">시간 기록 (Debug)</h2>
+                <button type="button" class="debug-close" onclick={closeDebugModal} aria-label="닫기">✕</button>
+            </div>
+            <div class="debug-body">
+                {#if debug_entries.length === 0}
+                    <p class="debug-empty">기록이 없습니다.</p>
+                {:else}
+                    <table class="debug-table">
+                        <thead>
+                            <tr>
+                                <th>작업</th>
+                                <th>시작</th>
+                                <th>종료</th>
+                                <th>소요</th>
+                                <th>노트</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each debug_entries as entry (entry.id)}
+                                <tr>
+                                    <td>{getJobTitle(entry.job_id)}</td>
+                                    <td>{formatLocalDateTime(entry.started_at)}</td>
+                                    <td>{formatLocalDateTime(entry.ended_at)}</td>
+                                    <td class="debug-duration">{formatDuration(entry.duration_seconds)}</td>
+                                    <td>{entry.note || '-'}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                {/if}
+                {#if debug_history.length > 0}
+                    <h3 class="debug-subtitle">상태 전환 이력</h3>
+                    <table class="debug-table">
+                        <thead>
+                            <tr>
+                                <th>작업</th>
+                                <th>시각</th>
+                                <th>전환</th>
+                                <th>사유</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each debug_history as h (h.id)}
+                                <tr>
+                                    <td>{getJobTitle(h.job_id)}</td>
+                                    <td>{formatLocalDateTime(h.occurred_at)}</td>
+                                    <td>{getStatusLabel(h.from_status)} → {getStatusLabel(h.to_status)}</td>
+                                    <td>{h.reason || '-'}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                {/if}
+
+                <h3 class="debug-subtitle">스토리지 상태</h3>
+                <p class="storage-mode-badge">
+                    현재 모드: <strong>{storage_mode_label}</strong>
+                </p>
+
+                <button type="button" class="poc-test-btn" onclick={handleRunPocTests} disabled={poc_running}>
+                    {poc_running ? '검증 중...' : 'Storage PoC 검증 실행'}
+                </button>
+
+                {#if poc_results.length > 0}
+                    <table class="debug-table">
+                        <thead>
+                            <tr>
+                                <th>테스트</th>
+                                <th>결과</th>
+                                <th>상세</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {#each poc_results as result (result.test_name)}
+                                <tr>
+                                    <td>{result.test_name}</td>
+                                    <td class={result.success ? 'poc-pass' : 'poc-fail'}>
+                                        {result.success ? 'PASS' : 'FAIL'}
+                                    </td>
+                                    <td>{result.details ?? result.error ?? '-'}</td>
+                                </tr>
+                            {/each}
+                        </tbody>
+                    </table>
+                {/if}
+            </div>
+        </div>
+    </div>
+{/if}
 
 <style>
+    .dropdown-shell {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+        overflow-y: auto;
+        max-height: 80vh;
+    }
+
     .shell {
         position: fixed;
         inset: 0;
