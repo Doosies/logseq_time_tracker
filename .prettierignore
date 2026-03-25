@@ -1,6 +1,7 @@
 # Prettier ignore
 node_modules/
 dist/
+**/e2e/dist/
 build/
 coverage/
 .history/

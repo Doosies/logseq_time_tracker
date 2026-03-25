@@ -1,3 +1,5 @@
+/// <reference types="vitest/config" />
+
 import { createRequire } from 'node:module';
 
 import { svelte } from '@sveltejs/vite-plugin-svelte';
@@ -13,5 +15,9 @@ export default defineConfig(({ mode }) => ({
         target: 'esnext',
         minify: 'esbuild',
         sourcemap: true,
+    },
+    test: {
+        // Playwright E2E는 `npx playwright test`로만 실행 (Vitest와 러너가 다름)
+        exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
     },
 }));

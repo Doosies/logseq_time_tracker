@@ -13,7 +13,8 @@
         "format": "prettier --write \"src/**/*.{ts,svelte,json,css.ts}\"",
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
         "test": "vitest run --passWithNoTests",
-        "test:watch": "vitest"
+        "test:watch": "vitest",
+        "test:e2e": "playwright test"
     },
     "license": "MIT",
     "dependencies": {
@@ -23,7 +24,9 @@
     },
     "devDependencies": {
         "@eslint/js": "catalog:",
+        "@playwright/test": "^1.58.2",
         "@sveltejs/vite-plugin-svelte": "catalog:",
+        "@types/node": "catalog:",
         "@vanilla-extract/vite-plugin": "catalog:",
         "eslint": "catalog:",
         "eslint-plugin-svelte": "catalog:",
