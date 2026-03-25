@@ -140,12 +140,12 @@ export default createSvelteViteConfig({
 
 ## 완료 기준
 
-- [ ] `packages/time-tracker/` 삭제 완료
-- [ ] `pnpm install --no-offline` 성공
-- [ ] `pnpm build --filter @personal/time-tracker-core` 성공
-- [ ] `pnpm build --filter @personal/logseq-time-tracker` 성공
-- [ ] `pnpm type-check` 성공 (두 패키지 모두)
-- [ ] turbo 의존성 순서 정상 (core → logseq 순 빌드)
+- [x] `packages/time-tracker/` 삭제 완료
+- [x] `pnpm install --no-offline` 성공
+- [x] `pnpm build --filter @personal/time-tracker-core` 성공
+- [x] `pnpm build --filter @personal/logseq-time-tracker` 성공
+- [x] `pnpm type-check` 성공 (두 패키지 모두)
+- [x] turbo 의존성 순서 정상 (core → logseq 순 빌드)
 
 ---
 

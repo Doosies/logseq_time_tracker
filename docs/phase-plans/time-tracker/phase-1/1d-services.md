@@ -198,15 +198,15 @@ export function createServices(uow: IUnitOfWork, logger?: ILogger) {
 
 ## 완료 기준
 
-- [ ] 4개 서비스 + ILogger + ConsoleLogger 타입 에러 0개
-- [ ] FSM 전환이 VALID_TRANSITIONS와 일치 (JobService.transitionStatus)
-- [ ] TimerService.start() no-op guard 구현
-- [ ] TimerService.stop() 0초 정책 구현
-- [ ] TimerService.cancel() `[cancelled]` 접두사 구현
-- [ ] cascade 삭제 경로 (JobService.deleteJob) 구현
-- [ ] CategoryService.seedDefaults() 멱등성 구현
-- [ ] createServices 의존성 순서 올바름
-- [ ] `pnpm type-check` 성공
+- [x] 4개 서비스 + ILogger + ConsoleLogger 타입 에러 0개
+- [x] FSM 전환이 VALID_TRANSITIONS와 일치 (JobService.transitionStatus)
+- [x] TimerService.start() no-op guard 구현
+- [x] TimerService.stop() 0초 정책 구현
+- [x] TimerService.cancel() `[cancelled]` 접두사 구현
+- [x] cascade 삭제 경로 (JobService.deleteJob) 구현
+- [x] CategoryService.seedDefaults() 멱등성 구현
+- [x] createServices 의존성 순서 올바름
+- [x] `pnpm type-check` 성공
 
 ---
 

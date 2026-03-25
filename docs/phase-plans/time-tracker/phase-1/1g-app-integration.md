@@ -233,14 +233,14 @@ export type { AppContext } from './app/context';
 
 ## 완료 기준
 
-- [ ] initializeApp() 5단계 시퀀스 구현
-- [ ] ActiveTimerState 복구 + 참조 무결성 검증
-- [ ] Logseq 플러그인 진입점 (main.ts + logseq.ready)
-- [ ] App.svelte 루트 컴포넌트 조합
-- [ ] public API export 정리 (index.ts)
-- [ ] dispose + beforeunload 처리
-- [ ] `pnpm build` 성공 (두 패키지 모두)
-- [ ] Logseq dev mode에서 플러그인 로드 + 기본 UI 렌더링 확인
+- [x] initializeApp() 5단계 시퀀스 구현
+- [x] ActiveTimerState 복구 + 참조 무결성 검증
+- [x] Logseq 플러그인 진입점 (main.ts + logseq.ready)
+- [x] App.svelte 루트 컴포넌트 조합
+- [x] public API export 정리 (index.ts)
+- [x] dispose + beforeunload 처리
+- [x] `pnpm build` 성공 (두 패키지 모두)
+- [x] Logseq dev mode에서 플러그인 로드 + 기본 UI 렌더링 확인
 
 ---
 

@@ -109,10 +109,10 @@ flowchart TD
 
 ## 완료 기준
 
-- [ ] Svelte 5 컴포넌트에서 `.css.ts` 스타일 정상 적용
-- [ ] Vite 7 빌드 파이프라인에서 정상 빌드
-- [ ] Logseq iframe 내에서 CSS 렌더링 확인 (또는 대안 확정)
-- [ ] CSP 관련 에러 없음 (또는 우회 방법 확보)
+- [x] Svelte 5 컴포넌트에서 `.css.ts` 스타일 정상 적용
+- [x] Vite 7 빌드 파이프라인에서 정상 빌드
+- [x] Logseq iframe 내에서 CSS 렌더링 확인 (또는 대안 확정)
+- [x] CSP 관련 에러 없음 (또는 우회 방법 확보)
 
 ---
 

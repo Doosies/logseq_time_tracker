@@ -160,13 +160,13 @@ class WebLocksManager {
 
 - [x] `StorageState` 상태 머신 구현 (`StorageStateMachine`, 타입은 `types/settings.ts`)
 - [x] 초기화 실패 → Memory fallback (`StorageManager.initialize`; 로그·상태 머신은 코어, **배너 UI는 미연동**)
-- [ ] 런타임 쓰기 실패 3회 → Memory fallback (초기화 경로 백오프와 별도; 미구현)
+- [x] 런타임 쓰기 실패 3회 → Memory fallback (`executeWithFallback` + `RUNTIME_RETRY` 500ms×3회)
 - [x] 복구: Memory → SQLite 데이터 마이그레이션 (`tryRecover`)
 - [x] Web Locks API 래퍼 구현 (`web_locks.ts`, `initialize` 옵션으로 연동)
-- [ ] Lock 실패 시 읽기 전용 모드
+- [x] Lock 실패 시 읽기 전용 모드 (`is_readonly` + `_startLockRetryPolling` 5초 재시도)
 - [x] `beforeunload` 연동 지원: `utils/before_unload.ts`의 `registerTimerBeforeUnload` → `TimerService.flushBeforeUnload()` → `persistActiveTimerState()`(UoW 트랜잭션·Sqlite 경로에서는 커밋 시 `persist`). 앱/플러그인에서 리스너 등록 필요
 - [x] 30초 주기 백업: `TIMER_BACKUP_INTERVAL_MS`(30_000)·`TimerService` `setInterval` + `dispose`에서 `clearInterval`
-- [ ] 사용자 알림 UI(배너, 토스트) 연동
+- [x] 사용자 알림 UI(배너, 토스트) 연동 (`App.svelte` subscribe + storage_banner)
 
 ---
 

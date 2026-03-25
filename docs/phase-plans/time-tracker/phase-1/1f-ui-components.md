@@ -146,15 +146,15 @@ Phase 1 최소 UI 를 구현합니다: 타이머 표시/제어, Job 목록, Reas
 
 ## 완료 기준
 
-- [ ] TimerDisplay: requestAnimationFrame 기반 실시간 표시
-- [ ] TimerButton: 상태별 조건부 렌더링 + loading state
-- [ ] ReasonModal: 10~500자 검증, 키보드 접근성, 로딩 상태
-- [ ] JobList: 목록 렌더링, 상태 뱃지, 선택 하이라이트
-- [ ] ToastContainer: FIFO 표시, 닫기, auto_dismiss
-- [ ] EmptyState: Job 0개 시 표시
-- [ ] 모든 스타일 `.css.ts`로 작성
-- [ ] a11y: aria-label, role, 키보드 내비게이션
-- [ ] `pnpm type-check` + `pnpm build` 성공
+- [x] TimerDisplay: requestAnimationFrame 기반 실시간 표시
+- [x] TimerButton: 상태별 조건부 렌더링 + loading state
+- [x] ReasonModal: 10~500자 검증, 키보드 접근성, 로딩 상태
+- [x] JobList: 목록 렌더링, 상태 뱃지, 선택 하이라이트
+- [x] ToastContainer: FIFO 표시, 닫기, auto_dismiss
+- [x] EmptyState: Job 0개 시 표시
+- [x] 모든 스타일 `.css.ts`로 작성
+- [x] a11y: aria-label, role, 키보드 내비게이션
+- [x] `pnpm type-check` + `pnpm build` 성공
 
 ---
 

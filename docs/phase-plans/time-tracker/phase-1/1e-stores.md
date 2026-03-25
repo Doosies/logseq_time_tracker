@@ -212,12 +212,12 @@ function createToastStore() {
 
 ## 완료 기준
 
-- [ ] timer_store: 이벤트-타임스탬프 모델 (setInterval 없음)
-- [ ] timer_store: restore() + referential integrity 검증
-- [ ] job_store: $derived로 selected_job / active_job 자동 계산
-- [ ] toast_store: FIFO, 최대 3개, 중복 방지, auto_dismiss
-- [ ] 모든 스토어가 `createXxxStore()` 팩토리 패턴
-- [ ] `pnpm type-check` 성공
+- [x] timer_store: 이벤트-타임스탬프 모델 (setInterval 없음)
+- [x] timer_store: restore() + referential integrity 검증
+- [x] job_store: $derived로 selected_job / active_job 자동 계산
+- [x] toast_store: FIFO, 최대 3개, 중복 방지, auto_dismiss
+- [x] 모든 스토어가 `createXxxStore()` 팩토리 패턴
+- [x] `pnpm type-check` 성공
 
 ---
 

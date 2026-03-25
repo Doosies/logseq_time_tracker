@@ -205,13 +205,13 @@ export class StubExternalRefRepository implements IExternalRefRepository {
 
 ## 완료 기준
 
-- [ ] 9개 Repository 인터페이스 정의 완료
-- [ ] IUnitOfWork 인터페이스 정의 완료
-- [ ] 5개 Memory Repository 구현 (job, category, timeEntry, history, settings)
-- [ ] 4개 Stub Repository 구현 (externalRef, template, jobCategory, dataField)
-- [ ] MemoryUnitOfWork transaction + 중첩 조인 + 스냅샷 롤백 구현
-- [ ] structuredClone 입출력 적용
-- [ ] `pnpm type-check` 성공
+- [x] 9개 Repository 인터페이스 정의 완료
+- [x] IUnitOfWork 인터페이스 정의 완료
+- [x] 5개 Memory Repository 구현 (job, category, timeEntry, history, settings)
+- [x] 4개 Stub Repository 구현 (externalRef, template, jobCategory, dataField)
+- [x] MemoryUnitOfWork transaction + 중첩 조인 + 스냅샷 롤백 구현
+- [x] structuredClone 입출력 적용
+- [x] `pnpm type-check` 성공
 
 ---
 

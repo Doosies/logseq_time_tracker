@@ -179,13 +179,13 @@ Then: TimeEntry null 반환, Job은 completed 전환
 
 ## 완료 기준
 
-- [ ] 단위 테스트 파일 전부 작성 (utils, types, errors, services, stores, repository)
-- [ ] 통합 테스트 3개 작성 (timer workflow, job lifecycle, app init)
-- [ ] 컴포넌트 테스트 4개 작성
-- [ ] 전체 테스트 통과 (`pnpm test`)
-- [ ] 커버리지 80% 이상
-- [ ] `pnpm type-check` 성공
-- [ ] `pnpm lint` 성공
+- [x] 단위 테스트 파일 전부 작성 (utils, types, errors, services, stores, repository)
+- [x] 통합 테스트 3개 작성 (timer workflow, job lifecycle, app init)
+- [x] 컴포넌트 테스트 4개 작성
+- [x] 전체 테스트 통과 (`pnpm test`)
+- [x] 커버리지 80% 이상
+- [x] `pnpm type-check` 성공
+- [x] `pnpm lint` 성공
 
 ---
 

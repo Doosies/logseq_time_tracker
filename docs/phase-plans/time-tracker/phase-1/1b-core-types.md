@@ -208,12 +208,12 @@ export function formatLocalDateTime(utc_iso: string): string {
 
 ## 완료 기준
 
-- [ ] 모든 타입 파일 타입 에러 0개
-- [ ] VALID_TRANSITIONS가 설계 문서 FSM과 일치
-- [ ] 에러 클래스 6개 모두 정의
-- [ ] sanitizeText가 필드별 최대 길이와 일치
-- [ ] `pnpm type-check` 성공
-- [ ] `src/index.ts`에서 types, errors, constants, utils 모두 re-export
+- [x] 모든 타입 파일 타입 에러 0개
+- [x] VALID_TRANSITIONS가 설계 문서 FSM과 일치
+- [x] 에러 클래스 6개 모두 정의
+- [x] sanitizeText가 필드별 최대 길이와 일치
+- [x] `pnpm type-check` 성공
+- [x] `src/index.ts`에서 types, errors, constants, utils 모두 re-export
 
 ---
 
