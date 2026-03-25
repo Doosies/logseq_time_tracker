@@ -19,13 +19,13 @@ describe('Job 생명주기', () => {
         uow = new MemoryUnitOfWork();
     });
 
-    it('생성 → pending 확인', async () => {
+    it('UC-FSM-001: 생성 → pending 확인', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '신규' });
         expect(job.status).toBe('pending');
     });
 
-    it('pending → in_progress 전환', async () => {
+    it('UC-FSM-001: pending → in_progress 전환', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '진행' });
         await services.job_service.transitionStatus(job.id, 'in_progress', '시작');
@@ -33,7 +33,7 @@ describe('Job 생명주기', () => {
         expect(stored?.status).toBe('in_progress');
     });
 
-    it('in_progress → completed → pending (재오픈)', async () => {
+    it('UC-FSM-001: in_progress → completed → pending (재오픈)', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '재오픈' });
         await services.job_service.transitionStatus(job.id, 'in_progress', '시작');
@@ -43,7 +43,7 @@ describe('Job 생명주기', () => {
         expect(stored?.status).toBe('pending');
     });
 
-    it('pending Job 삭제 → TimeEntry도 삭제 (cascade)', async () => {
+    it('UC-FSM-001: pending Job 삭제 → TimeEntry도 삭제 (cascade)', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '삭제' });
         const category = await services.category_service.createCategory('cat');
@@ -67,7 +67,7 @@ describe('Job 생명주기', () => {
         expect(after).toHaveLength(0);
     });
 
-    it('in_progress Job 삭제 시도 → StateTransitionError', async () => {
+    it('UC-FSM-001: in_progress Job 삭제 시도 → StateTransitionError', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '진행중 삭제' });
         await services.job_service.transitionStatus(job.id, 'in_progress', '시작');

@@ -17,7 +17,7 @@ function makeJob(overrides: Partial<Job> = {}): Job {
 }
 
 describe('MemoryJobRepository', () => {
-    it('upsertJob + getJobById로 Job CRUD', async () => {
+    it('UC-STORE-002: getJobById: 존재하지 않는 ID → null 반환', async () => {
         const repo = new MemoryJobRepository();
         const job = makeJob();
         await repo.upsertJob(job);
@@ -31,7 +31,7 @@ describe('MemoryJobRepository', () => {
         expect(await repo.getJobs()).toEqual([]);
     });
 
-    it('getJobsByStatus: 특정 상태의 Job만 반환', async () => {
+    it('UC-STORE-003: getJobsByStatus: 특정 상태의 Job만 반환', async () => {
         const repo = new MemoryJobRepository();
         await repo.upsertJob(makeJob({ id: 'a', status: 'pending' }));
         await repo.upsertJob(makeJob({ id: 'b', status: 'in_progress' }));

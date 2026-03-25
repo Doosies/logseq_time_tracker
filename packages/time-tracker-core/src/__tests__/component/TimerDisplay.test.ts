@@ -8,7 +8,7 @@ describe('TimerDisplay', () => {
         vi.restoreAllMocks();
     });
 
-    it('정지 상태: 00:00:00 표시', () => {
+    it('UC-UI-001: 정지 상태: 00:00:00 표시', () => {
         const { getByRole } = render(TimerDisplay, {
             props: {
                 accumulated_ms: 0,
@@ -20,7 +20,7 @@ describe('TimerDisplay', () => {
         expect(timer).toHaveTextContent('00:00:00');
     });
 
-    it('accumulated_ms 있을 때: 올바른 시간 표시', () => {
+    it('UC-UI-003: accumulated_ms 있을 때: 올바른 시간 표시', () => {
         const accumulated_ms = (1 * 3600 + 1 * 60 + 1) * 1000;
         const { getByRole } = render(TimerDisplay, {
             props: {

@@ -38,7 +38,7 @@ function normalize_export_for_compare(data: ExportData) {
 }
 
 describe('DataExportService export·import 라운드트립', () => {
-    it('exportAll → importAll → exportAll 데이터 동등(exported_at 제외)', async () => {
+    it('UC-STORE-007: exportAll → importAll → exportAll 데이터 동등(exported_at 제외)', async () => {
         const uow_a = new MemoryUnitOfWork();
         const category: Category = {
             id: 'c1',
@@ -94,7 +94,7 @@ describe('DataExportService export·import 라운드트립', () => {
         expect(normalize_export_for_compare(first)).toEqual(normalize_export_for_compare(second));
     });
 
-    it('0.1.0보내기 마이그레이션 후 import·export 구조가 0.2.0과 맞는다', async () => {
+    it('UC-MIGRATE-002: 0.1.0보내기 마이그레이션 후 import·export 구조가 0.2.0과 맞는다', async () => {
         const legacy: ExportData = {
             version: '0.1.0',
             exported_at: now,

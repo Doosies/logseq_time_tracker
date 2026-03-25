@@ -11,7 +11,7 @@ describe('HistoryService', () => {
         history_service = new HistoryService(uow);
     });
 
-    it('recordTransition: JobHistory 생성 확인', async () => {
+    it('UC-HIST-002: recordTransition: reason 빈 문자열 — 현재 구현은 허용', async () => {
         await history_service.recordTransition('job-1', 'pending', 'in_progress', '시작');
         const list = await history_service.getJobHistory('job-1');
         expect(list).toHaveLength(1);
@@ -21,7 +21,7 @@ describe('HistoryService', () => {
         expect(list[0]?.reason).toBe('시작');
     });
 
-    it('getJobHistory: job_id로 이력 조회', async () => {
+    it('UC-HIST-003: getJobHistory: job_id로 이력 조회', async () => {
         await history_service.recordTransition('a', null, 'pending', 'init');
         await history_service.recordTransition('b', 'pending', 'in_progress', 'go');
         const for_a = await history_service.getJobHistory('a');
@@ -31,7 +31,7 @@ describe('HistoryService', () => {
         expect(for_b[0]?.job_id).toBe('b');
     });
 
-    it('getHistoryByPeriod: 필터로 이력 조회', async () => {
+    it('UC-HIST-004: getHistoryByPeriod: 필터로 이력 조회', async () => {
         await history_service.recordTransition('j', 'pending', 'in_progress', 'r1');
         const all = await uow.historyRepo.getJobHistory('j');
         const occurred = all[0]?.occurred_at;

@@ -15,7 +15,7 @@ describe('JobService', () => {
         job_service = new JobService(uow, history_service);
     });
 
-    it('createJob: 제목 sanitize + Job 생성', async () => {
+    it('UC-JOB-001: createJob: 제목 sanitize + Job 생성', async () => {
         const job = await job_service.createJob({ title: '  Hello  ' });
         expect(job.title).toBe('Hello');
         expect(job.status).toBe('pending');
@@ -32,7 +32,7 @@ describe('JobService', () => {
         expect(job.title).toBe('Safe');
     });
 
-    it('getJobs: 필터 없이 전체', async () => {
+    it('UC-JOB-002: getJobs: 필터 없이 전체', async () => {
         await job_service.createJob({ title: 'A' });
         await job_service.createJob({ title: 'B' });
         const jobs = await job_service.getJobs();
@@ -52,7 +52,7 @@ describe('JobService', () => {
         expect(await job_service.getJobById('missing-id')).toBeNull();
     });
 
-    it('updateJob: 제목 변경', async () => {
+    it('UC-JOB-003: updateJob: 제목 변경', async () => {
         const j = await job_service.createJob({ title: 'old' });
         const updated = await job_service.updateJob(j.id, { title: 'new' });
         expect(updated.title).toBe('new');
@@ -62,13 +62,13 @@ describe('JobService', () => {
         await expect(job_service.updateJob('nope', { title: 'x' })).rejects.toThrow(ValidationError);
     });
 
-    it('deleteJob: pending Job 삭제 (cascade)', async () => {
+    it('UC-JOB-005: deleteJob: pending Job 삭제 (cascade)', async () => {
         const j = await job_service.createJob({ title: 'del' });
         await job_service.deleteJob(j.id);
         expect(await job_service.getJobById(j.id)).toBeNull();
     });
 
-    it('deleteJob: in_progress Job 삭제 시 StateTransitionError', async () => {
+    it('UC-JOB-008: deleteJob: in_progress Job 삭제 시 StateTransitionError', async () => {
         const j = await job_service.createJob({ title: 'run' });
         await job_service.transitionStatus(j.id, 'in_progress', 'start');
         await expect(job_service.deleteJob(j.id)).rejects.toThrow(StateTransitionError);
@@ -81,7 +81,7 @@ describe('JobService', () => {
         expect(got?.status).toBe('in_progress');
     });
 
-    it('transitionStatus: 무효한 전환 시 StateTransitionError', async () => {
+    it('UC-JOB-004: transitionStatus: 무효한 전환 시 StateTransitionError', async () => {
         const j = await job_service.createJob({ title: 't' });
         await expect(job_service.transitionStatus(j.id, 'paused', 'bad')).rejects.toThrow(StateTransitionError);
     });

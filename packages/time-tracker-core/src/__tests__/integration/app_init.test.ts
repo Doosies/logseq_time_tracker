@@ -17,7 +17,7 @@ describe('앱 초기화', () => {
         vi.clearAllMocks();
     });
 
-    it('initializeApp() → AppContext 반환', async () => {
+    it('UC-PLUGIN-006: initializeApp() → AppContext 반환', async () => {
         const ctx = await initializeApp({ logger: silent_logger });
         expect(ctx.services).toBeDefined();
         expect(ctx.stores.timer_store).toBeDefined();

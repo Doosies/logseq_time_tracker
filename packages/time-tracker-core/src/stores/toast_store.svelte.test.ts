@@ -20,7 +20,7 @@ describe('createToastStore', () => {
         expect(store.toasts[0]?.level).toBe('info');
     });
 
-    it('중복 메시지: 동일 message 무시', () => {
+    it('UC-TOAST-002: 중복 메시지: 동일 message 무시', () => {
         const store = createToastStore();
         store.addToast('success', '동일');
         store.addToast('error', '동일');
@@ -28,7 +28,7 @@ describe('createToastStore', () => {
         expect(store.toasts[0]?.level).toBe('success');
     });
 
-    it('FIFO: TOAST_MAX_COUNT(3) 초과 시 가장 오래된 토스트 제거', () => {
+    it('UC-TOAST-001: FIFO: TOAST_MAX_COUNT(3) 초과 시 가장 오래된 토스트 제거', () => {
         expect(TOAST_MAX_COUNT).toBe(3);
         const store = createToastStore();
         store.addToast('info', 'a');
@@ -58,7 +58,7 @@ describe('createToastStore', () => {
         expect(store.toasts).toHaveLength(0);
     });
 
-    it('auto_dismiss: error는 자동 제거 안 됨', () => {
+    it('UC-TOAST-003: auto_dismiss: error는 자동 제거 안 됨', () => {
         const store = createToastStore();
         store.addToast('error', '남음');
         vi.advanceTimersByTime(60_000);

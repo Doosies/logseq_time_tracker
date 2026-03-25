@@ -21,7 +21,7 @@ function table_names(db: import('sql.js').Database): string[] {
 }
 
 describe('MigrationRunner', () => {
-    it('마이그레이션을 버전 오름차순으로 적용하고 schema_version을 갱신한다', async () => {
+    it('UC-MIGRATE-001: 마이그레이션을 버전 오름차순으로 적용하고 schema_version을 갱신한다', async () => {
         const db = await open_memory_db();
         const runner = new MigrationRunner(db, ALL_MIGRATIONS);
         expect(runner.getCurrentVersion()).toBe(0);

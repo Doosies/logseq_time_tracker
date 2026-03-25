@@ -23,7 +23,7 @@ describe('타이머 워크플로우', () => {
         vi.useRealTimers();
     });
 
-    it('Job 생성 → 타이머 시작 → 시간 경과 → 정지 → TimeEntry 생성 확인', async () => {
+    it('UC-FSM-003: Job 생성 → 타이머 시작 → 시간 경과 → 정지 → TimeEntry 생성 확인', async () => {
         const services = createServices(uow, silent_logger);
         const job = await services.job_service.createJob({ title: '통합 작업' });
         const category = await services.category_service.createCategory('분류');

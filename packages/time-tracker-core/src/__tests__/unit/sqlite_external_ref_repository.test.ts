@@ -86,7 +86,7 @@ describe('SqliteExternalRefRepository', () => {
         expect(missing).toBeNull();
     });
 
-    it('(job_id, system_key) UNIQUE 제약: 동일 쌍 upsert 시 덮어쓴다', async () => {
+    it('UC-EDGE-005: (job_id, system_key) UNIQUE 제약: 동일 쌍 upsert 시 덮어쓴다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef({ id: 'ref1', ref_value: 'old' }));
         await repo.upsertExternalRef(makeRef({ id: 'ref1', ref_value: 'new' }));

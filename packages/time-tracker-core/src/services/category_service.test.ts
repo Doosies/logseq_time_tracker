@@ -32,7 +32,7 @@ describe('CategoryService', () => {
         await expect(category_service.createCategory('x', 'no-such-parent')).rejects.toThrow(ValidationError);
     });
 
-    it('createCategory: 트리 깊이 초과 시 ValidationError', async () => {
+    it('UC-CAT-002: createCategory: 트리 깊이 초과 시 ValidationError', async () => {
         let parent_id: string | undefined;
         for (let i = 0; i < CATEGORY_MAX_DEPTH; i++) {
             const c = await category_service.createCategory(`level-${i}`, parent_id);
@@ -41,7 +41,7 @@ describe('CategoryService', () => {
         await expect(category_service.createCategory('too-deep', parent_id)).rejects.toThrow(ValidationError);
     });
 
-    it('seedDefaults: 기본 4개 카테고리 생성', async () => {
+    it('UC-CAT-001: seedDefaults: 기본 4개 카테고리 생성', async () => {
         await category_service.seedDefaults();
         const all = await category_service.getCategories();
         expect(all).toHaveLength(4);

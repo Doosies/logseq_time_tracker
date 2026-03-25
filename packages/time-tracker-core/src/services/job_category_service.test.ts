@@ -37,7 +37,7 @@ describe('JobCategoryService', () => {
         await uow.jobRepo.upsertJob(job);
     });
 
-    it('linkJobCategory: 생성 후 조회', async () => {
+    it('UC-JCAT-001: linkJobCategory: 생성 후 조회', async () => {
         const jc = await service.linkJobCategory(job.id, category.id);
         expect(jc.job_id).toBe(job.id);
         expect(jc.category_id).toBe(category.id);
@@ -51,7 +51,7 @@ describe('JobCategoryService', () => {
         expect(b.id).toBe(a.id);
     });
 
-    it('linkJobCategory: is_default true 시 단일 기본값', async () => {
+    it('UC-JCAT-002: linkJobCategory: is_default true 시 단일 기본값', async () => {
         const now = '2026-01-01T00:00:00.000Z';
         const cat2: Category = {
             id: 'cat-2',
@@ -84,7 +84,7 @@ describe('JobCategoryService', () => {
         expect(await service.getJobCategories(job.id)).toHaveLength(0);
     });
 
-    it('linkJobCategory: 존재하지 않는 job이면 ValidationError', async () => {
+    it('UC-JCAT-003: linkJobCategory: 존재하지 않는 job이면 ValidationError', async () => {
         await expect(service.linkJobCategory('missing', category.id)).rejects.toThrow(ValidationError);
     });
 

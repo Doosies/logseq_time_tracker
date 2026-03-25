@@ -45,7 +45,7 @@ describe('MemoryTimeEntryRepository', () => {
         expect(filtered[0]?.id).toBe('a');
     });
 
-    it('getTimeEntries: from_date/to_date 필터', async () => {
+    it('UC-STORE-004: getTimeEntries: from_date/to_date 필터', async () => {
         const repo = new MemoryTimeEntryRepository();
         await repo.upsertTimeEntry(makeEntry({ id: 'early', started_at: '2025-05-01T00:00:00.000Z' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'mid', started_at: '2025-06-15T00:00:00.000Z' }));
