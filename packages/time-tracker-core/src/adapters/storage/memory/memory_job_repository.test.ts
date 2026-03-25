@@ -19,6 +19,11 @@ function makeJob(overrides: Partial<Job> = {}): Job {
 describe('MemoryJobRepository', () => {
     it('UC-STORE-002: getJobById: 존재하지 않는 ID → null 반환', async () => {
         const repo = new MemoryJobRepository();
+        expect(await repo.getJobById('non-existent-job-id')).toBeNull();
+    });
+
+    it('UC-STORE-001: upsertJob + getJobById로 Job CRUD', async () => {
+        const repo = new MemoryJobRepository();
         const job = makeJob();
         await repo.upsertJob(job);
         const got = await repo.getJobById('job-1');

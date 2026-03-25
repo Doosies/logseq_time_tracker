@@ -84,6 +84,29 @@ describe('TimerService', () => {
         expect(stored?.status).toBe('paused');
     });
 
+    it('UC-TIMER-006: pause: reason이 빈 문자열일 때 정상 일시정지 (sanitize 허용)', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        await expect(timer_service.pause('')).resolves.toBeUndefined();
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('paused');
+    });
+
+    it('UC-TIMER-009: pause: 일시정지 후 elapsed_seconds 불변', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        await vi.advanceTimersByTimeAsync(3000);
+        await timer_service.pause('p');
+        const state_after_pause = await uow.settingsRepo.getSetting('active_timer');
+        expect(state_after_pause).not.toBeNull();
+        const accumulated_ms_at_pause = state_after_pause!.accumulated_ms;
+        await vi.advanceTimersByTimeAsync(5000);
+        const state_after_idle = await uow.settingsRepo.getSetting('active_timer');
+        expect(state_after_idle!.accumulated_ms).toBe(accumulated_ms_at_pause);
+    });
+
     it('resume: TimerError (active_job 없음)', async () => {
         await expect(timer_service.resume('r')).rejects.toThrow(TimerError);
     });
@@ -114,6 +137,20 @@ describe('TimerService', () => {
         const job = await job_service.createJob({ title: 'j' });
         const cat = await category_service.createCategory('c');
         await timer_service.start(job, cat);
+        vi.setSystemTime(new Date('2025-06-01T12:00:05.000Z'));
+        await timer_service.pause('p');
+        vi.setSystemTime(new Date('2025-06-01T12:00:45.000Z'));
+        const entry = await timer_service.stop('done');
+        expect(entry).not.toBeNull();
+        expect(entry!.duration_seconds).toBe(5);
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('completed');
+    });
+
+    it('UC-STOP-002: stop: 경과 시간 === 0 → null 반환 (paused로 전환)', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
         const entry = await timer_service.stop('zero');
         expect(entry).toBeNull();
         const stored = await job_service.getJobById(job.id);
@@ -124,6 +161,22 @@ describe('TimerService', () => {
         const job = await job_service.createJob({ title: 'j' });
         const cat = await category_service.createCategory('c');
         await timer_service.start(job, cat);
+        await vi.advanceTimersByTimeAsync(100);
+        await timer_service.pause('p1');
+        await vi.advanceTimersByTimeAsync(100);
+        await timer_service.resume('r1');
+        await vi.advanceTimersByTimeAsync(100);
+        const entry = await timer_service.stop('s1');
+        expect(entry).toBeNull();
+        expect(timer_service.getActiveJob()).toBeNull();
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('paused');
+    });
+
+    it('UC-CANCEL-001: cancel: 경과 시간 > 0 → TimeEntry with [cancelled] prefix', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
         vi.setSystemTime(new Date('2025-06-01T12:00:04.000Z'));
         const entry = await timer_service.cancel('사유');
         expect(entry).not.toBeNull();
@@ -131,6 +184,16 @@ describe('TimerService', () => {
     });
 
     it('UC-CANCEL-002: cancel: 경과 0초 → TimeEntry 미생성(null)', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        const entry = await timer_service.cancel('즉시');
+        expect(entry).toBeNull();
+        const stored = await job_service.getJobById(job.id);
+        expect(stored?.status).toBe('cancelled');
+    });
+
+    it('UC-CANCEL-003: cancel: cancelled 상태 전환', async () => {
         const job = await job_service.createJob({ title: 'j' });
         const cat = await category_service.createCategory('c');
         await timer_service.start(job, cat);
@@ -155,6 +218,19 @@ describe('TimerService', () => {
     });
 
     it('UC-TIMER-010: active_timer: 30초 경과 후 갱신 검증', async () => {
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        expect(timer_service.getActiveJob()?.id).toBe(job.id);
+        await vi.advanceTimersByTimeAsync(30_000);
+        const state = await uow.settingsRepo.getSetting('active_timer');
+        expect(state).not.toBeNull();
+        expect(state!.job_id).toBe(job.id);
+        expect(state!.accumulated_ms).toBeGreaterThanOrEqual(29_000);
+        expect(state!.accumulated_ms).toBeLessThanOrEqual(30_000);
+    });
+
+    it('UC-TIMER-008: restore: 복원 직후 getActiveJob이 복원된 job을 반환', async () => {
         const job = await job_service.createJob({ title: '복원됨' });
         const cat = await category_service.createCategory('c');
         await uow.jobRepo.updateJobStatus(job.id, 'in_progress', new Date().toISOString());
@@ -254,5 +330,16 @@ describe('TimerService', () => {
         await timer_service.start(cancelled_job!, cat);
         const stored = await job_service.getJobById(job.id);
         expect(stored?.status).toBe('in_progress');
+    });
+
+    it('UC-EDGE-002: DST 전환 시점 duration_seconds UTC 기준 계산', async () => {
+        vi.setSystemTime(new Date('2025-03-09T06:30:00.000Z'));
+        const job = await job_service.createJob({ title: 'j' });
+        const cat = await category_service.createCategory('c');
+        await timer_service.start(job, cat);
+        vi.setSystemTime(new Date('2025-03-09T07:30:00.000Z'));
+        const entry = await timer_service.stop('dst-window');
+        expect(entry).not.toBeNull();
+        expect(entry!.duration_seconds).toBe(3600);
     });
 });

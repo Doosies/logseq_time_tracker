@@ -12,6 +12,13 @@ describe('HistoryService', () => {
     });
 
     it('UC-HIST-002: recordTransition: reason 빈 문자열 — 현재 구현은 허용', async () => {
+        await history_service.recordTransition('job-empty-reason', 'pending', 'in_progress', '');
+        const list = await history_service.getJobHistory('job-empty-reason');
+        expect(list).toHaveLength(1);
+        expect(list[0]?.reason).toBe('');
+    });
+
+    it('UC-HIST-001: recordTransition: JobHistory 생성 확인', async () => {
         await history_service.recordTransition('job-1', 'pending', 'in_progress', '시작');
         const list = await history_service.getJobHistory('job-1');
         expect(list).toHaveLength(1);
