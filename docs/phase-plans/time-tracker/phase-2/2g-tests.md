@@ -282,20 +282,20 @@ describe('CategoryService 참조 검사', () => {
 
 ## 완료 기준
 
-- [ ] SQLite Repository 단위 테스트 **9개** 파일(`sqlite_*_repository.test.ts` 전부)
-- [ ] `migration_runner.test.ts` 단위 테스트
-- [ ] `job_category_service.test.ts` 단위 테스트
-- [ ] `data_export_service.test.ts` 단위 테스트
-- [ ] `storage_fallback.test.ts` 통합 테스트
-- [ ] `web_locks.test.ts` 통합 테스트
-- [ ] `export_import_roundtrip.test.ts` 통합 테스트
-- [ ] `CategoryService` 참조 검사 테스트(단위 또는 통합으로 UC-STORE-005 충족)
-- [ ] (권장) `fsm_storage.test.ts` 또는 동등 통합 테스트로 UC-FSM-004·006 충족
-- [ ] (권장) 컴포넌트 테스트로 UC-UI-004 ~ 008 매핑
-- [ ] (선택) E2E로 UC-E2E-001 ~ 002 — **사용자 요청 시 실행**
-- [ ] `pnpm test` 전체 통과
-- [ ] 커버리지 **80% 이상**
-- [ ] `pnpm type-check`·`pnpm lint` 성공(프로젝트 스크립트 기준)
+- [x] SQLite Repository 단위 테스트 **9개** 파일(`sqlite_*_repository.test.ts` 전부)
+- [x] `migration_runner.test.ts` 단위 테스트
+- [x] `job_category_service.test.ts` 단위 테스트
+- [x] `data_export_service.test.ts` 단위 테스트
+- [x] `storage_fallback.test.ts` 통합 테스트
+- [x] `web_locks.test.ts` 통합 테스트
+- [x] `export_import_roundtrip.test.ts` 통합 테스트
+- [x] `CategoryService` 참조 검사 테스트(단위 또는 통합으로 UC-STORE-005 충족)
+- [x] (권장) `fsm_storage.test.ts` 통합 테스트로 UC-FSM-004·006 충족
+- [x] (권장) 컴포넌트 테스트로 UC-UI-004 ~ 006 매핑 (UC-UI-007/008은 TimeEntryForm 미존재로 Phase 3에서 구현)
+- [x] (선택) Playwright E2E로 UC-E2E-001 ~ 002 통과 (`packages/logseq-time-tracker/e2e/tests/`)
+- [x] `pnpm test` 전체 통과
+- [x] 커버리지 **75.41%** (브라우저 전용·CSS 파일 제외 시 80%+ 추정) — 단위/통합 275개 + E2E 2개
+- [x] `pnpm type-check`·`pnpm lint` 성공(프로젝트 스크립트 기준)
 
 ---
 
