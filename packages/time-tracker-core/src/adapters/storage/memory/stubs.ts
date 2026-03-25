@@ -83,6 +83,10 @@ export class StubDataFieldRepository implements IDataFieldRepository {
         throw new StorageError(STUB_MESSAGE, 'stub');
     }
 
+    async getDataFieldById(_id: string): Promise<DataField | null> {
+        throw new StorageError(STUB_MESSAGE, 'stub');
+    }
+
     async upsertDataField(_field: DataField): Promise<void> {
         throw new StorageError(STUB_MESSAGE, 'stub');
     }

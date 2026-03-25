@@ -73,6 +73,7 @@ export interface IJobCategoryRepository {
 
 export interface IDataFieldRepository {
     getDataFields(entity_type_id: string): Promise<DataField[]>;
+    getDataFieldById(id: string): Promise<DataField | null>;
     upsertDataField(field: DataField): Promise<void>;
     deleteDataField(id: string): Promise<void>;
 }

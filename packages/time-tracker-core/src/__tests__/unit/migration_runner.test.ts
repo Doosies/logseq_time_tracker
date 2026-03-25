@@ -26,11 +26,14 @@ describe('MigrationRunner', () => {
         const runner = new MigrationRunner(db, ALL_MIGRATIONS);
         expect(runner.getCurrentVersion()).toBe(0);
         runner.run();
-        expect(runner.getCurrentVersion()).toBe(2);
+        expect(runner.getCurrentVersion()).toBe(3);
         const names = table_names(db);
         expect(names).toContain('job');
         expect(names).toContain('external_ref');
         expect(names).toContain('job_template');
+        expect(names).toContain('data_field');
+        expect(names).toContain('data_type');
+        expect(names).toContain('entity_type');
         db.close();
     });
 
@@ -39,7 +42,7 @@ describe('MigrationRunner', () => {
         const runner = new MigrationRunner(db, ALL_MIGRATIONS);
         runner.run();
         runner.run();
-        expect(runner.getCurrentVersion()).toBe(2);
+        expect(runner.getCurrentVersion()).toBe(3);
         db.close();
     });
 
@@ -57,7 +60,7 @@ describe('MigrationRunner', () => {
     it('마이그레이션 실패 시 ROLLBACK 되고 schema_version은 유지된다', async () => {
         const db = await open_memory_db();
         const failing: Migration = {
-            version: 3,
+            version: 4,
             description: 'intentional failure',
             up(inner) {
                 inner.exec(`CREATE TABLE IF NOT EXISTS migration_fail_probe (id INTEGER PRIMARY KEY);`);
@@ -68,7 +71,7 @@ describe('MigrationRunner', () => {
         expect(() => {
             runner.run();
         }).toThrow('migration boom');
-        expect(runner.getCurrentVersion()).toBe(2);
+        expect(runner.getCurrentVersion()).toBe(3);
         const probe = db.exec(`SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'migration_fail_probe'`);
         expect(probe[0]?.values?.length ?? 0).toBe(0);
         db.close();

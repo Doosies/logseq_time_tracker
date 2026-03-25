@@ -1,13 +1,15 @@
 import type { ILogger } from '../adapters/logger';
 import type { IUnitOfWork } from '../adapters/storage/unit_of_work';
+import { SEEDED_ENTITY_TYPE_IDS } from '../constants/data_field_meta';
 import type { Category } from '../types/category';
 import type { ExportData, ImportResult } from '../types/export';
 import { validateExportData } from '../types/export_schema';
+import type { DataField } from '../types/meta';
 import type { JobCategory } from '../types/job_category';
 import type { SettingsMap } from '../types/settings';
 import { StorageError, ValidationError } from '../errors';
 
-const CURRENT_EXPORT_VERSION = '0.2.0';
+const CURRENT_EXPORT_VERSION = '0.3.0';
 
 type ExportMigrationFn = (data: ExportData) => ExportData;
 
@@ -20,6 +22,15 @@ const EXPORT_MIGRATIONS: Record<string, ExportMigrationFn> = {
             job_categories: [],
             job_templates: [],
             external_refs: [],
+            data_fields: [],
+        },
+    }),
+    '0.2.0': (data) => ({
+        ...data,
+        version: '0.3.0',
+        data: {
+            ...data.data,
+            data_fields: data.data.data_fields ?? [],
         },
     }),
 };
@@ -66,6 +77,7 @@ type ImportEntityCounts = {
     external_refs: number;
     job_categories: number;
     job_templates: number;
+    data_fields: number;
     settings: number;
 };
 
@@ -95,6 +107,7 @@ export class DataExportService {
 
         const job_templates = await this.safeGetTemplates();
         const external_refs = await this.safeCollectExternalRefs(jobs);
+        const data_fields = await this.collectDataFields();
 
         const settings: Record<string, unknown> = {};
         const active_timer = await this._uow.settingsRepo.getSetting('active_timer');
@@ -124,6 +137,7 @@ export class DataExportService {
                 job_categories,
                 job_templates,
                 external_refs,
+                data_fields,
                 settings,
             },
         };
@@ -173,7 +187,36 @@ export class DataExportService {
         return external_refs;
     }
 
+    private async collectDataFields(): Promise<DataField[]> {
+        const data_fields: DataField[] = [];
+        for (const entity_type_id of SEEDED_ENTITY_TYPE_IDS) {
+            try {
+                const rows = await this._uow.dataFieldRepo.getDataFields(entity_type_id);
+                data_fields.push(...rows);
+            } catch (e) {
+                if (e instanceof StorageError) {
+                    continue;
+                }
+                throw e;
+            }
+        }
+        return data_fields;
+    }
+
     private async clearAllData(uow: IUnitOfWork): Promise<void> {
+        for (const entity_type_id of SEEDED_ENTITY_TYPE_IDS) {
+            try {
+                const fields = await uow.dataFieldRepo.getDataFields(entity_type_id);
+                for (const f of fields) {
+                    await uow.dataFieldRepo.deleteDataField(f.id);
+                }
+            } catch (e) {
+                if (!(e instanceof StorageError)) {
+                    throw e;
+                }
+            }
+        }
+
         const jobs = await uow.jobRepo.getJobs();
         for (const job of jobs) {
             await uow.timeEntryRepo.deleteByJobId(job.id);
@@ -220,6 +263,7 @@ export class DataExportService {
             external_refs: 0,
             job_categories: 0,
             job_templates: 0,
+            data_fields: 0,
             settings: 0,
         };
 
@@ -257,6 +301,11 @@ export class DataExportService {
         for (const t of payload.job_templates ?? []) {
             await uow.templateRepo.upsertTemplate(t);
             counts.job_templates += 1;
+        }
+
+        for (const df of payload.data_fields ?? []) {
+            await uow.dataFieldRepo.upsertDataField(df);
+            counts.data_fields += 1;
         }
 
         const settings_obj = payload.settings ?? {};

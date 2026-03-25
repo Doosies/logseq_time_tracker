@@ -6,3 +6,5 @@ export const MAX_DESCRIPTION_LENGTH = 2_000;
 export const MAX_REASON_LENGTH = 500;
 export const MAX_NOTE_LENGTH = 1_000;
 export const MAX_CATEGORY_NAME_LENGTH = 100;
+export const MAX_DATA_FIELD_KEY_LENGTH = 80;
+export const MAX_DATA_FIELD_LABEL_LENGTH = 200;

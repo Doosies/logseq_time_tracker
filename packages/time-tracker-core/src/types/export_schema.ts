@@ -2,6 +2,8 @@ import { z } from 'zod';
 import type { ExportData } from './export';
 import { ValidationError } from '../errors';
 
+const DATA_TYPE_KEYS = ['string', 'decimal', 'date', 'datetime', 'boolean', 'enum', 'relation'] as const;
+
 const STATUS_VALUES = ['pending', 'in_progress', 'paused', 'completed', 'cancelled'] as const;
 
 const status_kind_schema = z.enum(STATUS_VALUES);
@@ -75,6 +77,24 @@ const job_template_schema = z.object({
     updated_at: z.string(),
 });
 
+const data_type_key_schema = z.enum(DATA_TYPE_KEYS);
+
+const data_field_schema = z.object({
+    id: z.string(),
+    entity_type_id: z.string(),
+    data_type: data_type_key_schema,
+    key: z.string(),
+    label: z.string(),
+    view_type: z.string(),
+    is_required: z.boolean(),
+    is_system: z.boolean(),
+    default_value: z.string(),
+    options: z.string(),
+    relation_entity_key: z.string(),
+    sort_order: z.number(),
+    created_at: z.string(),
+});
+
 export const export_data_schema = z.object({
     version: z.string(),
     exported_at: z.string(),
@@ -86,6 +106,7 @@ export const export_data_schema = z.object({
         job_categories: z.array(job_category_schema),
         job_templates: z.array(job_template_schema),
         external_refs: z.array(external_ref_schema),
+        data_fields: z.array(data_field_schema).optional(),
         settings: z.record(z.string(), z.unknown()),
     }),
 });
@@ -96,5 +117,13 @@ export function validateExportData(raw: unknown): ExportData {
         const issues = result.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`).join('; ');
         throw new ValidationError(`Invalid export data: ${issues}`, 'data');
     }
-    return result.data as ExportData;
+    const { version, exported_at, data } = result.data;
+    return {
+        version,
+        exported_at,
+        data: {
+            ...data,
+            data_fields: data.data_fields ?? [],
+        },
+    };
 }

@@ -13,7 +13,7 @@ let db: Database;
 function makeField(overrides: Partial<DataField> = {}): DataField {
     return {
         id: 'df1',
-        entity_type_id: 'job',
+        entity_type_id: 'et-job',
         data_type: 'string',
         key: 'custom_name',
         label: '커스텀 이름',
@@ -21,9 +21,9 @@ function makeField(overrides: Partial<DataField> = {}): DataField {
         is_required: false,
         is_system: false,
         default_value: '',
-        options: '{}',
+        options: '',
         relation_entity_key: '',
-        sort_order: 0,
+        sort_order: 1,
         created_at: '2026-03-01T10:00:00.000Z',
         ...overrides,
     };
@@ -41,20 +41,31 @@ afterEach(() => {
     db.close();
 });
 
-describe('SqliteDataFieldRepository (스텁 — data_field DDL 미존재)', () => {
-    it('getDataFields는 항상 빈 배열을 반환한다', async () => {
+describe('SqliteDataFieldRepository', () => {
+    it('UC-SQL-DF-001: upsert 후 getDataFields·getDataFieldById로 조회', async () => {
         const repo = new SqliteDataFieldRepository(db);
-        const fields = await repo.getDataFields('job');
-        expect(fields).toEqual([]);
+        const field = makeField();
+        await repo.upsertDataField(field);
+        const list = await repo.getDataFields('et-job');
+        expect(list).toHaveLength(1);
+        expect(list[0]!.key).toBe('custom_name');
+        const one = await repo.getDataFieldById('df1');
+        expect(one?.id).toBe('df1');
     });
 
-    it('upsertDataField는 에러 없이 no-op 수행한다', async () => {
+    it('getDataFields: sort_order 기준 정렬', async () => {
         const repo = new SqliteDataFieldRepository(db);
-        await expect(repo.upsertDataField(makeField())).resolves.toBeUndefined();
+        await repo.upsertDataField(makeField({ id: 'a', key: 'a', sort_order: 10 }));
+        await repo.upsertDataField(makeField({ id: 'b', key: 'b', sort_order: 2 }));
+        const list = await repo.getDataFields('et-job');
+        expect(list.map((f) => f.key)).toEqual(['b', 'a']);
     });
 
-    it('deleteDataField는 에러 없이 no-op 수행한다', async () => {
+    it('deleteDataField 후 조회되지 않음', async () => {
         const repo = new SqliteDataFieldRepository(db);
-        await expect(repo.deleteDataField('df1')).resolves.toBeUndefined();
+        await repo.upsertDataField(makeField());
+        await repo.deleteDataField('df1');
+        expect(await repo.getDataFields('et-job')).toHaveLength(0);
+        expect(await repo.getDataFieldById('df1')).toBeNull();
     });
 });

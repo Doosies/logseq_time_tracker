@@ -1,4 +1,5 @@
 export * from './memory_category_repository';
+export * from './memory_data_field_repository';
 export * from './memory_history_repository';
 export * from './memory_job_category_repository';
 export * from './memory_job_repository';

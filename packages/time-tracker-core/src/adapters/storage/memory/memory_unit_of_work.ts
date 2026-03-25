@@ -1,4 +1,5 @@
 import type { Category } from '../../../types/category';
+import type { DataField } from '../../../types/meta';
 import type { JobHistory } from '../../../types/history';
 import type { JobCategory } from '../../../types/job_category';
 import type { Job } from '../../../types/job';
@@ -16,12 +17,13 @@ import type {
     ITimeEntryRepository,
 } from '../repositories';
 import { MemoryCategoryRepository } from './memory_category_repository';
+import { MemoryDataFieldRepository } from './memory_data_field_repository';
 import { MemoryHistoryRepository } from './memory_history_repository';
 import { MemoryJobCategoryRepository } from './memory_job_category_repository';
 import { MemoryJobRepository } from './memory_job_repository';
 import { MemorySettingsRepository } from './memory_settings_repository';
 import { MemoryTimeEntryRepository } from './memory_time_entry_repository';
-import { StubDataFieldRepository, StubExternalRefRepository, StubTemplateRepository } from './stubs';
+import { StubExternalRefRepository, StubTemplateRepository } from './stubs';
 
 type MemoryDataSnapshot = {
     jobs: Map<string, Job>;
@@ -30,6 +32,7 @@ type MemoryDataSnapshot = {
     history: Map<string, JobHistory>;
     job_categories: Map<string, JobCategory>;
     settings: Map<string, unknown>;
+    data_fields: Map<string, DataField>;
 };
 
 export class MemoryUnitOfWork implements IUnitOfWork {
@@ -49,6 +52,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
     private readonly _history_repo: MemoryHistoryRepository;
     private readonly _job_category_repo: MemoryJobCategoryRepository;
     private readonly _settings_repo: MemorySettingsRepository;
+    private readonly _data_field_repo: MemoryDataFieldRepository;
 
     private _active_transaction = false;
 
@@ -59,6 +63,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this._history_repo = new MemoryHistoryRepository();
         this._job_category_repo = new MemoryJobCategoryRepository();
         this._settings_repo = new MemorySettingsRepository();
+        this._data_field_repo = new MemoryDataFieldRepository();
 
         this.jobRepo = this._job_repo;
         this.categoryRepo = this._category_repo;
@@ -68,7 +73,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this.externalRefRepo = new StubExternalRefRepository();
         this.templateRepo = new StubTemplateRepository();
         this.jobCategoryRepo = this._job_category_repo;
-        this.dataFieldRepo = new StubDataFieldRepository();
+        this.dataFieldRepo = this._data_field_repo;
     }
 
     async transaction<T>(fn: (uow: IUnitOfWork) => Promise<T>): Promise<T> {
@@ -95,6 +100,7 @@ export class MemoryUnitOfWork implements IUnitOfWork {
             history: this._history_repo.getSnapshot(),
             job_categories: this._job_category_repo.getSnapshot(),
             settings: this._settings_repo.getSnapshot(),
+            data_fields: this._data_field_repo.getSnapshot(),
         };
     }
 
@@ -105,5 +111,6 @@ export class MemoryUnitOfWork implements IUnitOfWork {
         this._history_repo.restoreFromSnapshot(snapshot.history);
         this._job_category_repo.restoreFromSnapshot(snapshot.job_categories);
         this._settings_repo.restoreFromSnapshot(snapshot.settings);
+        this._data_field_repo.restoreFromSnapshot(snapshot.data_fields);
     }
 }

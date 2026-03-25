@@ -22,6 +22,7 @@ function normalize_export_for_compare(data: ExportData) {
     const job_categories = [...data.data.job_categories].sort((a, b) => a.id.localeCompare(b.id));
     const job_templates = [...data.data.job_templates].sort((a, b) => a.id.localeCompare(b.id));
     const external_refs = [...data.data.external_refs].sort((a, b) => a.id.localeCompare(b.id));
+    const data_fields = [...data.data.data_fields].sort((a, b) => a.id.localeCompare(b.id));
     return {
         ...strip_export_meta(data),
         data: {
@@ -32,6 +33,7 @@ function normalize_export_for_compare(data: ExportData) {
             job_categories,
             job_templates,
             external_refs,
+            data_fields,
             settings: { ...data.data.settings },
         },
     };
@@ -94,7 +96,7 @@ describe('DataExportService export·import 라운드트립', () => {
         expect(normalize_export_for_compare(first)).toEqual(normalize_export_for_compare(second));
     });
 
-    it('UC-MIGRATE-002: 0.1.0보내기 마이그레이션 후 import·export 구조가 0.2.0과 맞는다', async () => {
+    it('UC-MIGRATE-002: 0.1.0보내기 마이그레이션 후 import·export 구조가 0.3.0과 맞는다', async () => {
         const legacy: ExportData = {
             version: '0.1.0',
             exported_at: now,
@@ -116,6 +118,7 @@ describe('DataExportService export·import 라운드트립', () => {
                 job_categories: [],
                 job_templates: [],
                 external_refs: [],
+                data_fields: [],
                 settings: {},
             },
         };
@@ -124,10 +127,11 @@ describe('DataExportService export·import 라운드트립', () => {
         expect(result.success).toBe(true);
 
         const out = await new DataExportService(uow).exportAll();
-        expect(out.version).toBe('0.2.0');
+        expect(out.version).toBe('0.3.0');
         expect(out.data.job_categories).toEqual([]);
         expect(out.data.job_templates).toEqual([]);
         expect(out.data.external_refs).toEqual([]);
+        expect(out.data.data_fields).toEqual([]);
         expect(out.data.jobs).toHaveLength(1);
         expect(out.data.jobs[0]!.title).toBe('레거시');
     });

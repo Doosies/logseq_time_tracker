@@ -7,7 +7,7 @@ const now = '2026-03-10T10:00:00.000Z';
 
 function minimalValidExport(): ExportData {
     return {
-        version: '0.2.0',
+        version: '0.3.0',
         exported_at: now,
         data: {
             jobs: [
@@ -86,6 +86,7 @@ function minimalValidExport(): ExportData {
                     updated_at: now,
                 },
             ],
+            data_fields: [],
             settings: {},
         },
     };
@@ -136,7 +137,26 @@ describe('validateExportData', () => {
 
     it('빈 data(모든 배열 [])면 검증 통과', () => {
         const data: ExportData = {
-            version: '0.2.0',
+            version: '0.3.0',
+            exported_at: now,
+            data: {
+                jobs: [],
+                categories: [],
+                time_entries: [],
+                job_history: [],
+                job_categories: [],
+                job_templates: [],
+                external_refs: [],
+                data_fields: [],
+                settings: {},
+            },
+        };
+        expect(validateExportData(data)).toEqual(data);
+    });
+
+    it('data_fields 키가 없으면 기본값 []로 검증 통과', () => {
+        const raw = {
+            version: '0.3.0',
             exported_at: now,
             data: {
                 jobs: [],
@@ -149,7 +169,8 @@ describe('validateExportData', () => {
                 settings: {},
             },
         };
-        expect(validateExportData(data)).toEqual(data);
+        const parsed = validateExportData(raw);
+        expect(parsed.data.data_fields).toEqual([]);
     });
 
     it('에러 메시지에 경로 정보가 포함된다', () => {

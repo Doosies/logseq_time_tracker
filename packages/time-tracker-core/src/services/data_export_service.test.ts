@@ -10,10 +10,11 @@ describe('DataExportService', () => {
         const uow = new MemoryUnitOfWork();
         const svc = new DataExportService(uow);
         const data = await svc.exportAll();
-        expect(data.version).toBe('0.2.0');
+        expect(data.version).toBe('0.3.0');
         expect(data.exported_at).toMatch(/^\d{4}-/);
         expect(data.data.jobs).toEqual([]);
         expect(data.data.categories).toEqual([]);
+        expect(data.data.data_fields).toEqual([]);
         expect(data.data.settings).toEqual({});
     });
 
@@ -70,6 +71,7 @@ describe('DataExportService', () => {
                 job_categories: [],
                 job_templates: [],
                 external_refs: [],
+                data_fields: [],
                 settings: {},
             },
         };
@@ -90,6 +92,7 @@ describe('DataExportService', () => {
                 job_categories: [],
                 job_templates: [],
                 external_refs: [],
+                data_fields: [],
                 settings: {},
             },
         };
