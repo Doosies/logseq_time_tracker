@@ -2,6 +2,8 @@
     import type { AppContext, TimeEntry, JobHistory, PocResult } from '@personal/time-tracker-core';
     import {
         FullView,
+        Toolbar,
+        LayoutSwitcher,
         ToastContainer,
         STRINGS,
         formatDuration,
@@ -65,6 +67,16 @@
         logseq.hideMainUI();
     }
 
+    let show_full_view = $state(false);
+
+    function handleOpenFullView() {
+        show_full_view = true;
+    }
+
+    function handleBackToToolbar() {
+        show_full_view = false;
+    }
+
     let show_debug_modal = $state(false);
     let debug_entries = $state<TimeEntry[]>([]);
     let debug_history = $state<JobHistory[]>([]);
@@ -111,7 +123,10 @@
 
 <div class="shell">
     <button type="button" class="backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
-    <div class="panel">
+    <div class="panel" class:panel--fullview={show_full_view}>
+        {#if show_full_view}
+            <button type="button" class="back-btn" onclick={handleBackToToolbar} aria-label="돌아가기">←</button>
+        {/if}
         <button type="button" class="debug-btn" onclick={openDebugModal} aria-label="기록 보기" title="시간 기록 보기"
             >🕐</button
         >
@@ -133,7 +148,15 @@
                     {/if}
                 </div>
             {/if}
-            <FullView context={ctx} layout_mode="compact" />
+            {#if show_full_view}
+                <LayoutSwitcher>
+                    {#snippet children({ layout_mode })}
+                        <FullView context={ctx} {layout_mode} />
+                    {/snippet}
+                </LayoutSwitcher>
+            {:else}
+                <Toolbar context={ctx} on_open_full_view={handleOpenFullView} />
+            {/if}
 
             <ToastContainer {toast_store} />
         </main>
@@ -261,11 +284,38 @@
         background: white;
         overflow-y: auto;
         box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+        transition: width 0.2s ease;
+    }
+
+    .panel--fullview {
+        width: min(calc(100vw - 64px), 800px);
     }
 
     .panel-main {
         /* 우상단 absolute 헤더 버튼과 FullView 탭바 겹침 완화 */
         padding-top: 40px;
+    }
+
+    .back-btn {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        color: #666;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .back-btn:hover {
+        background: rgba(0, 0, 0, 0.08);
+        color: #333;
     }
 
     .close-btn {

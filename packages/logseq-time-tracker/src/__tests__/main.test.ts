@@ -20,7 +20,9 @@ vi.mock('@logseq/libs', () => {
         ready: mock_ready,
         App: {
             registerUIItem: mock_register_ui_item,
+            onPageHeadActionsSlotted: vi.fn(),
         },
+        provideUI: vi.fn(),
         Editor: {
             registerSlashCommand: mock_register_slash_command,
         },
