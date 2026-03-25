@@ -3,7 +3,7 @@
     "task_type": "feature",
     "task_description": "Phase 2G 테스트 보완: UC-FSM-004/006 통합 테스트, UC-UI-004~006 컴포넌트 테스트, UC-E2E-001/002 Playwright E2E 테스트",
     "started_at": "2026-03-25T10:00:00.000Z",
-    "completed_at": "2026-03-25T12:00:00.000Z",
+    "completed_at": "2026-03-25T15:30:00.000Z",
     "success": true,
     "failure_reason": null,
     "workflow": ["planner", "developer", "developer", "developer", "developer", "qa"],
@@ -13,7 +13,7 @@
         "qa": { "outcome": "success", "retries": 1, "errors": ["Vitest picked up Playwright spec files - fixed by adding test.exclude"] },
         "security": { "outcome": "skipped", "retries": 0, "errors": [] },
         "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
-        "git-workflow": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
         "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
     },
     "files_changed": {
@@ -44,7 +44,27 @@
         "build": "pass",
         "security": "skipped"
     },
-    "decisions": [],
-    "issues_encountered": [],
-    "notes": ""
+    "decisions": [
+        {
+            "phase": "git-workflow",
+            "decision": "논리적 5분할 커밋(docs → unit → integration/component → e2e → chore/metrics)",
+            "rationale": "Phase 2G와 무관한 변경·생성 데이터 제외 및 리뷰 단위 명확화",
+            "alternatives": ["단일 커밋", "패키지 단위 2분할"]
+        },
+        {
+            "phase": "git-workflow",
+            "decision": "e2e/dist는 스테이징 제외",
+            "rationale": "빌드 산출물은 저장소에 포함하지 않음(.prettierignore만 e2e/dist 처리)",
+            "alternatives": ["dist 포함", "e2e/.gitignore에 dist 추가 후 동일 정책"]
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "git-workflow",
+            "issue": "docs/time-tracker/02-architecture.md가 커밋 시점에 워킹 트리 변경 없음",
+            "resolution": "커밋 1에서 제외(이미 HEAD와 동일)",
+            "severity": "none"
+        }
+    ],
+    "notes": "Git: 63c6d95 docs, 62f5add test sqlite, 8a5da41 test fsm/ui, 1620f2d feat e2e, 04c596a chore metrics"
 }
