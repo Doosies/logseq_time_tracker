@@ -5,6 +5,7 @@ test.describe('접근성 E2E', () => {
     test.beforeEach(async ({ page }) => {
         await page.goto('/');
         await page.locator('#app').waitFor({ state: 'attached' });
+        await page.getByRole('button', { name: '전체 화면 열기' }).click();
         await expect(page.locator('section[aria-label="타이머"]')).toBeVisible();
     });
 

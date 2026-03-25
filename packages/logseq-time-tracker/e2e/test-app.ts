@@ -2,12 +2,31 @@ import { mount } from 'svelte';
 import App from '../src/App.svelte';
 import { ConsoleLogger, initializeApp } from '@personal/time-tracker-core';
 
+const app_el = () => document.getElementById('app');
+
 const logseq_stub = {
-    hideMainUI: () => {},
-    toggleMainUI: () => {},
+    hideMainUI: () => {
+        app_el()?.style.setProperty('display', 'none');
+    },
+    showMainUI: () => {
+        app_el()?.style.removeProperty('display');
+    },
+    toggleMainUI: () => {
+        const el = app_el();
+        if (!el) return;
+        if (el.style.display === 'none') {
+            el.style.removeProperty('display');
+        } else {
+            el.style.setProperty('display', 'none');
+        }
+    },
 };
 
 (globalThis as unknown as { logseq: typeof logseq_stub }).logseq = logseq_stub;
+
+document.getElementById('mock-toolbar-trigger')?.addEventListener('click', () => {
+    logseq_stub.toggleMainUI();
+});
 
 async function main() {
     const ctx = await initializeApp({

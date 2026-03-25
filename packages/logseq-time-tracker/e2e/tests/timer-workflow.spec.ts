@@ -28,6 +28,7 @@ test.describe('타이머 E2E 워크플로우', () => {
         await page.goto('/');
         // #app은 자식 마운트 전·후에도 뷰포트에서 hidden으로 잡힐 수 있어 attached만 확인
         await page.locator('#app').waitFor({ state: 'attached' });
+        await page.getByRole('button', { name: '전체 화면 열기' }).click();
         await expect(page.locator('section[aria-label="타이머"]')).toBeVisible();
     });
 

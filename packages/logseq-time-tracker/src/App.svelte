@@ -79,6 +79,17 @@
     }
 
     let show_debug_modal = $state(false);
+
+    $effect(() => {
+        const handle_keydown = (e: KeyboardEvent) => {
+            if (e.key === 'Escape' && !show_debug_modal) {
+                logseq.hideMainUI();
+            }
+        };
+        document.addEventListener('keydown', handle_keydown);
+        return () => document.removeEventListener('keydown', handle_keydown);
+    });
+
     let debug_entries = $state<TimeEntry[]>([]);
     let debug_history = $state<JobHistory[]>([]);
     let poc_results = $state<PocResult[]>([]);
