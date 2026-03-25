@@ -138,7 +138,9 @@
     <div class="shell">
         <button type="button" class="backdrop-hit" aria-label="닫기" onclick={handleClose}></button>
         <div class="panel panel--fullview">
-            <button type="button" class="back-btn" onclick={handleBackToToolbar} aria-label="돌아가기">←</button>
+            <button type="button" class="back-btn" onclick={handleBackToToolbar} aria-label="작은 화면으로 돌아가기"
+                >← 작은 화면</button
+            >
             <button
                 type="button"
                 class="debug-btn"
@@ -367,17 +369,19 @@
         position: absolute;
         top: 8px;
         left: 8px;
-        width: 28px;
         height: 28px;
+        width: auto;
+        padding: 4px 8px;
         border: none;
         background: transparent;
         cursor: pointer;
-        font-size: 16px;
+        font-size: 0.75rem;
         color: #666;
         border-radius: 4px;
         display: flex;
         align-items: center;
         justify-content: center;
+        gap: 4px;
     }
 
     .back-btn:hover {

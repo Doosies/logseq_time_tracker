@@ -3,11 +3,10 @@
     import type { Job } from '../../types/job';
     import type { Category } from '../../types/category';
     import TimerDisplay from '../Timer/TimerDisplay.svelte';
+    import ReasonModal from '../ReasonModal/ReasonModal.svelte';
     import * as css from './toolbar.css';
 
-    const TOOLBAR_PAUSE_REASON = '툴바 일시정지';
     const TOOLBAR_RESUME_REASON = '툴바 재개';
-    const TOOLBAR_STOP_REASON = '툴바 완료';
 
     let {
         context,
@@ -36,6 +35,27 @@
     let trigger_el: HTMLButtonElement | undefined = $state();
     let panel_el: HTMLDivElement | undefined = $state();
     let last_focus_el: Element | null = null;
+
+    let show_reason_modal = $state(false);
+    let reason_modal_config = $state<{
+        title: string;
+        action: (reason: string) => void | Promise<void>;
+        allow_empty?: boolean;
+    } | null>(null);
+
+    function openReasonModal(
+        title: string,
+        action: (reason: string) => void | Promise<void>,
+        allow_empty?: boolean,
+    ): void {
+        reason_modal_config = allow_empty === undefined ? { title, action } : { title, action, allow_empty };
+        show_reason_modal = true;
+    }
+
+    function closeReasonModal(): void {
+        show_reason_modal = false;
+        reason_modal_config = null;
+    }
 
     async function resolveCategoryForJob(job_id: string): Promise<Category> {
         const links = await context.services.job_category_service.getJobCategories(job_id);
@@ -124,14 +144,17 @@
         };
     });
 
-    async function handlePause(): Promise<void> {
-        try {
-            await context.services.timer_service.pause(TOOLBAR_PAUSE_REASON);
-            timer_store.pauseTimer();
-            await refreshJobs();
-        } catch (e) {
-            toast_store.addToast('error', String(e));
-        }
+    function handlePause(): void {
+        openReasonModal('일시정지 사유', async (reason) => {
+            try {
+                await context.services.timer_service.pause(reason);
+                timer_store.pauseTimer();
+                await refreshJobs();
+                closeReasonModal();
+            } catch (e) {
+                toast_store.addToast('error', String(e));
+            }
+        });
     }
 
     async function handleResume(): Promise<void> {
@@ -144,26 +167,61 @@
         }
     }
 
-    async function handleStop(): Promise<void> {
-        try {
-            await context.services.timer_service.stop(TOOLBAR_STOP_REASON);
-            timer_store.stopTimer();
-            await refreshJobs();
-        } catch (e) {
-            toast_store.addToast('error', String(e));
-        }
+    function handleStop(): void {
+        openReasonModal('완료 사유', async (reason) => {
+            try {
+                await context.services.timer_service.stop(reason);
+                timer_store.stopTimer();
+                await refreshJobs();
+                closeReasonModal();
+            } catch (e) {
+                toast_store.addToast('error', String(e));
+            }
+        });
     }
 
-    async function handleSwitchToJob(job: Job): Promise<void> {
-        try {
-            const category = await resolveCategoryForJob(job.id);
-            await context.services.timer_service.start(job, category, `툴바: ${job.title}`);
-            timer_store.startTimer(job, category);
-            await refreshJobs();
-            closeDropdown();
-        } catch (e) {
-            toast_store.addToast('error', String(e));
-        }
+    function handleToolbarSwitchToJob(job: Job): void {
+        openReasonModal(
+            '작업 전환 사유',
+            async (reason) => {
+                try {
+                    const category = await resolveCategoryForJob(job.id);
+                    const trimmed = reason.trim();
+                    await context.services.timer_service.start(job, category, trimmed.length > 0 ? trimmed : undefined);
+                    timer_store.startTimer(job, category);
+                    await refreshJobs();
+                    closeReasonModal();
+                    if (!inline) closeDropdown();
+                } catch (e) {
+                    toast_store.addToast('error', String(e));
+                }
+            },
+            true,
+        );
+    }
+
+    function handleToolbarCompleteJob(job: Job): void {
+        openReasonModal('완료 사유', async (reason) => {
+            try {
+                await context.services.job_service.transitionStatus(job.id, 'completed', reason);
+                await refreshJobs();
+                closeReasonModal();
+            } catch (e) {
+                toast_store.addToast('error', String(e));
+            }
+        });
+    }
+
+    function handleToolbarCancelJob(job: Job): void {
+        openReasonModal('취소 사유', async (reason) => {
+            try {
+                await context.services.job_service.transitionStatus(job.id, 'cancelled', reason);
+                await refreshJobs();
+                closeReasonModal();
+            } catch (e) {
+                toast_store.addToast('error', String(e));
+            }
+        });
     }
 
     function handleOpenFullView(): void {
@@ -209,13 +267,26 @@
                 <ul class={css.job_list} role="list" aria-labelledby="toolbar-waiting-heading">
                     {#each switchable_jobs as job (job.id)}
                         <li class={css.job_list_item} role="listitem">
-                            <button
-                                type="button"
-                                class={css.job_list_button}
-                                onclick={() => void handleSwitchToJob(job)}
-                            >
-                                {job.title}
-                            </button>
+                            <div class={css.job_list_row}>
+                                <span class={css.job_list_title}>{job.title}</span>
+                                <div class={css.job_list_actions}>
+                                    <button
+                                        type="button"
+                                        class={css.job_action_btn}
+                                        onclick={() => void handleToolbarSwitchToJob(job)}>전환</button
+                                    >
+                                    <button
+                                        type="button"
+                                        class={css.job_action_btn}
+                                        onclick={() => void handleToolbarCompleteJob(job)}>완료</button
+                                    >
+                                    <button
+                                        type="button"
+                                        class={css.job_action_btn}
+                                        onclick={() => void handleToolbarCancelJob(job)}>취소</button
+                                    >
+                                </div>
+                            </div>
                         </li>
                     {/each}
                 </ul>
@@ -249,5 +320,14 @@
                 {@render toolbar_content()}
             </div>
         {/if}
+    {/if}
+
+    {#if show_reason_modal && reason_modal_config}
+        <ReasonModal
+            title={reason_modal_config.title}
+            onconfirm={reason_modal_config.action}
+            oncancel={closeReasonModal}
+            {...reason_modal_config.allow_empty !== undefined ? { allow_empty: reason_modal_config.allow_empty } : {}}
+        />
     {/if}
 </div>

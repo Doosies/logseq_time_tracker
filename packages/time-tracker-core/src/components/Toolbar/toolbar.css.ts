@@ -94,21 +94,53 @@ export const job_list_item = style({
     padding: 0,
 });
 
-export const job_list_button = style({
-    display: 'block',
-    width: '100%',
-    textAlign: 'left',
-    padding: '6px 8px',
+export const job_list_row = style({
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: '4px 8px',
     marginBottom: '2px',
-    fontSize: '0.8rem',
-    border: 'none',
     borderRadius: '4px',
-    background: 'transparent',
-    cursor: 'pointer',
-    color: 'inherit',
     selectors: {
         '&:hover': {
             background: 'var(--tt-hover, rgba(0, 0, 0, 0.06))',
+        },
+    },
+});
+
+export const job_list_title = style({
+    flex: 1,
+    fontSize: '0.8rem',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    whiteSpace: 'nowrap',
+    color: 'inherit',
+});
+
+export const job_list_actions = style({
+    display: 'flex',
+    gap: '4px',
+    opacity: 0,
+    transition: 'opacity 0.15s ease',
+    selectors: {
+        [`${job_list_row}:hover &`]: {
+            opacity: 1,
+        },
+    },
+});
+
+export const job_action_btn = style({
+    padding: '2px 6px',
+    fontSize: '0.65rem',
+    borderRadius: '3px',
+    border: '1px solid var(--tt-border, rgba(0, 0, 0, 0.15))',
+    background: 'var(--tt-surface, transparent)',
+    cursor: 'pointer',
+    color: 'inherit',
+    whiteSpace: 'nowrap',
+    selectors: {
+        '&:hover': {
+            background: 'var(--tt-hover, rgba(0, 0, 0, 0.1))',
         },
     },
 });
