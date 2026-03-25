@@ -44,6 +44,10 @@ function main() {
             template: `<a data-on-click="togglePluginUI" class="button" title="Time Tracker"><i class="ti ti-box"></i></a>`,
         });
 
+        logseq.Editor.registerSlashCommand('Time Tracker', async () => {
+            logseq.toggleMainUI();
+        });
+
         logseq.provideModel({
             togglePluginUI() {
                 logseq.toggleMainUI();
