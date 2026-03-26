@@ -10,10 +10,7 @@ test.describe('접근성 E2E', () => {
     });
 
     test('UC-A11Y-005: 색상 대비 WCAG 2.1 AA 준수', async ({ page }) => {
-        const results = await new AxeBuilder({ page })
-            .withTags(['wcag2aa'])
-            .withRules(['color-contrast'])
-            .analyze();
+        const results = await new AxeBuilder({ page }).withTags(['wcag2aa']).withRules(['color-contrast']).analyze();
 
         expect(
             results.violations,
