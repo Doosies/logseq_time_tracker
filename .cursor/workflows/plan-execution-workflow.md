@@ -148,7 +148,7 @@ todos:
 
 1. **검증 명령 실행**
    - ReadLints (변경된 파일 경로 지정)
-   - 프로젝트 `package.json`의 `format`, `test`, `lint`, `type-check`, `build` 스크립트(존재하는 항목만 순서대로 실행)
+   - 스크립트명·실행 순서: **`.cursor-agent-config.yaml` 우선**, 없으면 루트 `package.json`의 `format`, `test`, `lint`, `type-check`, `build`(존재하는 항목만 순서대로 실행)
 2. 실패 시 해당 서브에이전트가 **원인 분석 + 수정 + 재검증**
 3. 검증 통과 후 다음 단계로 진행
 4. QA에서 발견된 이슈를 사이클 메트릭의 `issues_encountered[]`에 수집
@@ -166,7 +166,10 @@ todos:
 - `security/references/api-security-check.md` (API 설계/구현 시)
 - `security/references/prompt-injection-defense.md` (AI/LLM 연동 시)
 
-**호출 시점**: Feature, Refactor 워크플로우의 설계 후 / 구현 후 / 배포 전
+**호출 시점** (main-orchestrator.mdc 태스크 분류와 일치):
+
+- **Feature / Refactor**: 설계 후 / 구현 후 / 배포 전
+- **Bugfix**: 구현 후 코드 검증 (고수준 워크플로우: QA(재현) → 구현 → **Security(코드)** → QA(검증) → …)
 
 - 코드 보안 취약점 스캔
 - 민감 정보 탐지
@@ -287,7 +290,7 @@ call_mcp_tool({
     ↓
 QA 검증 (qa) — ReadLints + format/test/lint/type-check/build 스크립트
     ↓
-보안 검증 (security) [선택]
+보안 검증 (security) — Feature / Refactor / Bugfix 시 (상세 §5)
     ↓
 문서화 (docs)
     ↓

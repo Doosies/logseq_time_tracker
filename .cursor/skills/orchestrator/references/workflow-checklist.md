@@ -22,10 +22,12 @@
 - [ ] **qa 서브에이전트 호출**
 - [ ] ❌ 메인 에이전트 직접 테스트 실행 금지
 - [ ] ReadLints → format → test → lint → type-check → build 순서 확인
+- [ ] 스크립트명·순서: `.cursor-agent-config.yaml` 우선, 없으면 루트 `package.json`
 
-### 4단계: 보안 검증 (Feature/Refactor 시)
+### 4단계: 보안 검증 (Feature / Refactor / Bugfix 시)
 - [ ] security 서브에이전트 호출
-- [ ] 설계 후 / 구현 후 / 배포 전 검증
+- [ ] Feature·Refactor: 설계 후 / 구현 후 / 배포 전 검증
+- [ ] Bugfix: 구현 후 코드 검증 (main-orchestrator.mdc Bugfix 워크플로우와 일치)
 
 ### 5단계: 문서화 (선택적, Chore 시 스킵 가능)
 - [ ] docs 서브에이전트 호출
@@ -46,11 +48,20 @@
 ### 8단계: 개선 후 커밋 (선택)
 - [ ] 에이전트 정의 파일 수정 시 git-workflow 재호출
 
-### 9단계: 최종 보고서 (필수)
+### 9단계: 최종 보고서 (필수) — `plan-execution-workflow.md` **10단계**와 동일
+
 - [ ] 사이클 메트릭에 `completed_at`, `success` 기록
 - [ ] `git diff --name-status`로 `files_changed` 수집
 - [ ] `.cursor/metrics/reports/YYYY-MM-DD-NNN-description.md` 저장
 - [ ] 사용자에게 보고서 출력
+- [ ] 워크플로우 §10·`final-report-template.md` 절차 준수
+
+> **번호 매핑**: 이 파일은 0단계(메트릭) 다음 **1~8단계**를 워크플로우 **2~9단계**에 대응시킨다(워크플로 **1단계** 사용자 요청 수신은 체크리스트에 생략). `plan-execution.md` 커맨드는 **0~10** 전 구간을 명시한다.
+
+### 워크플로우 문서 동기화 (변경 시)
+
+- [ ] `plan-execution-workflow.md` 변경 시 → `.cursor/commands/plan-execution.md` 요약 반영
+- [ ] 단계 번호, 스킵 조건, Security 호출 시점이 양쪽에서 동일한지 확인
 
 ## 자가 점검 질문
 
@@ -67,5 +78,5 @@
 - A: YES → Task 도구 호출
 
 ### 작업 완료 선언 전
-- Q: "9단계(최종 보고서)를 완료했는가?"
+- Q: "최종 보고서(워크플로우 **10단계**, 이 체크리스트 **9단계**)를 완료했는가?"
 - A: NO → **작업 미완료, 보고서 작성 필수**

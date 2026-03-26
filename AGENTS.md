@@ -643,7 +643,7 @@ try {
 - [DIRECTORY_STRUCTURE.md](.cursor/DIRECTORY_STRUCTURE.md): 디렉토리 구조
 - [agent-architecture-guide.md](.cursor/docs/agent-architecture-guide.md): 아키텍처 가이드 (설계 철학, 재사용 가능)
 - [plan-execution-workflow.md](.cursor/workflows/plan-execution-workflow.md): 플랜 실행 워크플로우 (0~10단계, 0단계 사이클 메트릭 초기화 포함)
-- [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~9단계)
+- [plan-execution.md](.cursor/commands/plan-execution.md): `/plan-execution` 커맨드 정의 (0~10단계 요약)
 - [final-report-template.md](.cursor/workflows/final-report-template.md): 작업 완료 보고서 템플릿
 - **도메인 특화 워크플로우** (`.cursor/workflows/domain-specific/`):
   - [add-svelte-component.md](.cursor/workflows/domain-specific/add-svelte-component.md): 프레임워크 컴포넌트 추가 절차 (해당 스택 워크플로우·`.cursor/skills/stack/` 참조)
