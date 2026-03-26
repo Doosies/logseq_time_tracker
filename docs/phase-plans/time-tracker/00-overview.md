@@ -1,7 +1,22 @@
 # Time Tracker 구현 플랜 — 전체 개요
 
 **작성일**: 2026-03-22
-**기반**: `docs/design/` 설계 문서 9개 (00-overview ~ 09-user-flows)
+**기반**: `docs/time-tracker/` 설계 문서 9개 (00-overview ~ 09-user-flows)
+
+---
+
+## 페이즈 현황
+
+플랜 문서·코드베이스(`time-tracker-core`, `logseq-time-tracker`) 기준 요약입니다. 세부는 각 Phase 폴더의 `plan.md` 및 서브문서를 참고하세요.
+
+| 페이즈 | 상태 | 설명 |
+|--------|------|------|
+| Phase 0 | 완료 | PoC: vanilla-extract + Svelte 5 + Logseq iframe 호환성 (`phase-0/poc.md`) |
+| Phase 1 | 완료 | 프로토타입: 패키지 스캐폴드, 코어 타입, 서비스/스토어/UI, 앱 통합 (`phase-1/`) |
+| Phase 2 | 완료 | 영속화(OPFS+SQLite), Job CRUD 보강, export·fallback 등 (`phase-2/`) |
+| Phase 3 | 진행 중 | UI 고도화·수동 TimeEntry·DataField·모드 시스템 (`phase-3/`, 다수 서브문서) |
+| Phase 4 | 미착수 | 잡 생성·템플릿·알림 (`phase-4/plan.md`) |
+| Phase 5 | 미착수 | 통계·eCount 스켈레톤·동기화·릴리스 (`phase-5/plan.md`) |
 
 ---
 

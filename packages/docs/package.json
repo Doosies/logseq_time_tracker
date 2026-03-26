@@ -1,7 +1,7 @@
 {
     "name": "@personal/docs",
-    "version": "0.1.0",
-    "description": "Documentation site for Personal Logseq Plugin",
+    "version": "0.2.0",
+    "description": "Personal 모노레포 문서화 사이트",
     "type": "module",
     "scripts": {
         "dev": "vitepress dev",

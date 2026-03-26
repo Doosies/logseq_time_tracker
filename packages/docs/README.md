@@ -36,6 +36,7 @@ packages/docs/
 │   ├── testing.md           # 테스트 가이드
 │   ├── logseq-plugin-api.md # Logseq Plugin API
 │   ├── vanilla-extract.md   # Vanilla Extract 가이드
+│   ├── storybook.md         # Storybook 가이드
 │   └── mcp-server.md        # MCP 서버 가이드
 ├── api/                      # API 문서 (UIKit)
 │   ├── index.md             # API 개요
@@ -184,4 +185,4 @@ MIT
 ---
 
 **버전**: 0.1.0  
-**최종 업데이트**: 2026-02-06
+**최종 업데이트**: 2026-03-26

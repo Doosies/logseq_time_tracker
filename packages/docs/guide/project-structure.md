@@ -8,7 +8,8 @@ personal/
 │   ├── uikit/              # Svelte 5 UI 컴포넌트 라이브러리
 │   ├── ecount-dev-tool/    # Chrome 확장프로그램
 │   ├── mcp-server/         # Cursor MCP 서버
-│   ├── time-tracker/       # Logseq 플러그인
+│   ├── logseq-time-tracker/ # Logseq 플러그인 (Svelte 5)
+│   ├── time-tracker-core/  # 타임트래커 공유 도메인·UI 코어
 │   └── docs/               # VitePress 문서 사이트
 ├── .storybook/             # Storybook 전역 설정
 ├── turbo.json              # Turborepo 설정
@@ -83,16 +84,21 @@ packages/mcp-server/
 └── package.json
 ```
 
-## Time Tracker 패키지
+## Logseq Time Tracker 패키지
 
 ```
-packages/time-tracker/
+packages/logseq-time-tracker/
 ├── src/
-│   ├── main.tsx           # 플러그인 진입점
-│   └── App.tsx            # React 컴포넌트
-├── tests/
+│   ├── main.ts            # Logseq 진입점: ready 훅, UI 등록, core 초기화, Svelte mount
+│   ├── App.svelte         # 메인 UI (Svelte 5 Runes)
+│   ├── __tests__/         # Vitest 단위 테스트
+│   └── vite-env.d.ts
+├── e2e/                   # Playwright E2E
+├── scripts/               # 빌드 보조 (예: sql-wasm 복사)
 └── package.json
 ```
+
+도메인·UI 로직은 `@personal/time-tracker-core`에 두고, 이 패키지는 Logseq 연동·번들·로컬 저장(SQLite WASM)을 담당합니다.
 
 ## Docs 패키지
 
