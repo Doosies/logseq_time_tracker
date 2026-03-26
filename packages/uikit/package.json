@@ -1,6 +1,6 @@
 {
     "name": "@personal/uikit",
-    "version": "0.1.0",
+    "version": "0.2.1",
     "description": "Shared UI component library with Svelte 5 + vanilla-extract",
     "type": "module",
     "exports": {

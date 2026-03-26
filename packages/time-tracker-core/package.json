@@ -1,6 +1,6 @@
 {
     "name": "@personal/time-tracker-core",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Time Tracker core library - domain logic, types, and Svelte 5 UI components",
     "type": "module",
     "exports": {

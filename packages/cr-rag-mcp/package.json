@@ -1,8 +1,14 @@
 {
     "name": "@personal/cr-rag-mcp",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Code Review RAG MCP Server — Git 커밋 히스토리를 LLM 요약 + 벡터 검색으로 제공",
     "type": "module",
+    "exports": {
+        ".": {
+            "types": "./dist/index.d.ts",
+            "default": "./dist/index.js"
+        }
+    },
     "main": "dist/index.js",
     "bin": {
         "cr-rag-mcp": "dist/index.js"

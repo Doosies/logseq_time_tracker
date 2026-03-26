@@ -1,6 +1,6 @@
 {
     "name": "@personal/ecount-dev-tool",
-    "version": "1.0.0",
+    "version": "2.3.0",
     "description": "ecount.com Development Environment Manager Chrome Extension",
     "type": "module",
     "imports": {
