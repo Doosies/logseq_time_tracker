@@ -1,38 +1,119 @@
 {
     "cycle_id": "2026-03-25-002",
     "task_type": "feature",
-    "task_description": "Phase 2G 테스트 보완: UC-FSM-004/006 통합 테스트, UC-UI-004~006 컴포넌트 테스트, UC-E2E-001/002 Playwright E2E 테스트",
-    "started_at": "2026-03-25T10:00:00.000Z",
-    "completed_at": "2026-03-25T15:30:00.000Z",
+    "task_description": "Phase 3: UI 고도화 & 커스텀 필드 - TimeEntryService, DataField 스키마/서비스, UI 모드 시스템, 고급 셀렉터, 수동 TimeEntry UI, 커스텀 필드 UI, 통합 테스트",
+    "started_at": "2026-03-25T15:45:22+09:00",
+    "completed_at": "2026-03-25T16:11:26+09:00",
     "success": true,
     "failure_reason": null,
-    "workflow": ["planner", "developer", "developer", "developer", "developer", "qa"],
+    "workflow": ["planner", "developer", "developer", "developer", "developer", "qa", "developer", "developer", "qa", "security", "qa", "git-workflow"],
     "agents": {
-        "planner": { "outcome": "success", "retries": 0, "errors": [] },
-        "developer": { "outcome": "success", "retries": 0, "errors": [] },
-        "qa": { "outcome": "success", "retries": 1, "errors": ["Vitest picked up Playwright spec files - fixed by adding test.exclude"] },
-        "security": { "outcome": "skipped", "retries": 0, "errors": [] },
-        "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
-        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
-        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "security": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "git-workflow": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "mcp-development": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        }
     },
     "files_changed": {
         "created": [
-            "packages/time-tracker-core/src/__tests__/integration/fsm_storage.test.ts",
-            "packages/logseq-time-tracker/playwright.config.ts",
-            "packages/logseq-time-tracker/e2e/index.html",
-            "packages/logseq-time-tracker/e2e/test-app.ts",
-            "packages/logseq-time-tracker/e2e/vite.config.ts",
-            "packages/logseq-time-tracker/e2e/tests/timer-workflow.spec.ts"
+            "packages/time-tracker-core/src/services/time_entry_service.ts",
+            "packages/time-tracker-core/src/services/time_entry_service.test.ts",
+            "packages/time-tracker-core/src/services/data_field_service.ts",
+            "packages/time-tracker-core/src/services/data_field_service.test.ts",
+            "packages/time-tracker-core/src/constants/data_field_meta.ts",
+            "packages/time-tracker-core/src/adapters/storage/sqlite/migrations/003_phase3.ts",
+            "packages/time-tracker-core/src/adapters/storage/memory/memory_data_field_repository.ts",
+            "packages/time-tracker-core/src/components/Toolbar/Toolbar.svelte",
+            "packages/time-tracker-core/src/components/Toolbar/toolbar.css.ts",
+            "packages/time-tracker-core/src/components/Toolbar/index.ts",
+            "packages/time-tracker-core/src/components/FullView/FullView.svelte",
+            "packages/time-tracker-core/src/components/FullView/full_view.css.ts",
+            "packages/time-tracker-core/src/components/FullView/index.ts",
+            "packages/time-tracker-core/src/components/InlineView/InlineView.svelte",
+            "packages/time-tracker-core/src/components/InlineView/inline_view.css.ts",
+            "packages/time-tracker-core/src/components/InlineView/index.ts",
+            "packages/time-tracker-core/src/components/LayoutSwitcher/LayoutSwitcher.svelte",
+            "packages/time-tracker-core/src/components/LayoutSwitcher/index.ts",
+            "packages/time-tracker-core/src/components/CategorySelector/CategorySelector.svelte",
+            "packages/time-tracker-core/src/components/CategorySelector/category_selector.css.ts",
+            "packages/time-tracker-core/src/components/CategorySelector/index.ts",
+            "packages/time-tracker-core/src/components/JobSelector/JobSelector.svelte",
+            "packages/time-tracker-core/src/components/JobSelector/job_selector.css.ts",
+            "packages/time-tracker-core/src/components/JobSelector/index.ts",
+            "packages/time-tracker-core/src/components/DatePicker/DatePicker.svelte",
+            "packages/time-tracker-core/src/components/DatePicker/date_picker.css.ts",
+            "packages/time-tracker-core/src/components/DatePicker/index.ts",
+            "packages/time-tracker-core/src/components/TimeRangePicker/TimeRangePicker.svelte",
+            "packages/time-tracker-core/src/components/TimeRangePicker/time_range_picker.css.ts",
+            "packages/time-tracker-core/src/components/TimeRangePicker/index.ts",
+            "packages/time-tracker-core/src/components/ManualEntryForm/ManualEntryForm.svelte",
+            "packages/time-tracker-core/src/components/ManualEntryForm/manual_entry_form.css.ts",
+            "packages/time-tracker-core/src/components/ManualEntryForm/index.ts",
+            "packages/time-tracker-core/src/components/TimeEntryList/TimeEntryList.svelte",
+            "packages/time-tracker-core/src/components/TimeEntryList/time_entry_list.css.ts",
+            "packages/time-tracker-core/src/components/TimeEntryList/index.ts",
+            "packages/time-tracker-core/src/components/OverlapResolutionModal/OverlapResolutionModal.svelte",
+            "packages/time-tracker-core/src/components/OverlapResolutionModal/overlap_resolution_modal.css.ts",
+            "packages/time-tracker-core/src/components/OverlapResolutionModal/index.ts",
+            "packages/time-tracker-core/src/components/CustomFieldEditor/CustomFieldEditor.svelte",
+            "packages/time-tracker-core/src/components/CustomFieldEditor/custom_field_editor.css.ts",
+            "packages/time-tracker-core/src/components/CustomFieldEditor/index.ts",
+            "packages/time-tracker-core/src/components/CustomFieldManager/CustomFieldManager.svelte",
+            "packages/time-tracker-core/src/components/CustomFieldManager/custom_field_manager.css.ts",
+            "packages/time-tracker-core/src/components/CustomFieldManager/index.ts",
+            "packages/time-tracker-core/src/ui/fields/field_component_registry.ts",
+            "packages/time-tracker-core/src/ui/fields/field_renderer.svelte",
+            "packages/time-tracker-core/src/ui/fields/index.ts",
+            "packages/time-tracker-core/src/ui/fields/components/string_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/decimal_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/date_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/datetime_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/boolean_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/enum_field.svelte",
+            "packages/time-tracker-core/src/ui/fields/components/relation_field.svelte",
+            "packages/time-tracker-core/src/__tests__/integration/time_entry_overlap.test.ts",
+            "packages/time-tracker-core/src/__tests__/performance/rendering.test.ts"
         ],
         "modified": [
-            "packages/time-tracker-core/src/__tests__/component/JobList.test.ts",
-            "packages/logseq-time-tracker/package.json",
-            "packages/logseq-time-tracker/vite.config.ts",
-            "packages/logseq-time-tracker/tsconfig.json",
-            "packages/logseq-time-tracker/eslint.config.ts",
-            "docs/phase-plans/time-tracker/phase-2/2g-tests.md",
-            "pnpm-lock.yaml"
+            "packages/time-tracker-core/src/services/index.ts",
+            "packages/time-tracker-core/src/services/data_export_service.ts",
+            "packages/time-tracker-core/src/adapters/storage/sqlite/migrations/index.ts",
+            "packages/time-tracker-core/src/adapters/storage/sqlite/sqlite_data_field_repository.ts",
+            "packages/time-tracker-core/src/adapters/storage/memory/memory_unit_of_work.ts",
+            "packages/time-tracker-core/src/types/export.ts",
+            "packages/time-tracker-core/src/types/export_schema.ts",
+            "packages/time-tracker-core/src/constants/config.ts",
+            "packages/time-tracker-core/src/components/index.ts"
         ],
         "deleted": []
     },
@@ -40,31 +121,48 @@
         "readlints": "pass",
         "type_check": "pass",
         "lint": "pass",
-        "test": "pass (275 unit/integration + 2 E2E)",
+        "test": "pass (318/318)",
         "build": "pass",
-        "security": "skipped"
+        "security": "pass (0 critical/high/medium)"
     },
     "decisions": [
         {
-            "phase": "git-workflow",
-            "decision": "논리적 5분할 커밋(docs → unit → integration/component → e2e → chore/metrics)",
-            "rationale": "Phase 2G와 무관한 변경·생성 데이터 제외 및 리뷰 단위 명확화",
-            "alternatives": ["단일 커밋", "패키지 단위 2분할"]
+            "phase": "3A",
+            "decision": "new_first는 DB 반영, existing_first는 순수 변환만",
+            "rationale": "스펙이 TimeEntry[] 반환만 요구; new_first는 분할/삭제를 한 번에 처리"
         },
         {
-            "phase": "git-workflow",
-            "decision": "e2e/dist는 스테이징 제외",
-            "rationale": "빌드 산출물은 저장소에 포함하지 않음(.prettierignore만 e2e/dist 처리)",
-            "alternatives": ["dist 포함", "e2e/.gitignore에 dist 추가 후 동일 정책"]
+            "phase": "3B",
+            "decision": "시드 데이터 기반 상수로 entity_type/data_type 검증",
+            "rationale": "IUnitOfWork에 meta 테이블 직접 접근 메서드 없음; 런타임 SQL 불필요"
+        },
+        {
+            "phase": "3C",
+            "decision": "Toolbar quick actions에 고정 reason 문자열 사용",
+            "rationale": "스펙이 직접 timer_service 호출 요구; ReasonModal은 FullView에서 사용"
+        },
+        {
+            "phase": "3D",
+            "decision": "Record<string, Category> 대신 Map 미사용 (svelte/prefer-svelte-reactivity)",
+            "rationale": "ESLint 규칙 준수"
         }
     ],
     "issues_encountered": [
         {
-            "phase": "git-workflow",
-            "issue": "docs/time-tracker/02-architecture.md가 커밋 시점에 워킹 트리 변경 없음",
-            "resolution": "커밋 1에서 제외(이미 HEAD와 동일)",
-            "severity": "none"
+            "phase": "3B",
+            "issue": "MemoryUnitOfWork가 StubDataFieldRepository 사용",
+            "resolution": "MemoryDataFieldRepository 생성 및 교체"
+        },
+        {
+            "phase": "3F",
+            "issue": "ui/fields/components/ → components/ import 경로 불일치",
+            "resolution": "상대 경로 ../../../components/ 로 수정"
+        },
+        {
+            "phase": "merge",
+            "issue": "CustomFieldManager barrel export (index.ts) 누락",
+            "resolution": "메인 에이전트가 직접 생성"
         }
     ],
-    "notes": "Git: 63c6d95 docs, 62f5add test sqlite, 8a5da41 test fsm/ui, 1620f2d feat e2e, 04c596a chore metrics"
+    "notes": "Phase 3 전체를 3개 배치로 나눠 병렬 실행. Batch 1: 3A+3B+3C+3D (4병렬), Batch 2: 3E+3F (2병렬), Batch 3: 3G (테스트). 커밋 해시: 08b4008"
 }

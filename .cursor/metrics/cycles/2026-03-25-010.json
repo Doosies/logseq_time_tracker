@@ -1,0 +1,24 @@
+{
+    "cycle_id": "2026-03-25-010",
+    "task_type": "feature",
+    "task_description": "UI 모드 전환 e2e 테스트 작성 및 코드 수정 (ESC 핸들러 이관, 테스트 인프라 강화)",
+    "started_at": "2026-03-25T20:10:00+09:00",
+    "completed_at": "2026-03-25T20:35:00+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": [],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "pending", "retries": 0, "errors": [] },
+        "qa": { "outcome": "pending", "retries": 0, "errors": [] },
+        "security": { "outcome": "pending", "retries": 0, "errors": [] },
+        "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "pending", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": { "created": [], "modified": [], "deleted": [] },
+    "quality_gates": {},
+    "decisions": [],
+    "issues_encountered": [],
+    "notes": ""
+}

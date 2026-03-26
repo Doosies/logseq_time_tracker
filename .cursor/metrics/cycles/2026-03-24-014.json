@@ -1,0 +1,81 @@
+{
+    "cycle_id": "2026-03-24-014",
+    "task_type": "bugfix",
+    "task_description": "앱 재시작 시 TimerService 내부 상태 미복원으로 인한 'No Active timer' 에러 및 'UNIQUE constraint failed: job.status' 에러 수정",
+    "started_at": "2026-03-24T00:00:00.000Z",
+    "completed_at": "2026-03-24T00:30:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "qa", "security", "git-workflow"],
+    "agents": {
+        "planner": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "developer": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "qa": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "security": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "docs": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        },
+        "git-workflow": {
+            "outcome": "success",
+            "retries": 0,
+            "errors": []
+        },
+        "mcp-development": {
+            "outcome": "skipped",
+            "retries": 0,
+            "errors": []
+        }
+    },
+    "files_changed": {
+        "created": [],
+        "modified": [
+            "packages/time-tracker-core/src/services/timer_service.ts",
+            "packages/time-tracker-core/src/app/initialize.ts",
+            "packages/time-tracker-core/src/services/timer_service.test.ts",
+            "packages/time-tracker-core/src/__tests__/integration/app_init.test.ts"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass",
+        "lint": "pass",
+        "test": "pass (245/245)",
+        "build": "pass",
+        "security": "pass (Critical/High: 0, Low: 2 advisory)"
+    },
+    "decisions": [
+        {
+            "phase": "planning",
+            "decision": "TimerService에 restore() 메서드 추가하여 initializeApp에서 service 상태도 함께 복원",
+            "rationale": "timer_store만 복원하고 TimerService는 복원하지 않는 것이 두 버그의 공통 근본 원인",
+            "alternatives": ["start() 메서드를 복원용으로 재사용 - 불필요한 DB 트랜잭션 발생", "timer_store에서 service 호출 - 순환 의존성 위험"]
+        },
+        {
+            "phase": "planning",
+            "decision": "고아 in_progress job 방어적 cleanup 추가",
+            "rationale": "active_timer 설정만 유실된 경우 UNIQUE 제약 위반 방지",
+            "alternatives": ["UNIQUE 인덱스 제거 - 데이터 무결성 저하"]
+        }
+    ],
+    "issues_encountered": [],
+    "notes": ""
+}

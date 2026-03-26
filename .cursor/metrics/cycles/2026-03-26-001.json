@@ -1,0 +1,35 @@
+{
+    "cycle_id": "2026-03-26-001",
+    "task_type": "refactor",
+    "task_description": "time-tracker-core 컴포넌트 일반화 → uikit 이동 (LayoutSwitcher, DatePicker, TimeRangePicker, PromptDialog, ElapsedTimer, Toast)",
+    "started_at": "2026-03-26T10:00:00.000Z",
+    "completed_at": "2026-03-26T12:30:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "developer", "developer", "developer", "qa", "qa", "security", "git-workflow"],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "success", "retries": 0, "errors": [] },
+        "qa": { "outcome": "success", "retries": 1, "errors": ["ResizeObserver mock 추가 필요", "exactOptionalPropertyTypes 우회"] },
+        "security": { "outcome": "success", "retries": 0, "errors": [] },
+        "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": { "created": [], "modified": [], "deleted": [] },
+    "quality_gates": {
+        "readlints": null,
+        "type_check": null,
+        "lint": null,
+        "test": null,
+        "build": null,
+        "security": null
+    },
+    "decisions": [
+        { "phase": "planner", "decision": "6개 컴포넌트 일반화 대상 선정 (DatePicker, LayoutSwitcher, TimeRangePicker, PromptDialog, ElapsedTimer, Toast)", "rationale": "도메인 의존성 없는 순수 UI 컴포넌트만 선별", "alternatives": ["EmptyState도 이동 고려했으나 도메인 문구 의존으로 제외"] }
+    ],
+    "issues_encountered": [
+        { "phase": "planner", "issue": "DatePicker.svelte와 date_picker.css.ts가 빈 파일", "resolution": ".history에서 복원 필요", "impact": "medium" }
+    ],
+    "notes": ""
+}

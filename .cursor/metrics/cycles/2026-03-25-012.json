@@ -1,0 +1,49 @@
+{
+    "cycle_id": "2026-03-25-012",
+    "task_type": "feature",
+    "task_description": "Toolbar UI 마무리 개선: 레이아웃 full-width, 버튼 색상 FullView 통일, 활성작업 없을 때 시작/재개 액션, 테스트 보강",
+    "started_at": "2026-03-25T23:00:00.000Z",
+    "completed_at": "2026-03-26T00:00:00.000Z",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "docs", "developer", "qa", "qa", "security", "main-verify", "git-workflow", "system-improve"],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "success", "retries": 0, "errors": [] },
+        "qa": { "outcome": "success", "retries": 1, "errors": ["UC-UI-023 테스트가 조건부 렌더링 분기를 누락하여 수정 필요"] },
+        "security": { "outcome": "success", "retries": 0, "errors": [] },
+        "docs": { "outcome": "success", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] }
+    },
+    "files_changed": {
+        "created": [
+            "packages/time-tracker-core/src/__tests__/component/Toolbar.test.ts",
+            "packages/logseq-time-tracker/e2e/tests/toolbar-actions.spec.ts"
+        ],
+        "modified": [
+            "docs/time-tracker/09-user-flows.md",
+            "docs/time-tracker/08-test-usecases.md",
+            "packages/time-tracker-core/src/components/Toolbar/toolbar.css.ts",
+            "packages/time-tracker-core/src/components/Toolbar/Toolbar.svelte"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass",
+        "lint": "pass",
+        "test": "pass",
+        "build": "pass",
+        "security": "pass"
+    },
+    "decisions": [
+        { "phase": "developer", "decision": "toolbar_btn_stop 사용 (완료 버튼)", "rationale": "FullView button_stop 색상(#10b981) 정합" },
+        { "phase": "qa", "decision": "UC-UI-023을 두 시나리오로 분리", "rationale": "active_job 유무에 따라 시작/전환 분기" },
+        { "phase": "qa", "decision": "E2E 스크립트 test:e2e 사용", "rationale": "package.json에 e2e 스크립트 없음" }
+    ],
+    "issues_encountered": [
+        { "phase": "qa", "issue": "UC-UI-023 테스트가 활성 잡 상태의 전환 버튼을 고려하지 못함", "resolution": "두 시나리오로 분리하여 수정" },
+        { "phase": "qa", "issue": "e2e vs test:e2e 스크립트명 불일치", "resolution": "test:e2e로 실행" }
+    ],
+    "notes": "파이프라인 전체 순조롭게 진행. QA 1회 재시도만 발생. 에이전트 정의 수정 불필요."
+}
