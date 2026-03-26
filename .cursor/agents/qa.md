@@ -211,7 +211,8 @@ describe('calculateTotal', () => {
 
 **테스트 ID 기반 작성 (필수)**:
 - 테스트 작성 전 해당 패키지의 `__test_specs__/{level}/{domain}.md`에서 유즈케이스 ID 확인
-- ID가 없으면: BDD 명세 먼저 작성 → ID 부여 → 테스트 코드 작성
+- ID가 없으면: BDD 명세 먼저 작성 → **MCP `get_next_uc_id` 도구로 ID 발급** → 테스트 코드 작성
+- **ID 발급**: `get_next_uc_id` MCP 도구 사용 (prefix: 카테고리명, count: 필요 개수). 레지스트리(`.cursor/config/uc-id-registry.json`)가 시퀀스를 자동 관리하여 중복 방지
 - 테스트 코드의 describe/it에 ID 포함: `it('UC-UI-024: ...', ...)`
 - **SSOT**: 각 패키지의 `__test_specs__/` 디렉토리. Phase별 인덱스는 `docs/time-tracker/08-test-usecases.md` 참조
 
