@@ -94,3 +94,4 @@ packages/logseq-time-tracker/public/assets/sql-wasm.wasm
 # rag 관련 임시 gitignore
 **/commit_docs/**/*
 **/.cr-rag-data*/**/*pipeline_flexion*.json
+**/chroma/
