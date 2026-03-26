@@ -33,6 +33,23 @@ vi.mock('@logseq/libs', () => {
     return {};
 });
 
+vi.mock('@personal/time-tracker-core', () => ({
+    initializeApp: vi.fn().mockResolvedValue({
+        stores: {
+            timer_store: {},
+            job_store: {},
+            toast_store: {},
+        },
+        services: {
+            timer_service: {},
+        },
+        uow: {},
+        dispose: vi.fn(),
+    }),
+    ConsoleLogger: vi.fn(),
+    registerTimerBeforeUnload: vi.fn().mockReturnValue(vi.fn()),
+}));
+
 describe('main entry (Logseq plugin bootstrap)', () => {
     beforeAll(async () => {
         vi.clearAllMocks();
