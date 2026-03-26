@@ -27,16 +27,11 @@
 
 ### Changed
 
-- DnD primitives/components: `Provider`, `Sortable` (`@dnd-kit/svelte` 기반)
-- Design tokens: `transition` (fast, normal, slow), `z_index` (base, above, popover), `shadow` (sm, md, lg)
-- Dark theme shadow values with higher opacity for visibility
-
-### Changed
-
-- DnD library: `svelte-dnd-action` → `@dnd-kit/svelte` + `@dnd-kit/helpers`
-- Styled components CSS: hardcoded values → theme token references (button, card, popover, toggle_input, checkbox_list, text_input, select)
-- `type-check` script: added `svelte-check` for `.svelte` file type validation
-- `exactOptionalPropertyTypes` compatibility fixes (Card, Section, CheckboxList)
+- DnD primitives/components: `Provider`, `Sortable` (`@dnd-kit/svelte` 기반); 라이브러리 `svelte-dnd-action` → `@dnd-kit/svelte` + `@dnd-kit/helpers`
+- Design tokens: `transition` (fast, normal, slow), `z_index` (base, above, popover), `shadow` (sm, md, lg); 다크 테마 shadow 불투명도 상향
+- Styled components CSS: 하드코딩 값 → 테마 토큰 참조 (button, card, popover, toggle_input, checkbox_list, text_input, select)
+- `type-check` 스크립트에 `svelte-check` 추가 (`.svelte` 타입 검증)
+- `exactOptionalPropertyTypes` 호환 수정 (Card, Section, CheckboxList)
 
 ### Removed
 

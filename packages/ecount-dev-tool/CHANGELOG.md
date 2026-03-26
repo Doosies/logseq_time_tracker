@@ -15,32 +15,6 @@
   - 설정 가져오기: JSON 백업 파일 선택 시 위 설정 복원
   - 확장 프로그램 제거/재설치 시 설정 손실 방지
   - 백업 버전 관리(BACKUP_VERSION=1), 미지원 버전 시 에러 반환
-
-### Changed
-
-- ScriptList 수정/삭제 버튼 아이콘 개선
-  - 수정 버튼: `✏` 이모지 → Heroicons solid pencil SVG (fill="currentColor")
-  - 삭제 버튼: `🗑` 이모지 → Heroicons trash SVG (stroke="currentColor")
-  - 플랫폼별 렌더링 일관성 향상, 기존 aria-label 유지
-- 사용자 스크립트 실행 시점을 `document_idle` (페이지 로드 후)로 고정
-  - UI에서 실행 시점 선택 필드 제거
-  - 모든 신규 및 기존 스크립트가 `document_idle`로 실행됨
-  - 이유: 대부분의 사용 사례에서 `document_idle`이 적합하며, UI 단순화로 사용성 개선
-
-### Technical
-
-- `ScriptEditor.svelte`: 실행 시점 Select UI 주석 처리 (복원 가이드 포함)
-- `user_scripts.svelte.ts`: 마이그레이션 로직에서 모든 스크립트를 `document_idle`로 변환
-- `background.test.ts`: `document_start` 관련 테스트 주석 처리
-- 복원 방법: 소스 코드의 `[FEATURE_TOGGLE]` 주석 참조
-
-### Migration
-
-- 기존 `document_start` 스크립트는 자동으로 `document_idle`로 변경됨
-- 동작 차이: 페이지 로드 전 → 페이지 로드 후 실행으로 변경
-
-### Added
-
 - CodeMirror 6 기반 코드 에디터 통합
   - `CodeEditor.svelte`: CodeMirror 6 Svelte 5 래퍼 컴포넌트 신규 추가
   - `ScriptEditor.svelte`, `EditorPage.svelte`: Textarea → CodeEditor 교체
@@ -66,6 +40,14 @@
 
 ### Changed
 
+- ScriptList 수정/삭제 버튼 아이콘 개선
+  - 수정 버튼: `✏` 이모지 → Heroicons solid pencil SVG (fill="currentColor")
+  - 삭제 버튼: `🗑` 이모지 → Heroicons trash SVG (stroke="currentColor")
+  - 플랫폼별 렌더링 일관성 향상, 기존 aria-label 유지
+- 사용자 스크립트 실행 시점을 `document_idle` (페이지 로드 후)로 고정
+  - UI에서 실행 시점 선택 필드 제거
+  - 모든 신규 및 기존 스크립트가 `document_idle`로 실행됨
+  - 이유: 대부분의 사용 사례에서 `document_idle`이 적합하며, UI 단순화로 사용성 개선
 - 스크립트 추가/수정 시 새 탭에서 `editor.html` 열림
 - `UserScriptSection`에서 view_mode 전환 방식 제거
 - 섹션 레지스트리 패턴 도입으로 확장성 개선
@@ -104,6 +86,18 @@
   - tab_service.test.ts: 12개 → 17개 (엣지케이스 추가)
   - server_change_flow.test.ts: 4개 → 10개 (test/zeus/-dev/EC3 환경 서버 변경 플로우)
   - dev_mode_flow.test.ts: 3개 → 7개 (devMode 레거시 분기)
+
+### Technical
+
+- `ScriptEditor.svelte`: 실행 시점 Select UI 주석 처리 (복원 가이드 포함)
+- `user_scripts.svelte.ts`: 마이그레이션 로직에서 모든 스크립트를 `document_idle`로 변환
+- `background.test.ts`: `document_start` 관련 테스트 주석 처리
+- 복원 방법: 소스 코드의 `[FEATURE_TOGGLE]` 주석 참조
+
+### Migration
+
+- 기존 `document_start` 스크립트는 자동으로 `document_idle`로 변경됨
+- 동작 차이: 페이지 로드 전 → 페이지 로드 후 실행으로 변경
 
 ## [2.3.0] - 2026-03-20
 

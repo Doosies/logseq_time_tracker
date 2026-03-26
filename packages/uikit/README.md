@@ -41,7 +41,7 @@ pnpm add @personal/uikit
 
 ### Simple 컴포넌트
 
-Button, ButtonGroup, TextInput, Select, Tooltip는 단일 export로 사용합니다.
+Button, ButtonGroup, TextInput, Textarea, Select, Tooltip, LayoutSwitcher, DatePicker, TimeRangePicker, PromptDialog, ElapsedTimer는 단일 export로 사용합니다.
 
 ---
 
@@ -415,7 +415,7 @@ Card, Section, ToggleInput, Popover, Toast, CheckboxList, Dnd는 namespace expor
 
 ### CheckboxList (Compound)
 
-드래그앤드롭으로 순서 변경이 가능한 체크박스 리스트입니다.
+드래그앤드롭으로 순서 변경이 가능한 체크박스 리스트입니다. 내부적으로 `Dnd.Provider`를 사용합니다.
 
 | Sub-component | 용도 |
 |---------------|------|
@@ -423,37 +423,39 @@ Card, Section, ToggleInput, Popover, Toast, CheckboxList, Dnd는 namespace expor
 | `CheckboxList.Item` | 체크박스 항목 |
 
 **Props:**
-- `CheckboxList.Root`: `items: T[]` (T extends `{ id: string | number }`), `type?: string`, `onconsider`, `onfinalize`, `children`, `class?: string`
-- `CheckboxList.Item`: `checked`, `disabled`, `ontoggle`, `children`, `class?: string`
+- `CheckboxList.Root`: `items: T[]` (T extends `{ id: string | number }`), `onreorder?: (new_items: T[]) => void`, `item` (항목용 스니펫), `class?: string`
+- `CheckboxList.Item`: `checked`, `disabled`, `ontoggle`, `handleAttach?` (Root의 `item` 스니펫에서 전달), `children`, `class?: string` 및 기타 HTML div 속성
+
+**`item` 스니펫 인자:** `{ item: T; index: number; handleAttach: unknown }` — `handleAttach`를 `CheckboxList.Item`에 넘겨 드래그 핸들을 연결합니다.
 
 **예제:**
 ```svelte
 <script>
   import * as CheckboxList from '@personal/uikit';
-  import type { DndEvent } from '@personal/uikit';
-  
+
   let items = $state([
     { id: 'a', label: 'Item A', visible: true },
     { id: 'b', label: 'Item B', visible: false },
   ]);
-  
-  function handleConsider(e: CustomEvent<DndEvent<typeof items[0]>>) {
-    items = e.detail.items;
-  }
-  function handleFinalize(e: CustomEvent<DndEvent<typeof items[0]>>) {
-    items = e.detail.items;
+
+  function handleReorder(new_items: typeof items) {
+    items = new_items;
   }
   function toggle(id: string) {
-    items = items.map(i => i.id === id ? { ...i, visible: !i.visible } : i);
+    items = items.map((i) => (i.id === id ? { ...i, visible: !i.visible } : i));
   }
 </script>
 
-<CheckboxList.Root {items} onconsider={handleConsider} onfinalize={handleFinalize}>
-  {#each items as item (item.id)}
-    <CheckboxList.Item checked={item.visible} ontoggle={() => toggle(item.id)}>
+<CheckboxList.Root {items} onreorder={handleReorder}>
+  {#snippet item({ item, index, handleAttach })}
+    <CheckboxList.Item
+      {handleAttach}
+      checked={item.visible}
+      ontoggle={() => toggle(item.id)}
+    >
       {item.label}
     </CheckboxList.Item>
-  {/each}
+  {/snippet}
 </CheckboxList.Root>
 ```
 
@@ -461,53 +463,45 @@ Card, Section, ToggleInput, Popover, Toast, CheckboxList, Dnd는 namespace expor
 
 ### Dnd (Compound)
 
-드래그앤드롭 영역을 구성하는 컴포넌트입니다.
+`@dnd-kit/svelte` 기반 드래그앤드롭입니다. 목록 컨테이너는 `Dnd.Provider`, 각 행은 `Dnd.Sortable`로 구성합니다.
 
 | Sub-component | 용도 |
 |---------------|------|
-| `Dnd.Zone` | DnD 영역 컨테이너 (필수) |
-| `Dnd.Row` | 드래그 가능한 행 |
-| `Dnd.Handle` | 드래그 핸들 |
+| `Dnd.Provider` | 드롭 컨텍스트·센서 (필수) |
+| `Dnd.Sortable` | 단일 드래그 가능 항목 (`id` / `index`로 식별) |
 
 **Props:**
-- `Dnd.Zone`: `items: T[]`, `type?: string`, `flipDurationMs?: number`, `dragDisabled?: boolean`, `dropTargetStyle?: Record<string, string>`, `onconsider`, `onfinalize`, `children`, `class?: string`
-- `Dnd.Row`: `children`, `class?: string`
-- `Dnd.Handle`: `variant?: 'bar' | 'icon'`, `label?: string`
-
-**타입:**
-```typescript
-// svelte-dnd-action에서 re-export
-type DndEvent<T> = { ... };
-```
+- `Dnd.Provider`: `items: T[]` (T extends `{ id: string | number }`), `onreorder?: (new_items: T[]) => void`, `children`, `class?: string`, `activation_distance?: number` (포인터 활성화 최소 이동 거리(px); 지정 시 거리 기반 PointerSensor 사용)
+- `Dnd.Sortable`: `id`, `index`, `children` — `children`은 스니펫이며 인자로 `{ handleAttach }`를 받습니다. `handleAttach`는 핸들 요소에 `{@attach handleAttach}`로 연결합니다.
 
 **예제:**
 ```svelte
 <script>
   import * as Dnd from '@personal/uikit';
-  import type { DndEvent } from '@personal/uikit';
-  
+
   let items = $state([
     { id: '1', label: 'Row 1' },
     { id: '2', label: 'Row 2' },
     { id: '3', label: 'Row 3' },
   ]);
-  
-  function handleConsider(e: CustomEvent<DndEvent<typeof items[0]>>) {
-    items = e.detail.items;
-  }
-  function handleFinalize(e: CustomEvent<DndEvent<typeof items[0]>>) {
-    items = e.detail.items;
+
+  function handleReorder(new_items: typeof items) {
+    items = new_items;
   }
 </script>
 
-<Dnd.Zone {items} onconsider={handleConsider} onfinalize={handleFinalize}>
-  {#each items as item (item.id)}
-    <Dnd.Row>
-      <Dnd.Handle variant="icon" label="드래그하여 순서 변경" />
-      <span>{item.label}</span>
-    </Dnd.Row>
+<Dnd.Provider {items} onreorder={handleReorder}>
+  {#each items as item, index (item.id)}
+    <Dnd.Sortable id={item.id} {index}>
+      {#snippet children({ handleAttach })}
+        <div style="display: flex; align-items: center; gap: 0.5em;">
+          <span data-drag-handle aria-label="드래그하여 순서 변경" {@attach handleAttach}>⠿</span>
+          <span>{item.label}</span>
+        </div>
+      {/snippet}
+    </Dnd.Sortable>
   {/each}
-</Dnd.Zone>
+</Dnd.Provider>
 ```
 
 ---
@@ -538,7 +532,7 @@ Svelte `use:` 액션으로 재사용 가능한 동작을 제공합니다.
 
 ### blockDragFromInteractive
 
-DnD 영역에서 버튼, input 등 인터랙티브 요소에서 드래그가 시작되지 않도록 막습니다. `dragHandleSelector`로 지정한 핸들에서만 드래그를 허용합니다.
+DnD 영역에서 버튼, input 등 인터랙티브 요소에서 드래그가 시작되지 않도록 막습니다. `dragHandleSelector`로 지정한 핸들에서만 드래그를 허용합니다. `Dnd.Provider` 루트에 직접 `use:`를 붙일 수 없으므로, 감싸는 요소에 액션을 적용합니다.
 
 **Options:**
 - `dragHandleSelector?: string` - 드래그 허용 요소 선택자
@@ -546,17 +540,34 @@ DnD 영역에서 버튼, input 등 인터랙티브 요소에서 드래그가 시
 
 ```svelte
 <script>
-  import { blockDragFromInteractive, Dnd } from '@personal/uikit';
+  import { blockDragFromInteractive } from '@personal/uikit';
+  import * as Dnd from '@personal/uikit';
+
+  let items = $state([
+    { id: '1', label: 'Row 1' },
+    { id: '2', label: 'Row 2' },
+  ]);
+
+  function handleReorder(new_items: typeof items) {
+    items = new_items;
+  }
 </script>
 
-<Dnd.Zone {items} use:blockDragFromInteractive={{ dragHandleSelector: '.drag-handle' }}>
-  {#each items as item (item.id)}
-    <Dnd.Row>
-      <div class="drag-handle">⋮⋮</div>
-      <span>{item.label}</span>
-    </Dnd.Row>
-  {/each}
-</Dnd.Zone>
+<div use:blockDragFromInteractive={{ dragHandleSelector: '.drag-handle' }}>
+  <Dnd.Provider {items} onreorder={handleReorder}>
+    {#each items as item, index (item.id)}
+      <Dnd.Sortable id={item.id} {index}>
+        {#snippet children({ handleAttach })}
+          <div style="display: flex; align-items: center; gap: 0.5em;">
+            <span class="drag-handle" aria-label="드래그" {@attach handleAttach}>⋮⋮</span>
+            <button type="button">편집</button>
+            <span>{item.label}</span>
+          </div>
+        {/snippet}
+      </Dnd.Sortable>
+    {/each}
+  </Dnd.Provider>
+</div>
 ```
 
 ---
@@ -684,29 +695,47 @@ src/
 
 ## 📦 Export 구조
 
-### 메인 Export (`@personal/uikit`)
+### 메인 진입점 (`src/index.ts` → `@personal/uikit`)
 
 ```typescript
-// Simple 컴포넌트
-export { Button, ButtonGroup, TextInput, Select, Tooltip } from './components';
-
-// Compound 컴포넌트 (namespace)
-export * as Card from './components/Card';
-export * as Section from './components/Section';
-export * as ToggleInput from './components/ToggleInput';
-export * as Popover from './components/Popover';
-export * as Toast from './components/Toast';
-export * as CheckboxList from './components/CheckboxList';
-export * as Dnd from './components/Dnd';
-export type { DndEvent } from './components/Dnd';
-
-// Actions
-export { clickOutside, blockDragFromInteractive } from './actions';
-export type { ClickOutsideCallback, BlockDragOptions } from './actions';
-
-// 타입
-export type { ButtonVariant, ButtonSize, SelectOption, TooltipPosition } from './design/types';
+export * from './components';
+export * from './actions';
+export type {
+  ButtonVariant,
+  ButtonSize,
+  SelectOption,
+  TooltipPosition,
+  LayoutMode,
+  ToastLevel,
+} from './design/types';
 ```
+
+### 컴포넌트 배럴 (`src/components/index.ts`)
+
+```typescript
+export { LayoutSwitcher } from '../primitives/LayoutSwitcher';
+export { Button } from './Button';
+export { Select } from './Select';
+export { TextInput } from './TextInput';
+export { Textarea } from './Textarea';
+export * as ToggleInput from './ToggleInput';
+export * as Section from './Section';
+export { ButtonGroup } from './ButtonGroup';
+export { Tooltip } from './Tooltip';
+export * as Card from './Card';
+export * as Dnd from './Dnd';
+export * as Popover from './Popover';
+export * as Toast from './Toast';
+export * as CheckboxList from './CheckboxList';
+export { DatePicker } from './DatePicker';
+export { TimeRangePicker } from './TimeRangePicker';
+export { PromptDialog } from './PromptDialog';
+export { ElapsedTimer } from './ElapsedTimer';
+```
+
+### Actions (`src/actions/index.ts` 경유)
+
+`clickOutside`, `blockDragFromInteractive`, `focusTrap` 및 관련 타입이 `export * from './actions'`로 함께 노출됩니다.
 
 ### 디자인 시스템 Export (`@personal/uikit/design`)
 

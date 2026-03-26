@@ -367,7 +367,7 @@ interface ParsedUrl {
   current_server: string;
   v5_domain: string;
   v3_domain: string;
-  zeus_number?: string;
+  zeus_number: string;
   url: URL;
 }
 
@@ -387,7 +387,7 @@ interface PageInfo {
   hasECountApp: boolean;
   hasGetContext: boolean;
   hasConfig: boolean;
-  zoneNum: string;
+  zoneNum: string | null;
   error: string | null;
 }
 
@@ -410,11 +410,11 @@ interface TabState {
 pnpm test
 ```
 
-- `services/url_service.test.ts` - URL 파싱/빌드 (31개)
-- `services/tab_service.test.ts` - Chrome Tab API (12개)
-- `services/page_actions.test.ts` - 페이지 액션 (13개)
+- `services/url_service.test.ts` - URL 파싱/빌드 (70개)
+- `services/tab_service.test.ts` - Chrome Tab API (17개)
+- `services/page_actions.test.ts` - 페이지 액션 (30개)
 - `stores/current_tab.svelte.test.ts` - 탭 상태 관리 (6개)
-- `test/integration/` - 통합 테스트 (10개)
+- `test/integration/` - 통합 테스트 (20개: `server_change_flow` 10, `dev_mode_flow` 7, `tab_initialization_flow` 3)
 
 ### Storybook
 
@@ -429,10 +429,13 @@ pnpm storybook
 
 ## 버전 히스토리
 
-- **v2.4.0**: Compound Component 마이그레이션 + 섹션 관리 기능 (DnD, 숨기기/보이기, 접기/펼치기)
-- **v2.3.0**: Storybook CSF3 마이그레이션, subpath imports (`#`) 전환
-- **v2.2.0**: TypeScript + Svelte 5 전환
-- **v2.1.0**: 기존 JavaScript 버전
+`CHANGELOG.md` 기준 최신 릴리스: **2.3.0** (2026-03-20).
+
+- **v2.3.0**: 설정 자동 동기화(`chrome.storage.sync`), 첫 설치 시 백업 가져오기 온보딩
+- **v2.2.2**: 사용자 스크립트 실행 시점(`document_start` / `document_idle`) 선택(이후 릴리스에서 `document_idle` 고정 예정은 CHANGELOG Unreleased 참고)
+- **v0.3.x**: 섹션 관리(DnD, 숨김/보이기, 접기/펼치기), Compound Component·Popover 등 UI 전환
+- **v0.2.0**: Vanilla JavaScript → Svelte 5 + TypeScript 리팩토링
+- **v0.1.0**: 초기 Chrome 확장(Quick Login, EC Server Manager 등)
 
 ## 라이선스
 
