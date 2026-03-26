@@ -425,3 +425,50 @@ npm test -- --ui
 - [ ] E2E 테스트: 핵심 기능 커버 (선택적)
 - [ ] 모든 테스트 통과
 - [ ] 전체 커버리지 80%+
+- [ ] 모든 테스트에 유즈케이스 ID(UC-*) 포함
+
+---
+
+## Test ID 기반 워크플로우
+
+### ID 체계
+
+`UC-{영역}-{번호}` (3자리 zero-padded)
+
+| 영역 | 대상 |
+|---|---|
+| TIMER | TimerService |
+| JOB | JobService |
+| CAT | CategoryService |
+| ENTRY | TimeEntryService |
+| UI | Svelte 컴포넌트 |
+| E2E | End-to-End 시나리오 |
+| VRT | Visual Regression Testing |
+
+> 전체 영역 목록: `docs/time-tracker/08-test-usecases.md` 또는 `docs/time-tracker/07-test-strategy.md` 참조
+
+### 워크플로우
+
+1. **스펙 먼저**: 해당 패키지의 `__test_specs__/{level}/{domain}.md`에서 유즈케이스 ID 확인
+2. **ID 없으면**: BDD 명세 먼저 작성 → ID 부여 → 테스트 코드 작성
+3. **테스트 코드에 ID 포함**: `it('UC-UI-024: on_reason_modal_change 콜백 모드', ...)`
+
+### SSOT
+
+- **상세 BDD 명세**: 각 패키지의 `__test_specs__/` 디렉토리
+- **Phase별 인덱스**: `docs/time-tracker/08-test-usecases.md`
+
+### 예시
+
+```typescript
+// ✅ 좋은 예: ID 포함
+it('UC-TIMER-001: 새 타이머 시작 시 active_job이 설정된다', async () => {
+    await timer_service.start(job, category, '테스트');
+    expect(timer_store.active_job).toEqual(job);
+});
+
+// ❌ 나쁜 예: ID 누락
+it('새 타이머 시작 시 active_job이 설정된다', async () => {
+    // ...
+});
+```

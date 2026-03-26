@@ -13,15 +13,16 @@ description: 테스트 코드 품질 검증 - 가독성, 유지보수성, 독립
 
 **체크리스트:**
 - [ ] **테스트 설명이 한글로 작성되었는가?** (필수!)
+- [ ] **유즈케이스 ID(UC-*)가 테스트 설명에 포함되었는가?** (필수!)
 - [ ] **테스트명이 명확한가?** (기대 동작 + 조건)
 - [ ] **AAA 패턴을 따르는가?** (Arrange-Act-Assert)
 - [ ] **불필요한 코드가 없는가?**
 - [ ] **적절한 주석이 있는가?** (복잡한 로직만)
 
-**✅ 좋은 예 (한글):**
+**✅ 좋은 예 (한글 + UC ID):**
 ```typescript
 describe('App Component', () => {
-  it('제목을 렌더링해야 함', () => {
+  it('UC-UI-001: 제목을 렌더링해야 함', () => {
     // Arrange (준비)
     render(<App />);
     
@@ -31,7 +32,7 @@ describe('App Component', () => {
     expect(screen.getByText('Logseq Personal Plugin')).toBeInTheDocument();
   });
   
-  it('+ 버튼 클릭 시 카운트가 증가해야 함', () => {
+  it('UC-UI-002: + 버튼 클릭 시 카운트가 증가해야 함', () => {
     // Arrange
     render(<App />);
     const increment_button = screen.getByText('+');
@@ -347,6 +348,7 @@ describe('calculateTotal', () => {
 
 ### 기본 요구사항
 - [ ] **테스트 설명이 한글로 작성되었는가?** (필수!)
+- [ ] **유즈케이스 ID(UC-*)가 테스트 설명에 포함되었는가?** (필수!)
 - [ ] **모든 테스트가 통과하는가?**
 - [ ] **커버리지 80% 이상인가?**
 - [ ] **Linter 오류가 없는가?** (테스트 코드도!)
