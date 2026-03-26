@@ -4,7 +4,11 @@
     "description": "Time Tracker core library - domain logic, types, and Svelte 5 UI components",
     "type": "module",
     "exports": {
-        ".": "./src/index.ts"
+        ".": {
+            "types": "./src/index.ts",
+            "svelte": "./src/index.ts",
+            "default": "./src/index.ts"
+        }
     },
     "scripts": {
         "dev": "vite dev",

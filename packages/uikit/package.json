@@ -4,8 +4,15 @@
     "description": "Shared UI component library with Svelte 5 + vanilla-extract",
     "type": "module",
     "exports": {
-        ".": "./src/index.ts",
-        "./design": "./src/design/index.ts"
+        ".": {
+            "types": "./src/index.ts",
+            "svelte": "./src/index.ts",
+            "default": "./src/index.ts"
+        },
+        "./design": {
+            "types": "./src/design/index.ts",
+            "default": "./src/design/index.ts"
+        }
     },
     "scripts": {
         "dev": "vite dev",
