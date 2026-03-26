@@ -2,7 +2,7 @@
     import type { AppContext } from '../../app/context';
     import type { Job } from '../../types/job';
     import type { Category } from '../../types/category';
-    import TimerDisplay from '../Timer/TimerDisplay.svelte';
+    import { ElapsedTimer } from '@personal/uikit';
     import ReasonModal from '../ReasonModal/ReasonModal.svelte';
     import * as css from './toolbar.css';
 
@@ -243,9 +243,9 @@
                 {#if timer_store.state.active_category}
                     <div class={css.dropdown_sub}>{timer_store.state.active_category.name}</div>
                 {/if}
-                <TimerDisplay
+                <ElapsedTimer
                     accumulated_ms={timer_store.state.accumulated_ms}
-                    current_segment_start={timer_store.state.current_segment_start}
+                    segment_start={timer_store.state.current_segment_start}
                     is_paused={timer_store.state.is_paused}
                 />
             {:else}

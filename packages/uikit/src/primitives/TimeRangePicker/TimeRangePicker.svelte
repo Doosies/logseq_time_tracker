@@ -1,16 +1,29 @@
 <script lang="ts">
-    import DatePicker from '../DatePicker/DatePicker.svelte';
-    import * as css from './time_range_picker.css';
+    import { DatePicker } from '../DatePicker';
+    import type { DatePickerClasses } from '../DatePicker/types';
+    import type { TimeRangePickerClasses } from './types';
+
+    interface Props {
+        started_at: string;
+        ended_at: string;
+        onChange: (start: string, end: string) => void;
+        classes?: TimeRangePickerClasses | undefined;
+        date_picker_classes?: DatePickerClasses | undefined;
+        start_label?: string | undefined;
+        end_label?: string | undefined;
+        error_message?: string | undefined;
+    }
 
     let {
         started_at,
         ended_at,
         onChange,
-    }: {
-        started_at: string;
-        ended_at: string;
-        onChange: (start: string, end: string) => void;
-    } = $props();
+        classes: class_map = {},
+        date_picker_classes = {},
+        start_label = '시작',
+        end_label = '종료',
+        error_message = '시작 시각은 종료 시각보다 이전이거나 같아야 합니다',
+    }: Props = $props();
 
     function formatYmdLocal(d: Date): string {
         const y = d.getFullYear();
@@ -93,24 +106,28 @@
         }
         onChange(s_iso, e_iso);
     });
+
+    const root_combined_class = $derived(
+        [class_map.root, !is_valid ? class_map.root_invalid : undefined].filter(Boolean).join(' '),
+    );
 </script>
 
-<div class={`${css.root}${!is_valid ? ` ${css.root_invalid}` : ''}`}>
-    <div class={css.row}>
-        <span class={css.label} id="time-range-start-label">시작</span>
-        <div class={css.time_row} aria-labelledby="time-range-start-label">
-            <DatePicker value={start_date} onSelect={(d) => (start_date = d)} />
-            <input class={css.time_input} type="time" bind:value={start_time} aria-label="시작 시각" />
+<div class={root_combined_class}>
+    <div class={class_map.row}>
+        <span class={class_map.label} id="time-range-start-label">{start_label}</span>
+        <div class={class_map.time_row} aria-labelledby="time-range-start-label">
+            <DatePicker value={start_date} onSelect={(d) => (start_date = d)} classes={date_picker_classes} />
+            <input class={class_map.time_input} type="time" bind:value={start_time} aria-label="시작 시각" />
         </div>
     </div>
-    <div class={css.row}>
-        <span class={css.label} id="time-range-end-label">종료</span>
-        <div class={css.time_row} aria-labelledby="time-range-end-label">
-            <DatePicker value={end_date} onSelect={(d) => (end_date = d)} />
-            <input class={css.time_input} type="time" bind:value={end_time} aria-label="종료 시각" />
+    <div class={class_map.row}>
+        <span class={class_map.label} id="time-range-end-label">{end_label}</span>
+        <div class={class_map.time_row} aria-labelledby="time-range-end-label">
+            <DatePicker value={end_date} onSelect={(d) => (end_date = d)} classes={date_picker_classes} />
+            <input class={class_map.time_input} type="time" bind:value={end_time} aria-label="종료 시각" />
         </div>
     </div>
     {#if !is_valid}
-        <p class={css.error} role="alert">시작 시각은 종료 시각보다 이전이거나 같아야 합니다</p>
+        <p class={class_map.error} role="alert">{error_message}</p>
     {/if}
 </div>

@@ -6,12 +6,7 @@ import { CategoryService } from '../../services/category_service';
 import type { TimeEntry } from '../../types/time_entry';
 import { generateId } from '../../utils';
 
-function makeTimeEntrySeed(
-    job_id: string,
-    category_id: string,
-    index: number,
-    base_ms: number,
-): TimeEntry {
+function makeTimeEntrySeed(job_id: string, category_id: string, index: number, base_ms: number): TimeEntry {
     const started = new Date(base_ms + index * 1000).toISOString();
     const ended = new Date(base_ms + index * 1000 + 60_000).toISOString();
     const duration_seconds = 60;

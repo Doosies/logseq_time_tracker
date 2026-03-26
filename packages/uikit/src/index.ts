@@ -5,4 +5,4 @@ export * from './components';
 export * from './actions';
 
 // Export design layer types
-export type { ButtonVariant, ButtonSize, SelectOption, TooltipPosition } from './design/types';
+export type { ButtonVariant, ButtonSize, SelectOption, TooltipPosition, LayoutMode, ToastLevel } from './design/types';

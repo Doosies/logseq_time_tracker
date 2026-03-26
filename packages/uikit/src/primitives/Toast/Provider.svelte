@@ -1,15 +1,17 @@
 <script lang="ts">
     import { setContext } from 'svelte';
     import type { Snippet } from 'svelte';
+    import type { ToastLevel } from '../../design/types';
 
     interface ToastItem {
         id: number;
         message: string;
+        level: ToastLevel;
     }
 
     interface ToastContext {
         get toasts(): ToastItem[];
-        show: (message: string) => void;
+        show: (message: string, level?: ToastLevel) => void;
         hide: (id?: number) => void;
     }
 
@@ -22,9 +24,9 @@
     let toasts = $state<ToastItem[]>([]);
     let next_id = $state(0);
 
-    function show(message: string): void {
+    function show(message: string, level: ToastLevel = 'info'): void {
         const id = next_id++;
-        toasts = [...toasts, { id, message }];
+        toasts = [...toasts, { id, message, level }];
         setTimeout(() => {
             hide(id);
         }, duration);

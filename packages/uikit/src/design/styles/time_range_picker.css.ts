@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { theme_vars } from '../theme/contract.css';
 
 export const root = style({
     display: 'flex',
@@ -15,9 +16,9 @@ export const row = style({
 });
 
 export const label = style({
-    fontSize: '0.75rem',
-    fontWeight: 600,
-    color: '#374151',
+    fontSize: theme_vars.font.size.xs,
+    fontWeight: theme_vars.font.weight.bold,
+    color: theme_vars.color.text,
 });
 
 export const time_row = style({
@@ -29,20 +30,22 @@ export const time_row = style({
 
 export const time_input = style({
     padding: '6px 8px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    fontSize: '0.875rem',
+    borderRadius: theme_vars.radius.sm,
+    border: `1px solid ${theme_vars.color.border}`,
+    fontSize: theme_vars.font.size.sm,
     minWidth: '120px',
+    backgroundColor: theme_vars.color.background,
+    color: theme_vars.color.text,
 });
 
 export const error = style({
-    fontSize: '0.75rem',
-    color: '#b91c1c',
+    fontSize: theme_vars.font.size.xs,
+    color: theme_vars.color.error,
 });
 
 export const root_invalid = style({
-    outline: '1px solid #fca5a5',
+    outline: `1px solid ${theme_vars.color.error}`,
     outlineOffset: '4px',
-    borderRadius: '6px',
+    borderRadius: theme_vars.radius.md,
     padding: '8px',
 });

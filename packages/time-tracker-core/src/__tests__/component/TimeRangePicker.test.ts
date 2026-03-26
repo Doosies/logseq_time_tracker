@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { tick } from 'svelte';
-import TimeRangePicker from '../../components/TimeRangePicker/TimeRangePicker.svelte';
+import { TimeRangePicker } from '@personal/uikit';
 
 describe('TimeRangePicker', () => {
     afterEach(() => {

@@ -1,4 +1,5 @@
 import { style } from '@vanilla-extract/css';
+import { theme_vars } from '../theme/contract.css';
 
 export const root = style({
     position: 'relative',
@@ -12,29 +13,30 @@ export const trigger = style({
     justifyContent: 'space-between',
     width: '100%',
     padding: '8px 12px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    backgroundColor: '#fff',
-    fontSize: '0.875rem',
+    borderRadius: theme_vars.radius.sm,
+    border: `1px solid ${theme_vars.color.border}`,
+    backgroundColor: theme_vars.color.background,
+    fontSize: theme_vars.font.size.sm,
     cursor: 'pointer',
     textAlign: 'left',
+    color: theme_vars.color.text,
     ':focus-visible': {
-        outline: '2px solid #3b82f6',
+        outline: `2px solid ${theme_vars.color.primary}`,
         outlineOffset: '2px',
     },
 });
 
 export const panel = style({
     position: 'absolute',
-    zIndex: 50,
+    zIndex: theme_vars.z_index.popover,
     top: '100%',
     left: 0,
     marginTop: '4px',
     padding: '10px',
-    borderRadius: '4px',
-    border: '1px solid #ccc',
-    backgroundColor: '#fff',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+    borderRadius: theme_vars.radius.sm,
+    border: `1px solid ${theme_vars.color.border}`,
+    backgroundColor: theme_vars.color.background,
+    boxShadow: theme_vars.shadow.md,
 });
 
 export const header = style({
@@ -46,11 +48,12 @@ export const header = style({
 
 export const nav_button = style({
     padding: '4px 10px',
-    borderRadius: '4px',
-    border: '1px solid #ddd',
-    backgroundColor: '#f9fafb',
+    borderRadius: theme_vars.radius.sm,
+    border: `1px solid ${theme_vars.color.border}`,
+    backgroundColor: theme_vars.color.surface,
     cursor: 'pointer',
-    fontSize: '0.875rem',
+    fontSize: theme_vars.font.size.sm,
+    color: theme_vars.color.text,
     ':disabled': {
         opacity: 0.4,
         cursor: 'not-allowed',
@@ -58,8 +61,9 @@ export const nav_button = style({
 });
 
 export const month_label = style({
-    fontSize: '0.875rem',
-    fontWeight: 600,
+    fontSize: theme_vars.font.size.sm,
+    fontWeight: theme_vars.font.weight.bold,
+    color: theme_vars.color.text,
 });
 
 export const weekdays = style({
@@ -67,8 +71,8 @@ export const weekdays = style({
     gridTemplateColumns: 'repeat(7, 1fr)',
     gap: '2px',
     marginBottom: '4px',
-    fontSize: '0.6875rem',
-    color: '#6b7280',
+    fontSize: theme_vars.font.size.xs,
+    color: theme_vars.color.text_secondary,
     textAlign: 'center',
 });
 
@@ -81,20 +85,21 @@ export const grid = style({
 
 export const day_cell = style({
     padding: '6px 0',
-    borderRadius: '4px',
+    borderRadius: theme_vars.radius.sm,
     border: '1px solid transparent',
     backgroundColor: 'transparent',
     fontSize: '0.8125rem',
     cursor: 'pointer',
     textAlign: 'center',
+    color: theme_vars.color.text,
     ':focus-visible': {
-        outline: '2px solid #3b82f6',
+        outline: `2px solid ${theme_vars.color.primary}`,
         outlineOffset: '1px',
     },
 });
 
 export const day_outside_month = style({
-    color: '#bbb',
+    color: theme_vars.color.text_secondary,
 });
 
 export const day_disabled = style({
@@ -104,11 +109,11 @@ export const day_disabled = style({
 });
 
 export const day_selected = style({
-    backgroundColor: '#3b82f6',
-    color: '#fff',
-    fontWeight: 600,
+    backgroundColor: theme_vars.color.primary,
+    color: theme_vars.color.background,
+    fontWeight: theme_vars.font.weight.bold,
 });
 
 export const day_today = style({
-    borderColor: '#93c5fd',
+    borderColor: theme_vars.color.primary_hover,
 });

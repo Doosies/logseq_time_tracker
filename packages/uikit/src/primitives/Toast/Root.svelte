@@ -1,9 +1,11 @@
 <script lang="ts">
     import { getContext } from 'svelte';
+    import type { ToastLevel } from '../../design/types';
 
     interface ToastItem {
         id: number;
         message: string;
+        level: ToastLevel;
     }
 
     interface ToastContext {
@@ -13,15 +15,16 @@
 
     interface Props {
         class?: string;
+        item_class?: string;
     }
 
-    let { class: extra_class }: Props = $props();
+    let { class: extra_class, item_class }: Props = $props();
     const ctx = getContext<ToastContext>('toast');
 </script>
 
-<div aria-live="polite" aria-relevant="additions">
+<div class={extra_class} aria-live="polite" aria-relevant="additions">
     {#each ctx.toasts as toast (toast.id)}
-        <div class={extra_class} role="status">
+        <div class={item_class} role="status" data-level={toast.level}>
             {toast.message}
         </div>
     {/each}

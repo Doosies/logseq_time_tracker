@@ -2,7 +2,7 @@ import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup, fireEvent } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import ReasonModal from '../../components/ReasonModal/ReasonModal.svelte';
-import TimerDisplay from '../../components/Timer/TimerDisplay.svelte';
+import { ElapsedTimer } from '@personal/uikit';
 import Timer from '../../components/Timer/Timer.svelte';
 import { createTimerStore } from '../../stores/timer_store.svelte';
 import { createJobStore } from '../../stores/job_store.svelte';
@@ -92,10 +92,10 @@ describe('Accessibility', () => {
     });
 
     it('UC-A11Y-004: Timer 컴포넌트 ARIA 역할 — role=timer, aria-live, aria-label', () => {
-        const { getByRole } = render(TimerDisplay, {
+        const { getByRole } = render(ElapsedTimer, {
             props: {
                 accumulated_ms: 0,
-                current_segment_start: null,
+                segment_start: null,
                 is_paused: true,
             },
         });

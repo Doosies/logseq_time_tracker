@@ -19,5 +19,6 @@ export default defineConfig(({ mode }) => ({
     test: {
         // Playwright E2E는 `npx playwright test`로만 실행 (Vitest와 러너가 다름)
         exclude: ['**/node_modules/**', '**/dist/**', '**/e2e/**'],
+        setupFiles: ['./src/test/setup.ts'],
     },
 }));

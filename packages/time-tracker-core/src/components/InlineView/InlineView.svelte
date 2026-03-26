@@ -5,7 +5,7 @@
     import { ValidationError, StorageError } from '../../errors';
     import { generateId, sanitizeText } from '../../utils';
     import { MAX_TITLE_LENGTH } from '../../constants/config';
-    import TimerDisplay from '../Timer/TimerDisplay.svelte';
+    import { ElapsedTimer } from '@personal/uikit';
     import * as css from './inline_view.css';
 
     const LOGSEQ_SYSTEM_KEY = 'logseq';
@@ -217,9 +217,9 @@
         <div class={css.active_block} aria-live="polite">
             <span class={css.muted}>진행 중</span>
             <strong>{timer_store.state.active_job.title}</strong>
-            <TimerDisplay
+            <ElapsedTimer
                 accumulated_ms={timer_store.state.accumulated_ms}
-                current_segment_start={timer_store.state.current_segment_start}
+                segment_start={timer_store.state.current_segment_start}
                 is_paused={timer_store.state.is_paused}
             />
         </div>

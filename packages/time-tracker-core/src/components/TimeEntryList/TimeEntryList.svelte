@@ -3,7 +3,7 @@
     import type { TimeEntry } from '../../types/time_entry';
     import type { Job } from '../../types/job';
     import type { Category } from '../../types/category';
-    import { DatePicker } from '../DatePicker';
+    import { DatePicker } from '@personal/uikit';
     import { JobSelector } from '../JobSelector';
 
     let {

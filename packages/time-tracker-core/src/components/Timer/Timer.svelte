@@ -1,5 +1,5 @@
 <script lang="ts">
-    import TimerDisplay from './TimerDisplay.svelte';
+    import { ElapsedTimer } from '@personal/uikit';
     import TimerButton from './TimerButton.svelte';
     import * as css from './timer.css';
     import type { TimerStore } from '../../stores/timer_store.svelte';
@@ -52,17 +52,13 @@
         </div>
     {/if}
     {#if is_viewing_active}
-        <TimerDisplay
+        <ElapsedTimer
             accumulated_ms={timer_store.state.accumulated_ms}
-            current_segment_start={timer_store.state.current_segment_start}
+            segment_start={timer_store.state.current_segment_start}
             is_paused={timer_store.state.is_paused}
         />
     {:else}
-        <TimerDisplay
-            accumulated_ms={selected_job_total_seconds * 1000}
-            current_segment_start={null}
-            is_paused={true}
-        />
+        <ElapsedTimer accumulated_ms={selected_job_total_seconds * 1000} segment_start={null} is_paused={true} />
     {/if}
     <TimerButton
         {is_viewing_active}

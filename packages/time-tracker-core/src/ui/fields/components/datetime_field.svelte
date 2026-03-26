@@ -1,5 +1,5 @@
 <script lang="ts">
-    import DatePicker from '../../../components/DatePicker/DatePicker.svelte';
+    import { DatePicker } from '@personal/uikit';
     import * as css from './field_primitives.css';
     import type { DataField } from '../../../types/meta';
 

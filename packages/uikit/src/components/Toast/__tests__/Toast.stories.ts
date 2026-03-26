@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/svelte-vite';
 import { expect, within, userEvent } from 'storybook/test';
 import ToastStoryWrapper from './ToastStoryWrapper.svelte';
+import ToastLevelStoryWrapper from './ToastLevelStoryWrapper.svelte';
 
 const meta = {
     component: ToastStoryWrapper,
@@ -58,5 +59,49 @@ export const ToastHasContent: Story = {
         await userEvent.click(trigger);
         const status = canvas.getByRole('status');
         await expect(status).toHaveTextContent('에러 메시지입니다.');
+    },
+};
+
+export const ToastLevelInfo: Story = {
+    render: () => ({ Component: ToastLevelStoryWrapper }),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: '토스트 info 표시' }));
+        const status = canvas.getByRole('status');
+        await expect(status).toHaveAttribute('data-level', 'info');
+        await expect(status).toHaveTextContent('info 메시지');
+    },
+};
+
+export const ToastLevelSuccess: Story = {
+    render: () => ({ Component: ToastLevelStoryWrapper }),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: '토스트 success 표시' }));
+        const status = canvas.getByRole('status');
+        await expect(status).toHaveAttribute('data-level', 'success');
+        await expect(status).toHaveTextContent('success 메시지');
+    },
+};
+
+export const ToastLevelWarning: Story = {
+    render: () => ({ Component: ToastLevelStoryWrapper }),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: '토스트 warning 표시' }));
+        const status = canvas.getByRole('status');
+        await expect(status).toHaveAttribute('data-level', 'warning');
+        await expect(status).toHaveTextContent('warning 메시지');
+    },
+};
+
+export const ToastLevelError: Story = {
+    render: () => ({ Component: ToastLevelStoryWrapper }),
+    play: async ({ canvasElement }) => {
+        const canvas = within(canvasElement);
+        await userEvent.click(canvas.getByRole('button', { name: '토스트 error 표시' }));
+        const status = canvas.getByRole('status');
+        await expect(status).toHaveAttribute('data-level', 'error');
+        await expect(status).toHaveTextContent('error 메시지');
     },
 };

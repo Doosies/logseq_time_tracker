@@ -9,7 +9,7 @@
     import { MAX_NOTE_LENGTH } from '../../constants/config';
     import { JobSelector } from '../JobSelector';
     import { CategorySelector } from '../CategorySelector';
-    import { TimeRangePicker } from '../TimeRangePicker';
+    import { TimeRangePicker } from '@personal/uikit';
     import { OverlapResolutionModal } from '../OverlapResolutionModal';
 
     let {

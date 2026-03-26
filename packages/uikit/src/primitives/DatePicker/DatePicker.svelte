@@ -1,20 +1,30 @@
 <script lang="ts">
     import { SvelteDate } from 'svelte/reactivity';
-    import * as css from './date_picker.css';
+    import type { DatePickerClasses } from './types';
 
-    const WEEKDAY_LABELS = ['월', '화', '수', '목', '금', '토', '일'] as const;
-
-    let {
-        value,
-        onSelect,
-        min,
-        max,
-    }: {
+    interface Props {
         value: string | null;
         onSelect: (date: string) => void;
-        min?: string;
-        max?: string;
-    } = $props();
+        min?: string | undefined;
+        max?: string | undefined;
+        locale?: string | undefined;
+        classes?: DatePickerClasses | undefined;
+    }
+
+    let { value, onSelect, min, max, locale = 'ko-KR', classes: class_map = {} }: Props = $props();
+
+    /** Monday-first weekday short labels for the given locale (UTC-safe). */
+    function getWeekdayLabels(loc: string): string[] {
+        const formatter = new Intl.DateTimeFormat(loc, { weekday: 'short', timeZone: 'UTC' });
+        const labels: string[] = [];
+        for (let i = 0; i < 7; i++) {
+            const d = new Date(Date.UTC(2025, 0, 6 + i));
+            labels.push(formatter.format(d));
+        }
+        return labels;
+    }
+
+    const weekday_labels = $derived(getWeekdayLabels(locale));
 
     const grid_id = `dp-grid-${Math.random().toString(36).slice(2, 11)}`;
 
@@ -83,7 +93,7 @@
     });
 
     const month_label_text = $derived(
-        new Intl.DateTimeFormat('ko-KR', { year: 'numeric', month: 'long' }).format(
+        new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' }).format(
             new SvelteDate(viewing_year, viewing_month - 1, 1),
         ),
     );
@@ -228,27 +238,29 @@
     }
 
     function getDayCellClass(cell: CalendarCell): string {
-        const parts: string[] = [css.day_cell];
-        if (!cell.in_current_month) {
-            parts.push(css.day_outside_month);
+        const c = class_map;
+        const parts: string[] = [];
+        if (c.day_cell) parts.push(c.day_cell);
+        if (!cell.in_current_month && c.day_outside_month) {
+            parts.push(c.day_outside_month);
         }
-        if (cell.disabled) {
-            parts.push(css.day_disabled);
+        if (cell.disabled && c.day_disabled) {
+            parts.push(c.day_disabled);
         }
-        if (value === cell.date_str) {
-            parts.push(css.day_selected);
+        if (value === cell.date_str && c.day_selected) {
+            parts.push(c.day_selected);
         }
-        if (today_str === cell.date_str) {
-            parts.push(css.day_today);
+        if (today_str === cell.date_str && c.day_today) {
+            parts.push(c.day_today);
         }
         return parts.join(' ');
     }
 </script>
 
-<div class={css.root} bind:this={container_ref}>
+<div class={class_map.root} bind:this={container_ref}>
     <button
         type="button"
-        class={css.trigger}
+        class={class_map.trigger}
         bind:this={trigger_ref}
         aria-expanded={is_open}
         aria-haspopup="dialog"
@@ -263,11 +275,11 @@
     </button>
 
     {#if is_open}
-        <div class={css.panel} role="dialog" aria-label="달력">
-            <div class={css.header}>
+        <div class={class_map.panel} role="dialog" aria-label="달력">
+            <div class={class_map.header}>
                 <button
                     type="button"
-                    class={css.nav_button}
+                    class={class_map.nav_button}
                     onclick={(e) => {
                         e.stopPropagation();
                         stepMonth(-1);
@@ -275,10 +287,10 @@
                 >
                     이전
                 </button>
-                <span class={css.month_label}>{month_label_text}</span>
+                <span class={class_map.month_label}>{month_label_text}</span>
                 <button
                     type="button"
-                    class={css.nav_button}
+                    class={class_map.nav_button}
                     onclick={(e) => {
                         e.stopPropagation();
                         stepMonth(1);
@@ -287,15 +299,15 @@
                     다음
                 </button>
             </div>
-            <div class={css.weekdays} aria-hidden="true">
-                {#each WEEKDAY_LABELS as label (label)}
+            <div class={class_map.weekdays} aria-hidden="true">
+                {#each weekday_labels as label, weekday_index (weekday_index)}
                     <span>{label}</span>
                 {/each}
             </div>
             <div
                 bind:this={grid_ref}
                 id={grid_id}
-                class={css.grid}
+                class={class_map.grid}
                 role="grid"
                 tabindex="0"
                 aria-activedescendant={active_cell_dom_id}

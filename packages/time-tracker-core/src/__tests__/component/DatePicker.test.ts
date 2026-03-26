@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, cleanup } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
-import DatePicker from '../../components/DatePicker/DatePicker.svelte';
+import { DatePicker } from '@personal/uikit';
 
 describe('DatePicker', () => {
     afterEach(() => {
