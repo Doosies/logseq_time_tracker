@@ -254,11 +254,15 @@
 
             <div class={css.button_row}>
                 {#if show_running_controls}
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handlePause()}> 일시정지 </button>
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
+                    <button type="button" class={css.toolbar_btn_pause} onclick={() => void handlePause()}>
+                        일시정지
+                    </button>
+                    <button type="button" class={css.toolbar_btn_stop} onclick={() => void handleStop()}> 완료 </button>
                 {:else if show_paused_controls}
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleResume()}> 재개 </button>
-                    <button type="button" class={css.toolbar_btn} onclick={() => void handleStop()}> 완료 </button>
+                    <button type="button" class={css.toolbar_btn_resume} onclick={() => void handleResume()}>
+                        재개
+                    </button>
+                    <button type="button" class={css.toolbar_btn_stop} onclick={() => void handleStop()}> 완료 </button>
                 {/if}
             </div>
 
@@ -270,19 +274,33 @@
                             <div class={css.job_list_row}>
                                 <span class={css.job_list_title}>{job.title}</span>
                                 <div class={css.job_list_actions}>
+                                    {#if timer_store.state.active_job}
+                                        <button
+                                            type="button"
+                                            class={css.action_btn_switch}
+                                            onclick={() => void handleToolbarSwitchToJob(job)}>전환</button
+                                        >
+                                    {:else if job.status === 'paused'}
+                                        <button
+                                            type="button"
+                                            class={css.action_btn_resume}
+                                            onclick={() => void handleToolbarSwitchToJob(job)}>재개</button
+                                        >
+                                    {:else}
+                                        <button
+                                            type="button"
+                                            class={css.action_btn_start}
+                                            onclick={() => void handleToolbarSwitchToJob(job)}>시작</button
+                                        >
+                                    {/if}
                                     <button
                                         type="button"
-                                        class={css.job_action_btn}
-                                        onclick={() => void handleToolbarSwitchToJob(job)}>전환</button
-                                    >
-                                    <button
-                                        type="button"
-                                        class={css.job_action_btn}
+                                        class={css.action_btn_complete}
                                         onclick={() => void handleToolbarCompleteJob(job)}>완료</button
                                     >
                                     <button
                                         type="button"
-                                        class={css.job_action_btn}
+                                        class={css.action_btn_cancel}
                                         onclick={() => void handleToolbarCancelJob(job)}>취소</button
                                     >
                                 </div>

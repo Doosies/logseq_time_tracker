@@ -5,6 +5,7 @@ export const toolbar_root = style({
     display: 'flex',
     alignItems: 'center',
     gap: '4px',
+    width: '100%',
 });
 
 export const toolbar_trigger = style({
@@ -64,15 +65,18 @@ export const button_row = style({
     marginBottom: '10px',
 });
 
-export const toolbar_btn = style({
+const toolbar_btn_base = style({
     padding: '6px 10px',
     fontSize: '0.75rem',
     borderRadius: '4px',
-    border: '1px solid var(--tt-border, rgba(0, 0, 0, 0.15))',
-    background: 'var(--tt-surface, transparent)',
+    border: 'none',
     cursor: 'pointer',
-    color: 'inherit',
+    color: 'white',
 });
+
+export const toolbar_btn_pause = style([toolbar_btn_base, { backgroundColor: '#f59e0b' }]);
+export const toolbar_btn_resume = style([toolbar_btn_base, { backgroundColor: '#3b82f6' }]);
+export const toolbar_btn_stop = style([toolbar_btn_base, { backgroundColor: '#10b981' }]);
 
 export const job_list_heading = style({
     fontSize: '0.7rem',
@@ -129,24 +133,29 @@ export const job_list_actions = style({
     },
 });
 
-export const job_action_btn = style({
+const action_btn_base = style({
     padding: '2px 6px',
     fontSize: '0.65rem',
     borderRadius: '3px',
-    border: '1px solid var(--tt-border, rgba(0, 0, 0, 0.15))',
-    background: 'var(--tt-surface, transparent)',
+    border: 'none',
     cursor: 'pointer',
-    color: 'inherit',
     whiteSpace: 'nowrap',
-    selectors: {
-        '&:hover': {
-            background: 'var(--tt-hover, rgba(0, 0, 0, 0.1))',
-        },
-    },
+    color: 'white',
+    selectors: { '&:hover': { filter: 'brightness(0.9)' } },
 });
+
+export const action_btn_start = style([action_btn_base, { backgroundColor: '#22c55e' }]);
+export const action_btn_resume = style([action_btn_base, { backgroundColor: '#3b82f6' }]);
+export const action_btn_switch = style([action_btn_base, { backgroundColor: '#8b5cf6' }]);
+export const action_btn_complete = style([action_btn_base, { backgroundColor: '#10b981' }]);
+export const action_btn_cancel = style([action_btn_base, { backgroundColor: '#6b7280' }]);
 
 export const inline_panel = style({
     padding: '12px',
+    width: '100%',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '4px',
 });
 
 export const full_view_btn = style({
