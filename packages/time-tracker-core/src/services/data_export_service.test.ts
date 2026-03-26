@@ -6,7 +6,7 @@ import type { Job } from '../types/job';
 import { DataExportService } from './data_export_service';
 
 describe('DataExportService', () => {
-    it('exportAll: 빈 스토어에서 버전과 구조 반환', async () => {
+    it('UC-EXPORT-004: exportAll: 빈 스토어에서 버전과 구조 반환', async () => {
         const uow = new MemoryUnitOfWork();
         const svc = new DataExportService(uow);
         const data = await svc.exportAll();
@@ -18,7 +18,7 @@ describe('DataExportService', () => {
         expect(data.data.settings).toEqual({});
     });
 
-    it('importAll: export 결과를 다른 UoW에 복원', async () => {
+    it('UC-EXPORT-005: importAll: export 결과를 다른 UoW에 복원', async () => {
         const now = '2026-02-01T12:00:00.000Z';
         const uow_a = new MemoryUnitOfWork();
         const category: Category = {
@@ -58,7 +58,7 @@ describe('DataExportService', () => {
         expect(cats_b[0]!.name).toBe('Cat');
     });
 
-    it('importAll: 0.1.0 마이그레이션 후 성공', async () => {
+    it('UC-EXPORT-006: importAll: 0.1.0 마이그레이션 후 성공', async () => {
         const now = '2025-01-01T00:00:00.000Z';
         const legacy: ExportData = {
             version: '0.1.0',
@@ -80,7 +80,7 @@ describe('DataExportService', () => {
         expect(result.success).toBe(true);
     });
 
-    it('importAll: 지원하지 않는 버전이면 실패', async () => {
+    it('UC-EXPORT-007: importAll: 지원하지 않는 버전이면 실패', async () => {
         const bad: ExportData = {
             version: '99.0.0',
             exported_at: 'x',

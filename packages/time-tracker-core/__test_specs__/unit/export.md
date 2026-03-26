@@ -24,3 +24,12 @@
 - **When**: 내보내기를 시도한다
 - **Then**: MemoryAdapter의 현재 데이터로 내보내기가 수행되고, 배너에 "임시 모드 데이터입니다" 경고 포함
 - **Phase**: 5
+
+---
+
+### DataExportService 단위 테스트
+
+#### UC-EXPORT-004: exportAll: 빈 스토어에서 버전과 구조 반환
+#### UC-EXPORT-005: importAll: export 결과를 다른 UoW에 복원
+#### UC-EXPORT-006: importAll: 0.1.0 마이그레이션 후 성공
+#### UC-EXPORT-007: importAll: 지원하지 않는 버전이면 실패

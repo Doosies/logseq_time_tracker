@@ -38,7 +38,7 @@ afterEach(() => {
 });
 
 describe('SqliteJobRepository', () => {
-    it('upsert 후 getJobById·getJobs·getJobsByStatus로 조회한다', async () => {
+    it('UC-SQL-JOB-001: upsert 후 getJobById·getJobs·getJobsByStatus로 조회한다', async () => {
         const repo = new SqliteJobRepository(db);
         const older = makeJob({
             id: 'old',
@@ -64,13 +64,13 @@ describe('SqliteJobRepository', () => {
         expect(pending).toHaveLength(2);
     });
 
-    it('getActiveJob: 진행 중인 작업이 없으면 null', async () => {
+    it('UC-SQL-JOB-002: getActiveJob: 진행 중인 작업이 없으면 null', async () => {
         const repo = new SqliteJobRepository(db);
         await repo.upsertJob(makeJob({ id: 'j1', status: 'pending' }));
         expect(await repo.getActiveJob()).toBeNull();
     });
 
-    it('getActiveJob: 진행 중인 작업이 1건이면 반환', async () => {
+    it('UC-SQL-JOB-003: getActiveJob: 진행 중인 작업이 1건이면 반환', async () => {
         const repo = new SqliteJobRepository(db);
         await repo.upsertJob(makeJob({ id: 'j1', status: 'in_progress' }));
         const active = await repo.getActiveJob();
@@ -78,7 +78,7 @@ describe('SqliteJobRepository', () => {
         expect(active?.status).toBe('in_progress');
     });
 
-    it('updateJobStatus: 존재하면 갱신', async () => {
+    it('UC-SQL-JOB-004: updateJobStatus: 존재하면 갱신', async () => {
         const repo = new SqliteJobRepository(db);
         await repo.upsertJob(makeJob({ id: 'j1', status: 'pending' }));
         await repo.updateJobStatus('j1', 'completed', '2026-03-02T00:00:00.000Z');
@@ -87,14 +87,14 @@ describe('SqliteJobRepository', () => {
         expect(got?.updated_at).toBe('2026-03-02T00:00:00.000Z');
     });
 
-    it('updateJobStatus: 대상이 없으면 StorageError', async () => {
+    it('UC-SQL-JOB-005: updateJobStatus: 대상이 없으면 StorageError', async () => {
         const repo = new SqliteJobRepository(db);
         await expect(repo.updateJobStatus('none', 'completed', '2026-03-02T00:00:00.000Z')).rejects.toThrow(
             StorageError,
         );
     });
 
-    it('deleteJob로 행을 제거한다', async () => {
+    it('UC-SQL-JOB-006: deleteJob로 행을 제거한다', async () => {
         const repo = new SqliteJobRepository(db);
         await repo.upsertJob(makeJob({ id: 'j1' }));
         await repo.deleteJob('j1');

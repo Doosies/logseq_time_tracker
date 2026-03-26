@@ -36,7 +36,7 @@ afterEach(() => {
 });
 
 describe('SqliteTemplateRepository', () => {
-    it('upsert 후 getTemplateById로 조회한다', async () => {
+    it('UC-SQL-TMPL-001: upsert 후 getTemplateById로 조회한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         await repo.upsertTemplate(makeTemplate());
 
@@ -45,7 +45,7 @@ describe('SqliteTemplateRepository', () => {
         expect(found?.content).toContain('{{title}}');
     });
 
-    it('getTemplates는 created_at DESC 순으로 반환한다', async () => {
+    it('UC-SQL-TMPL-002: getTemplates는 created_at DESC 순으로 반환한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         await repo.upsertTemplate(makeTemplate({ id: 't1', created_at: '2026-01-01T00:00:00.000Z' }));
         await repo.upsertTemplate(makeTemplate({ id: 't2', created_at: '2026-03-01T00:00:00.000Z' }));
@@ -54,7 +54,7 @@ describe('SqliteTemplateRepository', () => {
         expect(all.map((t) => t.id)).toEqual(['t2', 't1']);
     });
 
-    it('upsert로 기존 템플릿을 갱신한다', async () => {
+    it('UC-SQL-TMPL-003: upsert로 기존 템플릿을 갱신한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         await repo.upsertTemplate(makeTemplate({ id: 't1', name: '이전 이름' }));
         await repo.upsertTemplate(makeTemplate({ id: 't1', name: '새 이름' }));
@@ -66,7 +66,7 @@ describe('SqliteTemplateRepository', () => {
         expect(all).toHaveLength(1);
     });
 
-    it('deleteTemplate로 삭제한다', async () => {
+    it('UC-SQL-TMPL-004: deleteTemplate로 삭제한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         await repo.upsertTemplate(makeTemplate());
         await repo.deleteTemplate('t1');
@@ -74,17 +74,17 @@ describe('SqliteTemplateRepository', () => {
         expect(await repo.getTemplateById('t1')).toBeNull();
     });
 
-    it('존재하지 않는 id를 조회하면 null을 반환한다', async () => {
+    it('UC-SQL-TMPL-005: 존재하지 않는 id를 조회하면 null을 반환한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         expect(await repo.getTemplateById('nonexistent')).toBeNull();
     });
 
-    it('빈 테이블에서 getTemplates는 빈 배열을 반환한다', async () => {
+    it('UC-SQL-TMPL-006: 빈 테이블에서 getTemplates는 빈 배열을 반환한다', async () => {
         const repo = new SqliteTemplateRepository(db);
         expect(await repo.getTemplates()).toEqual([]);
     });
 
-    it('placeholders JSON 문자열이 그대로 보존된다', async () => {
+    it('UC-SQL-TMPL-007: placeholders JSON 문자열이 그대로 보존된다', async () => {
         const repo = new SqliteTemplateRepository(db);
         const placeholders = JSON.stringify([
             { id: 'p1', key: 'title', label: '제목' },

@@ -56,7 +56,7 @@ class MutableFailBackend implements IStorageBackend {
 }
 
 describe('StorageManager', () => {
-    it('SQLite 초기화 실패 시 MemoryUnitOfWork와 memory_fallback 상태', async () => {
+    it('UC-STORE-026: SQLite 초기화 실패 시 MemoryUnitOfWork와 memory_fallback 상태', async () => {
         const logger = { debug: vi.fn(), info: vi.fn(), warn: vi.fn(), error: vi.fn() };
         const sm = new StorageManager({
             sqlite_options: {},
@@ -71,7 +71,7 @@ describe('StorageManager', () => {
         sm.dispose();
     });
 
-    it('tryRecover는 memory_fallback이 아니면 false', async () => {
+    it('UC-STORE-027: tryRecover는 memory_fallback이 아니면 false', async () => {
         const backend = new MemoryStorageBackend();
         const sm = new StorageManager({ sqlite_options: {}, backend });
         await sm.initialize();
@@ -79,7 +79,7 @@ describe('StorageManager', () => {
         sm.dispose();
     });
 
-    it('tryRecover: SQLite 재오픈 후 메모리 데이터를 병합', async () => {
+    it('UC-STORE-028: tryRecover: SQLite 재오픈 후 메모리 데이터를 병합', async () => {
         const backend = new MutableFailBackend();
         const sm = new StorageManager({
             sqlite_options: {},

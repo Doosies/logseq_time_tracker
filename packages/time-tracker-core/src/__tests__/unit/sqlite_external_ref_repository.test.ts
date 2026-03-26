@@ -54,7 +54,7 @@ afterEach(() => {
 });
 
 describe('SqliteExternalRefRepository', () => {
-    it('upsert 후 getExternalRefs로 조회한다', async () => {
+    it('UC-SQL-EXTREF-001: upsert 후 getExternalRefs로 조회한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef());
 
@@ -64,7 +64,7 @@ describe('SqliteExternalRefRepository', () => {
         expect(refs[0]!.ref_value).toBe('page-uuid-abc');
     });
 
-    it('getExternalRef로 (job_id, system_key) 쌍을 조회한다', async () => {
+    it('UC-SQL-EXTREF-002: getExternalRef로 (job_id, system_key) 쌍을 조회한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef());
 
@@ -75,7 +75,7 @@ describe('SqliteExternalRefRepository', () => {
         expect(missing).toBeNull();
     });
 
-    it('getExternalRefBySystemAndValue로 시스템키+값 조합을 조회한다', async () => {
+    it('UC-SQL-EXTREF-003: getExternalRefBySystemAndValue로 시스템키+값 조합을 조회한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef());
 
@@ -96,7 +96,7 @@ describe('SqliteExternalRefRepository', () => {
         expect(refs[0]!.ref_value).toBe('new');
     });
 
-    it('deleteExternalRef로 단건 삭제한다', async () => {
+    it('UC-SQL-EXTREF-004: deleteExternalRef로 단건 삭제한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef());
         await repo.deleteExternalRef('ref1');
@@ -104,7 +104,7 @@ describe('SqliteExternalRefRepository', () => {
         expect(await repo.getExternalRef('j1', 'logseq')).toBeNull();
     });
 
-    it('deleteByJobId로 특정 Job의 모든 참조를 삭제한다', async () => {
+    it('UC-SQL-EXTREF-005: deleteByJobId로 특정 Job의 모든 참조를 삭제한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef({ id: 'r1', job_id: 'j1', system_key: 'logseq' }));
         await repo.upsertExternalRef(makeRef({ id: 'r2', job_id: 'j1', system_key: 'ecount' }));
@@ -116,13 +116,13 @@ describe('SqliteExternalRefRepository', () => {
         expect(await repo.getExternalRefs('j2')).toHaveLength(1);
     });
 
-    it('존재하지 않는 Job의 참조를 조회하면 빈 배열을 반환한다', async () => {
+    it('UC-SQL-EXTREF-006: 존재하지 않는 Job의 참조를 조회하면 빈 배열을 반환한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         const refs = await repo.getExternalRefs('nonexistent');
         expect(refs).toEqual([]);
     });
 
-    it('system_key ASC 정렬로 반환한다', async () => {
+    it('UC-SQL-EXTREF-007: system_key ASC 정렬로 반환한다', async () => {
         const repo = new SqliteExternalRefRepository(db);
         await repo.upsertExternalRef(makeRef({ id: 'r1', system_key: 'zzz' }));
         await repo.upsertExternalRef(makeRef({ id: 'r2', system_key: 'aaa' }));

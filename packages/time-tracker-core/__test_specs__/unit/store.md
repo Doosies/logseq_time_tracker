@@ -64,3 +64,54 @@
 - **Then**: 모든 레코드가 정확히 복원되고, 데이터 정합성이 유지된다
 - **Phase**: 2
 - **테스트 레벨**: 단위
+
+---
+
+### JobStore (createJobStore)
+
+#### UC-STORE-008: 초기 상태: jobs 빈 배열, selected_job null
+#### UC-STORE-009: setJobs: jobs 배열 설정
+#### UC-STORE-010: selectJob: selected_job_id 설정 → selected_job derived 동작
+#### UC-STORE-011: addJob: jobs 배열에 추가
+#### UC-STORE-012: removeJob: jobs에서 제거 + 선택 해제
+#### UC-STORE-013: updateJobInList: 기존 Job 업데이트
+#### UC-STORE-014: active_job derived: status === in_progress인 Job 반환
+#### UC-STORE-015: pending_jobs derived: status === pending인 Job 배열
+#### UC-STORE-016: paused_jobs derived: status === paused인 Job 배열
+
+---
+
+### TimerStore (createTimerStore)
+
+#### UC-STORE-017: 초기 상태: active_job null, is_running false
+#### UC-STORE-018: startTimer: active_job 설정, is_running true, accumulated_ms 0
+#### UC-STORE-019: pauseTimer: is_paused true, accumulated_ms에 경과 시간 누적
+#### UC-STORE-020: resumeTimer: is_paused false, current_segment_start 설정
+#### UC-STORE-021: stopTimer: 모든 상태 초기화
+#### UC-STORE-022: cancelTimer: 모든 상태 초기화
+#### UC-STORE-023: restore: 일시정지 상태 복구 시 current_segment_start null
+#### UC-STORE-024: restore: 실행 중 복구 시 current_segment_start 설정
+#### UC-STORE-025: is_running derived: active_job 있고 is_paused false일 때 true
+
+---
+
+### StorageManager
+
+#### UC-STORE-026: SQLite 초기화 실패 시 MemoryUnitOfWork와 memory_fallback 상태
+#### UC-STORE-027: tryRecover는 memory_fallback이 아니면 false
+#### UC-STORE-028: tryRecover: SQLite 재오픈 후 메모리 데이터를 병합
+
+---
+
+### StorageStateMachine
+
+#### UC-STORE-029: 초기 상태는 sqlite
+#### UC-STORE-030: transitionToFallback → memory_fallback 및 구독자 호출
+#### UC-STORE-031: subscribe 해제 후 알림 없음
+#### UC-STORE-032: transitionToSqlite로 복귀
+
+---
+
+### WebLocksManager
+
+#### UC-STORE-033: navigator.locks 없으면 미지원이고 acquireLock은 true 후 release

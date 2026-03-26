@@ -14,7 +14,7 @@ describe('WebLocksManager', () => {
         });
     });
 
-    it('navigator.locks 없으면 미지원이고 acquireLock은 true 후 release', async () => {
+    it('UC-STORE-033: navigator.locks 없으면 미지원이고 acquireLock은 true 후 release', async () => {
         Object.defineProperty(globalThis, 'navigator', {
             value: { ...navigator_snapshot, locks: undefined },
             configurable: true,

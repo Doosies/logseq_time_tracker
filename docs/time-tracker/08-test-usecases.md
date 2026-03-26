@@ -38,6 +38,11 @@
 | STOP | 정지 동작 |
 | CATEGORY-CYCLE | 카테고리 순환 참조 |
 | VRT | Visual Regression Testing |
+| SQL-{SUB} | SQLite 어댑터/레포지토리 (SUB: ADPT, CAT, HIST, JCAT, JOB, SET, TMPL, TE, UOW, DF) |
+| MEM | Memory 레포지토리 구현 |
+| ERR | 에러 클래스 |
+| UTIL | 유틸리티 함수 (ID 생성, sanitize, backoff) |
+| SCHEMA | Export 스키마 검증 |
 
 ---
 
@@ -45,9 +50,9 @@
 
 | Phase | 단위 | 통합 | 컴포넌트 | E2E | VRT |
 |---|---|---|---|---|---|
-| **1** | UC-TIMER-001~010, UC-JOB-001~002, UC-CAT-001~004, UC-STORE-001~004, UC-TYPE-001~004, UC-PLUGIN-001~002, UC-EDGE-001, UC-EDGE-003, UC-EDGE-007, UC-CANCEL-001~003, UC-STOP-001~002, UC-CATEGORY-CYCLE-001 | UC-FSM-001~003, UC-FSM-005, UC-PLUGIN-006 | UC-UI-001~003, UC-TOAST-001~003, UC-A11Y-001~004 | - | - |
-| **2** | UC-JOB-003~010, UC-JCAT-001~003, UC-HIST-001~004, UC-STORE-005~007, UC-MIGRATE-001~002, UC-PLUGIN-003, UC-EDGE-002, UC-EDGE-004~006, UC-EDGE-008 | UC-FSM-004, UC-FSM-006 | UC-UI-004~008 | UC-E2E-001~002, UC-PERF-001~002 | - |
-| **3** | UC-ENTRY-001~004, UC-DFIELD-001~003 | UC-PERF-004 | UC-UI-009~024, UC-PERF-003 | UC-E2E-003, UC-E2E-006, UC-A11Y-005 | UC-VRT-001~003 |
+| **1** | UC-TIMER-001~010, UC-JOB-001~002, UC-CAT-001~004, UC-STORE-001~025, UC-TYPE-001~004, UC-PLUGIN-001~002, UC-EDGE-001, UC-EDGE-003, UC-EDGE-007, UC-CANCEL-001~003, UC-STOP-001~002, UC-CATEGORY-CYCLE-001, UC-SQL-*-001~, UC-MEM-001~008, UC-ERR-001~007, UC-UTIL-001~008, UC-SCHEMA-001~008, UC-EXPORT-004~007 | UC-FSM-001~003, UC-FSM-005, UC-PLUGIN-006 | UC-UI-001~003, UC-UI-025~033, UC-TOAST-001~003, UC-A11Y-001~004 | - | - |
+| **2** | UC-JOB-003~010, UC-JCAT-001~003, UC-HIST-001~004, UC-STORE-026~033, UC-MIGRATE-001~002, UC-PLUGIN-003, UC-EDGE-002, UC-EDGE-004~006, UC-EDGE-008 | UC-FSM-004, UC-FSM-006 | UC-UI-004~008 | UC-E2E-001~002, UC-PERF-001~002 | - |
+| **3** | UC-ENTRY-001~004, UC-DFIELD-001~003 | UC-PERF-004 | UC-UI-009~024, UC-PERF-003 | UC-E2E-003, UC-E2E-006~010, UC-A11Y-005 | UC-VRT-001~003 |
 | **4** | UC-TMPL-001~004, UC-PLUGIN-004~005 | UC-REMIND-001~003 | - | UC-E2E-004~005 | - |
 | **5** | UC-STAT-001~004, UC-EXPORT-001, UC-EXPORT-003 | UC-EXPORT-002 | - | - | - |
 
@@ -69,6 +74,5 @@
 | 테스트 레벨 | 경로 |
 |---|---|
 | 단위 | [`__test_specs__/unit/`](../../packages/logseq-time-tracker/__test_specs__/unit/) |
-| 통합 | [`__test_specs__/integration/`](../../packages/logseq-time-tracker/__test_specs__/integration/) |
 | E2E | [`__test_specs__/e2e/`](../../packages/logseq-time-tracker/__test_specs__/e2e/) |
 | VRT | [`__test_specs__/vrt/`](../../packages/logseq-time-tracker/__test_specs__/vrt/) |

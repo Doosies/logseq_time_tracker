@@ -17,7 +17,7 @@ function makeCategory(overrides: Partial<Category> = {}): Category {
 }
 
 describe('MemoryCategoryRepository', () => {
-    it('upsertCategory + getCategoryById', async () => {
+    it('UC-MEM-001: upsertCategory + getCategoryById', async () => {
         const repo = new MemoryCategoryRepository();
         const c = makeCategory();
         await repo.upsertCategory(c);
@@ -25,7 +25,7 @@ describe('MemoryCategoryRepository', () => {
         expect(got?.name).toBe('개발');
     });
 
-    it('getCategories: 모든 카테고리 반환', async () => {
+    it('UC-MEM-002: getCategories: 모든 카테고리 반환', async () => {
         const repo = new MemoryCategoryRepository();
         await repo.upsertCategory(makeCategory({ id: 'a', name: 'A' }));
         await repo.upsertCategory(makeCategory({ id: 'b', name: 'B', sort_order: 2 }));
@@ -33,14 +33,14 @@ describe('MemoryCategoryRepository', () => {
         expect(all).toHaveLength(2);
     });
 
-    it('deleteCategory: 삭제 후 getCategoryById null', async () => {
+    it('UC-MEM-003: deleteCategory: 삭제 후 getCategoryById null', async () => {
         const repo = new MemoryCategoryRepository();
         await repo.upsertCategory(makeCategory());
         await repo.deleteCategory('cat-1');
         expect(await repo.getCategoryById('cat-1')).toBeNull();
     });
 
-    it('structuredClone 격리', async () => {
+    it('UC-MEM-004: structuredClone 격리', async () => {
         const repo = new MemoryCategoryRepository();
         const c = makeCategory({ name: 'orig' });
         await repo.upsertCategory(c);

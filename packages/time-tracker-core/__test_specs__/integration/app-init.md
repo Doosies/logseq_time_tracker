@@ -1,13 +1,13 @@
-# Logseq 플러그인 (통합) 테스트 스펙
+# App 초기화 통합 테스트 스펙
 
-> **패키지**: `@personal/logseq-time-tracker`
+> **패키지**: `@personal/time-tracker-core`
 > **테스트 레벨**: integration
 > **ID 체계**: `UC-{영역}-{번호}` (3자리 zero-padded)
 > **형식**: BDD (Given-When-Then)
 
 ---
 
-### 5.3 플러그인 통합
+### App 마운트 및 스토어 초기화
 
 #### UC-PLUGIN-006: App 마운트 및 스토어 초기화
 

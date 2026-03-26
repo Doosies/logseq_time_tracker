@@ -53,7 +53,7 @@ describe('SqliteDataFieldRepository', () => {
         expect(one?.id).toBe('df1');
     });
 
-    it('getDataFields: sort_order 기준 정렬', async () => {
+    it('UC-SQL-DF-002: getDataFields: sort_order 기준 정렬', async () => {
         const repo = new SqliteDataFieldRepository(db);
         await repo.upsertDataField(makeField({ id: 'a', key: 'a', sort_order: 10 }));
         await repo.upsertDataField(makeField({ id: 'b', key: 'b', sort_order: 2 }));
@@ -61,7 +61,7 @@ describe('SqliteDataFieldRepository', () => {
         expect(list.map((f) => f.key)).toEqual(['b', 'a']);
     });
 
-    it('deleteDataField 후 조회되지 않음', async () => {
+    it('UC-SQL-DF-003: deleteDataField 후 조회되지 않음', async () => {
         const repo = new SqliteDataFieldRepository(db);
         await repo.upsertDataField(makeField());
         await repo.deleteDataField('df1');

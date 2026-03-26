@@ -4,12 +4,12 @@ import { describe, expect, it, vi } from 'vitest';
 import { StorageStateMachine } from '../../adapters/storage/storage_state';
 
 describe('StorageStateMachine', () => {
-    it('초기 상태는 sqlite', () => {
+    it('UC-STORE-029: 초기 상태는 sqlite', () => {
         const sm = new StorageStateMachine();
         expect(sm.getState()).toEqual({ mode: 'sqlite' });
     });
 
-    it('transitionToFallback → memory_fallback 및 구독자 호출', () => {
+    it('UC-STORE-030: transitionToFallback → memory_fallback 및 구독자 호출', () => {
         const sm = new StorageStateMachine();
         const listener = vi.fn();
         sm.subscribe(listener);
@@ -21,7 +21,7 @@ describe('StorageStateMachine', () => {
         expect(listener).toHaveBeenCalledTimes(1);
     });
 
-    it('subscribe 해제 후 알림 없음', () => {
+    it('UC-STORE-031: subscribe 해제 후 알림 없음', () => {
         const sm = new StorageStateMachine();
         const listener = vi.fn();
         const unsub = sm.subscribe(listener);
@@ -30,7 +30,7 @@ describe('StorageStateMachine', () => {
         expect(listener).not.toHaveBeenCalled();
     });
 
-    it('transitionToSqlite로 복귀', () => {
+    it('UC-STORE-032: transitionToSqlite로 복귀', () => {
         const sm = new StorageStateMachine();
         sm.transitionToFallback('err');
         sm.transitionToSqlite();

@@ -20,7 +20,7 @@ function makeEntry(overrides: Partial<TimeEntry> = {}): TimeEntry {
 }
 
 describe('MemoryTimeEntryRepository', () => {
-    it('upsertTimeEntry + getTimeEntryById', async () => {
+    it('UC-MEM-014: upsertTimeEntry + getTimeEntryById', async () => {
         const repo = new MemoryTimeEntryRepository();
         const e = makeEntry();
         await repo.upsertTimeEntry(e);
@@ -28,7 +28,7 @@ describe('MemoryTimeEntryRepository', () => {
         expect(got?.job_id).toBe('job-a');
     });
 
-    it('getTimeEntries: 필터 없이 전체 반환', async () => {
+    it('UC-MEM-015: getTimeEntries: 필터 없이 전체 반환', async () => {
         const repo = new MemoryTimeEntryRepository();
         await repo.upsertTimeEntry(makeEntry({ id: 'a' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'b', job_id: 'job-b' }));
@@ -36,7 +36,7 @@ describe('MemoryTimeEntryRepository', () => {
         expect(all).toHaveLength(2);
     });
 
-    it('getTimeEntries: job_id 필터', async () => {
+    it('UC-MEM-016: getTimeEntries: job_id 필터', async () => {
         const repo = new MemoryTimeEntryRepository();
         await repo.upsertTimeEntry(makeEntry({ id: 'a', job_id: 'j1' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'b', job_id: 'j2' }));
@@ -57,7 +57,7 @@ describe('MemoryTimeEntryRepository', () => {
         expect(filtered.map((x) => x.id).sort()).toEqual(['mid']);
     });
 
-    it('deleteByJobId: 해당 job_id 엔트리 모두 삭제', async () => {
+    it('UC-MEM-017: deleteByJobId: 해당 job_id 엔트리 모두 삭제', async () => {
         const repo = new MemoryTimeEntryRepository();
         await repo.upsertTimeEntry(makeEntry({ id: 'a', job_id: 'j1' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'b', job_id: 'j1' }));
@@ -68,7 +68,7 @@ describe('MemoryTimeEntryRepository', () => {
         expect(rest[0]?.id).toBe('c');
     });
 
-    it('deleteTimeEntry: 단일 삭제', async () => {
+    it('UC-MEM-018: deleteTimeEntry: 단일 삭제', async () => {
         const repo = new MemoryTimeEntryRepository();
         await repo.upsertTimeEntry(makeEntry());
         await repo.deleteTimeEntry('e1');

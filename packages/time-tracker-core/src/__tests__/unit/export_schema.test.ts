@@ -93,17 +93,17 @@ function minimalValidExport(): ExportData {
 }
 
 describe('validateExportData', () => {
-    it('유효한 ExportData면 검증 통과', () => {
+    it('UC-SCHEMA-001: 유효한 ExportData면 검증 통과', () => {
         const data = minimalValidExport();
         expect(validateExportData(data)).toEqual(data);
     });
 
-    it('version 누락 시 ValidationError', () => {
+    it('UC-SCHEMA-002: version 누락 시 ValidationError', () => {
         const { version: _v, ...rest } = minimalValidExport();
         expect(() => validateExportData(rest)).toThrow(ValidationError);
     });
 
-    it('data.jobs가 배열이 아니면 ValidationError', () => {
+    it('UC-SCHEMA-003: data.jobs가 배열이 아니면 ValidationError', () => {
         const data = {
             ...minimalValidExport(),
             data: { ...minimalValidExport().data, jobs: {} },
@@ -111,7 +111,7 @@ describe('validateExportData', () => {
         expect(() => validateExportData(data)).toThrow(ValidationError);
     });
 
-    it('job.status가 잘못된 값이면 ValidationError', () => {
+    it('UC-SCHEMA-004: job.status가 잘못된 값이면 ValidationError', () => {
         const base = minimalValidExport();
         const data = {
             ...base,
@@ -123,7 +123,7 @@ describe('validateExportData', () => {
         expect(() => validateExportData(data)).toThrow(ValidationError);
     });
 
-    it('data.categories 내 is_active가 boolean이 아니면 ValidationError', () => {
+    it('UC-SCHEMA-005: data.categories 내 is_active가 boolean이 아니면 ValidationError', () => {
         const base = minimalValidExport();
         const data = {
             ...base,
@@ -135,7 +135,7 @@ describe('validateExportData', () => {
         expect(() => validateExportData(data)).toThrow(ValidationError);
     });
 
-    it('빈 data(모든 배열 [])면 검증 통과', () => {
+    it('UC-SCHEMA-006: 빈 data(모든 배열 [])면 검증 통과', () => {
         const data: ExportData = {
             version: '0.3.0',
             exported_at: now,
@@ -154,7 +154,7 @@ describe('validateExportData', () => {
         expect(validateExportData(data)).toEqual(data);
     });
 
-    it('data_fields 키가 없으면 기본값 []로 검증 통과', () => {
+    it('UC-SCHEMA-007: data_fields 키가 없으면 기본값 []로 검증 통과', () => {
         const raw = {
             version: '0.3.0',
             exported_at: now,
@@ -173,7 +173,7 @@ describe('validateExportData', () => {
         expect(parsed.data.data_fields).toEqual([]);
     });
 
-    it('에러 메시지에 경로 정보가 포함된다', () => {
+    it('UC-SCHEMA-008: 에러 메시지에 경로 정보가 포함된다', () => {
         const base = minimalValidExport();
         const data = {
             ...base,

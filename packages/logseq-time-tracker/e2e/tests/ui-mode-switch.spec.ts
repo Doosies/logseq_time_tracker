@@ -22,11 +22,11 @@ test.describe('UI 모드 전환', () => {
         await expect(toolbarRegion(page)).toBeVisible();
     });
 
-    test('전체 화면 열기 시 툴바는 숨고 타이머 영역과 돌아가기가 보인다', async ({ page }) => {
+    test('UC-E2E-006: 전체 화면 열기 시 툴바는 숨고 타이머 영역과 돌아가기가 보인다', async ({ page }) => {
         await flowOpenFullView(page);
     });
 
-    test('ESC로 숨긴 뒤 모의 툴바로 다시 열면 전체 화면 상태가 유지된다', async ({ page }) => {
+    test('UC-E2E-007: ESC로 숨긴 뒤 모의 툴바로 다시 열면 전체 화면 상태가 유지된다', async ({ page }) => {
         await flowOpenFullView(page);
         await page.keyboard.press('Escape');
         const app_root = page.locator('#app');
@@ -37,14 +37,14 @@ test.describe('UI 모드 전환', () => {
         await expect(fullViewTimerSection(page)).toBeVisible();
     });
 
-    test('돌아가기로 작은 툴바로 전환하면 타이머 섹션은 숨는다', async ({ page }) => {
+    test('UC-E2E-008: 돌아가기로 작은 툴바로 전환하면 타이머 섹션은 숨는다', async ({ page }) => {
         await flowOpenFullView(page);
         await page.getByRole('button', { name: '돌아가기' }).click();
         await expect(toolbarRegion(page)).toBeVisible();
         await expect(fullViewTimerSection(page)).toBeHidden();
     });
 
-    test('작은 툴바 상태에서 ESC 후 재열기 시 툴바 상태가 유지된다', async ({ page }) => {
+    test('UC-E2E-009: 작은 툴바 상태에서 ESC 후 재열기 시 툴바 상태가 유지된다', async ({ page }) => {
         await flowOpenFullView(page);
         await page.getByRole('button', { name: '돌아가기' }).click();
         await expect(toolbarRegion(page)).toBeVisible();

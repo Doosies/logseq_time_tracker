@@ -38,7 +38,7 @@ afterEach(() => {
 });
 
 describe('SqliteCategoryRepository', () => {
-    it('upsert·getCategoryById·getCategories·deleteCategory', async () => {
+    it('UC-SQL-CAT-001: upsert·getCategoryById·getCategories·deleteCategory', async () => {
         const repo = new SqliteCategoryRepository(db);
         await repo.upsertCategory(makeCategory({ id: 'root', sort_order: 0 }));
         await repo.upsertCategory(makeCategory({ id: 'child', parent_id: 'root', sort_order: 1 }));
@@ -51,14 +51,14 @@ describe('SqliteCategoryRepository', () => {
         expect(await repo.getCategoryById('child')).toBeNull();
     });
 
-    it('is_active true는 저장 후 true로 읽힌다', async () => {
+    it('UC-SQL-CAT-002: is_active true는 저장 후 true로 읽힌다', async () => {
         const repo = new SqliteCategoryRepository(db);
         await repo.upsertCategory(makeCategory({ id: 'on', is_active: true }));
         const got = await repo.getCategoryById('on');
         expect(got?.is_active).toBe(true);
     });
 
-    it('is_active false는 INTEGER 0과 왕복', async () => {
+    it('UC-SQL-CAT-003: is_active false는 INTEGER 0과 왕복', async () => {
         const repo = new SqliteCategoryRepository(db);
         await repo.upsertCategory(makeCategory({ id: 'off', is_active: false }));
         const got = await repo.getCategoryById('off');

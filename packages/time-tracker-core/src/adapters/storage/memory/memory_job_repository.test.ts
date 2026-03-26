@@ -31,7 +31,7 @@ describe('MemoryJobRepository', () => {
         expect(got?.title).toBe('T');
     });
 
-    it('getJobs: 빈 상태일 때 빈 배열', async () => {
+    it('UC-MEM-009: getJobs: 빈 상태일 때 빈 배열', async () => {
         const repo = new MemoryJobRepository();
         expect(await repo.getJobs()).toEqual([]);
     });
@@ -45,7 +45,7 @@ describe('MemoryJobRepository', () => {
         expect(pending[0]?.id).toBe('a');
     });
 
-    it('getActiveJob: in_progress Job 반환 (없으면 null)', async () => {
+    it('UC-MEM-010: getActiveJob: in_progress Job 반환 (없으면 null)', async () => {
         const repo = new MemoryJobRepository();
         expect(await repo.getActiveJob()).toBeNull();
         await repo.upsertJob(makeJob({ id: 'x', status: 'in_progress' }));
@@ -53,7 +53,7 @@ describe('MemoryJobRepository', () => {
         expect(active?.id).toBe('x');
     });
 
-    it('updateJobStatus: 상태 변경 확인', async () => {
+    it('UC-MEM-011: updateJobStatus: 상태 변경 확인', async () => {
         const repo = new MemoryJobRepository();
         await repo.upsertJob(makeJob({ status: 'pending' }));
         await repo.updateJobStatus('job-1', 'in_progress', '2025-02-01T00:00:00.000Z');
@@ -62,14 +62,14 @@ describe('MemoryJobRepository', () => {
         expect(got?.updated_at).toBe('2025-02-01T00:00:00.000Z');
     });
 
-    it('deleteJob: 삭제 후 getJobById null', async () => {
+    it('UC-MEM-012: deleteJob: 삭제 후 getJobById null', async () => {
         const repo = new MemoryJobRepository();
         await repo.upsertJob(makeJob());
         await repo.deleteJob('job-1');
         expect(await repo.getJobById('job-1')).toBeNull();
     });
 
-    it('structuredClone 격리: 저장 후 원본 수정해도 저장된 값 불변', async () => {
+    it('UC-MEM-013: structuredClone 격리: 저장 후 원본 수정해도 저장된 값 불변', async () => {
         const repo = new MemoryJobRepository();
         const job = makeJob({ title: 'original' });
         await repo.upsertJob(job);

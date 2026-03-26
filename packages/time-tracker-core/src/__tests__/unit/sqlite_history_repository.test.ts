@@ -55,7 +55,7 @@ afterEach(() => {
 });
 
 describe('SqliteHistoryRepository', () => {
-    it('appendJobHistory 후 getJobHistory로 조회', async () => {
+    it('UC-SQL-HIST-001: appendJobHistory 후 getJobHistory로 조회', async () => {
         const repo = new SqliteHistoryRepository(db);
         await repo.appendJobHistory(makeHistory({ id: 'h1', job_id: 'j1', occurred_at: '2026-03-01T09:00:00.000Z' }));
         await repo.appendJobHistory(makeHistory({ id: 'h2', job_id: 'j1', occurred_at: '2026-03-01T10:00:00.000Z' }));
@@ -64,7 +64,7 @@ describe('SqliteHistoryRepository', () => {
         expect(rows[0]!.occurred_at <= rows[1]!.occurred_at).toBe(true);
     });
 
-    it('getJobHistoryByPeriod: job_id 필터', async () => {
+    it('UC-SQL-HIST-002: getJobHistoryByPeriod: job_id 필터', async () => {
         const repo = new SqliteHistoryRepository(db);
         await repo.appendJobHistory(makeHistory({ id: 'a', job_id: 'j1' }));
         await repo.appendJobHistory(makeHistory({ id: 'b', job_id: 'j2', occurred_at: '2026-03-01T09:00:00.000Z' }));
@@ -72,7 +72,7 @@ describe('SqliteHistoryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['b']);
     });
 
-    it('getJobHistoryByPeriod: from_date·to_date', async () => {
+    it('UC-SQL-HIST-003: getJobHistoryByPeriod: from_date·to_date', async () => {
         const repo = new SqliteHistoryRepository(db);
         await repo.appendJobHistory(makeHistory({ id: 'e', occurred_at: '2026-03-01T06:00:00.000Z' }));
         await repo.appendJobHistory(makeHistory({ id: 'm', occurred_at: '2026-03-01T12:00:00.000Z' }));
@@ -84,7 +84,7 @@ describe('SqliteHistoryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['m']);
     });
 
-    it('getJobHistoryByPeriod: job_id와 기간 조합', async () => {
+    it('UC-SQL-HIST-004: getJobHistoryByPeriod: job_id와 기간 조합', async () => {
         const repo = new SqliteHistoryRepository(db);
         await repo.appendJobHistory(makeHistory({ id: 'hit', job_id: 'j1', occurred_at: '2026-03-01T12:00:00.000Z' }));
         await repo.appendJobHistory(
@@ -98,7 +98,7 @@ describe('SqliteHistoryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['hit']);
     });
 
-    it('deleteByJobId로 해당 job 이력만 삭제', async () => {
+    it('UC-SQL-HIST-005: deleteByJobId로 해당 job 이력만 삭제', async () => {
         const repo = new SqliteHistoryRepository(db);
         await repo.appendJobHistory(makeHistory({ id: 'x', job_id: 'j1' }));
         await repo.appendJobHistory(makeHistory({ id: 'y', job_id: 'j2' }));

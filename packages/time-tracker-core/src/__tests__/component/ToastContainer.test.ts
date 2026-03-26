@@ -8,7 +8,7 @@ describe('ToastContainer', () => {
         cleanup();
     });
 
-    it('빈 토스트: 아무것도 렌더링하지 않음', () => {
+    it('UC-UI-031: 빈 토스트: 아무것도 렌더링하지 않음', () => {
         const toast_store = createToastStore();
         const { queryAllByRole } = render(ToastContainer, {
             props: { toast_store },
@@ -16,7 +16,7 @@ describe('ToastContainer', () => {
         expect(queryAllByRole('alert')).toHaveLength(0);
     });
 
-    it('토스트 1개: alert 역할 요소 존재', () => {
+    it('UC-UI-032: 토스트 1개: alert 역할 요소 존재', () => {
         const toast_store = createToastStore();
         toast_store.addToast('info', '알림');
         const { getByRole } = render(ToastContainer, {
@@ -25,7 +25,7 @@ describe('ToastContainer', () => {
         expect(getByRole('alert')).toHaveTextContent('알림');
     });
 
-    it('닫기 버튼 클릭: dismissToast 호출', () => {
+    it('UC-UI-033: 닫기 버튼 클릭: dismissToast 호출', () => {
         const toast_store = createToastStore();
         toast_store.addToast('warning', '경고');
         const dismiss_spy = vi.spyOn(toast_store, 'dismissToast');

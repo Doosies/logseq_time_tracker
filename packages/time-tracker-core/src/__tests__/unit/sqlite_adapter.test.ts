@@ -24,7 +24,7 @@ class MemoryStorageBackend implements IStorageBackend {
 }
 
 describe('SqliteAdapter', () => {
-    it('미초기화 상태에서 getDatabase는 StorageError를 던진다', () => {
+    it('UC-SQL-ADPT-001: 미초기화 상태에서 getDatabase는 StorageError를 던진다', () => {
         const backend = new MemoryStorageBackend();
         const adapter = new SqliteAdapter(backend);
         expect(() => {
@@ -35,13 +35,13 @@ describe('SqliteAdapter', () => {
         }).toThrow('Database not initialized');
     });
 
-    it('미초기화 상태에서 persist는 StorageError를 던진다', async () => {
+    it('UC-SQL-ADPT-002: 미초기화 상태에서 persist는 StorageError를 던진다', async () => {
         const backend = new MemoryStorageBackend();
         const adapter = new SqliteAdapter(backend);
         await expect(adapter.persist()).rejects.toThrow(StorageError);
     });
 
-    it('initialize → getDatabase → persist 기본 흐름', async () => {
+    it('UC-SQL-ADPT-003: initialize → getDatabase → persist 기본 흐름', async () => {
         const backend = new MemoryStorageBackend();
         const adapter = new SqliteAdapter(backend);
         await adapter.initialize({});
@@ -53,7 +53,7 @@ describe('SqliteAdapter', () => {
         await adapter.close();
     });
 
-    it('backend.read 버퍼로 기존 DB를 복원한다', async () => {
+    it('UC-SQL-ADPT-004: backend.read 버퍼로 기존 DB를 복원한다', async () => {
         const backend = new MemoryStorageBackend();
         const first = new SqliteAdapter(backend);
         await first.initialize({});

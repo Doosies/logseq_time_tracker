@@ -63,7 +63,7 @@ afterEach(() => {
 });
 
 describe('SqliteJobCategoryRepository', () => {
-    it('upsert 후 getJobCategories로 조회한다', async () => {
+    it('UC-SQL-JCAT-001: upsert 후 getJobCategories로 조회한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc());
 
@@ -73,7 +73,7 @@ describe('SqliteJobCategoryRepository', () => {
         expect(results[0]!.is_default).toBe(false);
     });
 
-    it('getCategoryJobs로 카테고리에 연결된 Job들을 조회한다', async () => {
+    it('UC-SQL-JCAT-002: getCategoryJobs로 카테고리에 연결된 Job들을 조회한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc({ id: 'jc1', job_id: 'j1', category_id: 'c1' }));
         await repo.upsertJobCategory(makeJc({ id: 'jc2', job_id: 'j2', category_id: 'c1' }));
@@ -82,7 +82,7 @@ describe('SqliteJobCategoryRepository', () => {
         expect(results).toHaveLength(2);
     });
 
-    it('is_default boolean 변환이 올바르다', async () => {
+    it('UC-SQL-JCAT-003: is_default boolean 변환이 올바르다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc({ id: 'jc1', is_default: true }));
 
@@ -90,7 +90,7 @@ describe('SqliteJobCategoryRepository', () => {
         expect(results[0]!.is_default).toBe(true);
     });
 
-    it('(job_id, category_id) UNIQUE 제약: 동일 쌍 upsert 시 덮어쓴다', async () => {
+    it('UC-SQL-JCAT-004: (job_id, category_id) UNIQUE 제약: 동일 쌍 upsert 시 덮어쓴다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc({ id: 'jc1', is_default: false }));
         await repo.upsertJobCategory(makeJc({ id: 'jc1', is_default: true }));
@@ -100,7 +100,7 @@ describe('SqliteJobCategoryRepository', () => {
         expect(results[0]!.is_default).toBe(true);
     });
 
-    it('deleteJobCategory로 단건 삭제한다', async () => {
+    it('UC-SQL-JCAT-005: deleteJobCategory로 단건 삭제한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc());
         await repo.deleteJobCategory('jc1');
@@ -108,7 +108,7 @@ describe('SqliteJobCategoryRepository', () => {
         expect(await repo.getJobCategories('j1')).toHaveLength(0);
     });
 
-    it('deleteByJobId로 특정 Job의 모든 연결을 삭제한다', async () => {
+    it('UC-SQL-JCAT-006: deleteByJobId로 특정 Job의 모든 연결을 삭제한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc({ id: 'jc1', job_id: 'j1', category_id: 'c1' }));
         await repo.upsertJobCategory(makeJc({ id: 'jc2', job_id: 'j1', category_id: 'c2' }));
@@ -120,13 +120,13 @@ describe('SqliteJobCategoryRepository', () => {
         expect(await repo.getJobCategories('j2')).toHaveLength(1);
     });
 
-    it('존재하지 않는 Job/Category를 조회하면 빈 배열을 반환한다', async () => {
+    it('UC-SQL-JCAT-007: 존재하지 않는 Job/Category를 조회하면 빈 배열을 반환한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         expect(await repo.getJobCategories('nonexistent')).toEqual([]);
         expect(await repo.getCategoryJobs('nonexistent')).toEqual([]);
     });
 
-    it('created_at ASC 정렬로 반환한다', async () => {
+    it('UC-SQL-JCAT-008: created_at ASC 정렬로 반환한다', async () => {
         const repo = new SqliteJobCategoryRepository(db);
         await repo.upsertJobCategory(makeJc({ id: 'jc1', category_id: 'c1', created_at: '2026-03-02T00:00:00.000Z' }));
         await repo.upsertJobCategory(makeJc({ id: 'jc2', category_id: 'c2', created_at: '2026-03-01T00:00:00.000Z' }));

@@ -24,12 +24,12 @@ afterEach(() => {
 });
 
 describe('SqliteSettingsRepository', () => {
-    it('존재하지 않는 키는 null', async () => {
+    it('UC-SQL-SET-001: 존재하지 않는 키는 null', async () => {
         const repo = new SqliteSettingsRepository(db);
         expect(await repo.getSetting('last_selected_category')).toBeNull();
     });
 
-    it('setSetting·getSetting으로 객체 설정을 JSON 왕복', async () => {
+    it('UC-SQL-SET-002: setSetting·getSetting으로 객체 설정을 JSON 왕복', async () => {
         const repo = new SqliteSettingsRepository(db);
         const state: ActiveTimerState = {
             version: 1,
@@ -44,20 +44,20 @@ describe('SqliteSettingsRepository', () => {
         expect(got).toEqual(state);
     });
 
-    it('문자열 설정 last_selected_category 왕복', async () => {
+    it('UC-SQL-SET-003: 문자열 설정 last_selected_category 왕복', async () => {
         const repo = new SqliteSettingsRepository(db);
         await repo.setSetting('last_selected_category', 'cat-99');
         expect(await repo.getSetting('last_selected_category')).toBe('cat-99');
     });
 
-    it('deleteSetting 후 getSetting은 null', async () => {
+    it('UC-SQL-SET-004: deleteSetting 후 getSetting은 null', async () => {
         const repo = new SqliteSettingsRepository(db);
         await repo.setSetting('last_selected_category', 'x');
         await repo.deleteSetting('last_selected_category');
         expect(await repo.getSetting('last_selected_category')).toBeNull();
     });
 
-    it('손상된 JSON이면 StorageError', async () => {
+    it('UC-SQL-SET-005: 손상된 JSON이면 StorageError', async () => {
         const repo = new SqliteSettingsRepository(db);
         db.run(`INSERT OR REPLACE INTO app_settings (key, value) VALUES (?, ?)`, ['last_selected_category', '{']);
         await expect(repo.getSetting('last_selected_category')).rejects.toThrow(StorageError);

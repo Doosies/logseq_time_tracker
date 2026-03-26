@@ -46,7 +46,7 @@ async function createMigratedUow(backend: IStorageBackend): Promise<{ uow: Sqlit
 }
 
 describe('SqliteUnitOfWork', () => {
-    it('모든 Repository 프로퍼티 접근 가능', async () => {
+    it('UC-SQL-UOW-001: 모든 Repository 프로퍼티 접근 가능', async () => {
         const { uow } = await createMigratedUow(new MemoryStorageBackend());
         expect(uow.jobRepo).toBeDefined();
         expect(uow.categoryRepo).toBeDefined();
@@ -59,7 +59,7 @@ describe('SqliteUnitOfWork', () => {
         expect(uow.dataFieldRepo).toBeDefined();
     });
 
-    it('transaction 성공 시 데이터 유지하고 persist 호출', async () => {
+    it('UC-SQL-UOW-002: transaction 성공 시 데이터 유지하고 persist 호출', async () => {
         const backend = new MemoryStorageBackend();
         const { uow, adapter } = await createMigratedUow(backend);
         const persist_spy = vi.spyOn(adapter, 'persist');
@@ -73,7 +73,7 @@ describe('SqliteUnitOfWork', () => {
         expect(got).not.toBeNull();
     });
 
-    it('transaction 실패 시 롤백되어 데이터 없음', async () => {
+    it('UC-SQL-UOW-003: transaction 실패 시 롤백되어 데이터 없음', async () => {
         const { uow } = await createMigratedUow(new MemoryStorageBackend());
 
         await expect(
@@ -86,7 +86,7 @@ describe('SqliteUnitOfWork', () => {
         expect(await uow.jobRepo.getJobById('j1')).toBeNull();
     });
 
-    it('중첩 transaction: 내부는 별도 BEGIN 없이 조인, 성공 시 persist는 외부 1회', async () => {
+    it('UC-SQL-UOW-004: 중첩 transaction: 내부는 별도 BEGIN 없이 조인, 성공 시 persist는 외부 1회', async () => {
         const backend = new MemoryStorageBackend();
         const { uow, adapter } = await createMigratedUow(backend);
         const persist_spy = vi.spyOn(adapter, 'persist');
@@ -108,7 +108,7 @@ describe('SqliteUnitOfWork', () => {
         expect(begin_calls.length).toBe(1);
     });
 
-    it('중첩 transaction: 외부 실패 시 전체 롤백', async () => {
+    it('UC-SQL-UOW-005: 중첩 transaction: 외부 실패 시 전체 롤백', async () => {
         const { uow } = await createMigratedUow(new MemoryStorageBackend());
 
         await expect(

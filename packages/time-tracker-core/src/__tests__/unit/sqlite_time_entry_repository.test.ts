@@ -75,7 +75,7 @@ afterEach(() => {
 });
 
 describe('SqliteTimeEntryRepository', () => {
-    it('upsert·getTimeEntryById·deleteTimeEntry CRUD', async () => {
+    it('UC-SQL-TE-001: upsert·getTimeEntryById·deleteTimeEntry CRUD', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         const entry = makeEntry({ id: 'e1' });
         await repo.upsertTimeEntry(entry);
@@ -84,14 +84,14 @@ describe('SqliteTimeEntryRepository', () => {
         expect(await repo.getTimeEntryById('e1')).toBeNull();
     });
 
-    it('is_manual true/false가 INTEGER와 왕복한다', async () => {
+    it('UC-SQL-TE-002: is_manual true/false가 INTEGER와 왕복한다', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(makeEntry({ id: 'manual', is_manual: true }));
         const got = await repo.getTimeEntryById('manual');
         expect(got?.is_manual).toBe(true);
     });
 
-    it('getTimeEntries: job_id 필터', async () => {
+    it('UC-SQL-TE-003: getTimeEntries: job_id 필터', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(makeEntry({ id: 'a', job_id: 'j1', started_at: '2026-03-01T10:00:00.000Z' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'b', job_id: 'j2', started_at: '2026-03-01T11:00:00.000Z' }));
@@ -99,7 +99,7 @@ describe('SqliteTimeEntryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['a']);
     });
 
-    it('getTimeEntries: category_id 필터', async () => {
+    it('UC-SQL-TE-004: getTimeEntries: category_id 필터', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(makeEntry({ id: 'a', category_id: 'c1', started_at: '2026-03-01T10:00:00.000Z' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'b', category_id: 'c2', started_at: '2026-03-01T11:00:00.000Z' }));
@@ -107,7 +107,7 @@ describe('SqliteTimeEntryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['b']);
     });
 
-    it('getTimeEntries: from_date·to_date 조합', async () => {
+    it('UC-SQL-TE-005: getTimeEntries: from_date·to_date 조합', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(makeEntry({ id: 'early', started_at: '2026-03-01T06:00:00.000Z' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'mid', started_at: '2026-03-01T12:00:00.000Z' }));
@@ -119,7 +119,7 @@ describe('SqliteTimeEntryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['mid']);
     });
 
-    it('getTimeEntries: job_id·category_id·기간을 함께 적용', async () => {
+    it('UC-SQL-TE-006: getTimeEntries: job_id·category_id·기간을 함께 적용', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(
             makeEntry({
@@ -146,7 +146,7 @@ describe('SqliteTimeEntryRepository', () => {
         expect(rows.map((r) => r.id)).toEqual(['hit']);
     });
 
-    it('deleteByJobId로 해당 job의 기록만 삭제', async () => {
+    it('UC-SQL-TE-007: deleteByJobId로 해당 job의 기록만 삭제', async () => {
         const repo = new SqliteTimeEntryRepository(db);
         await repo.upsertTimeEntry(makeEntry({ id: 'x', job_id: 'j1' }));
         await repo.upsertTimeEntry(makeEntry({ id: 'y', job_id: 'j2' }));

@@ -4,7 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { runWithExponentialBackoff } from '../../adapters/storage/exponential_backoff';
 
 describe('runWithExponentialBackoff', () => {
-    it('첫 시도 성공 시 sleep 없음', async () => {
+    it('UC-UTIL-006: 첫 시도 성공 시 sleep 없음', async () => {
         const sleep = vi.fn();
         const op = vi.fn().mockResolvedValue(42);
         const r = await runWithExponentialBackoff({ max_attempts: 3, base_delay_ms: 10, sleep }, op);
@@ -13,7 +13,7 @@ describe('runWithExponentialBackoff', () => {
         expect(sleep).not.toHaveBeenCalled();
     });
 
-    it('2번 실패 후 성공', async () => {
+    it('UC-UTIL-007: 2번 실패 후 성공', async () => {
         const sleep = vi.fn().mockResolvedValue(undefined);
         const op = vi
             .fn()
@@ -28,7 +28,7 @@ describe('runWithExponentialBackoff', () => {
         expect(sleep.mock.calls[1]?.[0]).toBe(10);
     });
 
-    it('max_attempts 소진 시 마지막 에러 전파', async () => {
+    it('UC-UTIL-008: max_attempts 소진 시 마지막 에러 전파', async () => {
         const sleep = vi.fn().mockResolvedValue(undefined);
         const err = new Error('final');
         const op = vi.fn().mockRejectedValue(err);

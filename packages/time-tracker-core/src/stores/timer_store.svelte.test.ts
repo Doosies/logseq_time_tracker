@@ -40,14 +40,14 @@ describe('createTimerStore', () => {
         vi.useRealTimers();
     });
 
-    it('초기 상태: active_job null, is_running false', () => {
+    it('UC-STORE-017: 초기 상태: active_job null, is_running false', () => {
         const store = createTimerStore();
         expect(store.state.active_job).toBeNull();
         expect(store.state.is_paused).toBe(false);
         expect(store.is_running).toBe(false);
     });
 
-    it('startTimer: active_job 설정, is_running true, accumulated_ms 0', () => {
+    it('UC-STORE-018: startTimer: active_job 설정, is_running true, accumulated_ms 0', () => {
         const store = createTimerStore();
         const job = make_job();
         const category = make_category();
@@ -60,7 +60,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(true);
     });
 
-    it('pauseTimer: is_paused true, accumulated_ms에 경과 시간 누적, current_segment_start null', () => {
+    it('UC-STORE-019: pauseTimer: is_paused true, accumulated_ms에 경과 시간 누적, current_segment_start null', () => {
         const store = createTimerStore();
         const job = make_job({ status: 'in_progress' });
         const category = make_category();
@@ -76,7 +76,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(false);
     });
 
-    it('resumeTimer: is_paused false, current_segment_start 설정', () => {
+    it('UC-STORE-020: resumeTimer: is_paused false, current_segment_start 설정', () => {
         const store = createTimerStore();
         store.startTimer(make_job(), make_category());
         vi.setSystemTime(new Date('2025-06-01T12:00:03.000Z'));
@@ -88,7 +88,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(true);
     });
 
-    it('stopTimer: 모든 상태 초기화', () => {
+    it('UC-STORE-021: stopTimer: 모든 상태 초기화', () => {
         const store = createTimerStore();
         store.startTimer(make_job(), make_category());
         store.stopTimer();
@@ -100,7 +100,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(false);
     });
 
-    it('cancelTimer: 모든 상태 초기화', () => {
+    it('UC-STORE-022: cancelTimer: 모든 상태 초기화', () => {
         const store = createTimerStore();
         store.startTimer(make_job(), make_category());
         store.cancelTimer();
@@ -108,7 +108,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(false);
     });
 
-    it('restore: 일시정지 상태 복구 시 current_segment_start null', () => {
+    it('UC-STORE-023: restore: 일시정지 상태 복구 시 current_segment_start null', () => {
         const store = createTimerStore();
         const job = make_job({ status: 'paused' });
         const started_at = '2025-06-01T10:00:00.000Z';
@@ -119,7 +119,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(false);
     });
 
-    it('restore: 실행 중 복구 시 current_segment_start 설정', () => {
+    it('UC-STORE-024: restore: 실행 중 복구 시 current_segment_start 설정', () => {
         const store = createTimerStore();
         const job = make_job({ status: 'in_progress' });
         const started_at = '2025-06-01T11:00:00.000Z';
@@ -129,7 +129,7 @@ describe('createTimerStore', () => {
         expect(store.is_running).toBe(true);
     });
 
-    it('is_running derived: active_job 있고 is_paused false일 때 true', () => {
+    it('UC-STORE-025: is_running derived: active_job 있고 is_paused false일 때 true', () => {
         const store = createTimerStore();
         store.startTimer(make_job(), make_category());
         expect(store.is_running).toBe(true);

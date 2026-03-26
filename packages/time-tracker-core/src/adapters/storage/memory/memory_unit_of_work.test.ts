@@ -16,7 +16,7 @@ function makeJob(id: string): Job {
 }
 
 describe('MemoryUnitOfWork', () => {
-    it('모든 Repository 프로퍼티 접근 가능', () => {
+    it('UC-MEM-005: 모든 Repository 프로퍼티 접근 가능', () => {
         const uow = new MemoryUnitOfWork();
         expect(uow.jobRepo).toBeDefined();
         expect(uow.categoryRepo).toBeDefined();
@@ -29,7 +29,7 @@ describe('MemoryUnitOfWork', () => {
         expect(uow.dataFieldRepo).toBeDefined();
     });
 
-    it('transaction 성공 시 데이터 유지', async () => {
+    it('UC-MEM-006: transaction 성공 시 데이터 유지', async () => {
         const uow = new MemoryUnitOfWork();
         await uow.transaction(async (tx) => {
             await tx.jobRepo.upsertJob(makeJob('j1'));
@@ -38,7 +38,7 @@ describe('MemoryUnitOfWork', () => {
         expect(got).not.toBeNull();
     });
 
-    it('transaction 실패 시 롤백 (저장한 Job 복원됨)', async () => {
+    it('UC-MEM-007: transaction 실패 시 롤백 (저장한 Job 복원됨)', async () => {
         const uow = new MemoryUnitOfWork();
         await expect(
             uow.transaction(async (tx) => {
@@ -49,7 +49,7 @@ describe('MemoryUnitOfWork', () => {
         expect(await uow.jobRepo.getJobById('j1')).toBeNull();
     });
 
-    it('중첩 트랜잭션: 외부 실패 시 전체 롤백', async () => {
+    it('UC-MEM-008: 중첩 트랜잭션: 외부 실패 시 전체 롤백', async () => {
         const uow = new MemoryUnitOfWork();
         await expect(
             uow.transaction(async (outer) => {
