@@ -8,14 +8,23 @@
 
     const TOOLBAR_RESUME_REASON = '툴바 재개';
 
+    type ReasonModalLiftConfig = {
+        title: string;
+        allow_empty?: boolean;
+        onconfirm: (reason: string) => void | Promise<void>;
+        oncancel: () => void;
+    };
+
     let {
         context,
         on_open_full_view = () => {},
         inline = false,
+        on_reason_modal_change,
     }: {
         context: AppContext;
         on_open_full_view?: () => void;
         inline?: boolean;
+        on_reason_modal_change?: (config: ReasonModalLiftConfig | null) => void;
     } = $props();
 
     const timer_store = $derived(context.stores.timer_store);
@@ -48,13 +57,39 @@
         action: (reason: string) => void | Promise<void>,
         allow_empty?: boolean,
     ): void {
-        reason_modal_config = allow_empty === undefined ? { title, action } : { title, action, allow_empty };
-        show_reason_modal = true;
+        const close = () => closeReasonModal();
+        const wrapped_onconfirm = async (reason: string) => {
+            try {
+                await action(reason);
+                close();
+            } catch (e) {
+                toast_store.addToast('error', String(e));
+            }
+        };
+        const config: ReasonModalLiftConfig = {
+            title,
+            ...(allow_empty !== undefined ? { allow_empty } : {}),
+            onconfirm: wrapped_onconfirm,
+            oncancel: close,
+        };
+        if (on_reason_modal_change) {
+            on_reason_modal_change(config);
+        } else {
+            reason_modal_config =
+                allow_empty === undefined
+                    ? { title, action: wrapped_onconfirm }
+                    : { title, action: wrapped_onconfirm, allow_empty };
+            show_reason_modal = true;
+        }
     }
 
     function closeReasonModal(): void {
-        show_reason_modal = false;
-        reason_modal_config = null;
+        if (on_reason_modal_change) {
+            on_reason_modal_change(null);
+        } else {
+            show_reason_modal = false;
+            reason_modal_config = null;
+        }
     }
 
     async function resolveCategoryForJob(job_id: string): Promise<Category> {
@@ -146,14 +181,9 @@
 
     function handlePause(): void {
         openReasonModal('일시정지 사유', async (reason) => {
-            try {
-                await context.services.timer_service.pause(reason);
-                timer_store.pauseTimer();
-                await refreshJobs();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
+            await context.services.timer_service.pause(reason);
+            timer_store.pauseTimer();
+            await refreshJobs();
         });
     }
 
@@ -169,14 +199,9 @@
 
     function handleStop(): void {
         openReasonModal('완료 사유', async (reason) => {
-            try {
-                await context.services.timer_service.stop(reason);
-                timer_store.stopTimer();
-                await refreshJobs();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
+            await context.services.timer_service.stop(reason);
+            timer_store.stopTimer();
+            await refreshJobs();
         });
     }
 
@@ -184,17 +209,12 @@
         openReasonModal(
             '작업 전환 사유',
             async (reason) => {
-                try {
-                    const category = await resolveCategoryForJob(job.id);
-                    const trimmed = reason.trim();
-                    await context.services.timer_service.start(job, category, trimmed.length > 0 ? trimmed : undefined);
-                    timer_store.startTimer(job, category);
-                    await refreshJobs();
-                    closeReasonModal();
-                    if (!inline) closeDropdown();
-                } catch (e) {
-                    toast_store.addToast('error', String(e));
-                }
+                const category = await resolveCategoryForJob(job.id);
+                const trimmed = reason.trim();
+                await context.services.timer_service.start(job, category, trimmed.length > 0 ? trimmed : undefined);
+                timer_store.startTimer(job, category);
+                await refreshJobs();
+                if (!inline) closeDropdown();
             },
             true,
         );
@@ -202,25 +222,15 @@
 
     function handleToolbarCompleteJob(job: Job): void {
         openReasonModal('완료 사유', async (reason) => {
-            try {
-                await context.services.job_service.transitionStatus(job.id, 'completed', reason);
-                await refreshJobs();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
+            await context.services.job_service.transitionStatus(job.id, 'completed', reason);
+            await refreshJobs();
         });
     }
 
     function handleToolbarCancelJob(job: Job): void {
         openReasonModal('취소 사유', async (reason) => {
-            try {
-                await context.services.job_service.transitionStatus(job.id, 'cancelled', reason);
-                await refreshJobs();
-                closeReasonModal();
-            } catch (e) {
-                toast_store.addToast('error', String(e));
-            }
+            await context.services.job_service.transitionStatus(job.id, 'cancelled', reason);
+            await refreshJobs();
         });
     }
 
@@ -340,7 +350,7 @@
         {/if}
     {/if}
 
-    {#if show_reason_modal && reason_modal_config}
+    {#if !on_reason_modal_change && show_reason_modal && reason_modal_config}
         <ReasonModal
             title={reason_modal_config.title}
             onconfirm={reason_modal_config.action}

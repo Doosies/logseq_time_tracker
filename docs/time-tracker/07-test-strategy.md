@@ -11,7 +11,8 @@
 
 > **관련 문서 (SSOT)**
 >
-> - 테스트 유즈케이스 (Given-When-Then): [08-test-usecases.md](08-test-usecases.md)
+> - 상세 BDD 명세 (Given-When-Then): 각 패키지 [`__test_specs__/`](../../packages/time-tracker-core/__test_specs__/) (`time-tracker-core`, `logseq-time-tracker`)
+> - Phase별 유즈케이스 인덱스: [08-test-usecases.md](08-test-usecases.md)
 > - 아키텍처 (서비스 목록/책임): [02-architecture.md](02-architecture.md)
 > - 데이터 모델 (필드/제약): [03-data-model.md](03-data-model.md)
 > - FSM 전환 규칙: [04-state-management.md §상태 머신](04-state-management.md)
@@ -24,8 +25,7 @@
 ### 유즈케이스 선작성 → 테스트 코드 후작성
 
 ```
-1. 유즈케이스 명세 (08-test-usecases.md)
-   └── BDD Given-When-Then 형식으로 시나리오 정의
+1. 유즈케이스 명세 — 패키지 `__test_specs__/{level}/{domain}.md`에서 BDD Given-When-Then 정의; Phase·ID 요약은 [08-test-usecases.md](08-test-usecases.md)
    └── 코드 없이 "무엇을 검증하는가" 명세
 
 2. 세부 테스트 코드 구현
@@ -35,7 +35,7 @@
 
 - 새 기능 구현 시: 유즈케이스 먼저 작성 → 사용자 확인 → 테스트 코드 구현
 - 유즈케이스 ID(`UC-TIMER-001` 등)를 테스트 코드의 describe/it 블록에 명시하여 추적성 유지
-- 상세 유즈케이스: [08-test-usecases.md](08-test-usecases.md) 참조
+- 상세 BDD·ID: 각 패키지 `__test_specs__/` 및 Phase 인덱스 [08-test-usecases.md](08-test-usecases.md) 참조
 
 ---
 
@@ -55,12 +55,13 @@
 | **단위** | 60%  | Vitest                           | 서비스, 스토어, 유틸리티, 타입 검증 |
 | **통합** | 30%  | Vitest + @testing-library/svelte | 서비스 간 협업, 컴포넌트 + 스토어   |
 | **E2E**  | 10%  | Playwright                       | Logseq 플러그인 핵심 플로우         |
+| **VRT**  | 보조 | Playwright `toHaveScreenshot`    | 주요 UI 시각 회귀 (스크린샷 비교)   |
 
 ---
 
 ## 4. 패키지별 테스트 범위
 
-> 각 항목의 상세 시나리오는 [08-test-usecases.md](08-test-usecases.md) 참조
+> 각 항목의 상세 시나리오는 각 패키지 `__test_specs__/` 및 Phase 인덱스 [08-test-usecases.md](08-test-usecases.md) 참조
 
 ### 4.1 `time-tracker-core` (Logseq 무관)
 
@@ -230,6 +231,8 @@ packages/time-tracker-core/
 
 **E2E**: 잡 생성 → 정보 입력 → 트래킹 시작
 
+**VRT**: 주요 화면·상태에 대해 Playwright `toHaveScreenshot` 기반 시각 회귀 (UC-VRT-001~003, `logseq-time-tracker/__test_specs__/vrt/`)
+
 ### Phase 4~5 (통계 & 정리)
 
 **통합 테스트**:
@@ -251,6 +254,7 @@ packages/time-tracker-core/
 | **@testing-library/svelte** | Svelte 컴포넌트 테스트 | 양쪽                |
 | **@vitest/coverage-v8**     | 커버리지 측정          | 양쪽                |
 | **Playwright**              | E2E 테스트             | logseq-time-tracker |
+| **Playwright toHaveScreenshot** | VRT (시각 회귀)    | logseq-time-tracker (`__test_specs__/vrt/`) |
 | **jsdom**                   | DOM 환경 시뮬레이션    | 양쪽                |
 
 ### 디렉터리 구조
@@ -433,3 +437,43 @@ it('진행중 작업이 있을 때 새 작업 시작 시 기존 작업이 일시
 | 테스트 설명 한글          | 100%                    |
 | Linter 오류 (테스트 포함) | 0개                     |
 | E2E 실행                  | 사용자 명시 요청 시에만 |
+
+---
+
+## Test ID 기반 워크플로우
+
+### ID 체계
+
+`UC-{영역}-{번호}` (3자리 zero-padded)
+
+| 영역 | 대상 |
+|---|---|
+| TIMER | TimerService |
+| JOB | JobService |
+| JCAT | JobCategoryService |
+| CAT | CategoryService |
+| HIST | HistoryService |
+| ENTRY | TimeEntryService |
+| DFIELD | DataFieldService |
+| TMPL | TemplateService |
+| STORE | StorageAdapter |
+| MIGRATE | 스키마·Export 마이그레이션 |
+| FSM | 상태 머신 전체 흐름 (통합) |
+| TYPE | 타입 검증 |
+| UI | Svelte 컴포넌트 |
+| PLUGIN | Logseq 플러그인 |
+| E2E | End-to-End 시나리오 |
+| EDGE | 엣지 케이스 |
+| REMIND | 알림·리마인더 |
+| VRT | Visual Regression Testing |
+
+### 워크플로우
+
+1. 스펙 먼저: `__test_specs__/{level}/{domain}.md`에서 유즈케이스 ID 확인
+2. ID 없으면: BDD 명세 먼저 작성 → ID 부여
+3. 테스트 코드의 describe/it에 ID 포함: `it('UC-UI-024: ...', ...)`
+
+### SSOT
+
+- **상세 BDD 명세**: 각 패키지의 `__test_specs__/` 디렉토리
+- **Phase별 인덱스**: [08-test-usecases.md](08-test-usecases.md)

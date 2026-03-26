@@ -9,7 +9,7 @@
 > - FSM 상태 전환: [04-state-management.md](04-state-management.md)
 > - Repository 인터페이스: [05-storage.md](05-storage.md)
 > - UI 컴포넌트: [06-ui-ux.md](06-ui-ux.md)
-> - 테스트 유즈케이스: [08-test-usecases.md](08-test-usecases.md)
+> - 테스트 유즈케이스: [08-test-usecases.md](08-test-usecases.md) (Phase 인덱스) / 각 패키지의 `__test_specs__/` (상세 BDD 명세)
 
 ---
 

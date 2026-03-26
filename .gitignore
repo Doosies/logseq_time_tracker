@@ -91,6 +91,10 @@ storybook-static/
 # sql.js WASM copied by logseq-time-tracker prebuild/dev
 packages/logseq-time-tracker/public/assets/sql-wasm.wasm
 
+# Playwright VRT artifacts
+*-actual.png
+*-diff.png
+
 # rag 관련 임시 gitignore
 **/commit_docs/**/*
 **/.cr-rag-data*/**/*pipeline_flexion*.json

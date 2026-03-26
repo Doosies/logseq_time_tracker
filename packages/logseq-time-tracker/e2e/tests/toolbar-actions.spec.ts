@@ -1,36 +1,10 @@
-import { test, expect, type Page } from '@playwright/test';
-
-async function waitForReasonModal(page: Page, title: string) {
-    const dialog = page.getByRole('dialog', { name: title });
-    await expect(dialog).toBeVisible();
-    return dialog;
-}
-
-async function submitReasonModal(page: Page, title: string, text: string) {
-    const dialog = await waitForReasonModal(page, title);
-    await dialog.locator('textarea').fill(text);
-    await dialog.getByRole('button', { name: '확인' }).click();
-    await expect(dialog).toBeHidden();
-}
-
-function toolbarRegion(page: Page) {
-    return page.getByRole('region', { name: '타이머 툴바' });
-}
-
-async function createJobViaFullView(page: Page, job_name: string) {
-    await page.getByRole('button', { name: '전체 화면 열기' }).click();
-    await expect(toolbarRegion(page)).toBeHidden();
-    await page.getByRole('button', { name: '새 작업' }).click();
-    await submitReasonModal(page, '새 작업', job_name);
-    await page.getByRole('button', { name: /작은 화면|돌아가기/ }).click();
-    await expect(toolbarRegion(page)).toBeVisible();
-}
-
-async function confirmEmptySwitchReason(page: Page) {
-    const dialog = await waitForReasonModal(page, '작업 전환 사유');
-    await dialog.getByRole('button', { name: '확인' }).click();
-    await expect(dialog).toBeHidden();
-}
+import { test, expect } from '@playwright/test';
+import {
+    toolbarRegion,
+    createJobViaFullView,
+    submitReasonModal,
+    confirmEmptySwitchReason,
+} from '../helpers';
 
 test.describe('Toolbar 액션', () => {
     test.beforeEach(async ({ page }) => {

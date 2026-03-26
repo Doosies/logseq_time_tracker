@@ -211,7 +211,7 @@ packages/time-tracker-core/src/ui/fields/
 
 ### OverlapResolutionModal (시간 중복 해소)
 
-수동 입력한 시간 구간이 기존 TimeEntry와 겹치는 경우 표시됩니다. 서비스 레벨 로직(`resolveOverlap`)은 [08-test-usecases.md §2.5 TimeEntryService](08-test-usecases.md) 참조.
+수동 입력한 시간 구간이 기존 TimeEntry와 겹치는 경우 표시됩니다. 서비스 레벨 로직(`resolveOverlap`)은 [`time-tracker-core/__test_specs__/unit/time-entry.md`](../../packages/time-tracker-core/__test_specs__/unit/time-entry.md) 참조.
 
 **선택지**:
 
@@ -629,3 +629,19 @@ Phase 1 프로토타입에서는 다음만 구현합니다. 이는 01-requiremen
 
 - WCAG 2.1 AA 기준 (4.5:1 이상)
 - 색상만으로 상태를 구분하지 않음 (아이콘/텍스트 병행)
+
+---
+
+## 모달 렌더링 위치 (Stacking Context)
+
+`position: fixed` 오버레이(ReasonModal, PromptDialog 등)는 **반드시 최상위 컴포넌트**에서 렌더링합니다.
+
+### 문제
+
+`position: absolute` + `z-index`가 설정된 컨테이너 내부에서 `position: fixed` 요소를 렌더링하면 새로운 stacking context가 생성되어 모달이 부모 영역에 갇힙니다.
+
+### 해결
+
+- 모달은 iframe/앱의 최상위 레벨에서 렌더링
+- 하위 컴포넌트에서는 콜백 패턴으로 모달 설정을 상위로 전달
+- 예시: `Toolbar`의 `on_reason_modal_change` → `App.svelte`에서 렌더링

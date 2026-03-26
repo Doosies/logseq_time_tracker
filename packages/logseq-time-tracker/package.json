@@ -15,7 +15,8 @@
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
         "test": "vitest run --passWithNoTests",
         "test:watch": "vitest",
-        "test:e2e": "playwright test"
+        "test:e2e": "playwright test",
+        "test:e2e:update-snapshots": "playwright test --update-snapshots"
     },
     "license": "MIT",
     "dependencies": {

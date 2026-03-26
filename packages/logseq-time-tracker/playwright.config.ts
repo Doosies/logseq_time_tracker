@@ -7,6 +7,12 @@ export default defineConfig({
     use: {
         baseURL: 'http://localhost:5174',
         headless: true,
+        viewport: { width: 1280, height: 720 },
+    },
+    expect: {
+        toHaveScreenshot: {
+            maxDiffPixelRatio: 0.01,
+        },
     },
     webServer: {
         command: 'npx vite --config e2e/vite.config.ts --port 5174',

@@ -9,9 +9,23 @@
         formatDuration,
         formatLocalDateTime,
         runAllPocTests,
+        ReasonModal,
     } from '@personal/time-tracker-core';
 
     let { ctx }: { ctx: AppContext } = $props();
+
+    type ReasonModalConfig = {
+        title: string;
+        allow_empty?: boolean;
+        onconfirm: (reason: string) => void | Promise<void>;
+        oncancel: () => void;
+    };
+
+    let reason_modal_config = $state<ReasonModalConfig | null>(null);
+
+    function handleReasonModalChange(config: ReasonModalConfig | null) {
+        reason_modal_config = config;
+    }
 
     const job_store = $derived(ctx.stores.job_store);
     const toast_store = $derived(ctx.stores.toast_store);
@@ -196,10 +210,24 @@
                     {/if}
                 </div>
             {/if}
-            <Toolbar context={ctx} on_open_full_view={handleOpenFullView} inline={true} />
+            <Toolbar
+                context={ctx}
+                on_open_full_view={handleOpenFullView}
+                inline={true}
+                on_reason_modal_change={handleReasonModalChange}
+            />
             <ToastContainer {toast_store} />
         </div>
     </div>
+{/if}
+
+{#if reason_modal_config}
+    <ReasonModal
+        title={reason_modal_config.title}
+        onconfirm={reason_modal_config.onconfirm}
+        oncancel={reason_modal_config.oncancel}
+        {...reason_modal_config.allow_empty !== undefined ? { allow_empty: reason_modal_config.allow_empty } : {}}
+    />
 {/if}
 
 {#if show_debug_modal}

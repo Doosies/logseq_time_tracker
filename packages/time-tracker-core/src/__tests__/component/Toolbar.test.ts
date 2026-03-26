@@ -117,6 +117,100 @@ describe('Toolbar', () => {
         expect(getByRole('dialog', { name: '완료 사유' })).toBeVisible();
     });
 
+    it('UC-UI-024: on_reason_modal_change 콜백이 있을 때 일시정지 클릭 시 콜백이 호출된다', async () => {
+        const user = userEvent.setup();
+        const timer_store = createTimerStore();
+        const job_store = createJobStore();
+        const mock_job = make_job({ id: 'job-cb-pause', title: '콜백 일시정지', status: 'in_progress' });
+        const mock_cat = make_category({ id: 'cat-1', name: '기본', parent_id: null });
+        job_store.setJobs([mock_job]);
+        timer_store.startTimer(mock_job, mock_cat);
+        const mock_context = build_app_context(timer_store, job_store);
+        const on_reason_modal_change = vi.fn();
+
+        const { getByRole, queryByRole } = render(Toolbar, {
+            props: { context: mock_context, inline: true, on_reason_modal_change },
+        });
+
+        await user.click(getByRole('button', { name: '일시정지' }));
+
+        expect(on_reason_modal_change).toHaveBeenCalled();
+        const lift_config = on_reason_modal_change.mock.calls[0]![0]!;
+        expect(lift_config).toMatchObject({ title: '일시정지 사유' });
+        expect(typeof lift_config.onconfirm).toBe('function');
+        expect(typeof lift_config.oncancel).toBe('function');
+        expect(queryByRole('dialog')).toBeNull();
+    });
+
+    it('UC-UI-024: on_reason_modal_change 콜백이 있을 때 완료 클릭 시 콜백이 호출된다', async () => {
+        const user = userEvent.setup();
+        const timer_store = createTimerStore();
+        const job_store = createJobStore();
+        const mock_job = make_job({ id: 'job-cb-stop', title: '콜백 완료', status: 'in_progress' });
+        const mock_cat = make_category({ id: 'cat-1', name: '기본', parent_id: null });
+        job_store.setJobs([mock_job]);
+        timer_store.startTimer(mock_job, mock_cat);
+        const mock_context = build_app_context(timer_store, job_store);
+        const on_reason_modal_change = vi.fn();
+
+        const { getByRole, queryByRole } = render(Toolbar, {
+            props: { context: mock_context, inline: true, on_reason_modal_change },
+        });
+
+        await user.click(getByRole('button', { name: '완료' }));
+
+        expect(on_reason_modal_change).toHaveBeenCalled();
+        const lift_config = on_reason_modal_change.mock.calls[0]![0]!;
+        expect(lift_config).toMatchObject({ title: '완료 사유' });
+        expect(queryByRole('dialog')).toBeNull();
+    });
+
+    it('UC-UI-024: 콜백 모드에서 onconfirm 실행 후 null이 전달된다 (모달 닫힘)', async () => {
+        const user = userEvent.setup();
+        const timer_store = createTimerStore();
+        const job_store = createJobStore();
+        const mock_job = make_job({ id: 'job-cb-confirm', title: '콜백 확인', status: 'in_progress' });
+        const mock_cat = make_category({ id: 'cat-1', name: '기본', parent_id: null });
+        job_store.setJobs([mock_job]);
+        timer_store.startTimer(mock_job, mock_cat);
+        const mock_context = build_app_context(timer_store, job_store);
+        const on_reason_modal_change = vi.fn();
+
+        const { getByRole } = render(Toolbar, {
+            props: { context: mock_context, inline: true, on_reason_modal_change },
+        });
+
+        await user.click(getByRole('button', { name: '일시정지' }));
+
+        const lift_config = on_reason_modal_change.mock.calls[0]![0]!;
+        await lift_config.onconfirm('테스트 사유');
+
+        expect(on_reason_modal_change).toHaveBeenNthCalledWith(2, null);
+    });
+
+    it('UC-UI-024: 콜백 모드에서 oncancel 실행 후 null이 전달된다', async () => {
+        const user = userEvent.setup();
+        const timer_store = createTimerStore();
+        const job_store = createJobStore();
+        const mock_job = make_job({ id: 'job-cb-cancel', title: '콜백 취소', status: 'in_progress' });
+        const mock_cat = make_category({ id: 'cat-1', name: '기본', parent_id: null });
+        job_store.setJobs([mock_job]);
+        timer_store.startTimer(mock_job, mock_cat);
+        const mock_context = build_app_context(timer_store, job_store);
+        const on_reason_modal_change = vi.fn();
+
+        const { getByRole } = render(Toolbar, {
+            props: { context: mock_context, inline: true, on_reason_modal_change },
+        });
+
+        await user.click(getByRole('button', { name: '일시정지' }));
+
+        const lift_config = on_reason_modal_change.mock.calls[0]![0]!;
+        lift_config.oncancel();
+
+        expect(on_reason_modal_change).toHaveBeenNthCalledWith(2, null);
+    });
+
     it('UC-UI-021: 활성 없음 + pending 잡이면 시작만 보이고 전환·재개는 없다', () => {
         const timer_store = createTimerStore();
         const job_store = createJobStore();

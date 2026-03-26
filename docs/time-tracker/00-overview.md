@@ -103,7 +103,7 @@ graph TD
 | [05-storage.md](05-storage.md)                   | 영속화 (Storage Adapter, OPFS+SQLite, Logseq)                |
 | [06-ui-ux.md](06-ui-ux.md)                       | UI/UX (툴바, 풀화면, 셀렉터, 데이트피커, 템플릿)             |
 | [07-test-strategy.md](07-test-strategy.md)       | 테스트 전략 (워크플로우, 피라미드, Phase별 범위, 인프라)     |
-| [08-test-usecases.md](08-test-usecases.md)       | 테스트 유즈케이스 명세 (BDD Given-When-Then)                 |
+| [08-test-usecases.md](08-test-usecases.md)       | 테스트 유즈케이스 Phase별 인덱스 (상세 BDD 명세는 각 패키지의 `__test_specs__/` 참조) |
 | [09-user-flows.md](09-user-flows.md)             | 핵심 유저 플로우 (행위→결과, Mermaid, Phase별 19개 시나리오) |
 
 ---
