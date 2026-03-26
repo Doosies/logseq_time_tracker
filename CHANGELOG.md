@@ -7,7 +7,8 @@
 
 > 패키지별 변경사항은 각 패키지의 CHANGELOG를 참조하세요:
 > [uikit](./packages/uikit/CHANGELOG.md), [ecount-dev-tool](./packages/ecount-dev-tool/CHANGELOG.md),
-> [mcp-server](./packages/mcp-server/CHANGELOG.md), [time-tracker](./packages/time-tracker/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
+> [mcp-server](./packages/mcp-server/CHANGELOG.md), [logseq-time-tracker](./packages/logseq-time-tracker/CHANGELOG.md),
+> [time-tracker-core](./packages/time-tracker-core/CHANGELOG.md), [cr-rag-mcp](./packages/cr-rag-mcp/CHANGELOG.md), [docs](./packages/docs/CHANGELOG.md)
 
 ## [Unreleased]
 
