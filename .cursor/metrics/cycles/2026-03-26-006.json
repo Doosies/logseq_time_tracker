@@ -1,0 +1,28 @@
+{
+    "cycle_id": "2026-03-26-006",
+    "task_type": "chore",
+    "task_description": "테스트코드 마이그레이션 검증: UC ID 미부여 27개 파일에 ID 부여 + __test_specs__/ 동기화",
+    "started_at": "2026-03-26T10:00:00+09:00",
+    "completed_at": "2026-03-26T16:30:00+09:00",
+    "success": true,
+    "workflow": ["developer(main-direct)", "qa(main-direct)"],
+    "agents": {
+        "developer": { "calls": 1, "result": "200+ 테스트에 UC-* ID 부여, 8개 스펙 파일 생성" },
+        "qa": { "calls": 1, "result": "test/lint/type-check/build 전체 PASS" }
+    },
+    "quality_gates": {
+        "test": "PASS (346 tests, 60 files)",
+        "lint": "PASS",
+        "type_check": "PASS (8/8 tasks)",
+        "build": "PASS"
+    },
+    "files_changed": 43,
+    "decisions": [
+        { "phase": "implementation", "decision": "UC-PLUGIN-006 스펙을 logseq-time-tracker → time-tracker-core로 이동", "reason": "테스트 코드가 time-tracker-core에 있으므로 스펙도 동일 패키지에 배치" },
+        { "phase": "implementation", "decision": "SQL-DF, MEM, ERR, UTIL, SCHEMA 등 신규 도메인 추가", "reason": "기존 ID scheme에 누락된 도메인을 체계적으로 보완" }
+    ],
+    "issues_encountered": [
+        { "phase": "verification", "issue": "rg PCRE2 미지원으로 look-around 패턴 실패", "resolution": "rg --pcre2 옵션 사용" }
+    ],
+    "notes": "메인 에이전트가 서브에이전트 없이 직접 수행 (사용자 요청)"
+}
