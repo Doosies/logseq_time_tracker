@@ -1,5 +1,5 @@
 <script lang="ts">
-    import PromptDialog from '../PromptDialog.svelte';
+    import { PromptDialog } from '../../PromptDialog';
 
     let {
         title,

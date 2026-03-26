@@ -189,6 +189,7 @@ export async function handleCycleInit(args: Record<string, unknown>, cycles_dir:
     return textResult(`사이클 초기화 완료: ${cycle_id}\nstarted_at: ${cycle.started_at}`);
 }
 
+/** 지정한 cycle_id의 사이클 JSON 전체를 텍스트로 반환합니다. */
 export async function handleCycleGet(args: Record<string, unknown>, cycles_dir: string): Promise<ToolResult> {
     const cycle_id = args['cycle_id'] as string;
     if (!cycle_id) throw new Error('cycle_id는 필수입니다');

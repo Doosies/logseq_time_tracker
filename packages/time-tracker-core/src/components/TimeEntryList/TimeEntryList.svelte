@@ -1,3 +1,6 @@
+<!--
+@component TimeEntryList — Filterable list of time entries with edit/delete actions and job/category labels.
+-->
 <script lang="ts">
     import * as css from './time_entry_list.css';
     import type { TimeEntry } from '../../types/time_entry';

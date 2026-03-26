@@ -35,6 +35,7 @@ export function getElapsedMs(accumulated_ms: number, current_segment_start: stri
     return accumulated_ms + (Date.now() - new Date(current_segment_start).getTime());
 }
 
+/** Formats a non-negative second count as `HH:MM:SS` with zero padding. */
 export function formatDuration(total_seconds: number): string {
     const hours = Math.floor(total_seconds / 3600);
     const minutes = Math.floor((total_seconds % 3600) / 60);
@@ -42,6 +43,7 @@ export function formatDuration(total_seconds: number): string {
     return [hours, minutes, seconds].map((v) => String(v).padStart(2, '0')).join(':');
 }
 
+/** Formats a UTC ISO string for display in `ko-KR` locale (24h date-time). */
 export function formatLocalDateTime(utc_iso: string): string {
     const date = new Date(utc_iso);
     return new Intl.DateTimeFormat('ko-KR', {

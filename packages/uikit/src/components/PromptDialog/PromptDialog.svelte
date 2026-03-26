@@ -1,5 +1,6 @@
 <!--
-@component PromptDialog - 테마가 적용된 사유·프롬프트 입력 모달
+@component PromptDialog - 테마가 적용된 사유·프롬프트 입력 모달.
+  Props: title, description, placeholder, max_length, allow_empty, confirm_label, cancel_label, loading_label, onconfirm(reason), oncancel.
 -->
 <script lang="ts">
     import { PromptDialog as PrimitivePromptDialog } from '../../primitives/PromptDialog';

@@ -1,3 +1,8 @@
+/**
+ * UIKit 공개 컴포넌트 배럴. 버튼·폼·Dnd·토스트·다이얼로그 등 앱에서 재사용하는 Svelte 컴포넌트를보냅니다.
+ *
+ * @module
+ */
 export { LayoutSwitcher } from '../primitives/LayoutSwitcher';
 export { Button } from './Button';
 export { Select } from './Select';

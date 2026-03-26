@@ -7,16 +7,20 @@ import { ValidationError, StateTransitionError, StorageError } from '../errors';
 import { sanitizeText, generateId } from '../utils';
 import { MAX_TITLE_LENGTH, MAX_DESCRIPTION_LENGTH, MAX_REASON_LENGTH } from '../constants/config';
 
+/** Job lifecycle: CRUD, status transitions, and switching the active job with history. */
 export interface IJobService {
     createJob(params: { title: string; description?: string }): Promise<Job>;
     getJobs(filter?: { status?: StatusKind }): Promise<Job[]>;
     getJobById(id: string): Promise<Job | null>;
     updateJob(id: string, updates: Partial<Pick<Job, 'title' | 'description'>>): Promise<Job>;
     deleteJob(id: string): Promise<void>;
+    /** Validates transition, appends history, and updates stored status. */
     transitionStatus(job_id: string, to_status: StatusKind, reason: string): Promise<void>;
+    /** Pauses or leaves `from` paused, then promotes `to` to in_progress. */
     switchJob(from_job_id: string, to_job_id: string, reason: string): Promise<void>;
 }
 
+/** {@link IJobService} implementation backed by {@link IUnitOfWork} and {@link IHistoryService}. */
 export class JobService implements IJobService {
     constructor(
         private readonly _uow: IUnitOfWork,
@@ -118,6 +122,7 @@ export class JobService implements IJobService {
         this._logger?.debug('Job deleted', { id });
     }
 
+    /** Records history and updates job status when the transition is valid. */
     async transitionStatus(job_id: string, to_status: StatusKind, reason: string): Promise<void> {
         const reason_sanitized = sanitizeText(reason, MAX_REASON_LENGTH);
         const job = await this._uow.jobRepo.getJobById(job_id);
@@ -134,6 +139,7 @@ export class JobService implements IJobService {
         });
     }
 
+    /** Pauses the current job (if needed) and moves `to_job_id` to in_progress in one transaction. */
     async switchJob(from_job_id: string, to_job_id: string, reason: string): Promise<void> {
         const reason_sanitized = sanitizeText(reason, MAX_REASON_LENGTH);
         await this._uow.transaction(async () => {

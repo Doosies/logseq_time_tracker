@@ -1,5 +1,6 @@
 <!--
-@component ElapsedTimer - 테마가 적용된 경과 시간 표시(tabular 숫자)
+@component ElapsedTimer - 테마가 적용된 경과 시간 표시(tabular 숫자).
+  Props: accumulated_ms, segment_start, is_paused, formatter (선택), class, label.
 -->
 <script lang="ts">
     import { ElapsedTimer as PrimitiveElapsedTimer } from '../../primitives/ElapsedTimer';

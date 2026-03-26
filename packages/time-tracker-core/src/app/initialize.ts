@@ -32,6 +32,7 @@ async function pauseOrphanInProgressJobs(uow: IUnitOfWork, logger: ILogger): Pro
     }
 }
 
+/** Options for {@link initializeApp}: storage, logging, and optional test doubles. */
 export interface InitializeOptions {
     logger?: ILogger;
     uow?: IUnitOfWork;

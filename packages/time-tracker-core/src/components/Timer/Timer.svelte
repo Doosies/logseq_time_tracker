@@ -1,3 +1,6 @@
+<!--
+@component Timer — Displays elapsed time for the active or selected job and wires timer control callbacks.
+-->
 <script lang="ts">
     import { ElapsedTimer } from '@personal/uikit';
     import TimerButton from './TimerButton.svelte';

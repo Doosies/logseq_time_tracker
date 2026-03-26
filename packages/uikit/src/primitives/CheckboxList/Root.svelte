@@ -3,10 +3,11 @@
     import { Provider, Sortable } from '../Dnd';
     import type { Snippet } from 'svelte';
 
+    type HandleAttach = (node: HTMLElement) => () => void;
     interface Props {
         items: T[];
         onreorder?: (new_items: T[]) => void;
-        item: Snippet<[{ item: T; index: number; handleAttach: unknown }]>;
+        item: Snippet<[{ item: T; index: number; handleAttach: HandleAttach }]>;
         class?: string;
     }
 
@@ -18,7 +19,7 @@
 <Provider {items} {...onreorder != null && { onreorder }} {...extra_class != null && { class: extra_class }}>
     {#each items as _item, index (_item.id)}
         <Sortable id={_item.id} {index}>
-            {#snippet children({ handleAttach })}
+            {#snippet children({ handleAttach }: { handleAttach: HandleAttach })}
                 {@render item({ item: _item, index, handleAttach })}
             {/snippet}
         </Sortable>

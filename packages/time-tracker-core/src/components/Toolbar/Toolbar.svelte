@@ -3,8 +3,8 @@
     import type { Job } from '../../types/job';
     import type { Category } from '../../types/category';
     import { ElapsedTimer } from '@personal/uikit';
-    import ReasonModal from '../ReasonModal/ReasonModal.svelte';
     import * as css from './toolbar.css';
+    import { ReasonModal } from '../ReasonModal';
 
     const TOOLBAR_RESUME_REASON = '툴바 재개';
 

@@ -13,14 +13,21 @@ import { MAX_REASON_LENGTH, MAX_NOTE_LENGTH, MAX_TITLE_LENGTH, TIMER_BACKUP_INTE
 export interface ITimerService extends IDisposable {
     /** In-memory 복원(앱 재시작 시 `timer_store.restore`와 함께 호출). DB는 변경하지 않습니다. */
     restore(job: Job, category: Category, started_at: string, is_paused: boolean, accumulated_ms: number): void;
+    /** Starts or switches the active timer for the given job and category. */
     start(job: Job, category: Category, reason?: string): Promise<void>;
+    /** Pauses the running timer and persists state. */
     pause(reason: string): Promise<void>;
+    /** Resumes from paused into in_progress. */
     resume(reason: string): Promise<void>;
+    /** Stops timing, may create a time entry, and completes the job when duration is positive. */
     stop(reason: string): Promise<TimeEntry | null>;
+    /** Cancels work, optionally recording an entry, and clears the active timer. */
     cancel(reason: string): Promise<TimeEntry | null>;
+    /** Returns the job bound to the timer, if any. */
     getActiveJob(): Job | null;
     /** Persists active timer settings (e.g. `beforeunload`). */
     flushBeforeUnload(): Promise<void>;
+    /** Gates mutations when storage is read-only (getter returns true). */
     setReadonlyGetter(fn: () => boolean): void;
     dispose(): void;
 }
@@ -32,6 +39,7 @@ function clampNote(note: string): string {
     return note.slice(0, MAX_NOTE_LENGTH);
 }
 
+/** Active timer orchestration: job transitions, time entry creation, and persisted backup snapshots. */
 export class TimerService implements ITimerService {
     private _active_job: Job | null = null;
     private _active_category: Category | null = null;
@@ -48,10 +56,12 @@ export class TimerService implements ITimerService {
         private readonly _logger?: ILogger,
     ) {}
 
+    /** When the getter returns true, timer mutations throw (e.g. storage read-only). */
     setReadonlyGetter(fn: () => boolean): void {
         this._readonly_getter = fn;
     }
 
+    /** In-memory restore after reload; does not write to the database (see {@link ITimerService.restore}). */
     restore(job: Job, category: Category, started_at: string, is_paused: boolean, accumulated_ms: number): void {
         this._active_job = job;
         this._active_category = category;
@@ -62,10 +72,12 @@ export class TimerService implements ITimerService {
         this.ensureBackupInterval();
     }
 
+    /** Job currently bound to the timer, or null. */
     getActiveJob(): Job | null {
         return this._active_job;
     }
 
+    /** Persists active timer settings before page unload; errors are logged, not rethrown. */
     async flushBeforeUnload(): Promise<void> {
         try {
             if (!this._active_job || !this._active_category) {
@@ -77,6 +89,7 @@ export class TimerService implements ITimerService {
         }
     }
 
+    /** Stops backup interval, clears `active_timer` setting, and resets in-memory state. */
     dispose(): void {
         this.clearBackupInterval();
         void this._uow.settingsRepo.deleteSetting('active_timer');
@@ -88,6 +101,7 @@ export class TimerService implements ITimerService {
         this._session_started_at = null;
     }
 
+    /** Starts or switches the timer for `job`/`category`, closing prior work as needed. */
     async start(job: Job, category: Category, reason?: string): Promise<void> {
         this.assertWritable();
         const safe_title = job.title.length > MAX_TITLE_LENGTH ? job.title.slice(0, MAX_TITLE_LENGTH) : job.title;
@@ -125,6 +139,7 @@ export class TimerService implements ITimerService {
         this.ensureBackupInterval();
     }
 
+    /** Pauses a running timer and persists state. */
     async pause(reason: string): Promise<void> {
         this.assertWritable();
         if (!this._active_job) {
@@ -146,6 +161,7 @@ export class TimerService implements ITimerService {
         });
     }
 
+    /** Resumes from paused and moves the job back to in_progress. */
     async resume(reason: string): Promise<void> {
         this.assertWritable();
         if (!this._active_job) {
@@ -164,6 +180,7 @@ export class TimerService implements ITimerService {
         });
     }
 
+    /** Finalizes work: writes a time entry when duration is positive, completes the job, clears timer. */
     async stop(reason: string): Promise<TimeEntry | null> {
         this.assertWritable();
         if (!this._active_job || !this._active_category) {
@@ -204,6 +221,7 @@ export class TimerService implements ITimerService {
         return entry;
     }
 
+    /** Cancels work: may record entry with `[cancelled]` note, sets job cancelled, clears timer. */
     async cancel(reason: string): Promise<TimeEntry | null> {
         this.assertWritable();
         if (!this._active_job || !this._active_category) {

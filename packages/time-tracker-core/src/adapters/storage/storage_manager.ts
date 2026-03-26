@@ -27,6 +27,7 @@ const READONLY_LOCK_RETRY_MS = 5000;
 
 const SETTINGS_KEYS: (keyof SettingsMap)[] = ['active_timer', 'last_selected_category'];
 
+/** Configuration for SQLite backend, optional logging, Web Locks, and init retry policy. */
 export interface StorageManagerOptions {
     sqlite_options: SqliteAdapterOptions;
     backend: IStorageBackend;
@@ -92,15 +93,18 @@ export class StorageManager {
     private _lock_retry_interval: ReturnType<typeof setInterval> | null = null;
     private readonly _readonly_listeners = new Set<(readonly_mode: boolean) => void>();
 
+    /** Does not open storage until {@link initialize} is called. */
     constructor(options: StorageManagerOptions) {
         this._options = options;
         this._retry = { ...DEFAULT_RETRY, ...options.retry_options };
     }
 
+    /** True when Web Lock was not acquired or storage is otherwise read-only for mutations. */
     get is_readonly(): boolean {
         return this._is_readonly;
     }
 
+    /** Opens SQLite (or falls back to memory), runs migrations, and returns the active {@link IUnitOfWork}. */
     async initialize(): Promise<IUnitOfWork> {
         const logger = this._options.logger;
         const locks = this._options.web_locks;
@@ -132,14 +136,17 @@ export class StorageManager {
         }
     }
 
+    /** Current unit of work (SQLite or memory fallback). */
     getUnitOfWork(): IUnitOfWork {
         return this._active_uow;
     }
 
+    /** Snapshot of sqlite vs memory_fallback mode for UI or diagnostics. */
     getStorageState(): StorageState {
         return this._state_machine.getState();
     }
 
+    /** Subscribes to storage mode changes; returns an unsubscribe function. */
     subscribe(listener: StorageStateListener): () => void {
         return this._state_machine.subscribe(listener);
     }
@@ -151,6 +158,7 @@ export class StorageManager {
         };
     }
 
+    /** Runs `fn` on the active UoW; on transient SQLite errors, switches to memory and retries. */
     async executeWithFallback<T>(fn: (uow: IUnitOfWork) => Promise<T>): Promise<T> {
         if (this._state_machine.getState().mode === 'memory_fallback') {
             return fn(this._active_uow);
@@ -164,6 +172,7 @@ export class StorageManager {
         }
     }
 
+    /** Periodically calls {@link tryRecover} while in memory fallback (no-op if already scheduled). */
     startAutoRecovery(interval_ms = 30_000): void {
         if (this._recovery_interval !== null) {
             return;
@@ -182,6 +191,7 @@ export class StorageManager {
         }, interval_ms);
     }
 
+    /** Clears the recovery polling interval started by {@link startAutoRecovery}. */
     stopAutoRecovery(): void {
         if (this._recovery_interval !== null) {
             clearInterval(this._recovery_interval);
@@ -245,6 +255,7 @@ export class StorageManager {
         }
     }
 
+    /** Stops recovery, releases Web Lock, closes SQLite, and clears listeners. */
     dispose(): void {
         this.stopAutoRecovery();
         if (this._lock_retry_interval !== null) {

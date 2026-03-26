@@ -1,5 +1,5 @@
 <script lang="ts">
-    import ElapsedTimer from '../ElapsedTimer.svelte';
+    import { ElapsedTimer } from '../../ElapsedTimer';
 
     let {
         accumulated_ms,

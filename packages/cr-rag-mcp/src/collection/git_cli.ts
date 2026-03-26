@@ -31,6 +31,7 @@ const GIT_LOG_FORMAT: LogFormatFields = {
     body: '%b',
 };
 
+/** 인제스트·diff 수집에서 제외할 파일 경로에 매칭되는 정규식 목록. */
 export const EXCLUDED_PATTERNS = [
     /\.min\.(js|css)$/,
     /package-lock\.json$/,

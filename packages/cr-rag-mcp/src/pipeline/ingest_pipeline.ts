@@ -16,6 +16,7 @@ import type { PipelineState } from '../types/pipeline.js';
 import type { CommitSummary } from '../types/summary.js';
 import type { VerificationResult } from '../types/verification.js';
 
+/** 커밋 인제스트 파이프라인 한 번 실행의 집계 결과(처리·인덱싱·스킵·실패·소요 시간). */
 export interface IngestResult {
     processed: number;
     indexed: number;
@@ -80,6 +81,10 @@ function buildCommitDocumentMetadata(
     return base;
 }
 
+/**
+ * Git 커밋을 수집·요약·검증·임베딩하여 벡터 DB와 메타 스토어에 반영한다.
+ * `mode`에 따라 전체·증분·단일 커밋 범위가 달라지며, 증분은 기존 파이프라인 상태 또는 `options.since_date`가 필요하다.
+ */
 export async function runIngestPipeline(
     repo_path: string,
     project_id: string,

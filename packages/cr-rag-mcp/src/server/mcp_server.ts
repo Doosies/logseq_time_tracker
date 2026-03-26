@@ -19,8 +19,10 @@ import { handleIngestCommits } from '../tools/ingest_commits.js';
 import { handleSearchReviewContext } from '../tools/search_review_context.js';
 import { handleSupplementReason } from '../tools/supplement_reason.js';
 
+import { readPackageVersion } from './read_package_version.js';
 import type { ServerContext } from './server_context.js';
 
+/** MCP 호스트에 노출되는 서버 의존성(벡터·메타·검색·후처리) 타입 재보내기. */
 export type { ServerContext } from './server_context.js';
 
 function readEnv(): {
@@ -136,13 +138,18 @@ const TOOL_DEFINITIONS = [
     },
 ] as const;
 
+/**
+ * cr-rag-mcp MCP 서버 인스턴스와 초기화된 `ServerContext`를 만든다.
+ * 도구·리소스 핸들러가 연결된 상태로 반환한다.
+ */
 export async function createMcpServer(): Promise<{ server: Server; context: ServerContext }> {
     const context = await buildServerContext();
+    const server_version = readPackageVersion();
 
     const server = new Server(
         {
             name: 'cr-rag-mcp',
-            version: '0.0.1',
+            version: server_version,
         },
         {
             capabilities: {
@@ -194,6 +201,7 @@ export async function createMcpServer(): Promise<{ server: Server; context: Serv
     return { server, context };
 }
 
+/** 주어진 서버를 stdio 전송으로 연결하고, 프로세스가 끊길 때까지 대기한다. */
 export async function connectMcpServerStdio(server: Server): Promise<void> {
     const transport = new StdioServerTransport();
     await server.connect(transport);

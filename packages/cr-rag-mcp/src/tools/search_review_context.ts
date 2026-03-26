@@ -14,6 +14,9 @@ function filterByFilePaths(results: SearchResult[], file_paths: string[] | undef
     );
 }
 
+/**
+ * MCP `search_review_context` 요청을 처리한다. diff 텍스트로 벡터 검색·후처리한 유사 커밋 결과를 JSON 텍스트로 반환한다.
+ */
 export async function handleSearchReviewContext(
     ctx: ServerContext,
     args: Record<string, unknown>,

@@ -10,6 +10,7 @@ import { getPreferences, restorePreferences, resetPreferences } from '#stores/pr
 
 const BACKUP_VERSION = 1;
 
+/** 현재 스토어 상태를 백업 스키마(`BackupData`)로 직렬화해 반환합니다. */
 export function exportAllSettings(): BackupData {
     const payload: BackupPayload = {
         accounts: getAccountsSnapshot(),
@@ -27,6 +28,7 @@ export function exportAllSettings(): BackupData {
     };
 }
 
+/** `exportAllSettings` 결과를 JSON 파일로 브라우저에서 다운로드합니다. */
 export function downloadBackup(): void {
     const backup = exportAllSettings();
     const json = JSON.stringify(backup, null, 2);
@@ -40,6 +42,7 @@ export function downloadBackup(): void {
     URL.revokeObjectURL(url);
 }
 
+/** 백업 페이로드를 각 스토어에 적용합니다. 실패한 항목은 `errors`에 누적됩니다. */
 export async function importFromPayload(data: BackupPayload): Promise<{ success: boolean; errors: string[] }> {
     const errors: string[] = [];
 
@@ -89,6 +92,7 @@ export async function importFromPayload(data: BackupPayload): Promise<{ success:
     };
 }
 
+/** 백업 JSON 문자열을 파싱·검증한 뒤 `importFromPayload`로 복원합니다. */
 export async function importAllSettings(json: string): Promise<{ success: boolean; errors: string[] }> {
     let parsed: unknown;
     try {
@@ -109,6 +113,7 @@ export async function importAllSettings(json: string): Promise<{ success: boolea
     return importFromPayload(backup.data ?? {});
 }
 
+/** 계정·스크립트·섹션·테마·환경설정 등 앱 설정을 기본값으로 되돌립니다. */
 export async function resetAllSettings(): Promise<{ success: boolean; errors: string[] }> {
     const errors: string[] = [];
 
@@ -135,6 +140,7 @@ export async function resetAllSettings(): Promise<{ success: boolean; errors: st
 
 const MAX_BACKUP_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 
+/** 사용자가 선택한 백업 파일(최대 5MB)을 읽어 `importAllSettings`로 가져옵니다. */
 export async function readBackupFile(file: File): Promise<{ success: boolean; errors: string[] }> {
     if (file.size > MAX_BACKUP_FILE_SIZE_BYTES) {
         return { success: false, errors: ['파일 크기가 너무 큽니다. 5MB 이하의 파일만 가져올 수 있습니다.'] };

@@ -1,3 +1,7 @@
+<!--
+@component Dnd.Sortable - Provider 하위의 단일 정렬 가능 행. 드래그 핸들은 children 스니펫의 handleAttach로 연결.
+  Props: id, index, children (Snippet with handleAttach), class.
+-->
 <script lang="ts">
     import { Sortable as PrimitiveSortable } from '../../primitives/Dnd';
     import type { Snippet } from 'svelte';

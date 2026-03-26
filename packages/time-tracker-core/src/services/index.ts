@@ -9,6 +9,7 @@ import { DataExportService } from './data_export_service';
 import { DataFieldService } from './data_field_service';
 import { TimeEntryService } from './time_entry_service';
 
+/** Constructs the default service graph for jobs, timer, categories, export, and time entries. */
 export function createServices(uow: IUnitOfWork, logger?: ILogger) {
     const history_service = new HistoryService(uow, logger);
     const job_service = new JobService(uow, history_service, logger);
@@ -30,6 +31,7 @@ export function createServices(uow: IUnitOfWork, logger?: ILogger) {
     };
 }
 
+/** Service bundle produced by {@link createServices}. */
 export type Services = ReturnType<typeof createServices>;
 
 export * from './history_service';

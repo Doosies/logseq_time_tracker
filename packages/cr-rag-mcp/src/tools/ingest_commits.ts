@@ -4,6 +4,9 @@ import { runIngestPipeline } from '../pipeline/ingest_pipeline.js';
 import type { ServerContext } from '../server/server_context.js';
 import { isValidCommitHash } from '../storage/meta_store.js';
 
+/**
+ * MCP `ingest_commits` 요청을 처리한다. 저장소 경로·모드를 검증한 뒤 인제스트 파이프라인을 실행하고 JSON 텍스트 응답을 반환한다.
+ */
 export async function handleIngestCommits(
     ctx: ServerContext,
     args: Record<string, unknown>,
