@@ -28,87 +28,121 @@
 | `02-architecture.md`     | §4.9 TimeEntryService   | 수동 TimeEntry CRUD, overlap 검사                        |
 | `02-architecture.md`     | §4.3 DataFieldService   | 커스텀 필드 등록/조회/삭제                               |
 | `08-test-usecases.md`    | §Phase 3 유즈케이스     | 수동 TimeEntry, overlap, 커스텀 필드                     |
-| `09-user-flows.md`       | UF-11 ~ UF-14           | 수동 기록, 커스텀 필드, UI 모드 전환                     |
+| `09-user-flows.md`       | UF-14 ~ UF-17           | 수동 기록, 커스텀 필드, UI 모드 전환                     |
 
 ---
 
-## 서브 단계
+## 코드베이스 현황 (Phase 2 완료)
 
-### 3A: UI 모드 시스템
+- **서비스**: TimerService, JobService, CategoryService, HistoryService, JobCategoryService, DataExportService
+- **팩토리**: `createServices()` in `services/index.ts`
+- **Repository**: IDataFieldRepository 정의됨 (`repositories.ts`)
+- **스텁**: SqliteDataFieldRepository 스텁 상태
+- **타입**: DataType/EntityType/DataField 정의 완료 (`types/meta.ts`)
+- **마이그레이션**: 001_initial + 002_phase2
+- **컴포넌트**: Timer, JobList, ReasonModal, Toast, EmptyState
+- **UoW**: 9개 Repository 포함
 
-| 컴포넌트                | 역할                                           |
-| ----------------------- | ---------------------------------------------- |
-| `Toolbar.svelte`        | 상단 슬롯바 — 현재 타이머 요약 + 빠른 제어     |
-| `FullView.svelte`       | 메인 패널 — Job 목록 + 타이머 + TimeEntry 이력 |
-| `InlineView.svelte`     | 특정 Job 페이지 내 인라인 UI (블록 참조 시)    |
-| `LayoutSwitcher.svelte` | Compact ↔ Full 모드 전환                       |
+---
 
-**모드 전환 기준**:
+## 서브페이즈 구조
 
-- 툴바: Logseq 상단 슬롯 (항상 표시)
-- 풀화면: 툴바 클릭 시 패널 오픈
-- 인페이지: Logseq 페이지 내 블록 렌더러
+| 서브페이즈 | 문서 | 영역 | 주요 산출물 |
+| --- | --- | --- | --- |
+| **3A** | [3a-time-entry-service.md](3a-time-entry-service.md) | 서비스 | TimeEntryService (CRUD + overlap) |
+| **3B** | [3b-datafield-schema-service.md](3b-datafield-schema-service.md) | 스키마 + 서비스 | Migration 003, SqliteDataFieldRepository, DataFieldService |
+| **3C** | [3c-ui-mode-system.md](3c-ui-mode-system.md) | UI | Toolbar, FullView, InlineView, LayoutSwitcher |
+| **3D** | [3d-advanced-selectors.md](3d-advanced-selectors.md) | UI | CategorySelector, JobSelector, DatePicker, TimeRangePicker |
+| **3E** | [3e-manual-time-entry-ui.md](3e-manual-time-entry-ui.md) | UI | ManualEntryForm, TimeEntryList, OverlapResolutionModal |
+| **3F** | [3f-custom-field-ui.md](3f-custom-field-ui.md) | UI | FieldRenderer, CustomFieldEditor, CustomFieldManager |
+| **3G** | [3g-tests.md](3g-tests.md) | 테스트 | 단위/통합/컴포넌트/성능/E2E 테스트 |
 
-### 3B: 고급 셀렉터
+---
 
-| 컴포넌트                  | 역할                                      |
-| ------------------------- | ----------------------------------------- |
-| `CategorySelector.svelte` | 트리 구조 카테고리 선택 (검색 + 드롭다운) |
-| `CategorySelector.css.ts` | 스타일                                    |
-| `JobSelector.svelte`      | Job 선택 (검색 + 상태 필터 + 드롭다운)    |
-| `JobSelector.css.ts`      | 스타일                                    |
-| `DatePicker.svelte`       | 날짜 선택                                 |
-| `DatePicker.css.ts`       | 스타일                                    |
-| `TimeRangePicker.svelte`  | 시작/종료 시간 범위 선택                  |
-| `TimeRangePicker.css.ts`  | 스타일                                    |
+## 서브페이즈 간 의존성
 
-### 3C: TimeEntryService + 수동 TimeEntry UI
+```mermaid
+flowchart TD
+    P3A["3A: TimeEntryService"] --> P3E["3E: 수동 TimeEntry UI"]
+    P3B["3B: DataField 스키마 & 서비스"] --> P3F["3F: 커스텀 필드 UI"]
+    P3D["3D: 셀렉터 & 데이트피커"] --> P3E
+    P3C["3C: UI 모드 시스템"] --> P3G["3G: 테스트"]
+    P3E --> P3G
+    P3F --> P3G
+```
 
-| 파일                                       | 역할                               |
-| ------------------------------------------ | ---------------------------------- |
-| `services/time_entry_service.ts`           | 수동 TimeEntry CRUD + overlap 검사 |
-| `components/ManualEntryForm.svelte`        | 수동 TimeEntry 생성 폼             |
-| `components/TimeEntryList.svelte`          | TimeEntry 이력 목록 (필터링, 정렬) |
-| `components/OverlapResolutionModal.svelte` | 겹침 해결 UI (조정/유지 선택)      |
+- **병렬 가능**: 3A, 3B, 3C, 3D (상호 독립)
+- **3E**: 3A + 3D 완료 후
+- **3F**: 3B 완료 후
+- **3G**: 전체 완료 후
 
-**TimeEntryService 핵심**:
+---
+
+## 서브 단계 요약
+
+### 3A: TimeEntryService
+
+수동 TimeEntry CRUD와 overlap 감지/해결 로직 구현. 상세: [3a-time-entry-service.md](3a-time-entry-service.md)
 
 - `createManualEntry(params)`: 시간 범위 검증 + overlap 검사
+- `detectOverlaps(job_id, started_at, ended_at)`: 동일 Job 내 겹침 감지
+- `resolveOverlap(new_entry, existing[], strategy)`: new_first / existing_first 전략
 - `updateEntry(id, updates)`: 수정 후 재검증
 - `deleteEntry(id)`: 삭제
-- `checkOverlap(job_id, start, end)`: 기존 TimeEntry와 겹침 확인
 
-**Overlap 해결 정책** (04-state-management.md):
+### 3B: DataField 스키마 & 서비스
 
-1. 겹침 감지 → OverlapResolutionModal 표시
-2. 사용자 선택: "기존 항목 시간 조정" 또는 "그대로 유지"
-3. 조정 선택 시: 기존 TimeEntry의 end 시간을 새 항목의 start로 조정
+Migration 003으로 data_type/entity_type/data_field 테이블 생성, DataFieldService 구현. 상세: [3b-datafield-schema-service.md](3b-datafield-schema-service.md)
 
-### 3D: DataField (커스텀 필드)
+- DDL: data_type, entity_type, data_field 테이블
+- 시드: data_type 7종, entity_type 5종
+- SqliteDataFieldRepository 활성화
+- DataFieldService: createField, updateField, deleteField, getFieldsByEntity
 
-| 파일                                                      | 역할                        |
-| --------------------------------------------------------- | --------------------------- |
-| `services/data_field_service.ts`                          | DataField 등록/조회/삭제    |
-| `adapters/storage/sqlite/sqlite_data_field_repository.ts` | SQL 구현                    |
-| `components/CustomFieldEditor.svelte`                     | 커스텀 필드 값 입력/표시 UI |
-| `components/CustomFieldManager.svelte`                    | 커스텀 필드 정의 관리 UI    |
+### 3C: UI 모드 시스템
 
-**DataField 구조** (03-data-model.md):
+Toolbar/FullView/InlineView 3가지 UI 모드 구현. 상세: [3c-ui-mode-system.md](3c-ui-mode-system.md)
 
-- `DataType`: 텍스트, 숫자, 날짜, 불리언, 선택 목록
-- `EntityType`: Job, TimeEntry
-- `DataField`: entity_type + data_type + name + options(JSON)
-- Job/TimeEntry의 `custom_fields` JSON 컬럼에 값 저장
+- Toolbar: 진행중 Job 요약, 빠른 제어
+- FullView: Compact(< 600px) / Full(>= 600px) 반응형
+- InlineView: 페이지 기반 인라인 UI
+- LayoutSwitcher: ResizeObserver 기반 모드 전환
 
-### 3E: 테스트
+### 3D: 고급 셀렉터 & 데이트피커
 
-| 테스트                        | 범위                      |
-| ----------------------------- | ------------------------- |
-| TimeEntryService 단위 테스트  | 수동 CRUD, overlap 검사   |
-| OverlapResolution 통합 테스트 | 겹침 감지 → 조정/유지     |
-| DataFieldService 단위 테스트  | 필드 CRUD, JSON 파싱      |
-| 셀렉터 컴포넌트 테스트        | 검색, 선택, 키보드 접근성 |
-| UI 모드 전환 테스트           | Compact → Full → Inline   |
+CategorySelector, JobSelector, DatePicker, TimeRangePicker 구현. 상세: [3d-advanced-selectors.md](3d-advanced-selectors.md)
+
+- CategorySelector: 트리 구조 탐색, 검색, 드롭다운
+- JobSelector: 검색, 상태 필터, 드롭다운
+- DatePicker: 캘린더, min/max 제약
+- TimeRangePicker: 날짜+시간, 범위 검증
+
+### 3E: 수동 TimeEntry UI
+
+ManualEntryForm, TimeEntryList, OverlapResolutionModal 구현. 상세: [3e-manual-time-entry-ui.md](3e-manual-time-entry-ui.md)
+
+- ManualEntryForm: 셀렉터/데이트피커 통합, overlap 감지 연동
+- TimeEntryList: 목록 표시, 필터, 편집/삭제
+- OverlapResolutionModal: 시각적 타임라인, 전략 선택
+
+### 3F: 커스텀 필드 UI
+
+FieldRenderer 시스템, CustomFieldEditor, CustomFieldManager 구현. 상세: [3f-custom-field-ui.md](3f-custom-field-ui.md)
+
+- FieldRenderer: data_type/view_type → 컴포넌트 동적 매핑
+- 7종 타입별 필드 컴포넌트 (string, decimal, date, datetime, boolean, enum, relation)
+- CustomFieldEditor: 필드 값 편집
+- CustomFieldManager: 필드 정의 관리
+
+### 3G: 테스트
+
+Phase 3 전체 기능 테스트. 상세: [3g-tests.md](3g-tests.md)
+
+- 단위: UC-ENTRY-001~004, UC-DFIELD-001~003
+- 컴포넌트: UC-UI-009~018
+- 성능: UC-PERF-003~004
+- E2E: UC-E2E-003
+- 커버리지 80%+ 목표
 
 ---
 

@@ -326,7 +326,7 @@ interface ICategoryService {
 ```typescript
 interface ITimeEntryService {
     createManualEntry(params: ManualEntryParams): Promise<TimeEntry>;
-    detectOverlaps(started_at: string, ended_at: string, exclude_id?: string): Promise<TimeEntry[]>;
+    detectOverlaps(job_id: string, started_at: string, ended_at: string, exclude_id?: string): Promise<TimeEntry[]>;
     resolveOverlap(
         new_entry: TimeEntry,
         existing: TimeEntry[],
@@ -352,7 +352,7 @@ interface ManualEntryParams {
 
 - 수동 TimeEntry 생성 (타이머 없이 과거 시간 기록)
 - `ended_at >= started_at` 검증, `duration_seconds` 자동 계산
-- 기존 TimeEntry와의 시간 중복(overlap) 감지
+- 동일 Job 내 기존 TimeEntry와의 시간 중복(overlap) 감지
 - OverlapResolutionModal 선택에 따른 중복 해소 (`new_first` / `existing_first`)
 
 > **참고**: 타이머에 의한 자동 TimeEntry 생성은 TimerService가 담당합니다. TimeEntryService는 수동 입력 전용입니다.
