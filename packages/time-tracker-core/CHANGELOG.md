@@ -1,5 +1,15 @@
 # Changelog
 
+## [Unreleased]
+
+### Added
+- 포괄적 테스트 커버리지 (테스트 파일 23개, 약 95개 케이스, UC-ID 추적)
+- 단위 테스트: `field_component_registry` (UC-FIELD-001~004), `before_unload` (UC-UTIL-009~011), Memory 저장소 `job_category`·`data_field`·`settings`·`history` (UC-MEM-019~036)
+- 필드 컴포넌트 테스트: StringField, BooleanField, DecimalField, EnumField, DateField, DatetimeField, RelationField, FieldRenderer (UC-FIELD-005~038)
+- 컴포넌트 테스트: EmptyState, TimeEntryList, CustomFieldEditor, CustomFieldManager, FullView, InlineView
+- 통합 테스트: `custom_field_lifecycle` (UC-INTG-001~004), `export_workflow` (UC-INTG-005~007), `template_operations` (UC-INTG-008~010)
+- 테스트용 Svelte 스텁: `date_picker_stub`, `job_selector_stub`, `elapsed_timer_stub`
+
 ## [0.2.0] - 2026-03-24
 
 ### Added
