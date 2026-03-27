@@ -9,7 +9,7 @@ globalStyle('*, *::before, *::after', {
 
 globalStyle('html', {
     overflowY: 'auto',
-    scrollbarGutter: 'stable',
+    // scrollbarGutter: 'stable',
     scrollbarWidth: 'thin',
     scrollbarColor: `${theme_vars.color.border} transparent`,
 });
