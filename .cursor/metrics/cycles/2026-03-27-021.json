@@ -1,0 +1,70 @@
+{
+    "cycle_id": "2026-03-27-021",
+    "task_type": "feature",
+    "task_description": "logseq-time-tracker 포괄적 테스트 커버리지 확보 - main.ts 미커버 경로 + App.svelte 컴포넌트 테스트",
+    "started_at": "2026-03-27T17:52:06+09:00",
+    "completed_at": "2026-03-27T18:16:17+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "qa", "qa", "security", "docs", "git-workflow"],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "qa": { "outcome": "success", "retries": 0, "errors": [] },
+        "security": { "outcome": "success", "retries": 0, "errors": [] },
+        "docs": { "outcome": "success", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": {
+        "created": [
+            "packages/logseq-time-tracker/src/__tests__/App.test.ts",
+            "packages/logseq-time-tracker/src/__tests__/empty_core_component_stub.svelte",
+            "packages/logseq-time-tracker/src/__tests__/layout_switcher_snippet_stub.svelte",
+            "packages/logseq-time-tracker/src/__tests__/toolbar_open_full_stub.svelte",
+            "packages/logseq-time-tracker/vitest.config.ts"
+        ],
+        "modified": [
+            "packages/logseq-time-tracker/CHANGELOG.md",
+            "packages/logseq-time-tracker/src/__tests__/main.test.ts"
+        ],
+        "deleted": []
+    },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass",
+        "lint": "pass",
+        "test": "pass (23/23)",
+        "build": "pass",
+        "security": "pass"
+    },
+    "decisions": [
+        {
+            "phase": "qa-batch2",
+            "decision": "Svelte 5 컴포넌트 mock을 위해 .svelte 스텁 파일 3개 생성",
+            "rationale": "vi.fn()만으로는 Svelte 5 mount가 유효한 컴포넌트를 받지 못함",
+            "alternatives": "importOriginal로 실제 Toolbar 사용 → AppContext/uikit 의존이 커짐"
+        },
+        {
+            "phase": "qa-batch2",
+            "decision": "vitest.config.ts 추가하여 resolve.conditions: ['browser'] 설정",
+            "rationale": "Vitest가 svelte 서버 엔트리를 잡아 lifecycle_function_unavailable 발생",
+            "alternatives": "vite.config.ts에 동일 옵션 추가"
+        },
+        {
+            "phase": "qa-batch1",
+            "decision": "UC-PLUGIN-014 전용 describe 분리",
+            "rationale": "#app 없이 resetModules 후 import해야 하며, 다른 블록과 DOM 상태가 달라야 함",
+            "alternatives": "동일 describe에서 DOM만 바꾸기(모듈 캐시 오염 위험)"
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "qa-batch2",
+            "issue": "Node 조건으로 svelte 서버 빌드가 로드됨",
+            "resolution": "vitest.config.ts에서 mergeConfig + resolve.conditions: ['browser']",
+            "severity": "minor"
+        }
+    ],
+    "notes": "Svelte 5 jsdom 테스트 패턴 확립: .svelte 스텁 + vitest.config.ts browser 조건. 향후 stack/svelte/testing.md에 반영 권장."
+}

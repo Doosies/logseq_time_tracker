@@ -1,0 +1,105 @@
+{
+    "cycle_id": "2026-03-27-005",
+    "task_type": "refactor",
+    "task_description": "uikit primitives/components 2레이어 구조를 components 단일 레이어로 병합 리팩토링",
+    "started_at": "2026-03-27T10:00:00+09:00",
+    "completed_at": "2026-03-27T11:30:00+09:00",
+    "success": true,
+    "failure_reason": null,
+    "workflow": ["planner", "developer", "developer", "developer", "developer", "developer", "qa", "security", "git-workflow"],
+    "agents": {
+        "planner": { "outcome": "success", "retries": 0, "errors": [] },
+        "developer": { "outcome": "success", "retries": 0, "errors": [] },
+        "qa": { "outcome": "success", "retries": 0, "errors": [] },
+        "security": { "outcome": "success", "retries": 0, "errors": [] },
+        "docs": { "outcome": "skipped", "retries": 0, "errors": [] },
+        "git-workflow": { "outcome": "success", "retries": 0, "errors": [] },
+        "mcp-development": { "outcome": "skipped", "retries": 0, "errors": [] }
+    },
+    "files_changed": {
+        "created": [
+            "packages/uikit/src/components/LayoutSwitcher/LayoutSwitcher.svelte",
+            "packages/uikit/src/components/LayoutSwitcher/index.ts",
+            "packages/uikit/src/components/LayoutSwitcher/__tests__/LayoutSwitcher.test.svelte",
+            "packages/uikit/src/components/LayoutSwitcher/__tests__/LayoutSwitcher.test.ts",
+            "packages/uikit/src/components/DatePicker/types.ts",
+            "packages/uikit/src/components/TimeRangePicker/types.ts"
+        ],
+        "modified": [
+            "packages/uikit/README.md",
+            "packages/uikit/src/components/index.ts",
+            "packages/uikit/src/components/Button/Button.svelte",
+            "packages/uikit/src/components/ButtonGroup/ButtonGroup.svelte",
+            "packages/uikit/src/components/Card/Root.svelte",
+            "packages/uikit/src/components/Card/Header.svelte",
+            "packages/uikit/src/components/Card/Body.svelte",
+            "packages/uikit/src/components/Card/Footer.svelte",
+            "packages/uikit/src/components/Section/Root.svelte",
+            "packages/uikit/src/components/Section/Header.svelte",
+            "packages/uikit/src/components/Section/Title.svelte",
+            "packages/uikit/src/components/Section/Action.svelte",
+            "packages/uikit/src/components/Section/Content.svelte",
+            "packages/uikit/src/components/Popover/Root.svelte",
+            "packages/uikit/src/components/Popover/Trigger.svelte",
+            "packages/uikit/src/components/Popover/Content.svelte",
+            "packages/uikit/src/components/CheckboxList/Root.svelte",
+            "packages/uikit/src/components/CheckboxList/Item.svelte",
+            "packages/uikit/src/components/ToggleInput/Root.svelte",
+            "packages/uikit/src/components/ToggleInput/Prefix.svelte",
+            "packages/uikit/src/components/ToggleInput/Toggle.svelte",
+            "packages/uikit/src/components/Select/Select.svelte",
+            "packages/uikit/src/components/TextInput/TextInput.svelte",
+            "packages/uikit/src/components/Textarea/Textarea.svelte",
+            "packages/uikit/src/components/Tooltip/Tooltip.svelte",
+            "packages/uikit/src/components/ElapsedTimer/ElapsedTimer.svelte",
+            "packages/uikit/src/components/PromptDialog/PromptDialog.svelte",
+            "packages/uikit/src/components/Toast/Provider.svelte",
+            "packages/uikit/src/components/Toast/Root.svelte",
+            "packages/uikit/src/components/Dnd/Provider.svelte",
+            "packages/uikit/src/components/Dnd/Sortable.svelte",
+            "packages/uikit/src/components/DatePicker/DatePicker.svelte",
+            "packages/uikit/src/components/DatePicker/index.ts",
+            "packages/uikit/src/components/TimeRangePicker/TimeRangePicker.svelte",
+            "packages/uikit/src/components/TimeRangePicker/index.ts"
+        ],
+        "deleted": [
+            "packages/uikit/src/primitives/ (전체 디렉토리 50개 파일)"
+        ]
+    },
+    "quality_gates": {
+        "readlints": "pass",
+        "type_check": "pass (uikit + monorepo 8/8)",
+        "lint": "pass",
+        "test": "pass (uikit 117 tests + monorepo 7/7 packages)",
+        "build": "pass",
+        "security": "pass (Critical/High/Medium/Low 0건)"
+    },
+    "decisions": [
+        {
+            "phase": "plan",
+            "decision": "primitives 코드를 components에 인라인 병합",
+            "rationale": "사용자가 로직+디자인이 한 곳에 있길 원함",
+            "alternatives": ["하위 폴더로 이동", "파일 리네이밍"]
+        },
+        {
+            "phase": "developer",
+            "decision": "classes prop 패턴 제거, design styles 직접 사용",
+            "rationale": "DatePicker/TimeRangePicker의 classes 주입 패턴이 불필요해짐",
+            "alternatives": ["classes prop 유지"]
+        },
+        {
+            "phase": "developer",
+            "decision": "LayoutSwitcher primitives 원본 삭제 (이동이 아닌 복사+삭제)",
+            "rationale": "이중 정의 방지",
+            "alternatives": ["primitives에 남기고 Phase 6에서 삭제"]
+        }
+    ],
+    "issues_encountered": [
+        {
+            "phase": "developer",
+            "issue": "CheckboxList.Root가 primitives/Dnd를 import",
+            "resolution": "Phase 3에서 Dnd 인라인 후 components/Dnd 경로로 변경"
+        }
+    ],
+    "notes": "100개 파일 변경 (+1091/-1781 lines). 외부 API 변경 없음. design 토큰 변경 없음."
+}
