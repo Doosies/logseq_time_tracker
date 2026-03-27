@@ -114,3 +114,117 @@ describe('renderApp theme application', () => {
         expect(document.documentElement.style.overflow).toBe('hidden');
     });
 });
+
+describe('renderApp initialization', () => {
+    beforeAll(async () => {
+        vi.resetModules();
+        document.body.innerHTML = '<div id="app"></div>';
+        document.documentElement.style.overflow = '';
+        vi.clearAllMocks();
+        await import('../main');
+        const core_module = await import('@personal/time-tracker-core');
+        for (let i = 0; i < 50; i++) {
+            if (vi.mocked(core_module.initializeApp).mock.calls.length > 0) {
+                const first_result = vi.mocked(core_module.initializeApp).mock.results[0];
+                if (first_result?.value instanceof Promise) {
+                    await first_result.value;
+                }
+                break;
+            }
+            await Promise.resolve();
+        }
+    });
+
+    it('UC-PLUGIN-009: initializeApp이 SQLite 모드와 wasm_url·db_name 인자로 호출된다', async () => {
+        const { initializeApp } = await import('@personal/time-tracker-core');
+        expect(initializeApp).toHaveBeenCalledWith(
+            expect.objectContaining({
+                storage_mode: 'sqlite',
+                sqlite_options: expect.objectContaining({
+                    wasm_url: new URL('./assets/', document.baseURI).href,
+                    db_name: 'time-tracker.db',
+                }),
+                logger: expect.anything(),
+            }),
+        );
+    });
+
+    it('UC-PLUGIN-010: registerTimerBeforeUnload가 timer_service와 함께 호출된다', async () => {
+        const { initializeApp, registerTimerBeforeUnload } = await import('@personal/time-tracker-core');
+        const init_result = vi.mocked(initializeApp).mock.results[0];
+        expect(init_result).toBeDefined();
+        const ctx = await init_result!.value;
+        expect(registerTimerBeforeUnload).toHaveBeenCalledWith(ctx.services.timer_service);
+    });
+
+    it('UC-PLUGIN-011: mount가 App과 올바른 target·props로 호출된다', async () => {
+        const { mount } = await import('svelte');
+        const { initializeApp } = await import('@personal/time-tracker-core');
+        const { default: App_component } = await import('../App.svelte');
+        const init_result = vi.mocked(initializeApp).mock.results[0];
+        expect(init_result).toBeDefined();
+        const ctx = await init_result!.value;
+        const app_root = document.getElementById('app');
+        expect(vi.mocked(mount)).toHaveBeenCalledWith(App_component, {
+            target: app_root,
+            props: { ctx },
+        });
+    });
+
+    it('UC-PLUGIN-012: provideModel이 togglePluginUI 모델을 등록한다', () => {
+        expect(mock_provide_model).toHaveBeenCalledWith(
+            expect.objectContaining({
+                togglePluginUI: expect.any(Function),
+            }),
+        );
+        const provide_call = mock_provide_model.mock.calls[0];
+        expect(provide_call).toBeDefined();
+        const model = provide_call![0] as { togglePluginUI: () => void };
+        const toggle_main_ui = globalThis.logseq?.toggleMainUI;
+        expect(toggle_main_ui).toBeDefined();
+        vi.mocked(toggle_main_ui!).mockClear();
+        model.togglePluginUI();
+        expect(toggle_main_ui).toHaveBeenCalled();
+    });
+
+    it('UC-PLUGIN-013: 슬래시 커맨드 콜백이 logseq.toggleMainUI를 호출한다', async () => {
+        const slash_call = mock_register_slash_command.mock.calls[0];
+        expect(slash_call).toBeDefined();
+        const slash_callback = slash_call![1] as () => Promise<void>;
+        const toggle_main_ui = globalThis.logseq?.toggleMainUI;
+        expect(toggle_main_ui).toBeDefined();
+        vi.mocked(toggle_main_ui!).mockClear();
+        await slash_callback();
+        expect(toggle_main_ui).toHaveBeenCalled();
+    });
+
+    it('UC-PLUGIN-015: beforeunload 이벤트 시 dispose와 unregister 체인이 실행된다', async () => {
+        const { initializeApp, registerTimerBeforeUnload } = await import('@personal/time-tracker-core');
+        const init_entry = vi.mocked(initializeApp).mock.results[0];
+        const reg_entry = vi.mocked(registerTimerBeforeUnload).mock.results[0];
+        expect(init_entry).toBeDefined();
+        expect(reg_entry).toBeDefined();
+        const ctx = await init_entry!.value;
+        const unreg_flush = reg_entry!.value as ReturnType<typeof vi.fn>;
+        vi.mocked(ctx.dispose).mockClear();
+        vi.mocked(unreg_flush).mockClear();
+        window.dispatchEvent(new Event('beforeunload'));
+        expect(ctx.dispose).toHaveBeenCalled();
+        expect(unreg_flush).toHaveBeenCalled();
+    });
+});
+
+describe('main entry without #app', () => {
+    beforeAll(async () => {
+        vi.resetModules();
+        document.body.innerHTML = '';
+        document.documentElement.style.overflow = '';
+        vi.clearAllMocks();
+        await import('../main');
+    });
+
+    it('UC-PLUGIN-014: #app 미존재 시 mount가 호출되지 않는다', async () => {
+        const { mount } = await import('svelte');
+        expect(vi.mocked(mount)).not.toHaveBeenCalled();
+    });
+});

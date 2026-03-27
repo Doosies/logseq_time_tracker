@@ -15,6 +15,8 @@
 - `@personal/uikit`(workspace) 의존성 추가
 - UC-PLUGIN-006(`#app`에 `light_theme` 적용), UC-PLUGIN-007(body에는 미적용) 단위 테스트 추가
 - UC-PLUGIN-008(HTML `overflow` hidden 검증) 단위 테스트 추가
+- `main.ts` 미커버 경로 단위 테스트 추가 (UC-PLUGIN-009~015): initializeApp 인자, registerTimerBeforeUnload, mount, provideModel, 슬래시 커맨드 콜백, #app 미존재 시 early return, beforeunload dispose 체인
+- `App.svelte` 컴포넌트 테스트 신규 생성 (UC-APP-001~010): Toolbar/FullView 전환, ESC/닫기, 디버그 모달, getJobTitle/getStatusLabel 헬퍼 함수
 
 ## [0.1.0] - 2026-03-24
 
