@@ -1,6 +1,7 @@
 import { mount } from 'svelte';
 import App from '../src/App.svelte';
 import { ConsoleLogger, initializeApp } from '@personal/time-tracker-core';
+import { light_theme } from '@personal/uikit/design';
 
 const app_el = () => document.getElementById('app');
 
@@ -37,6 +38,8 @@ async function main() {
     if (!app_root) {
         throw new Error('E2E harness: #app not found');
     }
+    app_root.classList.add(light_theme);
+    document.documentElement.style.overflow = 'hidden';
     mount(App, { target: app_root, props: { ctx } });
 }
 

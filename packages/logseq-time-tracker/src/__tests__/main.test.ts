@@ -109,4 +109,8 @@ describe('renderApp theme application', () => {
     it('UC-PLUGIN-007: light_theme 클래스가 body에는 적용되지 않는다', () => {
         expect(document.body.classList.contains(MOCK_LIGHT_THEME_CLASS)).toBe(false);
     });
+
+    it('UC-PLUGIN-008: html의 overflow가 hidden으로 설정되어 스크롤바가 방지된다', () => {
+        expect(document.documentElement.style.overflow).toBe('hidden');
+    });
 });

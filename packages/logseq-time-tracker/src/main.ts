@@ -23,6 +23,7 @@ async function renderApp() {
     if (!app_root) return;
 
     app_root.classList.add(light_theme);
+    document.documentElement.style.overflow = 'hidden';
 
     const ctx = await initializeApp({
         logger: new ConsoleLogger(),

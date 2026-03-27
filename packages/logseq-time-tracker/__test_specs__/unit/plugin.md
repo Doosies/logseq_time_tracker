@@ -68,3 +68,11 @@
 - **Then**: body에는 light_theme 클래스가 추가되어 있지 않다 (Logseq iframe 투명성 보장)
 - **Phase**: 1
 - **테스트 레벨**: 단위
+
+#### UC-PLUGIN-008: html overflow hidden 설정으로 스크롤바 방지
+
+- **Given**: DOM에 `#app` 엘리먼트가 존재하고, renderApp()이 실행 완료되었다
+- **When**: document.documentElement.style.overflow를 검사한다
+- **Then**: overflow가 'hidden'으로 설정되어 uikit global.css의 overflowY: auto를 덮어쓴다
+- **Phase**: 1
+- **테스트 레벨**: 단위
