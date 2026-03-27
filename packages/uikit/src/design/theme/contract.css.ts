@@ -56,6 +56,7 @@ export const theme_vars = createGlobalThemeContract({
         base: 'z-index-base',
         above: 'z-index-above',
         popover: 'z-index-popover',
+        modal: 'z-index-modal',
     },
     shadow: {
         sm: 'shadow-sm',

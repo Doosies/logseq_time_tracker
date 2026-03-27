@@ -9,6 +9,7 @@
 
 ### Added
 
+- 디자인 토큰 `z_index.modal` 추가 (`--z-index-modal`, 값 50; `popover`보다 높은 모달 전용 레이어)
 - Tooltip 컴포넌트 추가 (호버 시 설명 표시)
   - Props: content, position, disabled, delay, children
   - 자동 위치 조정 (viewport 경계 감지)
@@ -26,6 +27,7 @@
 
 ### Fixed
 
+- PromptDialog 오버레이가 `z_index.modal` 토큰을 사용하도록 변경 (팝오버·드롭다운과 동일한 `popover` z-index를 쓰며 상호작용이 가려지던 문제 해소)
 - ToggleInput 스위칭 버튼(⇄)이 보이지 않는 문제 수정 (ServerManager 섹션에서 발생)
   - flex 레이아웃에서 `flexShrink: 0` 누락으로 스위칭 버튼 너비가 0으로 축소되던 문제 해결
   - 버튼 기본 브라우저 스타일 리셋 및 명시적 크기(28x28) 적용

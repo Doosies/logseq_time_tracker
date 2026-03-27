@@ -57,6 +57,7 @@ export const dark_theme = createTheme(theme_vars, {
         base: '1',
         above: '2',
         popover: '10',
+        modal: '50',
     },
     shadow: {
         sm: '0 1px 3px rgba(0, 0, 0, 0.2)',

@@ -10,9 +10,7 @@ export async function submitReasonModal(page: Page, title: string, text: string)
     const dialog = await waitForReasonModal(page, title);
     await dialog.locator('textarea').fill(text);
     const confirm_btn = dialog.getByRole('button', { name: '확인' });
-    await confirm_btn.evaluate((el: HTMLElement) => {
-        el.click();
-    });
+    await confirm_btn.click();
     await expect(dialog).toBeHidden();
 }
 
@@ -31,12 +29,8 @@ export async function createJobViaFullView(page: Page, job_name: string) {
 
 export async function confirmEmptySwitchReason(page: Page) {
     const dialog = await waitForReasonModal(page, '작업 전환 사유');
-    // 툴바 드롭다운의 전체 화면 백드롭(.dropdown-backdrop-hit)이 모달 확인 버튼 위에 겹칠 수 있음.
-    // 해당 백드롭을 클릭하면 hideMainUI()가 호출되므로, 포인터 대신 DOM click으로 확인만 처리한다.
     const confirm_btn = dialog.getByRole('button', { name: '확인' });
-    await confirm_btn.evaluate((el: HTMLElement) => {
-        el.click();
-    });
+    await confirm_btn.click();
     await expect(dialog).toBeHidden();
 }
 

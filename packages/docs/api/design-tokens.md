@@ -47,11 +47,12 @@ const styles = {
 
 레이어 순서 제어용 z-index 값입니다.
 
-| 토큰                         | CSS 변수            | 값  | 용도                   |
-| ---------------------------- | ------------------- | --- | ---------------------- |
-| `theme_vars.z_index.base`    | `--z-index-base`    | 1   | 기본 오버레이          |
-| `theme_vars.z_index.above`   | `--z-index-above`   | 2   | 일반 콘텐츠 위 요소    |
-| `theme_vars.z_index.popover` | `--z-index-popover` | 10  | 팝오버, 드롭다운, 모달 |
+| 토큰                         | CSS 변수            | 값  | 용도                |
+| ---------------------------- | ------------------- | --- | ------------------- |
+| `theme_vars.z_index.base`    | `--z-index-base`    | 1   | 기본 오버레이       |
+| `theme_vars.z_index.above`   | `--z-index-above`   | 2   | 일반 콘텐츠 위 요소 |
+| `theme_vars.z_index.popover` | `--z-index-popover` | 10  | 팝오버, 드롭다운    |
+| `theme_vars.z_index.modal`   | `--z-index-modal`   | 50  | 모달 다이얼로그     |
 
 ## Shadow 토큰
 

@@ -43,4 +43,28 @@ test.describe('Toolbar VRT', () => {
         await expect(dialog).toBeVisible();
         await expect(page).toHaveScreenshot('toolbar-pause-modal.png');
     });
+
+    test('UC-VRT-004: Toolbar에서 전환 클릭 시 ReasonModal이 최상위에 표시되고 포인터 클릭 가능', async ({ page }) => {
+        await createJobViaFullView(page, 'VRT 전환 A');
+        await createJobViaFullView(page, 'VRT 전환 B');
+
+        const job_a = toolbarRegion(page).getByRole('listitem').filter({ hasText: 'VRT 전환 A' });
+        await job_a.locator(':scope > div').first().hover();
+        await job_a.getByRole('button', { name: '시작' }).click();
+        await confirmEmptySwitchReason(page);
+
+        await freezeTimerText(page);
+
+        const job_b = toolbarRegion(page).getByRole('listitem').filter({ hasText: 'VRT 전환 B' });
+        await job_b.locator(':scope > div').first().hover();
+        await job_b.getByRole('button', { name: '전환' }).click();
+
+        const dialog = page.getByRole('dialog', { name: '작업 전환 사유' });
+        await expect(dialog).toBeVisible();
+        await expect(page).toHaveScreenshot('toolbar-switch-modal.png');
+
+        const confirm_btn = dialog.getByRole('button', { name: '확인' });
+        await confirm_btn.click();
+        await expect(dialog).toBeHidden();
+    });
 });

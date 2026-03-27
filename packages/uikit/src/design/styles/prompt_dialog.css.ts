@@ -8,7 +8,7 @@ export const overlay = style({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: theme_vars.z_index.popover,
+    zIndex: theme_vars.z_index.modal,
 });
 
 export const modal = style({
