@@ -50,3 +50,21 @@
 - **Then**: logseq.Editor API가 올바른 property와 함께 호출된다
 - **Phase**: 4
 - **테스트 레벨**: 단위
+
+### 5.3 테마 적용
+
+#### UC-PLUGIN-006: #app에 light_theme 클래스 적용
+
+- **Given**: DOM에 `#app` 엘리먼트가 존재하고, Logseq 환경과 time-tracker-core가 모킹되어 있다
+- **When**: main.ts가 실행되어 renderApp()이 호출된다
+- **Then**: `#app` 엘리먼트에 uikit의 `light_theme` CSS 클래스가 추가된다
+- **Phase**: 1
+- **테스트 레벨**: 단위
+
+#### UC-PLUGIN-007: light_theme 클래스가 body에 적용되지 않음
+
+- **Given**: DOM에 `#app` 엘리먼트가 존재하고, renderApp()이 실행 완료되었다
+- **When**: document.body의 classList를 검사한다
+- **Then**: body에는 light_theme 클래스가 추가되어 있지 않다 (Logseq iframe 투명성 보장)
+- **Phase**: 1
+- **테스트 레벨**: 단위

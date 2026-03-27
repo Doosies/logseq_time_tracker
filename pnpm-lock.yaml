@@ -24,6 +24,9 @@ catalogs:
     '@modelcontextprotocol/sdk':
       specifier: ^1.27.1
       version: 1.27.1
+    '@playwright/test':
+      specifier: ^1.58.2
+      version: 1.58.2
     '@storybook/addon-a11y':
       specifier: ^10.2.13
       version: 10.2.13
@@ -364,6 +367,9 @@ importers:
       '@personal/time-tracker-core':
         specifier: workspace:*
         version: link:../time-tracker-core
+      '@personal/uikit':
+        specifier: workspace:*
+        version: link:../uikit
       '@vanilla-extract/css':
         specifier: 'catalog:'
         version: 1.18.0
@@ -545,6 +551,9 @@ importers:
       '@eslint/js':
         specifier: 'catalog:'
         version: 9.39.2
+      '@playwright/test':
+        specifier: 'catalog:'
+        version: 1.58.2
       '@sveltejs/vite-plugin-svelte':
         specifier: 'catalog:'
         version: 6.2.4(svelte@5.50.0)(vite@7.3.1(@types/node@25.0.10)(jiti@2.6.1)(yaml@2.8.3))

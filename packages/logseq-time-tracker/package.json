@@ -22,6 +22,7 @@
     "dependencies": {
         "@logseq/libs": "catalog:",
         "@personal/time-tracker-core": "workspace:*",
+        "@personal/uikit": "workspace:*",
         "@vanilla-extract/css": "catalog:"
     },
     "devDependencies": {

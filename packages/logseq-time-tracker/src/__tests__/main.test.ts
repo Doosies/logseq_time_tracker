@@ -15,6 +15,10 @@ const { mock_ready, mock_register_ui_item, mock_register_slash_command, mock_pro
     mock_provide_model: vi.fn(),
 }));
 
+const { MOCK_LIGHT_THEME_CLASS } = vi.hoisted(() => ({
+    MOCK_LIGHT_THEME_CLASS: 'mock-light-theme',
+}));
+
 vi.mock('@logseq/libs', () => {
     globalThis.logseq = {
         ready: mock_ready,
@@ -50,6 +54,18 @@ vi.mock('@personal/time-tracker-core', () => ({
     registerTimerBeforeUnload: vi.fn().mockReturnValue(vi.fn()),
 }));
 
+vi.mock('@personal/uikit/design', () => ({
+    light_theme: MOCK_LIGHT_THEME_CLASS,
+}));
+
+vi.mock('svelte', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('svelte')>();
+    return {
+        ...actual,
+        mount: vi.fn(),
+    };
+});
+
 describe('main entry (Logseq plugin bootstrap)', () => {
     beforeAll(async () => {
         vi.clearAllMocks();
@@ -73,5 +89,24 @@ describe('main entry (Logseq plugin bootstrap)', () => {
 
     it('UC-PLUGIN-003: main: registerCommandPalette 호출 검증', () => {
         expect(mock_register_slash_command).toHaveBeenCalledWith(SLASH_COMMAND_LABEL, expect.any(Function));
+    });
+});
+
+describe('renderApp theme application', () => {
+    beforeAll(async () => {
+        vi.resetModules();
+        document.body.innerHTML = '<div id="app"></div>';
+        vi.clearAllMocks();
+        await import('../main');
+    });
+
+    it('UC-PLUGIN-006: #app에 light_theme 클래스가 적용된다', () => {
+        const app_root = document.getElementById('app');
+        expect(app_root).not.toBeNull();
+        expect(app_root!.classList.contains(MOCK_LIGHT_THEME_CLASS)).toBe(true);
+    });
+
+    it('UC-PLUGIN-007: light_theme 클래스가 body에는 적용되지 않는다', () => {
+        expect(document.body.classList.contains(MOCK_LIGHT_THEME_CLASS)).toBe(false);
     });
 });

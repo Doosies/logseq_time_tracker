@@ -3,6 +3,7 @@ import { mount } from 'svelte';
 import App from './App.svelte';
 import { initializeApp, ConsoleLogger, registerTimerBeforeUnload } from '@personal/time-tracker-core';
 import type { AppContext } from '@personal/time-tracker-core';
+import { light_theme } from '@personal/uikit/design';
 
 // [Phase 4 대기] InlineView 관련 상수
 // const LOGSEQ_SYSTEM_KEY = 'logseq';
@@ -20,6 +21,8 @@ function disposeTimerOnBeforeUnload() {
 async function renderApp() {
     const app_root = document.getElementById('app');
     if (!app_root) return;
+
+    app_root.classList.add(light_theme);
 
     const ctx = await initializeApp({
         logger: new ConsoleLogger(),
