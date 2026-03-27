@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Select from '../../primitives/Select/Select.svelte';
+    import Select from '../../components/Select/Select.svelte';
 </script>
 
 <Select

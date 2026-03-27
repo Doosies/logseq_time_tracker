@@ -3,7 +3,7 @@
   Props: id, index, children (Snippet with handleAttach), class.
 -->
 <script lang="ts">
-    import { Sortable as PrimitiveSortable } from '../../primitives/Dnd';
+    import { createSortable } from '@dnd-kit/svelte/sortable';
     import type { Snippet } from 'svelte';
 
     type HandleAttach = (node: HTMLElement) => () => void;
@@ -18,9 +18,20 @@
     let { id, index, children, class: extra_class }: Props = $props();
 
     const class_name = $derived(`dnd-sortable ${extra_class ?? ''}`);
+
+    const sortable = createSortable({
+        get id() {
+            return id;
+        },
+        get index() {
+            return index;
+        },
+    });
 </script>
 
-<PrimitiveSortable {id} {index} class={class_name} {children} />
+<div class={class_name} {@attach sortable.attach}>
+    {@render children({ handleAttach: sortable.attachHandle })}
+</div>
 
 <style>
     :global(.dnd-sortable) {

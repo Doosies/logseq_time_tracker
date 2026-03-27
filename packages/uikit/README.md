@@ -640,7 +640,7 @@ pnpm format
 
 ```
 src/
-├── components/          # Svelte 컴포넌트
+├── components/          # Svelte 컴포넌트 (헤드리스 primitive 포함)
 │   ├── Button/
 │   ├── ButtonGroup/
 │   ├── Card/
@@ -654,18 +654,6 @@ src/
 │   ├── CheckboxList/
 │   ├── Dnd/
 │   └── index.ts         # 컴포넌트 export
-├── primitives/          # Headless primitive (스타일 없는 기본 구현)
-│   ├── Button/
-│   ├── Card/
-│   ├── Section/
-│   ├── TextInput/
-│   ├── ToggleInput/
-│   ├── Select/
-│   ├── Tooltip/
-│   ├── Popover/
-│   ├── Toast/
-│   ├── CheckboxList/
-│   └── Dnd/
 ├── actions/             # Svelte actions
 │   ├── click_outside.ts
 │   ├── block_drag_from_interactive.ts
@@ -713,7 +701,7 @@ export type {
 ### 컴포넌트 배럴 (`src/components/index.ts`)
 
 ```typescript
-export { LayoutSwitcher } from '../primitives/LayoutSwitcher';
+export { LayoutSwitcher } from './LayoutSwitcher';
 export { Button } from './Button';
 export { Select } from './Select';
 export { TextInput } from './TextInput';

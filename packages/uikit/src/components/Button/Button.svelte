@@ -2,7 +2,6 @@
     import type { Snippet } from 'svelte';
     import type { HTMLAttributes } from 'svelte/elements';
     import type { ButtonVariant, ButtonSize } from '../../design/types';
-    import { Button as PrimitiveButton } from '../../primitives/Button';
     import * as styles from '../../design/styles/button.css';
 
     interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
@@ -38,6 +37,6 @@
     };
 </script>
 
-<PrimitiveButton class={getClassNames()} {disabled} {onclick} {...rest}>
+<button class={getClassNames()} {disabled} onclick={() => onclick?.()} type="button" {...rest}>
     {@render children()}
-</PrimitiveButton>
+</button>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Action as PrimitiveAction } from '../../primitives/Section';
     import type { Snippet } from 'svelte';
 
     interface Props {
@@ -10,6 +9,6 @@
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<PrimitiveAction class={extra_class ?? ''}>
+<div class={extra_class ?? ''}>
     {@render children()}
-</PrimitiveAction>
+</div>

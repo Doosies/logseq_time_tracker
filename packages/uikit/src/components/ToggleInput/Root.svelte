@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Root as PrimitiveRoot } from '../../primitives/ToggleInput';
+    import { setContext } from 'svelte';
     import { toggle_input_container } from '../../design/styles/toggle_input.css';
     import type { Snippet } from 'svelte';
 
@@ -19,9 +19,18 @@
         class: extra_class,
     }: Props = $props();
 
+    function toggle(): void {
+        isTextMode = !isTextMode;
+        onToggle?.();
+    }
+
+    setContext('toggle-input', {
+        toggle,
+    });
+
     const class_name = $derived([toggle_input_container, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveRoot class={class_name} bind:value bind:isTextMode {onToggle}>
+<div class={class_name}>
     {@render children()}
-</PrimitiveRoot>
+</div>

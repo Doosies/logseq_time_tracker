@@ -1,17 +1,19 @@
 <script lang="ts">
-    import { Root as PrimitiveRoot } from '../../primitives/Card';
+    import { setContext } from 'svelte';
     import { card_container } from '../../design/styles/card.css';
     import type { Snippet } from 'svelte';
+    import type { HTMLAttributes } from 'svelte/elements';
 
-    interface Props {
+    interface Props extends HTMLAttributes<HTMLDivElement> {
         children: Snippet;
         class?: string;
     }
 
-    let { children, class: extra_class }: Props = $props();
+    let { children, class: extra_class, ...rest }: Props = $props();
     const class_name = $derived([card_container, extra_class].filter(Boolean).join(' '));
+    setContext('card', {});
 </script>
 
-<PrimitiveRoot class={class_name}>
+<div class={class_name} {...rest}>
     {@render children()}
-</PrimitiveRoot>
+</div>

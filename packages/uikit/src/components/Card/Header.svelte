@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Header as PrimitiveHeader } from '../../primitives/Card';
     import type { Snippet } from 'svelte';
 
     interface Props {
@@ -10,6 +9,6 @@
     let { children, class: extra_class }: Props = $props();
 </script>
 
-<PrimitiveHeader class={extra_class ?? ''}>
+<header class={extra_class ?? ''}>
     {@render children()}
-</PrimitiveHeader>
+</header>

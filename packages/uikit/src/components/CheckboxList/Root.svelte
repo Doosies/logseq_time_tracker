@@ -23,20 +23,32 @@ Wraps Dnd.Provider to provide a sortable list of checkbox items.
 ```
 -->
 <script lang="ts" generics="T extends { id: string | number }">
-    import { Root as PrimitiveRoot } from '../../primitives/CheckboxList';
+    import { setContext } from 'svelte';
+    import { Provider, Sortable } from '../Dnd';
     import { checkbox_list_container } from '../../design/styles/checkbox_list.css';
     import type { Snippet } from 'svelte';
 
+    type HandleAttach = (node: HTMLElement) => () => void;
     interface Props {
         items: T[];
         onreorder?: (new_items: T[]) => void;
-        item: Snippet<[{ item: T; index: number; handleAttach: unknown }]>;
+        item: Snippet<[{ item: T; index: number; handleAttach: HandleAttach }]>;
         class?: string;
     }
 
     let { items, onreorder, item, class: extra_class }: Props = $props();
 
     const class_name = $derived([checkbox_list_container, extra_class].filter(Boolean).join(' '));
+
+    setContext('checkbox-list', {});
 </script>
 
-<PrimitiveRoot {items} {...onreorder != null && { onreorder }} {item} class={class_name} />
+<Provider {items} {...onreorder != null && { onreorder }} class={class_name}>
+    {#each items as _item, index (_item.id)}
+        <Sortable id={_item.id} {index}>
+            {#snippet children({ handleAttach }: { handleAttach: HandleAttach })}
+                {@render item({ item: _item, index, handleAttach })}
+            {/snippet}
+        </Sortable>
+    {/each}
+</Provider>

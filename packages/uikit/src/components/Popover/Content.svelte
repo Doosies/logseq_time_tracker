@@ -7,9 +7,15 @@ Only rendered when the popover is open. Positioned absolutely below the trigger.
 @prop label - ARIA label for accessibility
 -->
 <script lang="ts">
-    import { Content as PrimitiveContent } from '../../primitives/Popover';
+    import { getContext } from 'svelte';
+    import { focusTrap } from '../../actions';
     import { popover_content } from '../../design/styles/popover.css';
     import type { Snippet } from 'svelte';
+
+    interface PopoverContext {
+        get is_open(): boolean;
+        close: () => void;
+    }
 
     interface Props {
         children: Snippet;
@@ -18,10 +24,13 @@ Only rendered when the popover is open. Positioned absolutely below the trigger.
         label?: string;
     }
 
-    let { children, class: extra_class, role, label }: Props = $props();
+    let { children, class: extra_class, role = 'dialog', label }: Props = $props();
+    const ctx = getContext<PopoverContext>('popover');
     const class_name = $derived([popover_content, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveContent class={class_name} {...role != null ? { role } : {}} {...label != null ? { label } : {}}>
-    {@render children()}
-</PrimitiveContent>
+{#if ctx.is_open}
+    <div class={class_name} {role} aria-label={label} aria-modal="true" use:focusTrap={{ onclose: ctx.close }}>
+        {@render children()}
+    </div>
+{/if}

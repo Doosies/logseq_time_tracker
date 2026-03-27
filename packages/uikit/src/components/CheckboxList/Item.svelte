@@ -10,7 +10,6 @@ Must be used inside CheckboxList.Root's item snippet with handleAttach.
 @prop handleAttach - Drag handle attach from Dnd.Sortable (required in sortable context)
 -->
 <script lang="ts">
-    import { Item as PrimitiveItem } from '../../primitives/CheckboxList';
     import { checkbox_list_item, checkbox_list_item_disabled } from '../../design/styles/checkbox_list.css';
     import type { Snippet } from 'svelte';
     import type { HTMLAttributes } from 'svelte/elements';
@@ -24,20 +23,29 @@ Must be used inside CheckboxList.Root's item snippet with handleAttach.
         class?: string;
     }
 
-    let { checked, disabled, ontoggle, handleAttach, children, class: extra_class, ...rest }: Props = $props();
+    let {
+        checked = false,
+        disabled = false,
+        ontoggle,
+        handleAttach,
+        children,
+        class: extra_class,
+        ...rest
+    }: Props = $props();
 
     const class_name = $derived(
         [checkbox_list_item, disabled ? checkbox_list_item_disabled : '', extra_class].filter(Boolean).join(' '),
     );
 </script>
 
-<PrimitiveItem
-    class={class_name}
-    {...checked != null ? { checked } : {}}
-    {...disabled != null ? { disabled } : {}}
-    {...ontoggle != null ? { ontoggle } : {}}
-    {...handleAttach != null ? { handleAttach } : {}}
-    {...rest}
->
-    {@render children()}
-</PrimitiveItem>
+<div class={class_name} {...rest}>
+    {#if handleAttach}
+        <span data-drag-handle role="button" tabindex="0" aria-label="드래그하여 순서 변경" {@attach handleAttach}>
+            ⠿
+        </span>
+    {/if}
+    <label style="display:flex;align-items:center;gap:0.5em;flex:1;min-width:0;cursor:pointer;">
+        <input type="checkbox" {checked} {disabled} onchange={ontoggle} />
+        {@render children()}
+    </label>
+</div>

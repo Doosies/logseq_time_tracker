@@ -3,7 +3,7 @@
  *
  * @module
  */
-export { LayoutSwitcher } from '../primitives/LayoutSwitcher';
+export { LayoutSwitcher } from './LayoutSwitcher';
 export { Button } from './Button';
 export { Select } from './Select';
 export { TextInput } from './TextInput';

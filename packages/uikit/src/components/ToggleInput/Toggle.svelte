@@ -1,7 +1,11 @@
 <script lang="ts">
-    import { Toggle as PrimitiveToggle } from '../../primitives/ToggleInput';
+    import { getContext } from 'svelte';
     import { toggle_icon } from '../../design/styles/toggle_input.css';
     import type { Snippet } from 'svelte';
+
+    interface ToggleInputContext {
+        toggle: () => void;
+    }
 
     interface Props {
         label?: string;
@@ -9,11 +13,12 @@
         class?: string;
     }
 
-    let { label, children, class: extra_class }: Props = $props();
+    let { label = 'Toggle input mode', children, class: extra_class }: Props = $props();
+    const ctx = getContext<ToggleInputContext>('toggle-input');
     const class_name = $derived([toggle_icon, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveToggle class={class_name} {...label != null ? { label } : {}}>
+<button type="button" class={class_name} onclick={ctx.toggle} aria-label={label}>
     {#if children}
         {@render children()}
     {:else}
@@ -33,4 +38,4 @@
             <path d="M20 17H4" />
         </svg>
     {/if}
-</PrimitiveToggle>
+</button>

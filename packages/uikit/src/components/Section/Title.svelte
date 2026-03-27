@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Title as PrimitiveTitle } from '../../primitives/Section';
     import { section_title } from '../../design/styles/section.css';
     import type { Snippet } from 'svelte';
 
@@ -12,6 +11,13 @@
     const class_name = $derived([section_title, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveTitle class={class_name}>
+<div
+    class={class_name}
+    data-drag-handle
+    data-section-header
+    role="button"
+    tabindex="0"
+    aria-label="드래그하여 섹션 순서 변경"
+>
     {@render children()}
-</PrimitiveTitle>
+</div>

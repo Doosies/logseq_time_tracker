@@ -1,15 +1,18 @@
 <script lang="ts">
     import type { Snippet } from 'svelte';
-    import { ButtonGroup as PrimitiveButtonGroup } from '../../primitives/ButtonGroup';
+    import type { HTMLAttributes } from 'svelte/elements';
     import * as styles from '../../design/styles/button_group.css';
 
-    interface ButtonGroupProps {
+    interface ButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
         children: Snippet;
+        class?: string | undefined;
     }
 
-    let { children }: ButtonGroupProps = $props();
+    let { children, class: extra_class, ...rest }: ButtonGroupProps = $props();
+
+    const class_name = $derived([styles.button_group_container, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveButtonGroup class={styles.button_group_container}>
+<div class={class_name} role="group" {...rest}>
     {@render children()}
-</PrimitiveButtonGroup>
+</div>

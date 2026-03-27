@@ -3,8 +3,12 @@
   Props: items (정렬 대상 배열, id 필수), onreorder (선택, 새 순서 반영), children, class, activation_distance (선택, 포인터 활성 거리).
 -->
 <script lang="ts" generics="T extends { id: string | number }">
-    import { Provider as PrimitiveProvider } from '../../primitives/Dnd';
+    import { DragDropProvider } from '@dnd-kit/svelte';
+    import { PointerSensor, PointerActivationConstraints, KeyboardSensor } from '@dnd-kit/dom';
+    import { move } from '@dnd-kit/helpers';
     import type { Snippet } from 'svelte';
+
+    type ItemsWithId = { id: string | number }[];
 
     interface Props {
         items: T[];
@@ -15,13 +19,30 @@
     }
 
     let { items, onreorder, children, class: extra_class, activation_distance }: Props = $props();
+
+    const configured_sensors = $derived(
+        activation_distance != null
+            ? [
+                  PointerSensor.configure({
+                      activationConstraints: [
+                          new PointerActivationConstraints.Distance({ value: activation_distance }),
+                      ],
+                  }),
+                  KeyboardSensor,
+              ]
+            : undefined,
+    );
+
+    function handleDragEnd(event: Parameters<typeof move>[1]): void {
+        if (!onreorder) return;
+        const items_with_id: ItemsWithId = items as ItemsWithId;
+        const new_items = move(items_with_id, event);
+        onreorder(new_items as T[]);
+    }
 </script>
 
-<PrimitiveProvider
-    {items}
-    {...onreorder != null ? { onreorder } : {}}
-    {...extra_class != null ? { class: extra_class } : {}}
-    {...activation_distance != null ? { activation_distance } : {}}
->
-    {@render children()}
-</PrimitiveProvider>
+<div role="group" class={extra_class}>
+    <DragDropProvider {...configured_sensors ? { sensors: configured_sensors } : {}} onDragEnd={handleDragEnd}>
+        {@render children()}
+    </DragDropProvider>
+</div>

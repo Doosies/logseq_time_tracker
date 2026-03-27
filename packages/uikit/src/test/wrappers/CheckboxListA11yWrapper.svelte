@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Root, Item } from '../../primitives/CheckboxList';
+    import { Root, Item } from '../../components/CheckboxList';
 
     interface ListItem {
         id: string;

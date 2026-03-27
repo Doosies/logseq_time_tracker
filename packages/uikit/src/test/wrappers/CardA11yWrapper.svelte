@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Root, Header, Body, Footer } from '../../primitives/Card';
+    import { Root, Header, Body, Footer } from '../../components/Card';
 </script>
 
 <Root>

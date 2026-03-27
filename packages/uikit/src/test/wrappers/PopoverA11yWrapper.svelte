@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Root, Trigger, Content } from '../../primitives/Popover';
+    import { Root, Trigger, Content } from '../../components/Popover';
 </script>
 
 <Root>

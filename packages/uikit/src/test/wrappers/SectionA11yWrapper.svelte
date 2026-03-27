@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { Root, Header, Title, Content } from '../../primitives/Section';
+    import { Root, Header, Title, Content } from '../../components/Section';
 </script>
 
 <Root aria-label="설정">

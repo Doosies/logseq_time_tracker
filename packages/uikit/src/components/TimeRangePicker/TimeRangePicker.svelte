@@ -2,10 +2,8 @@
 @component TimeRangePicker - 시작·종료 날짜/시간 범위 선택 컴포넌트
 -->
 <script lang="ts">
-    import { TimeRangePicker as PrimitiveTimeRangePicker } from '../../primitives/TimeRangePicker';
-    import type { DatePickerClasses } from '../../primitives/DatePicker';
+    import { DatePicker } from '../DatePicker';
     import * as tr_styles from '../../design/styles/time_range_picker.css';
-    import * as dp_styles from '../../design/styles/date_picker.css';
 
     interface Props {
         started_at: string;
@@ -17,42 +15,119 @@
         class?: string | undefined;
     }
 
-    let { started_at, ended_at, onChange, start_label, end_label, error_message, class: extra_class }: Props = $props();
+    let {
+        started_at,
+        ended_at,
+        onChange,
+        start_label = '시작',
+        end_label = '종료',
+        error_message = '시작 시각은 종료 시각보다 이전이거나 같아야 합니다',
+        class: extra_class,
+    }: Props = $props();
 
-    const date_picker_classes = $derived({
-        root: dp_styles.root,
-        trigger: dp_styles.trigger,
-        panel: dp_styles.panel,
-        header: dp_styles.header,
-        nav_button: dp_styles.nav_button,
-        month_label: dp_styles.month_label,
-        weekdays: dp_styles.weekdays,
-        grid: dp_styles.grid,
-        day_cell: dp_styles.day_cell,
-        day_outside_month: dp_styles.day_outside_month,
-        day_disabled: dp_styles.day_disabled,
-        day_selected: dp_styles.day_selected,
-        day_today: dp_styles.day_today,
-    } satisfies DatePickerClasses);
+    function formatYmdLocal(d: Date): string {
+        const y = d.getFullYear();
+        const m = d.getMonth() + 1;
+        const day = d.getDate();
+        return `${y}-${String(m).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    }
 
-    const range_classes = $derived({
-        root: [tr_styles.root, extra_class].filter(Boolean).join(' '),
-        root_invalid: tr_styles.root_invalid,
-        row: tr_styles.row,
-        label: tr_styles.label,
-        time_row: tr_styles.time_row,
-        time_input: tr_styles.time_input,
-        error: tr_styles.error,
+    function formatTimeLocal(d: Date): string {
+        const h = d.getHours();
+        const min = d.getMinutes();
+        return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+    }
+
+    function utcIsoToLocalParts(iso: string): { date: string; time: string } {
+        const d = new Date(iso);
+        if (Number.isNaN(d.getTime())) {
+            const fallback = new Date();
+            return { date: formatYmdLocal(fallback), time: formatTimeLocal(fallback) };
+        }
+        return { date: formatYmdLocal(d), time: formatTimeLocal(d) };
+    }
+
+    function sameInstantToMinute(a: string, b: string): boolean {
+        const ta = new Date(a).getTime();
+        const tb = new Date(b).getTime();
+        if (Number.isNaN(ta) || Number.isNaN(tb)) {
+            return false;
+        }
+        return Math.floor(ta / 60000) === Math.floor(tb / 60000);
+    }
+
+    function localDateTimeToUtcIso(date_str: string, time_str: string): string | null {
+        const dm = date_str.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        const tm = time_str.match(/^(\d{2}):(\d{2})$/);
+        if (!dm || !tm) {
+            return null;
+        }
+        const d = new Date(Number(dm[1]), Number(dm[2]) - 1, Number(dm[3]), Number(tm[1]), Number(tm[2]), 0, 0);
+        if (Number.isNaN(d.getTime())) {
+            return null;
+        }
+        return d.toISOString();
+    }
+
+    let start_date = $state('');
+    let start_time = $state('');
+    let end_date = $state('');
+    let end_time = $state('');
+
+    $effect(() => {
+        const s = utcIsoToLocalParts(started_at);
+        const e = utcIsoToLocalParts(ended_at);
+        start_date = s.date;
+        start_time = s.time;
+        end_date = e.date;
+        end_time = e.time;
     });
+
+    const is_valid = $derived.by(() => {
+        const s_iso = localDateTimeToUtcIso(start_date, start_time);
+        const e_iso = localDateTimeToUtcIso(end_date, end_time);
+        if (s_iso === null || e_iso === null) {
+            return false;
+        }
+        return new Date(s_iso).getTime() <= new Date(e_iso).getTime();
+    });
+
+    $effect(() => {
+        if (!is_valid) {
+            return;
+        }
+        const s_iso = localDateTimeToUtcIso(start_date, start_time);
+        const e_iso = localDateTimeToUtcIso(end_date, end_time);
+        if (s_iso === null || e_iso === null) {
+            return;
+        }
+        if (sameInstantToMinute(s_iso, started_at) && sameInstantToMinute(e_iso, ended_at)) {
+            return;
+        }
+        onChange(s_iso, e_iso);
+    });
+
+    const root_combined_class = $derived(
+        [tr_styles.root, extra_class, !is_valid ? tr_styles.root_invalid : undefined].filter(Boolean).join(' '),
+    );
 </script>
 
-<PrimitiveTimeRangePicker
-    {started_at}
-    {ended_at}
-    {onChange}
-    {start_label}
-    {end_label}
-    {error_message}
-    classes={range_classes}
-    {date_picker_classes}
-/>
+<div class={root_combined_class}>
+    <div class={tr_styles.row}>
+        <span class={tr_styles.label} id="time-range-start-label">{start_label}</span>
+        <div class={tr_styles.time_row} aria-labelledby="time-range-start-label">
+            <DatePicker value={start_date} onSelect={(d) => (start_date = d)} />
+            <input class={tr_styles.time_input} type="time" bind:value={start_time} aria-label="시작 시각" />
+        </div>
+    </div>
+    <div class={tr_styles.row}>
+        <span class={tr_styles.label} id="time-range-end-label">{end_label}</span>
+        <div class={tr_styles.time_row} aria-labelledby="time-range-end-label">
+            <DatePicker value={end_date} onSelect={(d) => (end_date = d)} />
+            <input class={tr_styles.time_input} type="time" bind:value={end_time} aria-label="종료 시각" />
+        </div>
+    </div>
+    {#if !is_valid}
+        <p class={tr_styles.error} role="alert">{error_message}</p>
+    {/if}
+</div>

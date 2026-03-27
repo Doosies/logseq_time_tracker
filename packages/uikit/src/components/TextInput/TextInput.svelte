@@ -1,17 +1,33 @@
 <script lang="ts">
-    import { TextInput as PrimitiveTextInput } from '../../primitives/TextInput';
+    import type { HTMLAttributes } from 'svelte/elements';
     import * as styles from '../../design/styles/text_input.css';
 
-    interface TextInputProps {
+    interface TextInputProps extends Omit<HTMLAttributes<HTMLInputElement>, 'oninput'> {
         value?: string | undefined;
         placeholder?: string | undefined;
         disabled?: boolean | undefined;
+        class?: string | undefined;
         oninput?: ((value: string) => void) | undefined;
     }
 
-    let { value = $bindable(), placeholder = '', disabled = false, oninput }: TextInputProps = $props();
+    let {
+        value = $bindable(),
+        placeholder = '',
+        disabled = false,
+        class: extra_class,
+        oninput,
+        ...rest
+    }: TextInputProps = $props();
+
+    const handleInput = (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        value = target.value;
+        oninput?.(target.value);
+    };
+
+    const input_class_name = $derived([styles.text_input_element, extra_class].filter(Boolean).join(' '));
 </script>
 
 <div class={styles.text_input_container}>
-    <PrimitiveTextInput class={styles.text_input_element} bind:value {disabled} {placeholder} {oninput} />
+    <input type="text" class={input_class_name} {disabled} {placeholder} bind:value oninput={handleInput} {...rest} />
 </div>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Prefix as PrimitivePrefix } from '../../primitives/ToggleInput';
     import { prefix_container } from '../../design/styles/toggle_input.css';
     import type { Snippet } from 'svelte';
 
@@ -12,6 +11,6 @@
     const class_name = $derived([prefix_container, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitivePrefix class={class_name}>
+<div class={class_name}>
     {@render children()}
-</PrimitivePrefix>
+</div>

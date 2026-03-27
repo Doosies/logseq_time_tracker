@@ -1,6 +1,6 @@
 <script lang="ts">
-    import { Root, Prefix, Toggle } from '../../primitives/ToggleInput';
-    import TextInput from '../../primitives/TextInput/TextInput.svelte';
+    import { Root, Prefix, Toggle } from '../../components/ToggleInput';
+    import TextInput from '../../components/TextInput/TextInput.svelte';
 </script>
 
 <Root>

@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { Content as PrimitiveContent } from '../../primitives/Section';
     import { section_content } from '../../design/styles/section.css';
     import type { Snippet } from 'svelte';
 
@@ -12,6 +11,6 @@
     const class_name = $derived([section_content, extra_class].filter(Boolean).join(' '));
 </script>
 
-<PrimitiveContent class={class_name}>
+<div class={class_name}>
     {@render children()}
-</PrimitiveContent>
+</div>
