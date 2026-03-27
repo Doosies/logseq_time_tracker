@@ -634,6 +634,31 @@ pnpm lint
 pnpm format
 ```
 
+### 테스트
+
+**단위 테스트(Vitest 등)** — 패키지 루트(`packages/uikit`)에서 실행합니다.
+
+```bash
+pnpm test
+```
+
+**시각 회귀 테스트(VRT, Playwright)** — Storybook 정적 빌드와 Chromium이 필요합니다.
+
+```bash
+pnpm test:e2e
+```
+
+베이스라인 스냅샷을 의도적으로 갱신할 때:
+
+```bash
+pnpm test:e2e:update-snapshots
+```
+
+**VRT 사전 준비**
+
+- 모노레포 **루트**에서 Storybook을 빌드합니다: `pnpm build-storybook`
+- Playwright Chromium 설치: `npx playwright install chromium`
+
 ---
 
 ## 📁 프로젝트 구조

@@ -17,6 +17,12 @@
 - Button `ghost` variant: 투명 배경 아이콘 전용 버튼 스타일
 - Textarea Storybook 스토리 7개 (Default, WithPlaceholder, WithValue, Disabled, Monospace, CustomRows, WithInputHandler)
 - Button Ghost/GhostDisabled Storybook 스토리 추가
+- 12개 컴포넌트 단위 테스트 추가 (Button, ButtonGroup, Card, CheckboxList, Dnd, Popover, Section, Select, Textarea, TextInput, Toast, ToggleInput)
+- 5개 컴포넌트 Storybook 스토리 추가 (DatePicker, ElapsedTimer, LayoutSwitcher, PromptDialog, TimeRangePicker)
+- 7개 컴포넌트 접근성(a11y) 테스트 추가 (DatePicker, Dnd, ElapsedTimer, LayoutSwitcher, PromptDialog, TimeRangePicker, Tooltip)
+- 3개 Action 모듈 단위 테스트 추가 (clickOutside, focusTrap, blockDragFromInteractive)
+- Playwright 기반 Visual Regression Test(VRT) 인프라 도입
+- 18개 컴포넌트 VRT 스펙 및 베이스라인 스냅샷 생성
 
 ### Fixed
 

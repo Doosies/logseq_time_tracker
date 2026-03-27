@@ -23,7 +23,9 @@
         "format:check": "prettier --check \"src/**/*.{ts,svelte,json,css.ts}\"",
         "test": "vitest run --passWithNoTests",
         "test:watch": "vitest",
-        "test:coverage": "vitest run --coverage --passWithNoTests"
+        "test:coverage": "vitest run --coverage --passWithNoTests",
+        "test:e2e": "playwright test",
+        "test:e2e:update-snapshots": "playwright test --update-snapshots"
     },
     "keywords": [
         "uikit",
@@ -40,6 +42,7 @@
     },
     "devDependencies": {
         "@eslint/js": "catalog:",
+        "@playwright/test": "catalog:",
         "@sveltejs/vite-plugin-svelte": "catalog:",
         "@testing-library/jest-dom": "catalog:",
         "axe-core": "catalog:",

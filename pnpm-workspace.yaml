@@ -48,6 +48,7 @@ catalog:
     '@testing-library/svelte': ^5.3.1
     '@testing-library/user-event': ^14.6.1
     jsdom: ^28.0.0
+    '@playwright/test': ^1.58.2
 
     # Storybook
     storybook: ^10.2.13
